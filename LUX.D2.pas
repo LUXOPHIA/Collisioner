@@ -99,6 +99,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        X :TdSingle;
        Y :TdSingle;
+       /////
+       constructor Create( const X_,Y_:TdSingle );
        ///// プロパティ
        property o :TSingle2D read Geto write Seto;
        property d :TSingle2D read Getd write Setd;
@@ -119,6 +121,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        X :TdDouble;
        Y :TdDouble;
+       /////
+       constructor Create( const X_,Y_:TdDouble );
        ///// プロパティ
        property o :TDouble2D read Geto write Seto;
        property d :TDouble2D read Getd write Setd;
@@ -692,6 +696,12 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
+constructor TdSingle2D.Create( const X_,Y_:TdSingle );
+begin
+     X := X_;
+     Y := Y_;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TdDouble2D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -723,6 +733,12 @@ begin
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TdDouble2D.Create( const X_,Y_:TdDouble );
+begin
+     X := X_;
+     Y := Y_;
+end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleSiz2D
 
