@@ -881,12 +881,12 @@ end;
 
 function Abso( const V_:TdSingle ) :TdSingle;
 begin
-     if V_.o < 0 then Result := -V_;
+     Result := Sign( V_.o ) * V_;
 end;
 
 function Abso( const V_:TdDouble ) :TdDouble;
 begin
-     if V_.o < 0 then Result := -V_;
+     Result := Sign( V_.o ) * V_;
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
