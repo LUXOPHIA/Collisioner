@@ -9,6 +9,13 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      PPByte = ^PByte;
 
+     PInt8   = ^Int8;
+     PUInt8  = ^UInt8;
+     PInt16  = ^Int16;
+     PUInt16 = ^UInt16;
+     PInt32  = ^Int32;
+     PUInt32 = ^UInt32;
+
      TArray2<TValue_> = array of TArray <TValue_>;
      TArray3<TValue_> = array of TArray2<TValue_>;
 
