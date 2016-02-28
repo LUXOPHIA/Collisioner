@@ -16,6 +16,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      PInt32  = ^Int32;
      PUInt32 = ^UInt32;
 
+     PIntPtr  = ^IntPtr;
+     PUIntPtr = ^UIntPtr;
+
      TArray2<TValue_> = array of TArray <TValue_>;
      TArray3<TValue_> = array of TArray2<TValue_>;
 
