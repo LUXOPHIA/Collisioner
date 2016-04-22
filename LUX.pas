@@ -308,7 +308,18 @@ end;
 
 function HControl3D.GetAbsolMatrix :TMatrix3D;
 begin
-     Result := Self.GetAbsoluteMatrix;
+     if FRecalcAbsolute then
+     begin
+          if FParent is TControl3D then FAbsoluteMatrix := FLocalMatrix * TControl3D(FParent).AbsoluteMatrix
+                                   else FAbsoluteMatrix := FLocalMatrix;
+
+          Result := FAbsoluteMatrix;
+
+          FInvAbsoluteMatrix := FAbsoluteMatrix.Inverse;
+
+          FRecalcAbsolute := False;
+     end
+     else Result := FAbsoluteMatrix;
 end;
 
 procedure HControl3D.SetAbsoluteMatrix( const AbsoluteMatrix_:TMatrix3D );
@@ -369,7 +380,7 @@ end;
 
 function HCustomMesh.GetMeshData :TMeshData;
 begin
-     Result := Self.FData;
+     Result := Data;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
