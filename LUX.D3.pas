@@ -47,6 +47,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function IdentityX :TSingle3D; inline; static;
        class function IdentityY :TSingle3D; inline; static;
        class function IdentityZ :TSingle3D; inline; static;
+       ///// メソッド
+       function VectorTo( const P_:TSingle3D ) :TSingle3D;
+       function UnitorTo( const P_:TSingle3D ) :TSingle3D;
      end;
 
      TSinglePos3D = TSingle3D;
@@ -90,6 +93,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function IdentityX :TDouble3D; inline; static;
        class function IdentityY :TDouble3D; inline; static;
        class function IdentityZ :TDouble3D; inline; static;
+       ///// メソッド
+       function VectorTo( const P_:TDouble3D ) :TDouble3D;
+       function UnitorTo( const P_:TDouble3D ) :TDouble3D;
      end;
 
      TDoublePos3D = TDouble3D;
@@ -181,11 +187,11 @@ function DotProduct( const A_,B_:TDoubleVec3D ) :Double; inline; overload;
 function CrossProduct( const A_,B_:TSingleVec3D ) :TSingleVec3D; inline; overload;
 function CrossProduct( const A_,B_:TDoubleVec3D ) :TDoubleVec3D; inline; overload;
 
+function Distanc2( const A_,B_:TSinglePos3D ) :Single; inline; overload;
+function Distanc2( const A_,B_:TDoublePos3D ) :Double; inline; overload;
+
 function Distance( const A_,B_:TSinglePos3D ) :Single; inline; overload;
 function Distance( const A_,B_:TDoublePos3D ) :Double; inline; overload;
-
-function TriNormal( const P1_,P2_,P3_:TSinglePos3D ) :TSingleVec3D; inline; overload;
-function TriNormal( const P1_,P2_,P3_:TDoublePos3D ) :TDoubleVec3D; inline; overload;
 
 function Ave( const A_,B_:TSingle3D ) :TSingle3D; inline; overload;
 function Ave( const A_,B_:TDouble3D ) :TDouble3D; inline; overload;
@@ -377,6 +383,18 @@ begin
      end;
 end;
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TSingle3D.VectorTo( const P_:TSingle3D ) :TSingle3D;
+begin
+     Result := P_ - Self;
+end;
+
+function TSingle3D.UnitorTo( const P_:TSingle3D ) :TSingle3D;
+begin
+     Result := VectorTo( P_ ).Unitor;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDouble3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -556,6 +574,18 @@ begin
           Y := 0;
           Z := 1;
      end;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TDouble3D.VectorTo( const P_:TDouble3D ) :TDouble3D;
+begin
+     Result := P_ - Self;
+end;
+
+function TDouble3D.UnitorTo( const P_:TDouble3D ) :TDouble3D;
+begin
+     Result := VectorTo( P_ ).Unitor;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleSiz3D
@@ -874,26 +904,26 @@ end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-function Distance( const A_,B_:TSinglePos3D ) :Single;
+function Distanc2( const A_,B_:TSinglePos3D ) :Single;
 begin
-     Result := ( B_ - A_ ).Size;
+     Result := A_.VectorTo( B_ ).Siz2;
 end;
 
-function Distance( const A_,B_:TDoublePos3D ) :Double;
+function Distanc2( const A_,B_:TDoublePos3D ) :Double;
 begin
-     Result := ( B_ - A_ ).Size;
+     Result := A_.VectorTo( B_ ).Siz2;
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-function TriNormal( const P1_,P2_,P3_:TSinglePos3D ) :TSingleVec3D;
+function Distance( const A_,B_:TSinglePos3D ) :Single;
 begin
-     Result := CrossProduct( P3_ - P2_, P1_ - P2_ );
+     Result := Roo2( Distanc2( A_, B_ ) );
 end;
 
-function TriNormal( const P1_,P2_,P3_:TDoublePos3D ) :TDoubleVec3D;
+function Distance( const A_,B_:TDoublePos3D ) :Double;
 begin
-     Result := CrossProduct( P3_ - P2_, P1_ - P2_ );
+     Result := Roo2( Distanc2( A_, B_ ) );
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
