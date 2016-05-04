@@ -14,6 +14,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TTreeNode = class( TNode )
      private
+       _UpdateL :Byte;
+       ///// メソッド
        procedure AddChild( const Child_:TTreeNode );
        procedure DelChild( const I_:Integer );
        procedure ReduceChildren;
@@ -24,8 +26,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// アクセス
        function GetParent :TTreeNode;
        procedure SetParent( const Parent_:TTreeNode );
-       function GetChildren( const I_:Integer ) :TTreeNode;
        function GetOrder :Integer;
+       function GetChildren( const I_:Integer ) :TTreeNode;
        procedure SetChildren( const I_:Integer; const Child_:TTreeNode );
      public
        constructor Create; overload;
@@ -33,11 +35,13 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure BeforeDestruction; override;
        destructor Destroy; override;
        ///// プロパティ
-       property Parent                       :TTreeNode read GetParent     write SetParent  ;
-       property Order                        :Integer   read GetOrder                       ;
-       property Children[ const I_:Integer ] :TTreeNode read GetChildren   write SetChildren;
-       property ChildrenN                    :Integer   read   _ChildrenN                   ;
+       property Parent                       :TTreeNode read GetParent   write SetParent  ;
+       property Order                        :Integer   read GetOrder                     ;
+       property Children[ const I_:Integer ] :TTreeNode read GetChildren write SetChildren; default;
+       property ChildrenN                    :Integer   read _ChildrenN                   ;
        ///// メソッド
+       procedure BeginUpdate;
+       procedure EndUpdate;
        procedure DeleteChildren;
      end;
 
@@ -74,7 +78,7 @@ begin
 
      _Children[ I_ ] := nil;
 
-     ReduceChildren;
+     if _UpdateL = 0 then ReduceChildren;
 end;
 
 procedure TTreeNode.ReduceChildren;
@@ -177,11 +181,27 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
+procedure TTreeNode.BeginUpdate;
+begin
+     Inc( _UpdateL );
+end;
+
+procedure TTreeNode.EndUpdate;
+begin
+     Dec( _UpdateL );
+
+     if _UpdateL = 0 then ReduceChildren;
+end;
+
 procedure TTreeNode.DeleteChildren;
 var
-   N :Integer;
+   C :TTreeNode;
 begin
-     for N := 1 to _ChildrenN do _Children[ 0 ].Free;
+     BeginUpdate;
+
+     for C in _Children do C.Free;
+
+     EndUpdate;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
