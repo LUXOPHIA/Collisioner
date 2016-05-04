@@ -37,6 +37,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
+function HeronAre2( const L1_,L2_,L3_:Single ) :Single; overload;
+function HeronAre2( const L1_,L2_,L3_:Double ) :Double; overload;
+
+function HeronArea( const L1_,L2_,L3_:Single ) :Single; overload;
+function HeronArea( const L1_,L2_,L3_:Double ) :Double; overload;
+
 implementation //############################################################### ■
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
@@ -76,6 +82,36 @@ end;
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
+
+function HeronAre2( const L1_,L2_,L3_:Single ) :Single;
+var
+   S :Single;
+begin
+     S := ( L1_ + L2_ + L3_ ) / 2;
+
+     Result := S * ( S - L1_ ) * ( S - L2_ ) * ( S - L3_ );
+end;
+
+function HeronAre2( const L1_,L2_,L3_:Double ) :Double;
+var
+   S :Double;
+begin
+     S := ( L1_ + L2_ + L3_ ) / 2;
+
+     Result := S * ( S - L1_ ) * ( S - L2_ ) * ( S - L3_ );
+end;
+
+////////////////////////////////////////////////////////////////////////////////
+
+function HeronArea( const L1_,L2_,L3_:Single ) :Single;
+begin
+     Result := Roo2( HeronAre2( L1_, L2_, L3_ ) );
+end;
+
+function HeronArea( const L1_,L2_,L3_:Double ) :Double;
+begin
+     Result := Roo2( HeronAre2( L1_, L2_, L3_ ) );
+end;
 
 //############################################################################## □
 
