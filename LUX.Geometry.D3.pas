@@ -15,6 +15,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        Center :TSingle3D;
        Radiu2 :Single;
+       /////
+       constructor Create( const P1_,P2_,P3_,P4_:TSingle3D );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleSpher2
@@ -24,6 +26,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        Center :TDouble3D;
        Radiu2 :Double;
+       /////
+       constructor Create( const P1_,P2_,P3_,P4_:TDouble3D );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleSphere
@@ -33,6 +37,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        Center :TSingle3D;
        Radius :Single;
+       /////
+       constructor Create( const P1_,P2_,P3_,P4_:TSingle3D );
        ///// 型変換
        class operator Implicit( const Spher2_:TSingleSpher2 ) :TSingleSphere;
        class operator Implicit( const Sphere_:TSingleSphere ) :TSingleSpher2;
@@ -45,6 +51,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        Center :TDouble3D;
        Radius :Double;
+       /////
+       constructor Create( const P1_,P2_,P3_,P4_:TDouble3D );
        ///// 型変換
        class operator Implicit( const Spher2_:TDoubleSpher2 ) :TDoubleSphere;
        class operator Implicit( const Sphere_:TDoubleSphere ) :TDoubleSpher2;
@@ -58,18 +66,25 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
-function CircumscribedCenter( const P1_,P2_,P3_,P4_:TSingle3D ) :TSingle3D; overload;
-function CircumscribedCenter( const P1_,P2_,P3_,P4_:TDouble3D ) :TDouble3D; overload;
+function TriNormal( const P1_,P2_,P3_:TSinglePos3D ) :TSingleVec3D; inline; overload;
+function TriNormal( const P1_,P2_,P3_:TDoublePos3D ) :TDoubleVec3D; inline; overload;
 
-function CircumscribedSpher2( const P1_,P2_,P3_,P4_:TSingle3D ) :TSingleSpher2; overload;
-function CircumscribedSpher2( const P1_,P2_,P3_,P4_:TDouble3D ) :TDoubleSpher2; overload;
+function CircumCenter( const P0_,P1_,P2_,P3_:TSingle3D ) :TSingle3D; overload;
+function CircumCenter( const P0_,P1_,P2_,P3_:TDouble3D ) :TDouble3D; overload;
 
-function CircumscribedSphere( const P1_,P2_,P3_,P4_:TSingle3D ) :TSingleSphere; overload;
-function CircumscribedSphere( const P1_,P2_,P3_,P4_:TDouble3D ) :TDoubleSphere; overload;
+function HeronVolum2( const P0_,P1_,P2_,P3_:TSingle3D ) :Single; overload;
+function HeronVolum2( const P0_,P1_,P2_,P3_:TDouble3D ) :Double; overload;
+
+function HeronVolume( const P0_,P1_,P2_,P3_:TSingle3D ) :Single; overload;
+function HeronVolume( const P0_,P1_,P2_,P3_:TDouble3D ) :Double; overload;
+
+function MarginCorner( const V0_,V1_:TSingleVec3D; const Margin_:Single ) :TSingleVec3D; overload;
+function MarginCorner( const V0_,V1_:TDoubleVec3D; const Margin_:Double ) :TDoubleVec3D; overload;
+
+function MarginCorner( const P0_,P1_,P2_:TSinglePos3D; const Margin_:Single ) :TSinglePos3D; overload;
+function MarginCorner( const P0_,P1_,P2_:TDoublePos3D; const Margin_:Double ) :TDoublePos3D; overload;
 
 implementation //############################################################### ■
-
-uses LUX.Matrix.L3;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -79,17 +94,34 @@ uses LUX.Matrix.L3;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
+constructor TSingleSpher2.Create( const P1_,P2_,P3_,P4_:TSingle3D );
+begin
+     Center := CircumCenter( P1_, P2_, P3_, P4_ );
+     Radiu2 := Distanc2( Center, P1_ );
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleSpher2
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
+constructor TDoubleSpher2.Create( const P1_,P2_,P3_,P4_:TDouble3D );
+begin
+     Center := CircumCenter( P1_, P2_, P3_, P4_ );
+     Radiu2 := Distanc2( Center, P1_ );
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleSphere
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TSingleSphere.Create( const P1_,P2_,P3_,P4_:TSingle3D );
+begin
+     Self := TSingleSpher2.Create( P1_, P2_, P3_, P4_ );
+end;
 
 ///////////////////////////////////////////////////////////////////////// 型変換
 
@@ -99,7 +131,7 @@ begin
      begin
           Center :=       Spher2_.Center  ;
           Radius := Roo2( Spher2_.Radiu2 );
-     end
+     end;
 end;
 
 class operator TSingleSphere.Implicit( const Sphere_:TSingleSphere ) :TSingleSpher2;
@@ -108,8 +140,7 @@ begin
      begin
           Center :=       Sphere_.Center  ;
           Radiu2 := Pow2( Sphere_.Radius );
-     end
-
+     end;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleSphere
@@ -117,6 +148,11 @@ end;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TDoubleSphere.Create( const P1_,P2_,P3_,P4_:TDouble3D );
+begin
+     Self := TDoubleSpher2.Create( P1_, P2_, P3_, P4_ );
+end;
 
 ///////////////////////////////////////////////////////////////////////// 型変換
 
@@ -126,7 +162,7 @@ begin
      begin
           Center :=       Spher2_.Center  ;
           Radius := Roo2( Spher2_.Radiu2 );
-     end
+     end;
 end;
 
 class operator TDoubleSphere.Implicit( const Sphere_:TDoubleSphere ) :TDoubleSpher2;
@@ -135,15 +171,79 @@ begin
      begin
           Center :=       Sphere_.Center  ;
           Radiu2 := Pow2( Sphere_.Radius );
-     end
-
+     end;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
-function CircumscribedCenter( const P1_,P2_,P3_,P4_:TSingle3D ) :TSingle3D;
+function TriNormal( const P1_,P2_,P3_:TSinglePos3D ) :TSingleVec3D;
+begin
+     Result := CrossProduct( P3_ - P2_, P1_ - P2_ ).Unitor;
+end;
+
+function TriNormal( const P1_,P2_,P3_:TDoublePos3D ) :TDoubleVec3D;
+begin
+     Result := CrossProduct( P3_ - P2_, P1_ - P2_ ).Unitor;
+end;
+
+////////////////////////////////////////////////////////////////////////////////
+
+function CircumCenter( const P0_,P1_,P2_,P3_:TSingle3D ) :TSingle3D;
+var
+   L01, L23, LL1,
+   L02, L31, LL2,
+   L03, L12, LL3,
+   W0, W1, W2, W3 :Single;
+begin
+     L01 := Distanc2( P0_, P1_ );  L23 := Distanc2( P2_, P3_ );
+     L02 := Distanc2( P0_, P2_ );  L31 := Distanc2( P3_, P1_ );
+     L03 := Distanc2( P0_, P3_ );  L12 := Distanc2( P1_, P2_ );
+
+     LL1 := L01 * L23;
+     LL2 := L02 * L31;
+     LL3 := L03 * L12;
+
+     W0 := LL1 * ( L31 + L12 - L23 ) + LL2 * ( L12 + L23 - L31 ) + LL3 * ( L23 + L31 - L12 ) - 2 * L23 * L31 * L12;
+     W1 := LL1 * ( L02 + L03 - L23 ) + LL2 * ( L03 + L23 - L02 ) + LL3 * ( L23 + L02 - L03 ) - 2 * L23 * L02 * L03;
+     W2 := LL1 * ( L03 + L31 - L01 ) + LL2 * ( L03 + L01 - L31 ) + LL3 * ( L01 + L31 - L03 ) - 2 * L01 * L31 * L03;
+     W3 := LL1 * ( L02 + L12 - L01 ) + LL2 * ( L12 + L01 - L02 ) + LL3 * ( L01 + L02 - L12 ) - 2 * L01 * L02 * L12;
+
+     { W0+W1+W2+W3 = 8 * Pow2( 6 * HeronVolume( P0, P1, P2, P3 ) ) }
+
+     Result := ( W0 * P0_ + W1 * P1_ + W2 * P2_ + W3 * P3_ )
+             / ( W0       + W1       + W2       + W3       );
+end;
+
+function CircumCenter( const P0_,P1_,P2_,P3_:TDouble3D ) :TDouble3D;
+var
+   L01, L23, LL1,
+   L02, L31, LL2,
+   L03, L12, LL3,
+   W0, W1, W2, W3 :Double;
+begin
+     L01 := Distanc2( P0_, P1_ );  L23 := Distanc2( P2_, P3_ );
+     L02 := Distanc2( P0_, P2_ );  L31 := Distanc2( P3_, P1_ );
+     L03 := Distanc2( P0_, P3_ );  L12 := Distanc2( P1_, P2_ );
+
+     LL1 := L01 * L23;
+     LL2 := L02 * L31;
+     LL3 := L03 * L12;
+
+     W0 := LL1 * ( L31 + L12 - L23 ) + LL2 * ( L12 + L23 - L31 ) + LL3 * ( L23 + L31 - L12 ) - 2 * L23 * L31 * L12;
+     W1 := LL1 * ( L02 + L03 - L23 ) + LL2 * ( L03 + L23 - L02 ) + LL3 * ( L23 + L02 - L03 ) - 2 * L23 * L02 * L03;
+     W2 := LL1 * ( L03 + L31 - L01 ) + LL2 * ( L03 + L01 - L31 ) + LL3 * ( L01 + L31 - L03 ) - 2 * L01 * L31 * L03;
+     W3 := LL1 * ( L02 + L12 - L01 ) + LL2 * ( L12 + L01 - L02 ) + LL3 * ( L01 + L02 - L12 ) - 2 * L01 * L02 * L12;
+
+     { W0+W1+W2+W3 = 8 * Pow2( 6 * HeronVolume( P0, P1, P2, P3 ) ) }
+
+     Result := ( W0 * P0_ + W1 * P1_ + W2 * P2_ + W3 * P3_ )
+             / ( W0       + W1       + W2       + W3       );
+end;
+
+{
+function CircumCenter( const P1_,P2_,P3_,P4_:TSingle3D ) :TSingle3D;
 var
    L1, L2, L3, L4 :Single;
    M :TSingleM3;
@@ -168,10 +268,10 @@ begin
           Z := L4 - L3;
      end;
 
-     Result := M.Inverse * V / 2
+     Result := M.Inverse * V / 2;
 end;
 
-function CircumscribedCenter( const P1_,P2_,P3_,P4_:TDouble3D ) :TDouble3D;
+function CircumCenter( const P1_,P2_,P3_,P4_:TDouble3D ) :TDouble3D;
 var
    L1, L2, L3, L4 :Double;
    M :TDoubleM3;
@@ -196,47 +296,84 @@ begin
           Z := L4 - L3;
      end;
 
-     Result := M.Inverse * V / 2
+     Result := M.Inverse * V / 2;
+end;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+function HeronVolum2( const P0_,P1_,P2_,P3_:TSingle3D ) :Single;
+var
+   L01, L23, LL1,
+   L02, L31, LL2,
+   L03, L12, LL3 :Single;
+begin
+     L01 := Distanc2( P0_, P1_ );  L23 := Distanc2( P2_, P3_ );
+     L02 := Distanc2( P0_, P2_ );  L31 := Distanc2( P3_, P1_ );
+     L03 := Distanc2( P0_, P3_ );  L12 := Distanc2( P1_, P2_ );
+
+     LL1 := L01 + L23;
+     LL2 := L02 + L31;
+     LL3 := L03 + L12;
+
+     Result := ( L23 * ( L01 * ( LL2 + LL3 - LL1 ) - L02 * L03 )
+               + L31 * ( L02 * ( LL3 + LL1 - LL2 ) - L03 * L01 )
+               + L12 * ( L03 * ( LL1 + LL2 - LL3 ) - L01 * L02 )
+               - L23 * L31 * L12 ) / 144;
+end;
+
+function HeronVolum2( const P0_,P1_,P2_,P3_:TDouble3D ) :Double;
+var
+   L01, L23, LL1,
+   L02, L31, LL2,
+   L03, L12, LL3 :Double;
+begin
+     L01 := Distanc2( P0_, P1_ );  L23 := Distanc2( P2_, P3_ );
+     L02 := Distanc2( P0_, P2_ );  L31 := Distanc2( P3_, P1_ );
+     L03 := Distanc2( P0_, P3_ );  L12 := Distanc2( P1_, P2_ );
+
+     LL1 := L01 + L23;
+     LL2 := L02 + L31;
+     LL3 := L03 + L12;
+
+     Result := ( L23 * ( L01 * ( LL2 + LL3 - LL1 ) - L02 * L03 )
+               + L31 * ( L02 * ( LL3 + LL1 - LL2 ) - L03 * L01 )
+               + L12 * ( L03 * ( LL1 + LL2 - LL3 ) - L01 * L02 )
+               - L23 * L31 * L12 ) / 144;
+end;
+
+function HeronVolume( const P0_,P1_,P2_,P3_:TSingle3D ) :Single;
+begin
+     Result := Roo2( HeronVolum2( P0_, P1_, P2_, P3_ ) );
+end;
+
+function HeronVolume( const P0_,P1_,P2_,P3_:TDouble3D ) :Double;
+begin
+     Result := Roo2( HeronVolum2( P0_, P1_, P2_, P3_ ) );
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-function CircumscribedSpher2( const P1_,P2_,P3_,P4_:TSingle3D ) :TSingleSpher2;
+function MarginCorner( const V0_,V1_:TSingleVec3D; const Margin_:Single ) :TSingleVec3D;
 begin
-     with Result do
-     begin
-          Center := CircumscribedCenter( P1_, P2_, P3_, P4_ );
-
-          Radiu2 := ( ( P1_ - Center ).Siz2
-                    + ( P2_ - Center ).Siz2
-                    + ( P3_ - Center ).Siz2
-                    + ( P4_ - Center ).Siz2 ) / 4;
-     end
+     Result := ( Margin_ / Roo2( 1 - Pow2( DotProduct( V0_, V1_ ) ) ) ) * ( V0_ + V1_ );
 end;
 
-function CircumscribedSpher2( const P1_,P2_,P3_,P4_:TDouble3D ) :TDoubleSpher2;
+function MarginCorner( const V0_,V1_:TDoubleVec3D; const Margin_:Double ) :TDoubleVec3D;
 begin
-     with Result do
-     begin
-          Center := CircumscribedCenter( P1_, P2_, P3_, P4_ );
-
-          Radiu2 := ( ( P1_ - Center ).Siz2
-                    + ( P2_ - Center ).Siz2
-                    + ( P3_ - Center ).Siz2
-                    + ( P4_ - Center ).Siz2 ) / 4;
-     end
+     Result := ( Margin_ / Roo2( 1 - Pow2( DotProduct( V0_, V1_ ) ) ) ) * ( V0_ + V1_ );
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-function CircumscribedSphere( const P1_,P2_,P3_,P4_:TSingle3D ) :TSingleSphere;
+function MarginCorner( const P0_,P1_,P2_:TSingleVec3D; const Margin_:Single ) :TSingleVec3D;
 begin
-     Result := CircumscribedSpher2( P1_, P2_, P3_, P4_ );
+     Result := P1_ + MarginCorner( P1_.UnitorTo( P0_ ), P1_.UnitorTo( P2_ ), Margin_ );
 end;
 
-function CircumscribedSphere( const P1_,P2_,P3_,P4_:TDouble3D ) :TDoubleSphere;
+function MarginCorner( const P0_,P1_,P2_:TDoubleVec3D; const Margin_:Double ) :TDoubleVec3D;
 begin
-     Result := CircumscribedSpher2( P1_, P2_, P3_, P4_ );
+     Result := P1_ + MarginCorner( P1_.UnitorTo( P0_ ), P1_.UnitorTo( P2_ ), Margin_ );
 end;
 
 //############################################################################## □
