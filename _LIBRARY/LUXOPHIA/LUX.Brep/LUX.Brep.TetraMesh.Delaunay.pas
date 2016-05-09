@@ -156,7 +156,7 @@ end;
 
 function TDelaunay3D.GetCellsN :Integer;
 begin
-     Result := _InnerCells.ChildrenN;
+     Result := _InnerCells.ChildsN;
 end;
 
 procedure TDelaunay3D.Init3;
@@ -311,13 +311,13 @@ begin
 
           if I < 0 then
           begin
-               Parent := _InnerCells;
+               Paren := _InnerCells;
 
                _CS2 := CircumSpher2;
           end
           else
           begin
-               Parent := _OuterCells;
+               Paren := _OuterCells;
 
                with _CS2 do
                begin
@@ -380,9 +380,9 @@ var
 begin
      with _OuterCells do
      begin
-          for I := 0 to ChildrenN-1 do
+          for I := 0 to ChildsN-1 do
           begin
-               Result := TDelaCell( Children[ I ] );
+               Result := TDelaCell( Childs[ I ] );
 
                if Result.HitOK( Pos_ ) then Exit;
           end;
@@ -390,9 +390,9 @@ begin
 
      with _InnerCells do
      begin
-          for I := 0 to ChildrenN-1 do
+          for I := 0 to ChildsN-1 do
           begin
-               Result := TDelaCell( Children[ I ] );
+               Result := TDelaCell( Childs[ I ] );
 
                if Result.HitOK( Pos_ ) then Exit;
           end;
@@ -595,7 +595,7 @@ begin
      Connect( J2, J3, J0, J1 );
      Connect( J3, J2, J1, J0 );
                 
-     _TEMP.DeleteChildren;
+     _TEMP.DeleteChilds;
 end;
 
 {
@@ -776,7 +776,7 @@ begin
      Connect( J2, J3, J0, J1 );
      Connect( J3, J2, J1, J0 );
 
-     _TEMP.DeleteChildren;
+     _TEMP.DeleteChilds;
 
      Result := P0;
 end;
