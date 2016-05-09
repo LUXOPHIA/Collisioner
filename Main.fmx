@@ -1,0 +1,107 @@
+object Form1: TForm1
+  Left = 0
+  Top = 0
+  Caption = 'Delaunay3D'
+  ClientHeight = 500
+  ClientWidth = 780
+  Position = ScreenCenter
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  DesignerMasterStyle = 0
+  object Viewport3D1: TViewport3D
+    Align = Client
+    Camera = Camera1
+    Color = claDimgray
+    Margins.Left = 10.000000000000000000
+    Margins.Top = 10.000000000000000000
+    Margins.Right = 10.000000000000000000
+    Margins.Bottom = 10.000000000000000000
+    Size.Width = 640.000000000000000000
+    Size.Height = 480.000000000000000000
+    Size.PlatformDefault = False
+    UsingDesignCamera = False
+    OnMouseDown = Viewport3D1MouseDown
+    OnMouseMove = Viewport3D1MouseMove
+    OnMouseUp = Viewport3D1MouseUp
+    object Dummy1: TDummy
+      Width = 1.000000000000000000
+      Height = 1.000000000000000000
+      Depth = 1.000000000000000000
+      object Dummy2: TDummy
+        RotationAngle.X = 315.000000000000000000
+        Width = 1.000000000000000000
+        Height = 1.000000000000000000
+        Depth = 1.000000000000000000
+        Quanternion = '(0.382683485746384,0,0,-0.923879504203796)'
+        object Camera1: TCamera
+          AngleOfView = 45.000000000000000000
+          Position.Z = -15.000000000000000000
+          Width = 1.000000000000000000
+          Height = 1.000000000000000000
+          Depth = 1.000000000000000000
+        end
+        object Light1: TLight
+          Color = claWhite
+          LightType = Directional
+          SpotCutOff = 180.000000000000000000
+          RotationAngle.X = 315.000000000000000000
+          Width = 1.000000000000000000
+          Height = 1.000000000000000000
+          Depth = 1.000000000000000000
+          Quanternion = '(0.382683485746384,0,0,-0.923879504203796)'
+        end
+      end
+    end
+    object Grid3D1: TGrid3D
+      Marks = 4.000000000000000000
+      Frequency = 1.000000000000000000
+      LineColor = x50505050
+      RotationAngle.X = 270.000000000000000000
+      Width = 100.000000000000000000
+      Height = 100.000000000000000000
+      Depth = 0.001000000047497451
+      HitTest = False
+      Quanternion = '(0.70710676908493,0,0,-0.70710676908493)'
+    end
+    object LightMaterialSourceD: TLightMaterialSource
+      Diffuse = xFFD97171
+      Ambient = xFF202020
+      Emissive = claNull
+      Specular = claNull
+      Shininess = 30
+      Left = 70
+      Top = 25
+    end
+  end
+  object Panel1: TPanel
+    Align = Right
+    Position.X = 660.000000000000000000
+    Size.Width = 120.000000000000000000
+    Size.Height = 500.000000000000000000
+    Size.PlatformDefault = False
+    StyleLookup = 'pushpanel'
+    TabOrder = 3
+    object Button1: TButton
+      Position.X = 10.000000000000000000
+      Position.Y = 10.000000000000000000
+      Size.Width = 100.000000000000000000
+      Size.Height = 50.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      Text = #36861#21152
+      OnClick = Button1Click
+    end
+  end
+  object LightMaterialSourceV: TLightMaterialSource
+    Diffuse = xFF8585FF
+    Ambient = xFF202020
+    Emissive = claNull
+    Specular = claNull
+    Shininess = 30
+    Left = 565
+    Top = 25
+  end
+end
