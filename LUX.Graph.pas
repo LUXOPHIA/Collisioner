@@ -18,8 +18,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        /////
        constructor Create( const o_:_TYPE_; const i_:Integer );
        //// 型変換
-       class operator Implicit( const o_:_TYPE_ ) :TNodeLink<_TYPE_>;
-       class operator Implicit( const o_:TNodeLink<_TYPE_> ) :_TYPE_;
+       class operator Implicit( const Node_:_TYPE_ ) :TNodeLink<_TYPE_>;
+       class operator Implicit( const Link_:TNodeLink<_TYPE_> ) :_TYPE_;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -80,18 +80,18 @@ end;
 
 ///////////////////////////////////////////////////////////////////////// 型変換
 
-class operator TNodeLink<_TYPE_>.Implicit( const o_:_TYPE_ ) :TNodeLink<_TYPE_>;
+class operator TNodeLink<_TYPE_>.Implicit( const Node_:_TYPE_ ) :TNodeLink<_TYPE_>;
 begin
      with Result do
      begin
-          o := o_;
+          o := Node_;
           i := -1;
      end;
 end;
 
-class operator TNodeLink<_TYPE_>.Implicit( const o_:TNodeLink<_TYPE_> ) :_TYPE_;
+class operator TNodeLink<_TYPE_>.Implicit( const Link_:TNodeLink<_TYPE_> ) :_TYPE_;
 begin
-     Result := o_.o;
+     Result := Link_.o;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
