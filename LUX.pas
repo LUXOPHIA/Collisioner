@@ -61,6 +61,33 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const Pos_,Vec_:TVector3D );
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRangeArray<_TValue_>
+
+     TRangeArray<_TValue_> = record
+     private
+       _Values :TArray<_TValue_>;
+       _MinI   :Integer;
+       _MaxI   :Integer;
+       ///// アクセス
+       function GetValues( const I_:Integer ) :_TValue_;
+       procedure SetValues( const I_:Integer; const Value_:_TValue_ );
+       procedure SetMinI( const MinI_:Integer );
+       procedure SetMaxI( const MaxI_:Integer );
+       function GetCount :Integer;
+       ///// メソッド
+       procedure InitArray;
+     public
+       constructor Create( const MinI_,MaxI_:Integer );
+       ///// プロパティ
+       property Values[ const I_:Integer ] :_TValue_ read GetValues write SetValues; default;
+       property MinI                       :Integer  read   _MinI   write SetMinI  ;
+       property MaxI                       :Integer  read   _MaxI   write SetMaxI  ;
+       property Count                      :Integer  read GetCount                 ;
+       ///// メソッド
+       procedure SetRange( const I_:Integer ); overload;
+       procedure SetRange( const MinI_,MaxI_:Integer ); overload;
+     end;
+
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HCanvas
@@ -271,6 +298,70 @@ constructor TRay3D.Create( const Pos_,Vec_:TVector3D );
 begin
      Pos := Pos_;
      Vec := Vec_;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRangeArray<_TValue_>
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TRangeArray<_TValue_>.GetValues( const I_:Integer ) :_TValue_;
+begin
+     Result := _Values[ I_ - _MinI ];
+end;
+
+procedure TRangeArray<_TValue_>.SetValues( const I_:Integer; const Value_:_TValue_ );
+begin
+     _Values[ I_ - _MinI ] := Value_;
+end;
+
+procedure TRangeArray<_TValue_>.SetMinI( const MinI_:Integer );
+begin
+     _MinI := MinI_;
+
+     InitArray;
+end;
+
+procedure TRangeArray<_TValue_>.SetMaxI( const MaxI_:Integer );
+begin
+     _MaxI := MaxI_;
+
+     InitArray;
+end;
+
+function TRangeArray<_TValue_>.GetCount :Integer;
+begin
+     Result := _MaxI - _MinI + 1;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TRangeArray<_TValue_>.InitArray;
+begin
+     SetLength( _Values, GetCount );
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TRangeArray<_TValue_>.Create( const MinI_,MaxI_:Integer );
+begin
+     SetRange( MinI_, MaxI_ );
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TRangeArray<_TValue_>.SetRange( const I_:Integer );
+begin
+     SetRange( I_, I_ );
+end;
+
+procedure TRangeArray<_TValue_>.SetRange( const MinI_,MaxI_:Integer );
+begin
+     _MinI := MinI_;
+     _MaxI := MaxI_;
+
+     InitArray;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
