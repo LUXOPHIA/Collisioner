@@ -118,7 +118,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        ///// プロパティ
        property AbsoluteMatrix :TMatrix3D read GetAbsolMatrix write SetAbsoluteMatrix;
-       property LocalMatrix    :TMatrix3D read GetLocalMatrix write SetLocalMatrix;
+       property LocalMatrix    :TMatrix3D read GetLocalMatrix write SetLocalMatrix   ;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HCustomMesh
@@ -155,6 +155,8 @@ const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
       P2i = Pi / 2;
       P3i = Pi / 3;
       P4i = Pi / 4;
+
+      CRLF = #13#10;
 
 //var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【変数】
 
