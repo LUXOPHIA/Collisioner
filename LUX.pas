@@ -108,7 +108,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        ///// アクセス
-       function GetAbsolMatrix :TMatrix3D; inline;
+       function GetAbsolMatrix :TMatrix3D;
        procedure SetAbsoluteMatrix( const AbsoluteMatrix_:TMatrix3D ); virtual;
        function GetLocalMatrix :TMatrix3D; virtual;
        procedure SetLocalMatrix( const LocalMatrix_:TMatrix3D ); virtual;
