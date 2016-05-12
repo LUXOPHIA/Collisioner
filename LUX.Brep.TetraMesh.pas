@@ -295,7 +295,7 @@ end;
 
 function TTetraModel.GetPoinsN :Integer;
 begin
-     Result := _Poins.ChildrenN;
+     Result := _Poins.ChildsN;
 end;
 
 function TTetraModel.Get_Cells( const I_:Integer ) :TTetraCell;
@@ -305,7 +305,7 @@ end;
 
 function TTetraModel.GetCellsN :Integer;
 begin
-     Result := _Cells.ChildrenN;
+     Result := _Cells.ChildsN;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
