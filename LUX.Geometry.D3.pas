@@ -84,6 +84,15 @@ function MarginCorner( const V0_,V1_:TDoubleVec3D; const Margin_:Double ) :TDoub
 function MarginCorner( const P0_,P1_,P2_:TSinglePos3D; const Margin_:Single ) :TSinglePos3D; overload;
 function MarginCorner( const P0_,P1_,P2_:TDoublePos3D; const Margin_:Double ) :TDoublePos3D; overload;
 
+function Barycenter( const P1_,P2_:TSingle3D ) :TSingle3D; overload;
+function Barycenter( const P1_,P2_:TDouble3D ) :TDouble3D; overload;
+
+function Barycenter( const P1_,P2_,P3_:TSingle3D ) :TSingle3D; overload;
+function Barycenter( const P1_,P2_,P3_:TDouble3D ) :TDouble3D; overload;
+
+function Barycenter( const P0_,P1_,P2_,P3_:TSingle3D ) :TSingle3D; overload;
+function Barycenter( const P0_,P1_,P2_,P3_:TDouble3D ) :TDouble3D; overload;
+
 implementation //############################################################### ■
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
@@ -374,6 +383,38 @@ end;
 function MarginCorner( const P0_,P1_,P2_:TDoubleVec3D; const Margin_:Double ) :TDoubleVec3D;
 begin
      Result := P1_ + MarginCorner( P1_.UnitorTo( P0_ ), P1_.UnitorTo( P2_ ), Margin_ );
+end;
+
+////////////////////////////////////////////////////////////////////////////////
+
+function Barycenter( const P1_,P2_:TSingle3D ) :TSingle3D;
+begin
+     Result := Ave( P1_, P2_ );
+end;
+
+function Barycenter( const P1_,P2_:TDouble3D ) :TDouble3D;
+begin
+     Result := Ave( P1_, P2_ );
+end;
+
+function Barycenter( const P1_,P2_,P3_:TSingle3D ) :TSingle3D;
+begin
+     Result := Ave( P1_, P2_, P3_ );
+end;
+
+function Barycenter( const P1_,P2_,P3_:TDouble3D ) :TDouble3D;
+begin
+     Result := Ave( P1_, P2_, P3_ );
+end;
+
+function Barycenter( const P0_,P1_,P2_,P3_:TSingle3D ) :TSingle3D;
+begin
+     Result := Ave( P0_, P1_, P2_, P3_ );
+end;
+
+function Barycenter( const P0_,P1_,P2_,P3_:TDouble3D ) :TDouble3D;
+begin
+     Result := Ave( P0_, P1_, P2_, P3_ );
 end;
 
 //############################################################################## □
