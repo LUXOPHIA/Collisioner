@@ -50,6 +50,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        function VectorTo( const P_:TSingle3D ) :TSingle3D;
        function UnitorTo( const P_:TSingle3D ) :TSingle3D;
+       class function RandG :TSingle3D; inline; static;
      end;
 
      TSinglePos3D = TSingle3D;
@@ -96,6 +97,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        function VectorTo( const P_:TDouble3D ) :TDouble3D;
        function UnitorTo( const P_:TDouble3D ) :TDouble3D;
+       class function RandG :TDouble3D; inline; static;
      end;
 
      TDoublePos3D = TDouble3D;
@@ -193,8 +195,14 @@ function Distanc2( const A_,B_:TDoublePos3D ) :Double; inline; overload;
 function Distance( const A_,B_:TSinglePos3D ) :Single; inline; overload;
 function Distance( const A_,B_:TDoublePos3D ) :Double; inline; overload;
 
-function Ave( const A_,B_:TSingle3D ) :TSingle3D; inline; overload;
-function Ave( const A_,B_:TDouble3D ) :TDouble3D; inline; overload;
+function Ave( const P1_,P2_:TSingle3D ) :TSingle3D; inline; overload;
+function Ave( const P1_,P2_:TDouble3D ) :TDouble3D; inline; overload;
+
+function Ave( const P1_,P2_,P3_:TSingle3D ) :TSingle3D; inline; overload;
+function Ave( const P1_,P2_,P3_:TDouble3D ) :TDouble3D; inline; overload;
+
+function Ave( const P1_,P2_,P3_,P4_:TSingle3D ) :TSingle3D; inline; overload;
+function Ave( const P1_,P2_,P3_,P4_:TDouble3D ) :TDouble3D; inline; overload;
 
 implementation //############################################################### ■
 
@@ -395,6 +403,16 @@ begin
      Result := VectorTo( P_ ).Unitor;
 end;
 
+class function TSingle3D.RandG :TSingle3D;
+begin
+     with Result do
+     begin
+          X := System.Math.RandG( 0, 1 );
+          Y := System.Math.RandG( 0, 1 );
+          Z := System.Math.RandG( 0, 1 );
+     end;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDouble3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -586,6 +604,16 @@ end;
 function TDouble3D.UnitorTo( const P_:TDouble3D ) :TDouble3D;
 begin
      Result := VectorTo( P_ ).Unitor;
+end;
+
+class function TDouble3D.RandG :TDouble3D;
+begin
+     with Result do
+     begin
+          X := System.Math.RandG( 0, 1 );
+          Y := System.Math.RandG( 0, 1 );
+          Z := System.Math.RandG( 0, 1 );
+     end;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleSiz3D
@@ -928,14 +956,34 @@ end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-function Ave( const A_,B_:TSingle3D ) :TSingle3D;
+function Ave( const P1_,P2_:TSingle3D ) :TSingle3D;
 begin
-     Result := ( A_ + B_ ) / 2;
+     Result := ( P1_ + P2_ ) / 2;
 end;
 
-function Ave( const A_,B_:TDouble3D ) :TDouble3D;
+function Ave( const P1_,P2_:TDouble3D ) :TDouble3D;
 begin
-     Result := ( A_ + B_ ) / 2;
+     Result := ( P1_ + P2_ ) / 2;
+end;
+
+function Ave( const P1_,P2_,P3_:TSingle3D ) :TSingle3D;
+begin
+     Result := ( P1_ + P2_ + P3_ ) / 3;
+end;
+
+function Ave( const P1_,P2_,P3_:TDouble3D ) :TDouble3D;
+begin
+     Result := ( P1_ + P2_ + P3_ ) / 3;
+end;
+
+function Ave( const P1_,P2_,P3_,P4_:TSingle3D ) :TSingle3D;
+begin
+     Result := ( P1_ + P2_ + P3_ + P4_ ) / 4;
+end;
+
+function Ave( const P1_,P2_,P3_,P4_:TDouble3D ) :TDouble3D;
+begin
+     Result := ( P1_ + P2_ + P3_ + P4_ ) / 4;
 end;
 
 //############################################################################## □
