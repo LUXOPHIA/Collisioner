@@ -254,7 +254,7 @@ var
          S,
          V0, V1, V2, V3,
          C01, C02, C03,
-         C23, C31, C13  :TSingle3D;
+         C23, C31, C13 :TSingle3D;
        end;
    T1 :record
          S,
