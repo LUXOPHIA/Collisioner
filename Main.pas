@@ -127,43 +127,9 @@ end;
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
-   N, K, I :Integer;
-   R :Single;
-   P :TSingle3D;
-label
-     HIT;
+   N :Integer;
 begin
-     N := 0;
-     K := 0;
-     R := 1;
-     while N < 100 do
-     begin
-          P := TSingle3D.Create( RandG( 0, 2 ), RandG( 0, 2 ), RandG( 0, 2 ) );
-
-          with _Delaunay3D do
-          begin
-               for I := 0 to PoinsN-1 do
-               begin
-                    if Distance( P, Poins[ I ].Position ) < R then
-                    begin
-                         Inc( K );
-
-                         if K = 10 then
-                         begin
-                              K := 0;
-
-                              R := R / 2;
-                         end;
-
-                         goto HIT;
-                    end;
-               end;
-
-               _Delaunay3D.AddPoin( P );  Inc( N );
-          end;
-
-          HIT:
-     end;
+     for N := 1 to 10 do _Delaunay3D.AddPoin( 2 * TSingle3D.RandG );
 
      _DelaEdges.MakeModel;
      _VoroEdges.MakeModel;
