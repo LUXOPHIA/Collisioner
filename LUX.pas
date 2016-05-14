@@ -29,8 +29,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      HMatrix3D = record helper for TMatrix3D
      private
        ///// アクセス
-       function GetTranslate :TPoint3D; inline;
-       procedure SetTranslate( const Translate_:TPoint3D ); inline;
+       function GetTranslate :TPoint3D;
+       procedure SetTranslate( const Translate_:TPoint3D );
      public
        ///// プロパティ
        property Translate :TPoint3D read GetTranslate write SetTranslate;
@@ -43,8 +43,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      HBitmapData = record helper for TBitmapData
      private
        ///// アクセス
-       function GetColor( const X_,Y_:Integer ) :TAlphaColor; inline;
-       procedure SetColor( const X_,Y_:Integer; const Color_:TAlphaColor ); inline;
+       function GetColor( const X_,Y_:Integer ) :TAlphaColor;
+       procedure SetColor( const X_,Y_:Integer; const Color_:TAlphaColor );
      public
        ///// プロパティ
        property Color[ const X_,Y_:Integer ] :TAlphaColor read GetColor write SetColor;
@@ -69,8 +69,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _MinI   :Integer;
        _MaxI   :Integer;
        ///// アクセス
-       function GetValues( const I_:Integer ) :_TValue_;
-       procedure SetValues( const I_:Integer; const Value_:_TValue_ );
+       function GetValues( I_:Integer ) :_TValue_;
+       procedure SetValues( I_:Integer; const Value_:_TValue_ );
        procedure SetMinI( const MinI_:Integer );
        procedure SetMaxI( const MaxI_:Integer );
        function GetCount :Integer;
@@ -79,13 +79,38 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        constructor Create( const MinI_,MaxI_:Integer );
        ///// プロパティ
-       property Values[ const I_:Integer ] :_TValue_ read GetValues write SetValues; default;
-       property MinI                       :Integer  read   _MinI   write SetMinI  ;
-       property MaxI                       :Integer  read   _MaxI   write SetMaxI  ;
-       property Count                      :Integer  read GetCount                 ;
+       property Values[ I_:Integer ] :_TValue_ read GetValues write SetValues; default;
+       property MinI                 :Integer  read   _MinI   write SetMinI  ;
+       property MaxI                 :Integer  read   _MaxI   write SetMaxI  ;
+       property Count                :Integer  read GetCount                 ;
        ///// メソッド
        procedure SetRange( const I_:Integer ); overload;
        procedure SetRange( const MinI_,MaxI_:Integer ); overload;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMarginArray<_TValue_>
+
+     TMarginArray<_TValue_> = record
+     private
+       _Values :TArray<_TValue_>;
+       _LowerN :Integer;
+       _Count  :Integer;
+       _UpperN :Integer;
+       ///// アクセス
+       function GetValues( I_:Integer ) :_TValue_;
+       procedure SetValues( I_:Integer; const Value_:_TValue_ );
+       procedure SetLowerN( const LowerN_:Integer );
+       procedure SetCount( const Count_:Integer );
+       procedure SetUpperN( const UpperN_:Integer );
+       ///// メソッド
+       procedure InitArray;
+     public
+       constructor Create( const LowerN_,Count_,UpperN_:Integer );
+       ///// プロパティ
+       property Values[ I_:Integer ] :_TValue_ read GetValues write SetValues; default;
+       property LowerN               :Integer  read   _LowerN write SetLowerN;
+       property Count                :Integer  read   _Count  write SetCount ;
+       property UpperN               :Integer  read   _UpperN write SetUpperN;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -113,7 +138,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetLocalMatrix :TMatrix3D; virtual;
        procedure SetLocalMatrix( const LocalMatrix_:TMatrix3D ); virtual;
        ///// メソッド
-       procedure RecalcFamilyAbsolute; inline;
+       procedure RecalcFamilyAbsolute;
        procedure RecalcChildrenAbsolute;
      public
        ///// プロパティ
@@ -127,7 +152,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        ///// アクセス
-       function GetMeshData :TMeshData; inline;
+       function GetMeshData :TMeshData;
      public
        ///// プロパティ
        property MeshData :TMeshData read GetMeshData;
@@ -308,14 +333,14 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TRangeArray<_TValue_>.GetValues( const I_:Integer ) :_TValue_;
+function TRangeArray<_TValue_>.GetValues( I_:Integer ) :_TValue_;
 begin
-     Result := _Values[ I_ - _MinI ];
+     Dec( I_, _MinI );  Result := _Values[ I_ ];
 end;
 
-procedure TRangeArray<_TValue_>.SetValues( const I_:Integer; const Value_:_TValue_ );
+procedure TRangeArray<_TValue_>.SetValues( I_:Integer; const Value_:_TValue_ );
 begin
-     _Values[ I_ - _MinI ] := Value_;
+     Dec( I_, _MinI );  _Values[ I_ ] := Value_;
 end;
 
 procedure TRangeArray<_TValue_>.SetMinI( const MinI_:Integer );
@@ -362,6 +387,61 @@ procedure TRangeArray<_TValue_>.SetRange( const MinI_,MaxI_:Integer );
 begin
      _MinI := MinI_;
      _MaxI := MaxI_;
+
+     InitArray;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMarginArray<_TValue_>
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TMarginArray<_TValue_>.GetValues( I_:Integer ) :_TValue_;
+begin
+     Inc( I_, _LowerN );  Result := _Values[ I_ ];
+end;
+
+procedure TMarginArray<_TValue_>.SetValues( I_:Integer; const Value_:_TValue_ );
+begin
+     Inc( I_, _LowerN );  _Values[ I_ ] := Value_;
+end;
+
+procedure TMarginArray<_TValue_>.SetLowerN( const LowerN_:Integer );
+begin
+     _LowerN := LowerN_;
+
+     InitArray;
+end;
+
+procedure TMarginArray<_TValue_>.SetCount( const Count_:Integer );
+begin
+     _Count := Count_;
+
+     InitArray;
+end;
+
+procedure TMarginArray<_TValue_>.SetUpperN( const UpperN_:Integer );
+begin
+     _UpperN := UpperN_;
+
+     InitArray;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TMarginArray<_TValue_>.InitArray;
+begin
+     SetLength( _Values, _LowerN + _Count + _UpperN );
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TMarginArray<_TValue_>.Create( const LowerN_,Count_,UpperN_:Integer );
+begin
+     _LowerN := LowerN_;
+     _Count  :=Count_ ;
+     _UpperN :=UpperN_;
 
      InitArray;
 end;
