@@ -72,6 +72,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetVoroVec( const I_:Byte ) :TSingle3D;
        function GetJoin( const K_,I_:Byte ) :Byte;
        function GetOpen :Shortint;
+       function GetBarycenter :TSingle3D;
      public
        ///// プロパティ
        property Poin[ const I_:Byte ]    :TTetraPoin    read GetPoin         write SetPoin;
@@ -86,6 +87,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property VoroVec[ const I_:Byte ] :TSingle3D     read GetVoroVec                   ;
        property Join[ const K_,I_:Byte ] :Byte          read GetJoin                      ;
        property Open                     :Shortint      read GetOpen                      ;
+       property Barycenter               :TSingle3D     read GetBarycenter                ;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTetraModel
@@ -278,6 +280,14 @@ begin
      end;
 
      Result := -1;
+end;
+
+function TTetraCell.GetBarycenter :TSingle3D;
+begin
+     Result := LUX.Geometry.D3.Barycenter( _Poin[ 0 ].Position,
+                                           _Poin[ 1 ].Position,
+                                           _Poin[ 2 ].Position,
+                                           _Poin[ 3 ].Position );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
