@@ -11,23 +11,23 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRender
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRayRender
 
-     TRender = class
+     TRayRender = class
      private
        _Stop :Boolean;
      protected
        _Pixels :TBricArray2D<TSingleRGBA>;
-       _Scene  :TWorld;
-       _Camera :TCamera;
+       _Scene  :TRayWorld;
+       _Camera :TRayCamera;
        ///// アクセス
      public
        constructor Create; overload;
        destructor Destroy; override;
        ///// プロパティ
        property Pixels :TBricArray2D<TSingleRGBA> read _Pixels              ;
-       property Scene  :TWorld                    read _Scene  write _Scene ;
-       property Camera :TCamera                   read _Camera write _Camera;
+       property Scene  :TRayWorld                 read _Scene  write _Scene ;
+       property Camera :TRayCamera                read _Camera write _Camera;
        ///// メソッド
        procedure Run;
        procedure Stop;
@@ -42,11 +42,13 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 implementation //############################################################### ■
 
+uses System.Threading;
+
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRender
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRayRender
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -56,14 +58,14 @@ implementation //###############################################################
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TRender.Create;
+constructor TRayRender.Create;
 begin
      inherited;
 
      _Pixels := TBricArray2D<TSingleRGBA>.Create( 640, 480 );
 end;
 
-destructor TRender.Destroy;
+destructor TRayRender.Destroy;
 begin
      _Pixels.Free;
 
@@ -72,20 +74,19 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TRender.Run;
-var
-   X ,Y :Integer;
-   R :TSingleRay3D;
-   H :TRayHit;
+procedure TRayRender.Run;
 begin
      _Stop := False;
 
-     R.Vec := TSingle3D.Create( 0, 0, -1 );
-
-     R.Pos.Z := 10;
-     for Y := 0 to _Pixels.BricY-1 do
+     TParallel.For( 0, _Pixels.BricY-1, procedure( Y:Integer )
+     var
+        R :TSingleRay3D;
+        X :Integer;
+        H :TRayHit;
      begin
+          R.Pos.Z := 10;
           R.Pos.Y := ( -3 - +3 ) * ( ( 0.5 + Y ) / _Pixels.BricY ) + +3;
+          R.Vec := TSingle3D.Create( 0, 0, -1 );
 
           for X := 0 to _Pixels.BricX-1 do
           begin
@@ -99,28 +100,29 @@ begin
                end
                else _Pixels[ X, Y ] := TSingleRGBA.Create( 0, 0, 0, 1 );
           end;
-     end;
+     end );
 end;
 
-procedure TRender.Stop;
+procedure TRayRender.Stop;
 begin
      _Stop := True;
 end;
 
-procedure TRender.CopyToBitmap( const Bitmap_:TBitmap );
+procedure TRayRender.CopyToBitmap( const Bitmap_:TBitmap );
 var
    B :TBitmapData;
-   X ,Y :Integer;
 begin
      Bitmap_.Map( TMapAccess.Write, B );
 
-     for Y := 0 to _Pixels.BricY-1 do
+     TParallel.For( 0, _Pixels.BricY-1, procedure( Y:Integer )
+     var
+        X :Integer;
      begin
           for X := 0 to _Pixels.BricX-1 do
           begin
                B.Color[ X, Y ] := _Pixels[ X, Y ];
           end;
-     end;
+     end );
 
      Bitmap_.Unmap( B );
 end;

@@ -1,28 +1,30 @@
-﻿unit LUX.Raytrace.Material;
+﻿unit LIB.Raytrace.Geometry;
 
 interface //#################################################################### ■
 
-uses LUX, LUX.Graph.Tree, LUX.Raytrace, LUX.Raytrace.Geometry;
+uses LUX, LUX.D3, LUX.Raytrace.Geometry;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
-
-     TMaterial = class;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMaterial
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMyGeometry
 
-     TMaterial = class
+     TMyGeometry = class( TRayGeometry )
      private
      protected
-       _Geometry :TRayGeometry;
+       _Radius :Single;
        ///// アクセス
+       procedure SetRadius( const Radius_:Single );
+       ///// メソッド
+       function Raytrace( const Ray_:TSingleRay3D; var Hit_:TRayHit ) :Boolean; override;
      public
-       constructor Create;
+       constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
+       property Radius :Single read _Radius write SetRadius;
        ///// メソッド
      end;
 
@@ -38,21 +40,69 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMaterial
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMyGeometry
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
+/////////////////////////////////////////////////////////////////////// アクセス
+
+procedure TMyGeometry.SetRadius( const Radius_:Single );
+begin
+     _Radius := Radius_;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TMyGeometry.Raytrace( const Ray_:TSingleRay3D; var Hit_:TRayHit ) :Boolean;
+var
+   B, C, D, T :Single;
+begin
+     B := DotProduct( Ray_.Pos, Ray_.Vec );
+     C := Ray_.Pos.Siz2 - Pow2( _Radius );
+
+     if ( C >= 0 ) and ( B >= 0 ) then
+     begin
+          Result := False;  Exit;
+     end;
+
+     D := Pow2( B ) - C;
+
+     if D <= 0 then
+     begin
+          Result := False;  Exit;
+     end;
+
+     if C > 0 then T := -B - Roo2( D )
+              else T := -B + Roo2( D );
+
+     if T > 0.00001 then
+     begin
+          with Hit_ do
+          begin
+               Obj := Self;
+               Len := T;
+               Pos := T * Ray_.Vec + Ray_.Pos;
+               Nor := Pos.Unitor;
+
+          end;
+
+          Result := True;
+     end
+     else Result := False;
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TMaterial.Create;
+constructor TMyGeometry.Create;
 begin
      inherited;
 
+     _Radius := 1;
 end;
 
-destructor TMaterial.Destroy;
+destructor TMyGeometry.Destroy;
 begin
 
      inherited;

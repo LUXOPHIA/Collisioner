@@ -6,13 +6,11 @@ uses LUX, LUX.D3, LUX.Graph.Tree, LUX.Raytrace, LUX.Matrix.L4;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
-     TGeometry = class;
-       TWorld  = class;
-       TCamera = class;
-       TLight  = class;
-       TSphere = class;
-
-     TGeometrys = array of TGeometry;
+     TRayGeometry = class;
+       TRayWorld  = class;
+       TRayCamera = class;
+       TRayLight  = class;
+       TRaySphere = class;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -21,7 +19,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TRayHit = record
      private
      public
-       Obj :TGeometry;
+       Obj :TRayGeometry;
        Len :Single;
        Pos :TSingle3D;
        Nor :TSingle3D;
@@ -32,9 +30,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGeometry
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRayGeometry
 
-     TGeometry = class( TTreeNode<TGeometry> )
+     TRayGeometry = class( TTreeNode<TRayGeometry> )
      private
        ///// メソッド
        ///procedure UpFlagMatrix;
@@ -58,9 +56,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function Raytraces( const Ray_:TSingleRay3D; var Hit_:TRayHit ) :Boolean;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TWorld
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRayWorld
 
-     TWorld = class( TGeometry )
+     TRayWorld = class( TRayGeometry )
      private
      protected
        ///// アクセス
@@ -71,9 +69,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCamera
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRayCamera
 
-     TCamera = class( TGeometry )
+     TRayCamera = class( TRayGeometry )
      private
      protected
        ///// アクセス
@@ -84,9 +82,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TLight
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRayLight
 
-     TLight = class( TGeometry )
+     TRayLight = class( TRayGeometry )
      private
      protected
        ///// アクセス
@@ -97,9 +95,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSphere
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRaySphere
 
-     TSphere = class( TGeometry )
+     TRaySphere = class( TRayGeometry )
      private
      protected
        _Radius :Single;
@@ -127,7 +125,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGeometry
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRayGeometry
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -135,36 +133,36 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGeometry.GetLocalMatrix :TSingleM4;
+function TRayGeometry.GetLocalMatrix :TSingleM4;
 begin
      Result := _LocalMatrix.o;
 end;
 
-procedure TGeometry.SetLocalMatrix( const LocalMatrix_:TSingleM4 );
+procedure TRayGeometry.SetLocalMatrix( const LocalMatrix_:TSingleM4 );
 begin
      _LocalMatrix.o := LocalMatrix_;
 end;
 
-function TGeometry.GetWorldMatrix :TSingleM4;
+function TRayGeometry.GetWorldMatrix :TSingleM4;
 begin
      Result := _WorldMatrix.o;
 end;
 
-procedure TGeometry.SetWorldMatrix( const WorldMatrix_:TSingleM4 );
+procedure TRayGeometry.SetWorldMatrix( const WorldMatrix_:TSingleM4 );
 begin
      _WorldMatrix.o := WorldMatrix_;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function TGeometry.Raytrace( const Ray_:TSingleRay3D; var Hit_:TRayHit ) :Boolean;
+function TRayGeometry.Raytrace( const Ray_:TSingleRay3D; var Hit_:TRayHit ) :Boolean;
 begin
      Result := False;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGeometry.Create;
+constructor TRayGeometry.Create;
 begin
      inherited;
 
@@ -172,7 +170,7 @@ begin
      _WorldMatrix := TSingleDualM4.Identify;  upWorldMatrix_ := False;
 end;
 
-destructor TGeometry.Destroy;
+destructor TRayGeometry.Destroy;
 begin
 
      inherited;
@@ -180,7 +178,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function TGeometry.Raytraces( const Ray_:TSingleRay3D; var Hit_:TRayHit ) :Boolean;
+function TRayGeometry.Raytraces( const Ray_:TSingleRay3D; var Hit_:TRayHit ) :Boolean;
 var
    R :TSingleRay3D;
    H :TRayHit;
@@ -203,7 +201,7 @@ begin
      end;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TWorld
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRayWorld
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -211,19 +209,19 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TWorld.Create;
+constructor TRayWorld.Create;
 begin
      inherited;
 
 end;
 
-destructor TWorld.Destroy;
+destructor TRayWorld.Destroy;
 begin
 
      inherited;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCamera
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRayCamera
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -231,19 +229,19 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TCamera.Create;
+constructor TRayCamera.Create;
 begin
      inherited;
 
 end;
 
-destructor TCamera.Destroy;
+destructor TRayCamera.Destroy;
 begin
 
      inherited;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TLight
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRayLight
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -251,25 +249,25 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TLight.Create;
+constructor TRayLight.Create;
 begin
      inherited;
 
 end;
 
-destructor TLight.Destroy;
+destructor TRayLight.Destroy;
 begin
 
      inherited;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSphere
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRaySphere
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-procedure TSphere.SetRadius( const Radius_:Single );
+procedure TRaySphere.SetRadius( const Radius_:Single );
 begin
      _Radius := Radius_;
 end;
@@ -278,15 +276,12 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function TSphere.Raytrace( const Ray_:TSingleRay3D; var Hit_:TRayHit ) :Boolean;
+function TRaySphere.Raytrace( const Ray_:TSingleRay3D; var Hit_:TRayHit ) :Boolean;
 var
-   X, XX :TSingleRay3D;
    B, C, D, T :Single;
 begin
-     X := Ray_;  with X do Vec := Vec.Unitor;
-
-     B := DotProduct( X.Pos, X.Vec );
-     C := X.Pos.Siz2 - Pow2( _Radius );
+     B := DotProduct( Ray_.Pos, Ray_.Vec );
+     C := Ray_.Pos.Siz2 - Pow2( _Radius );
 
      if ( C >= 0 ) and ( B >= 0 ) then
      begin
@@ -305,13 +300,14 @@ begin
 
      if T > 0.00001 then
      begin
-          XX.Pos := T * X.Vec + X.Pos;
-          XX.Vec := XX.Pos.Unitor;
+          with Hit_ do
+          begin
+               Obj := Self;
+               Len := T;
+               Pos := T * Ray_.Vec + Ray_.Pos;
+               Nor := Pos.Unitor;
 
-          Hit_.Obj := Self;
-          Hit_.Len := T;
-          Hit_.Pos := XX.Pos;
-          Hit_.Nor := XX.Vec;
+          end;
 
           Result := True;
      end
@@ -320,14 +316,14 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TSphere.Create;
+constructor TRaySphere.Create;
 begin
      inherited;
 
      _Radius := 1;
 end;
 
-destructor TSphere.Destroy;
+destructor TRaySphere.Destroy;
 begin
 
      inherited;
