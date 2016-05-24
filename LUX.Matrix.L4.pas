@@ -13,6 +13,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TSingleM4 = record
      public
+       ///// アクセス
        function GetAxisX :TSingle3D;
        procedure SetAxisX( const AxisX_:TSingle3D );
        function GetAxisY :TSingle3D;
@@ -55,6 +56,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function Adjugate :TSingleM4;
        function Transpose :TSingleM4;
        function Inverse :TSingleM4;
+       ///// 定数
        class function Translate( const X_,Y_,Z_:Single ) :TSingleM4; static;
        class function Scale( const X_,Y_,Z_:Single ) :TSingleM4; static;
        class function RotateX( const T_:Single ) :TSingleM4; static;
@@ -67,6 +69,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TDoubleM4 = record
      public
+       ///// アクセス
        function GetAxisX :TDouble3D;
        procedure SetAxisX( const AxisX_:TDouble3D );
        function GetAxisY :TDouble3D;
@@ -111,12 +114,40 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function Adjugate :TDoubleM4;
        function Transpose :TDoubleM4;
        function Inverse :TDoubleM4;
+       ///// 定数
        class function Translate( const X_,Y_,Z_:Double ) :TDoubleM4; static;
        class function Scale( const X_,Y_,Z_:Double ) :TDoubleM4; static;
        class function RotateX( const T_:Double ) :TDoubleM4; static;
        class function RotateY( const T_:Double ) :TDoubleM4; static;
        class function RotateZ( const T_:Double ) :TDoubleM4; static;
        class function Identify :TDoubleM4; static;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleDualM4
+
+     TSingleDualM4 = record
+     private
+       _o :TSingleM4;
+       _i :TSingleM4;
+       ///// アクセス
+       procedure Seto( const o_:TSingleM4 );
+       procedure Seti( const i_:TSingleM4 );
+     public
+       ///// プロパティ
+       property o :TSingleM4 read _o write Seto;
+       property i :TSingleM4 read _i write Seti;
+       ///// 演算子
+       class operator Multiply( const A_,B_:TSingleDualM4 ) :TSingleDualM4;
+       class operator Multiply( const A_:Single; B_:TSingleDualM4 ) :TSingleDualM4;
+       class operator Multiply( const A_:TSingleDualM4; B_:Single ) :TSingleDualM4;
+       class operator Divide( const A_:TSingleDualM4; const B_:Single ) :TSingleDualM4;
+       ///// 定数
+       class function Translate( const X_,Y_,Z_:Single ) :TSingleDualM4; static;
+       class function Scale( const X_,Y_,Z_:Single ) :TSingleDualM4; static;
+       class function RotateX( const T_:Single ) :TSingleDualM4; static;
+       class function RotateY( const T_:Single ) :TSingleDualM4; static;
+       class function RotateZ( const T_:Single ) :TSingleDualM4; static;
+       class function Identify :TSingleDualM4; static;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -943,6 +974,8 @@ begin
                    + _14 * A._41 )
 end;
 
+/////////////////////////////////////////////////////////////////////////// 定数
+
 class function TDoubleM4.Translate( const X_,Y_,Z_:Double ) :TDoubleM4;
 begin
      with Result do
@@ -1019,6 +1052,120 @@ begin
           _31 := 0;  _32 := 0;  _33 := 1;  _34 := 0;
           _41 := 0;  _42 := 0;  _43 := 0;  _44 := 1;
      end
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleDualM4
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+procedure TSingleDualM4.Seto( const o_:TSingleM4 );
+begin
+     _o := o_        ;
+     _i := o_.Inverse;
+end;
+
+procedure TSingleDualM4.Seti( const i_:TSingleM4 );
+begin
+     _o := i_.Inverse;
+     _i := i_        ;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+///////////////////////////////////////////////////////////////////////// 演算子
+
+class operator TSingleDualM4.Multiply( const A_,B_:TSingleDualM4 ) :TSingleDualM4;
+begin
+     with Result do
+     begin
+          _o := A_.o * B_.o;
+          _i := B_.i * A_.i;
+     end
+end;
+
+class operator TSingleDualM4.Multiply( const A_:Single; B_:TSingleDualM4 ) :TSingleDualM4;
+begin
+     with Result do
+     begin
+          _o := A_   * B_.o;
+          _i := B_.i * A_  ;
+     end
+end;
+
+class operator TSingleDualM4.Multiply( const A_:TSingleDualM4; B_:Single ) :TSingleDualM4;
+begin
+     with Result do
+     begin
+          _o := A_.o * B_  ;
+          _i := B_   * A_.i;
+     end
+end;
+
+class operator TSingleDualM4.Divide( const A_:TSingleDualM4; const B_:Single ) :TSingleDualM4;
+begin
+     with Result do
+     begin
+          _o := A_.o / B_;
+          _i := A_.i / B_;
+     end
+end;
+
+/////////////////////////////////////////////////////////////////////////// 定数
+
+class function TSingleDualM4.Translate( const X_,Y_,Z_:Single ) :TSingleDualM4;
+begin
+     with Result do
+     begin
+          _o := TSingleM4.Translate( +X_, +Y_, +Z_ );
+          _i := TSingleM4.Translate( -X_, -Y_, -Z_ );
+     end;
+end;
+
+class function TSingleDualM4.Scale( const X_,Y_,Z_:Single ) :TSingleDualM4;
+begin
+     with Result do
+     begin
+          _o := TSingleM4.Scale( +X_, +Y_, +Z_ );
+          _i := TSingleM4.Scale( -X_, -Y_, -Z_ );
+     end;
+end;
+
+class function TSingleDualM4.RotateX( const T_:Single ) :TSingleDualM4;
+begin
+     with Result do
+     begin
+          _o := TSingleM4.RotateX( +T_ );
+          _i := TSingleM4.RotateX( -T_ );
+     end;
+end;
+
+class function TSingleDualM4.RotateY( const T_:Single ) :TSingleDualM4;
+begin
+     with Result do
+     begin
+          _o := TSingleM4.RotateY( +T_ );
+          _i := TSingleM4.RotateY( -T_ );
+     end;
+end;
+
+class function TSingleDualM4.RotateZ( const T_:Single ) :TSingleDualM4;
+begin
+     with Result do
+     begin
+          _o := TSingleM4.RotateZ( +T_ );
+          _i := TSingleM4.RotateZ( -T_ );
+     end;
+end;
+
+class function TSingleDualM4.Identify :TSingleDualM4;
+begin
+     with Result do
+     begin
+          _o := TSingleM4.Identify;
+          _i := TSingleM4.Identify;
+     end;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
