@@ -2,7 +2,7 @@ unit LUX.Brep.Poin;
 
 interface //#################################################################### Å°
 
-uses LUX, LUX.D3, LUX.Graph.Tree;
+uses LUX, LUX.Graph.Tree;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$Åyå^Åz
 
@@ -23,6 +23,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetPos :_TPos_; virtual;
        procedure SetPos( const Pos_:_TPos_ ); virtual;
      public
+       constructor Create( const Pos_:_TPos_ ); overload;
+       constructor Create( const Pos_:_TPos_; const Paren_:TTreeNode ); overload;
        ///// ÉvÉçÉpÉeÉB
        property Pos :_TPos_ read GetPos write SetPos;
      end;
@@ -66,6 +68,20 @@ begin
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TPoin<_TPos_>.Create( const Pos_:_TPos_ );
+begin
+     inherited Create;
+
+     _Pos := Pos_;
+end;
+
+constructor TPoin<_TPos_>.Create( const Pos_:_TPos_; const Paren_:TTreeNode );
+begin
+     inherited Create( Paren_ );
+
+     _Pos := Pos_;
+end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TPoinModel<_TPos_>
 
