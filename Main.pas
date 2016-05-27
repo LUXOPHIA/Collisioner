@@ -8,7 +8,7 @@ uses
   System.Math.Vectors,
   FMX.Controls.Presentation, FMX.StdCtrls, FMX.Viewport3D, FMX.Types3D,
   FMX.MaterialSources, FMX.Objects3D, FMX.Controls3D,
-  LUX.D3, LUX.Brep.TetraMesh.FMX, LUX.Brep.TetraMesh.Delaunay;
+  LUX.D3, LUX.Brep.Cell.TetraFlip.D3, LUX.Brep.Cell.TetraFlip.D3.Delaunay, LUX.Brep.Cell.TetraFlip.D3.FMX;
 
 type
   TForm1 = class(TForm)
@@ -74,7 +74,7 @@ begin
      begin
           Parent     := Viewport3D1;
           Material   := LightMaterialSourceD;
-          TetraModel := _Delaunay3D;
+          TetraModel := TTetraModel3D( _Delaunay3D );
           EdgeRadius := 0.05;
      end;
 
@@ -82,7 +82,7 @@ begin
      begin
           Parent     := Viewport3D1;
           Material   := LightMaterialSourceV;
-          TetraModel := _Delaunay3D;
+          TetraModel := TTetraModel3D( _Delaunay3D );
           EdgeRadius := 0.05;
           EdgeLength := 10;
      end;

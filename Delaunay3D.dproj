@@ -315,10 +315,12 @@
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\LUX.D2.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\LUX.D1.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.Graph\LUX.Graph.Tree.pas"/>
-        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.Brep\LUX.Brep.TetraMesh.Delaunay.pas"/>
-        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.Brep\LUX.Brep.TetraMesh.FMX.pas"/>
-        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.Brep\LUX.Brep.TetraMesh.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.Brep\LUX.Brep.Cell.TetraFlip.D3.Delaunay.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.Brep\LUX.Brep.Cell.TetraFlip.D3.FMX.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.Brep\LUX.Brep.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.Brep\LUX.Brep.Cell.TetraFlip.D3.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.Brep\LUX.Brep.Cell.TetraFlip.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.Brep\LUX.Brep.Poin.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
