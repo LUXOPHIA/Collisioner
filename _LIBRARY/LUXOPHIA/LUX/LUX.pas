@@ -115,6 +115,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TInterfacedZero
+
+     TInterfacedZero = class( TObject, IUnknown )
+       ///// メソッド
+       function QueryInterface( const IID_:TGUID; out Obj_ ) :HRESULT; stdcall;
+       function _AddRef :Integer; stdcall;
+       function _Release :Integer; stdcall;
+     end;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HCanvas
 
      HCanvas = class helper for TCanvas
@@ -447,6 +456,24 @@ begin
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TInterfacedZero
+
+function TInterfacedZero.QueryInterface( const IID_:TGUID; out Obj_ ) :HRESULT;
+begin
+     if GetInterface( IID_, Obj_ ) then Result := 0
+                                   else Result := E_NOINTERFACE;
+end;
+
+function TInterfacedZero._AddRef :Integer;
+begin
+     Result := -1;
+end;
+
+function TInterfacedZero._Release :Integer;
+begin
+     Result := -1;
+end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HCanvas
 
