@@ -66,7 +66,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure _InsertNext( const Sibli_:TTreeNode );
      public
        constructor Create; overload; virtual;
-       constructor Create( const Parent_:TTreeNode ); overload; virtual;
+       constructor Create( const Paren_:TTreeNode ); overload; virtual;
        destructor Destroy; override;
        ///// プロパティ
        property Paren                      :TTreeNode read GetParen   write SetParen ;
@@ -358,11 +358,11 @@ begin
      _MaxOrder := -1;
 end;
 
-constructor TTreeNode.Create( const Parent_:TTreeNode );
+constructor TTreeNode.Create( const Paren_:TTreeNode );
 begin
      Create;
 
-     Parent_._InsertTail( Self );
+     Paren_._InsertTail( Self );
 end;
 
 destructor TTreeNode.Destroy;
