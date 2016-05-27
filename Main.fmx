@@ -1,0 +1,112 @@
+object Form1: TForm1
+  Left = 0
+  Top = 0
+  Caption = 'Raytracer'
+  ClientHeight = 500
+  ClientWidth = 790
+  Position = ScreenCenter
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  DesignerMasterStyle = 0
+  object Image1: TImage
+    MultiResBitmap = <
+      item
+      end>
+    Align = Client
+    Margins.Left = 10.000000000000000000
+    Margins.Top = 10.000000000000000000
+    Margins.Bottom = 10.000000000000000000
+    Size.Width = 640.000000000000000000
+    Size.Height = 480.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object Panel1: TPanel
+    Align = Right
+    Position.X = 650.000000000000000000
+    Size.Width = 140.000000000000000000
+    Size.Height = 500.000000000000000000
+    Size.PlatformDefault = False
+    StyleLookup = 'pushpanel'
+    TabOrder = 1
+    object GroupBoxR: TGroupBox
+      Position.X = 10.000000000000000000
+      Position.Y = 90.000000000000000000
+      Size.Width = 120.000000000000000000
+      Size.Height = 145.000000000000000000
+      Size.PlatformDefault = False
+      Text = #12524#12531#12480#12522#12531#12464
+      TabOrder = 0
+      object ButtonS: TButton
+        Enabled = False
+        Position.X = 10.000000000000000000
+        Position.Y = 85.000000000000000000
+        Size.Width = 100.000000000000000000
+        Size.Height = 50.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        Text = #20013#26029
+        OnClick = ButtonSClick
+      end
+      object ButtonP: TButton
+        Position.X = 10.000000000000000000
+        Position.Y = 25.000000000000000000
+        Size.Width = 100.000000000000000000
+        Size.Height = 50.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        Text = #23455#34892
+        OnClick = ButtonPClick
+      end
+    end
+    object GroupBoxI: TGroupBox
+      Position.X = 10.000000000000000000
+      Position.Y = 10.000000000000000000
+      Size.Width = 120.000000000000000000
+      Size.Height = 75.000000000000000000
+      Size.PlatformDefault = False
+      Text = #30011#20687
+      TabOrder = 1
+      object LabelIH: TLabel
+        Position.X = 5.000000000000000000
+        Position.Y = 45.000000000000000000
+        Size.Width = 41.000000000000000000
+        Size.Height = 20.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Trailing
+        Text = #32294' :'
+      end
+      object LabelIW: TLabel
+        Position.X = 5.000000000000000000
+        Position.Y = 20.000000000000000000
+        Size.Width = 41.000000000000000000
+        Size.Height = 20.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Trailing
+        Text = #27178' :'
+      end
+      object EditIW: TEdit
+        Touch.InteractiveGestures = [LongTap, DoubleTap]
+        TabOrder = 3
+        Text = '640'
+        Position.X = 50.000000000000000000
+        Position.Y = 20.000000000000000000
+        Size.Width = 60.000000000000000000
+        Size.Height = 20.000000000000000000
+        Size.PlatformDefault = False
+      end
+      object EditIH: TEdit
+        Touch.InteractiveGestures = [LongTap, DoubleTap]
+        TabOrder = 2
+        Text = '480'
+        Position.X = 50.000000000000000000
+        Position.Y = 45.000000000000000000
+        Size.Width = 60.000000000000000000
+        Size.Height = 20.000000000000000000
+        Size.PlatformDefault = False
+      end
+    end
+  end
+end
