@@ -1,10 +1,10 @@
-unit LUX.Brep.TetraMesh.FMX;
+unit LUX.Brep.Cell.TetraFlip.D3.FMX;
 
 interface //#################################################################### ■
 
 uses System.Classes, System.Math.Vectors,
      FMX.Types, FMX.Types3D, FMX.Controls3D, FMX.MaterialSources,
-     LUX, LUX.D3, LUX.Geometry.D3, LUX.Brep.TetraMesh;
+     LUX, LUX.D3, LUX.Geometry.D3, LUX.Brep.Cell.TetraFlip, LUX.Brep.Cell.TetraFlip.D3;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -19,10 +19,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _Geometry   :TMeshData;
        _Material   :TMaterialSource;
-       _TetraModel :TTetraModel;
+       _TetraModel :TTetraModel3D;
        _EdgeRadius :Single;
        ///// アクセス
-       procedure SetTetraModel( const TetraModel_:TTetraModel );
+       procedure SetTetraModel( const TetraModel_:TTetraModel3D );
        procedure SetEdgeRadius( const EdgeRadius_:Single );
        ///// メソッド
        procedure Render; override;
@@ -32,7 +32,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        destructor Destroy; override;
        ///// プロパティ
        property Material   :TMaterialSource read _Material   write _Material    ;
-       property TetraModel :TTetraModel     read _TetraModel write SetTetraModel;
+       property TetraModel :TTetraModel3D   read _TetraModel write SetTetraModel;
        property EdgeRadius :Single          read _EdgeRadius write SetEdgeRadius;
        ///// メソッド
        procedure MakeModel; virtual; abstract;
@@ -86,7 +86,7 @@ uses System.SysUtils, System.RTLConsts;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-procedure TEdges.SetTetraModel( const TetraModel_:TTetraModel );
+procedure TEdges.SetTetraModel( const TetraModel_:TTetraModel3D );
 begin
      _TetraModel := TetraModel_;  MakeModel;
 end;
@@ -163,7 +163,7 @@ procedure TDelaEdges.MakeModel;
 var
    Ps :array of TSingle3D;
    I0, K :Integer;
-   C0, C1 :TTetraCell;
+   C0, C1 :TTetraCell3D;
    T0 :record
          P0, P1, P2, P3,
          C102, C203, P301,
@@ -173,18 +173,18 @@ var
 begin
      Ps := [];
 
-     for I0 := 0 to _TetraModel.CellsN-1 do
+     for I0 := 0 to _TetraModel.ChildsN-1 do
      begin
-          C0 := _TetraModel.Cells[ I0 ];
+          C0 := _TetraModel[ I0 ];
 
           for K := 0 to 3 do
           begin
                with _VertTable[ K ] do
                begin
-                    T0.P0 := C0.Poin[ _[ 0 ] ].Position;
-                    T0.P1 := C0.Poin[ _[ 1 ] ].Position;
-                    T0.P2 := C0.Poin[ _[ 2 ] ].Position;
-                    T0.P3 := C0.Poin[ _[ 3 ] ].Position;
+                    T0.P0 := C0.Poin[ _[ 0 ] ].Pos;
+                    T0.P1 := C0.Poin[ _[ 1 ] ].Pos;
+                    T0.P2 := C0.Poin[ _[ 2 ] ].Pos;
+                    T0.P3 := C0.Poin[ _[ 3 ] ].Pos;
                end;
 
                T0.C102 := MarginCorner( T0.P1, T0.P0, T0.P2, _EdgeRadius );
@@ -249,7 +249,7 @@ procedure TVoroEdges.MakeModel;
 var
    Ps :array of TSingle3D;
    I0, K :Integer;
-   C0, C1 :TTetraCell;
+   C0, C1 :TTetraCell3D;
    T0 :record
          S,
          V0, V1, V2, V3,
@@ -264,9 +264,9 @@ var
 begin
      Ps := [];
 
-     for I0 := 0 to _TetraModel.CellsN-1 do
+     for I0 := 0 to _TetraModel.ChildsN-1 do
      begin
-          C0 := _TetraModel.Cells[ I0 ];
+          C0 := _TetraModel[ I0 ];
 
           T0.S := C0.CircumCenter;
 
