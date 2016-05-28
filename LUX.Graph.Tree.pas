@@ -67,6 +67,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        constructor Create; overload; virtual;
        constructor Create( const Paren_:TTreeNode ); overload; virtual;
+       procedure BeforeDestruction; override;
        destructor Destroy; override;
        ///// プロパティ
        property Paren                      :TTreeNode read GetParen   write SetParen ;
@@ -365,12 +366,15 @@ begin
      Paren_._InsertTail( Self );
 end;
 
-destructor TTreeNode.Destroy;
+procedure TTreeNode.BeforeDestruction;
 begin
      Remove;
 
      DeleteChilds;
+end;
 
+destructor TTreeNode.Destroy;
+begin
      Zero.Free;
 
      inherited;
