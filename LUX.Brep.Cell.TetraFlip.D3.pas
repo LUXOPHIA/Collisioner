@@ -30,6 +30,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetVolume :Single;
        function GetBarycenter :TSingle3D;
        function GetInnerCenter :TSingle3D;
+       function GetInnerRadius :Single;
+       function GetInnerSphere :TSingleSphere;
        function GetCircumCenter :TSingle3D;
        function GetCircumSpher2 :TSingleSpher2;
        function GetCircumSphere :TSingleSphere;
@@ -42,6 +44,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Volume                    :Single        read GetVolume      ;
        property Barycenter                :TSingle3D     read GetBarycenter  ;
        property InnerCenter               :TSingle3D     read GetInnerCenter ;
+       property InnerRadius               :Single        read GetInnerRadius ;
+       property InnerSphere               :TSingleSphere read GetInnerSphere ;
        property CircumCenter              :TSingle3D     read GetCircumCenter;
        property CircumSpher2              :TSingleSpher2 read GetCircumSpher2;
        property CircumSphere              :TSingleSphere read GetCircumSphere;
@@ -129,10 +133,26 @@ end;
 
 function TTetraCell3D<_TPoin_,_TCell_>.GetInnerCenter :TSingle3D;
 begin
-     Result := LUX.Geometry.D3.InnerCenter( TTetraPoin3D( _Poin[ 0 ] ).Pos,      {ToDo: 本来キャスト不要}
+     Result := LUX.Geometry.D3.InnerCenter( TTetraPoin3D( _Poin[ 0 ] ).Pos,     {ToDo: 本来キャスト不要}
                                             TTetraPoin3D( _Poin[ 1 ] ).Pos,
                                             TTetraPoin3D( _Poin[ 2 ] ).Pos,
                                             TTetraPoin3D( _Poin[ 3 ] ).Pos );
+end;
+
+function TTetraCell3D<_TPoin_,_TCell_>.GetInnerRadius :Single;
+begin
+     Result := LUX.Geometry.D3.InnerRadius( TTetraPoin3D( _Poin[ 0 ] ).Pos,     {ToDo: 本来キャスト不要}
+                                            TTetraPoin3D( _Poin[ 1 ] ).Pos,
+                                            TTetraPoin3D( _Poin[ 2 ] ).Pos,
+                                            TTetraPoin3D( _Poin[ 3 ] ).Pos );
+end;
+
+function TTetraCell3D<_TPoin_,_TCell_>.GetInnerSphere :TSingleSphere;
+begin
+     Result := TSingleSphere.Inner( TTetraPoin3D( _Poin[ 0 ] ).Pos,             {ToDo: 本来キャスト不要}
+                                    TTetraPoin3D( _Poin[ 1 ] ).Pos,
+                                    TTetraPoin3D( _Poin[ 2 ] ).Pos,
+                                    TTetraPoin3D( _Poin[ 3 ] ).Pos );
 end;
 
 //------------------------------------------------------------------------------
@@ -155,7 +175,10 @@ end;
 
 function TTetraCell3D<_TPoin_,_TCell_>.GetCircumSphere :TSingleSphere;
 begin
-     Result := GetCircumSpher2;
+     Result := TSingleSphere.Create( TTetraPoin3D( _Poin[ 0 ] ).Pos,            {ToDo: 本来キャスト不要}
+                                     TTetraPoin3D( _Poin[ 1 ] ).Pos,
+                                     TTetraPoin3D( _Poin[ 2 ] ).Pos,
+                                     TTetraPoin3D( _Poin[ 3 ] ).Pos );
 end;
 
 //------------------------------------------------------------------------------
