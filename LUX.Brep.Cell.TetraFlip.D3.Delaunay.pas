@@ -204,7 +204,7 @@ begin
 
                with _CS2 do
                begin
-                    Center := VoroVec[ I ];
+                    Center := FaceNorm[ I ];
                     Radiu2 := DotProduct( Center, _Poin[ _VertTable[ I ]._[ 1 ] ].Pos );
                end;
           end;
