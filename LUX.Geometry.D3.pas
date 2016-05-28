@@ -72,6 +72,12 @@ function TriNormal( const P1_,P2_,P3_:TDoublePos3D ) :TDoubleVec3D; inline; over
 function CircumCenter( const P0_,P1_,P2_,P3_:TSingle3D ) :TSingle3D; overload;
 function CircumCenter( const P0_,P1_,P2_,P3_:TDouble3D ) :TDouble3D; overload;
 
+function HeronArea( const P1_,P2_,P3_:TSingle3D ) :Single; overload;
+function HeronArea( const P1_,P2_,P3_:TDouble3D ) :Double; overload;
+
+function InnerCenter( const P0_,P1_,P2_,P3_:TSingle3D ) :TSingle3D; overload;
+function InnerCenter( const P0_,P1_,P2_,P3_:TDouble3D ) :TDouble3D; overload;
+
 function HeronVolum2( const P0_,P1_,P2_,P3_:TSingle3D ) :Single; overload;
 function HeronVolum2( const P0_,P1_,P2_,P3_:TDouble3D ) :Double; overload;
 
@@ -309,7 +315,61 @@ begin
 end;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
+
+function HeronArea( const P1_,P2_,P3_:TSingle3D ) :Single;
+var
+   L1, L2, L3 :Single;
+begin
+     L1 := Distanc2( P2_, P3_ );
+     L2 := Distanc2( P3_, P1_ );
+     L3 := Distanc2( P1_, P2_ );
+
+     Result := Roo2( Pow2(       L1   +       L2   +       L3   )
+                   - 2 * ( Pow2( L1 ) + Pow2( L2 ) + Pow2( L3 ) ) ) / 4;
+end;
+
+function HeronArea( const P1_,P2_,P3_:TDouble3D ) :Double;
+var
+   L1, L2, L3 :Double;
+begin
+     L1 := Distanc2( P2_, P3_ );
+     L2 := Distanc2( P3_, P1_ );
+     L3 := Distanc2( P1_, P2_ );
+
+     Result := Roo2( Pow2(       L1   +       L2   +       L3   )
+                   - 2 * ( Pow2( L1 ) + Pow2( L2 ) + Pow2( L3 ) ) ) / 4;
+end;
+
+//------------------------------------------------------------------------------
+
+function InnerCenter( const P0_,P1_,P2_,P3_:TSingle3D ) :TSingle3D;
+var
+   A0, A1, A2, A3 :Single;
+begin
+     A0 := HeronArea( P1_, P2_, P3_ );
+     A1 := HeronArea( P0_, P3_, P2_ );
+     A2 := HeronArea( P3_, P0_, P1_ );
+     A3 := HeronArea( P2_, P1_, P0_ );
+
+     Result := ( A0 * P0_ + A1 * P1_ + A2 * P2_ + A3 * P3_ )
+             / ( A0       + A1       + A2       + A3       );
+end;
+
+function InnerCenter( const P0_,P1_,P2_,P3_:TDouble3D ) :TDouble3D;
+var
+   A0, A1, A2, A3 :Double;
+begin
+     A0 := HeronArea( P1_, P2_, P3_ );
+     A1 := HeronArea( P0_, P3_, P2_ );
+     A2 := HeronArea( P3_, P0_, P1_ );
+     A3 := HeronArea( P2_, P1_, P0_ );
+
+     Result := ( A0 * P0_ + A1 * P1_ + A2 * P2_ + A3 * P3_ )
+             / ( A0       + A1       + A2       + A3       );
+end;
+
+//------------------------------------------------------------------------------
 
 function HeronVolum2( const P0_,P1_,P2_,P3_:TSingle3D ) :Single;
 var
