@@ -274,10 +274,10 @@ begin
           begin
                with _VertTable[ K ] do
                begin
-                    T0.V0 := C0.VoroVec[ _[ 0 ] ];
-                    T0.V1 := C0.VoroVec[ _[ 1 ] ];
-                    T0.V2 := C0.VoroVec[ _[ 2 ] ];
-                    T0.V3 := C0.VoroVec[ _[ 3 ] ];
+                    T0.V0 := C0.VoroEdge[ _[ 0 ] ];
+                    T0.V1 := C0.VoroEdge[ _[ 1 ] ];
+                    T0.V2 := C0.VoroEdge[ _[ 2 ] ];
+                    T0.V3 := C0.VoroEdge[ _[ 3 ] ];
                end;
 
                T0.C23 := T0.S + MarginCorner( T0.V2, T0.V3, _EdgeRadius );
@@ -296,10 +296,10 @@ begin
                begin
                     T1.S := C1.CircumCenter;
 
-                    T1.V0 := C1.VoroVec[ C0.Join[ K, 0 ] ];
-                    T1.V1 := C1.VoroVec[ C0.Join[ K, 1 ] ];
-                    T1.V2 := C1.VoroVec[ C0.Join[ K, 2 ] ];
-                    T1.V3 := C1.VoroVec[ C0.Join[ K, 3 ] ];
+                    T1.V0 := C1.VoroEdge[ C0.Join[ K, 0 ] ];
+                    T1.V1 := C1.VoroEdge[ C0.Join[ K, 1 ] ];
+                    T1.V2 := C1.VoroEdge[ C0.Join[ K, 2 ] ];
+                    T1.V3 := C1.VoroEdge[ C0.Join[ K, 3 ] ];
 
                     T1.C01 := T1.S + MarginCorner( T1.V0, T1.V1, _EdgeRadius );
                     T1.C02 := T1.S + MarginCorner( T1.V0, T1.V2, _EdgeRadius );
