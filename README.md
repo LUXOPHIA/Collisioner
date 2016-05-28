@@ -1,2 +1,2 @@
-﻿# Delaunay3D
-３次元ドロネー図を構築する方法。
+﻿# LUX.Geometry
+luxidea 製の 幾何学 ライブラリ。
