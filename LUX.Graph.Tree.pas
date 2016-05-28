@@ -78,7 +78,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        procedure Remove;
        class procedure RemoveChild( const Child_:TTreeNode );
-       procedure DeleteChilds;
+       procedure DeleteChilds; virtual;
        procedure InsertHead( const Child_:TTreeNode );
        procedure InsertTail( const Child_:TTreeNode );
        procedure InsertPrev( const Sibli_:TTreeNode );
