@@ -42,6 +42,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// 型変換
        class operator Implicit( const Spher2_:TSingleSpher2 ) :TSingleSphere;
        class operator Implicit( const Sphere_:TSingleSphere ) :TSingleSpher2;
+       ///// メソッド
+       class function Inner( const P1_,P2_,P3_,P4_:TSingle3D ) :TSingleSphere; static;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleSphere
@@ -56,6 +58,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// 型変換
        class operator Implicit( const Spher2_:TDoubleSpher2 ) :TDoubleSphere;
        class operator Implicit( const Sphere_:TDoubleSphere ) :TDoubleSpher2;
+       ///// メソッド
+       class function Inner( const P1_,P2_,P3_,P4_:TDouble3D ) :TDoubleSphere; static;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -169,6 +173,17 @@ begin
      end;
 end;
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+class function TSingleSphere.Inner( const P1_,P2_,P3_,P4_:TSingle3D ) :TSingleSphere;
+begin
+     with Result do
+     begin
+          Center :=InnerCenter( P1_,P2_,P3_,P4_ );
+          Radius := InnerRadius( P1_,P2_,P3_,P4_ );
+     end;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleSphere
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -197,6 +212,17 @@ begin
      begin
           Center :=       Sphere_.Center  ;
           Radiu2 := Pow2( Sphere_.Radius );
+     end;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+class function TDoubleSphere.Inner( const P1_,P2_,P3_,P4_:TDouble3D ) :TDoubleSphere;
+begin
+     with Result do
+     begin
+          Center :=InnerCenter( P1_,P2_,P3_,P4_ );
+          Radius := InnerRadius( P1_,P2_,P3_,P4_ );
      end;
 end;
 
