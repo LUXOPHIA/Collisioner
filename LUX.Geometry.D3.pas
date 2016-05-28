@@ -562,7 +562,7 @@ begin
      E1 := P0_.UnitorTo( P1_ );
      E2 := P0_.UnitorTo( P2_ );
 
-     Result := ( Margin_ / Roo2( 1 - Pow2( DotProduct( E1, E2 ) ) ) ) * ( E1 + E2 );
+     Result := ( Margin_ / Roo2( 1 - Pow2( DotProduct( E1, E2 ) ) ) ) * ( E1 + E2 ) + P0_;
 end;
 
 function MarginCorner( const P0_,P1_,P2_:TDoublePos3D; Margin_:Double ) :TDoublePos3D;
@@ -577,7 +577,7 @@ begin
      E1 := P0_.UnitorTo( P1_ );
      E2 := P0_.UnitorTo( P2_ );
 
-     Result := ( Margin_ / Roo2( 1 - Pow2( DotProduct( E1, E2 ) ) ) ) * ( E1 + E2 );
+     Result := ( Margin_ / Roo2( 1 - Pow2( DotProduct( E1, E2 ) ) ) ) * ( E1 + E2 ) + P0_;
 end;
 
 //############################################################################## □
