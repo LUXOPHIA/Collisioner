@@ -187,13 +187,13 @@ begin
                     T0.P3 := C0.Poin[ _[ 3 ] ].Pos;
                end;
 
-               T0.C102 := MarginCorner( T0.P1, T0.P0, T0.P2, _EdgeRadius );
-               T0.C203 := MarginCorner( T0.P2, T0.P0, T0.P3, _EdgeRadius );
-               T0.P301 := MarginCorner( T0.P3, T0.P0, T0.P1, _EdgeRadius );
+               T0.C102 := MarginCorner( T0.P0, T0.P1, T0.P2, _EdgeRadius );
+               T0.C203 := MarginCorner( T0.P0, T0.P2, T0.P3, _EdgeRadius );
+               T0.P301 := MarginCorner( T0.P0, T0.P3, T0.P1, _EdgeRadius );
 
-               T0.C021 := MarginCorner( T0.P0, T0.P2, T0.P1, _EdgeRadius );
-               T0.C032 := MarginCorner( T0.P0, T0.P3, T0.P2, _EdgeRadius );
-               T0.C013 := MarginCorner( T0.P0, T0.P1, T0.P3, _EdgeRadius );
+               T0.C021 := MarginCorner( T0.P2, T0.P0, T0.P1, _EdgeRadius );
+               T0.C032 := MarginCorner( T0.P3, T0.P0, T0.P2, _EdgeRadius );
+               T0.C013 := MarginCorner( T0.P1, T0.P0, T0.P3, _EdgeRadius );
 
                Ps := Ps + [ T0.C021, T0.C102, T0.C203,
                             T0.C032, T0.C203, T0.P301,
@@ -204,9 +204,9 @@ begin
 
                if not ( Assigned( C1 ) and Assigned( C1.Poin[ C0.Vert[ K ] ] ) ) then
                begin
-                    T0.C312 := MarginCorner( T0.P3, T0.P1, T0.P2, _EdgeRadius );
-                    T0.C123 := MarginCorner( T0.P1, T0.P2, T0.P3, _EdgeRadius );
-                    T0.C231 := MarginCorner( T0.P2, T0.P3, T0.P1, _EdgeRadius );
+                    T0.C312 := MarginCorner( T0.P1, T0.P3, T0.P2, _EdgeRadius );
+                    T0.C123 := MarginCorner( T0.P2, T0.P1, T0.P3, _EdgeRadius );
+                    T0.C231 := MarginCorner( T0.P3, T0.P2, T0.P1, _EdgeRadius );
 
                     Ps := Ps + [ T0.P2  , T0.P1  , T0.C312,
                                  T0.C312, T0.C123, T0.P2  ,
