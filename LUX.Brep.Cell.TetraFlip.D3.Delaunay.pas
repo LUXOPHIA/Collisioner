@@ -51,6 +51,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const P1_,P2_,P3_:TSingle3D ); overload;
        destructor Destroy; override;
        ///// メソッド
+       procedure DeleteChilds; override;
        function AddCell( const Poin0_,Poin1_,Poin2_,Poin3_:TDelaPoin ) :TDelaCell;
        function HitCell( const Pos_:TSingle3D ) :TDelaCell;
        function AddPoin( const Pos_:TSingle3D ) :TDelaPoin;
@@ -166,6 +167,13 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TDelaunay3D.DeleteChilds;
+begin
+     inherited;
+
+     _OuterCells.DeleteChilds;
+end;
 
 function TDelaunay3D.AddCell( const Poin0_,Poin1_,Poin2_,Poin3_:TDelaPoin ) :TDelaCell;
 var
@@ -339,7 +347,7 @@ procedure TDelaunay3D.AddPoin3( const Poin_:TDelaPoin; const Cell_:TDelaCell );
 
                          //   Cell[ 0 ] := Cell_;
                          //   Vert[ 0 ] := Vert_;
-                         //   Bond[ 0 ] := BondTable[ 1 ]._[ E1_ ];
+                         //   Bond[ 0 ] := _BondTable[ 1 ]._[ E1_ ];
 
                               Cell[ 1 ] := C; Vert[ 1 ] := 0; //Bond[ 1 ] := 1;
                               Cell[ 2 ] := C; Vert[ 2 ] := 0; //Bond[ 2 ] := 2;
