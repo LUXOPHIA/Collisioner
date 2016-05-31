@@ -42,7 +42,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_,B_:TSingleM4 ) :TSingleM4;
        class operator Multiply( const A_:Single; B_:TSingleM4 ) :TSingleM4;
        class operator Multiply( const A_:TSingleM4; B_:Single ) :TSingleM4;
-       class operator Multiply( const A_:TSingleM4; const B_:TSingleRay3D ) :TSingleRay3D;
+       class operator Multiply( const A_:TSingleM4; const B_:TSingleArrow3D ) :TSingleArrow3D;
        class operator Divide( const A_:TSingleM4; const B_:Single ) :TSingleM4;
        ///// Œ^•ÏŠ·
        class operator Implicit( const V_:Single ) :TSingleM4;
@@ -98,7 +98,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_,B_:TDoubleM4 ) :TDoubleM4;
        class operator Multiply( const A_:Double; B_:TDoubleM4 ) :TDoubleM4;
        class operator Multiply( const A_:TDoubleM4; B_:Double ) :TDoubleM4;
-       class operator Multiply( const A_:TDoubleM4; const B_:TDoubleRay3D ) :TDoubleRay3D;
+       class operator Multiply( const A_:TDoubleM4; const B_:TDoubleArrow3D ) :TDoubleArrow3D;
        class operator Divide( const A_:TDoubleM4; const B_:Double ) :TDoubleM4;
        ///// Œ^•ÏŠ·
        class operator Implicit( const V_:Double ) :TDoubleM4;
@@ -321,7 +321,7 @@ begin
      end
 end;
 
-class operator TSingleM4.Multiply( const A_:TSingleM4; const B_:TSingleRay3D ) :TSingleRay3D;
+class operator TSingleM4.Multiply( const A_:TSingleM4; const B_:TSingleArrow3D ) :TSingleArrow3D;
 begin
      with Result do
      begin
@@ -754,7 +754,7 @@ begin
      end
 end;
 
-class operator TDoubleM4.Multiply( const A_:TDoubleM4; const B_:TDoubleRay3D ) :TDoubleRay3D;
+class operator TDoubleM4.Multiply( const A_:TDoubleM4; const B_:TDoubleArrow3D ) :TDoubleArrow3D;
 begin
      with Result do
      begin
