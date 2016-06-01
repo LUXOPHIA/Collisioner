@@ -42,6 +42,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// 型変換
        class operator Implicit( const Spher2_:TSingleSpher2 ) :TSingleSphere;
        class operator Implicit( const Sphere_:TSingleSphere ) :TSingleSpher2;
+       ///// メソッド
+       class function Inner( const P1_,P2_,P3_,P4_:TSingle3D ) :TSingleSphere; static;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleSphere
@@ -56,6 +58,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// 型変換
        class operator Implicit( const Spher2_:TDoubleSpher2 ) :TDoubleSphere;
        class operator Implicit( const Sphere_:TDoubleSphere ) :TDoubleSpher2;
+       ///// メソッド
+       class function Inner( const P1_,P2_,P3_,P4_:TDouble3D ) :TDoubleSphere; static;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -66,34 +70,51 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
+function HeronArea( const P1_,P2_,P3_:TSinglePos3D ) :Single; overload;
+function HeronArea( const P1_,P2_,P3_:TDoublePos3D ) :Double; overload;
+
+function HeronVolum2( const P0_,P1_,P2_,P3_:TSinglePos3D ) :Single; overload;
+function HeronVolum2( const P0_,P1_,P2_,P3_:TDoublePos3D ) :Double; overload;
+
+function HeronVolume( const P0_,P1_,P2_,P3_:TSinglePos3D ) :Single; overload;
+function HeronVolume( const P0_,P1_,P2_,P3_:TDoublePos3D ) :Double; overload;
+
 function TriNormal( const P1_,P2_,P3_:TSinglePos3D ) :TSingleVec3D; inline; overload;
 function TriNormal( const P1_,P2_,P3_:TDoublePos3D ) :TDoubleVec3D; inline; overload;
 
-function CircumCenter( const P0_,P1_,P2_,P3_:TSingle3D ) :TSingle3D; overload;
-function CircumCenter( const P0_,P1_,P2_,P3_:TDouble3D ) :TDouble3D; overload;
+function Barycenter( const P1_,P2_:TSinglePos3D ) :TSinglePos3D; overload;
+function Barycenter( const P1_,P2_:TDoublePos3D ) :TDoublePos3D; overload;
 
-function HeronVolum2( const P0_,P1_,P2_,P3_:TSingle3D ) :Single; overload;
-function HeronVolum2( const P0_,P1_,P2_,P3_:TDouble3D ) :Double; overload;
+function Barycenter( const P1_,P2_,P3_:TSinglePos3D ) :TSinglePos3D; overload;
+function Barycenter( const P1_,P2_,P3_:TDoublePos3D ) :TDoublePos3D; overload;
 
-function HeronVolume( const P0_,P1_,P2_,P3_:TSingle3D ) :Single; overload;
-function HeronVolume( const P0_,P1_,P2_,P3_:TDouble3D ) :Double; overload;
+function Barycenter( const P0_,P1_,P2_,P3_:TSinglePos3D ) :TSinglePos3D; overload;
+function Barycenter( const P0_,P1_,P2_,P3_:TDoublePos3D ) :TDoublePos3D; overload;
 
-function MarginCorner( const V0_,V1_:TSingleVec3D; const Margin_:Single ) :TSingleVec3D; overload;
-function MarginCorner( const V0_,V1_:TDoubleVec3D; const Margin_:Double ) :TDoubleVec3D; overload;
+function InnerRadius( const P1_,P2_,P3_:TSinglePos3D ) :Single; overload;
+function InnerRadius( const P1_,P2_,P3_:TDoublePos3D ) :Double; overload;
 
-function MarginCorner( const P0_,P1_,P2_:TSinglePos3D; const Margin_:Single ) :TSinglePos3D; overload;
-function MarginCorner( const P0_,P1_,P2_:TDoublePos3D; const Margin_:Double ) :TDoublePos3D; overload;
+function InnerRadius( const P0_,P1_,P2_,P3_:TSinglePos3D ) :Single; overload;
+function InnerRadius( const P0_,P1_,P2_,P3_:TDoublePos3D ) :Double; overload;
 
-function Barycenter( const P1_,P2_:TSingle3D ) :TSingle3D; overload;
-function Barycenter( const P1_,P2_:TDouble3D ) :TDouble3D; overload;
+function InnerCenter( const P1_,P2_,P3_:TSinglePos3D ) :TSinglePos3D; overload;
+function InnerCenter( const P1_,P2_,P3_:TDoublePos3D ) :TDoublePos3D; overload;
 
-function Barycenter( const P1_,P2_,P3_:TSingle3D ) :TSingle3D; overload;
-function Barycenter( const P1_,P2_,P3_:TDouble3D ) :TDouble3D; overload;
+function InnerCenter( const P0_,P1_,P2_,P3_:TSinglePos3D ) :TSinglePos3D; overload;
+function InnerCenter( const P0_,P1_,P2_,P3_:TDoublePos3D ) :TDoublePos3D; overload;
 
-function Barycenter( const P0_,P1_,P2_,P3_:TSingle3D ) :TSingle3D; overload;
-function Barycenter( const P0_,P1_,P2_,P3_:TDouble3D ) :TDouble3D; overload;
+function CircumCenter( const P1_,P2_,P3_,P4_:TSinglePos3D ) :TSinglePos3D; overload;
+function CircumCenter( const P1_,P2_,P3_,P4_:TDoublePos3D ) :TDoublePos3D; overload;
+
+function MarginCorner( const V1_,V2_:TSingleVec3D; Margin_:Single ) :TSingleVec3D; overload;
+function MarginCorner( const V1_,V2_:TDoubleVec3D; Margin_:Double ) :TDoubleVec3D; overload;
+
+function MarginCorner( const P0_,P1_,P2_:TSinglePos3D; Margin_:Single ) :TSinglePos3D; overload;
+function MarginCorner( const P0_,P1_,P2_:TDoublePos3D; Margin_:Double ) :TDoublePos3D; overload;
 
 implementation //############################################################### ■
+
+uses LUX.Matrix.L3;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -152,6 +173,17 @@ begin
      end;
 end;
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+class function TSingleSphere.Inner( const P1_,P2_,P3_,P4_:TSingle3D ) :TSingleSphere;
+begin
+     with Result do
+     begin
+          Center :=InnerCenter( P1_,P2_,P3_,P4_ );
+          Radius := InnerRadius( P1_,P2_,P3_,P4_ );
+     end;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleSphere
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -183,9 +215,98 @@ begin
      end;
 end;
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+class function TDoubleSphere.Inner( const P1_,P2_,P3_,P4_:TDouble3D ) :TDoubleSphere;
+begin
+     with Result do
+     begin
+          Center :=InnerCenter( P1_,P2_,P3_,P4_ );
+          Radius := InnerRadius( P1_,P2_,P3_,P4_ );
+     end;
+end;
+
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
+
+function HeronArea( const P1_,P2_,P3_:TSinglePos3D ) :Single;
+var
+   L1, L2, L3 :Single;
+begin
+     L1 := Distanc2( P2_, P3_ );
+     L2 := Distanc2( P3_, P1_ );
+     L3 := Distanc2( P1_, P2_ );
+
+     Result := Roo2( Pow2(       L1   +       L2   +       L3   )
+                   - 2 * ( Pow2( L1 ) + Pow2( L2 ) + Pow2( L3 ) ) ) / 4;
+end;
+
+function HeronArea( const P1_,P2_,P3_:TDoublePos3D ) :Double;
+var
+   L1, L2, L3 :Double;
+begin
+     L1 := Distanc2( P2_, P3_ );
+     L2 := Distanc2( P3_, P1_ );
+     L3 := Distanc2( P1_, P2_ );
+
+     Result := Roo2( Pow2(       L1   +       L2   +       L3   )
+                   - 2 * ( Pow2( L1 ) + Pow2( L2 ) + Pow2( L3 ) ) ) / 4;
+end;
+
+//------------------------------------------------------------------------------
+
+function HeronVolum2( const P0_,P1_,P2_,P3_:TSinglePos3D ) :Single;
+var
+   L01, L23, LL1,
+   L02, L31, LL2,
+   L03, L12, LL3 :Single;
+begin
+     L01 := Distanc2( P0_, P1_ );  L23 := Distanc2( P2_, P3_ );
+     L02 := Distanc2( P0_, P2_ );  L31 := Distanc2( P3_, P1_ );
+     L03 := Distanc2( P0_, P3_ );  L12 := Distanc2( P1_, P2_ );
+
+     LL1 := L01 + L23;
+     LL2 := L02 + L31;
+     LL3 := L03 + L12;
+
+     Result := ( L23 * ( L01 * ( LL2 + LL3 - LL1 ) - L02 * L03 )
+               + L31 * ( L02 * ( LL3 + LL1 - LL2 ) - L03 * L01 )
+               + L12 * ( L03 * ( LL1 + LL2 - LL3 ) - L01 * L02 )
+               - L23 * L31 * L12 ) / 144;
+end;
+
+function HeronVolum2( const P0_,P1_,P2_,P3_:TDoublePos3D ) :Double;
+var
+   L01, L23, LL1,
+   L02, L31, LL2,
+   L03, L12, LL3 :Double;
+begin
+     L01 := Distanc2( P0_, P1_ );  L23 := Distanc2( P2_, P3_ );
+     L02 := Distanc2( P0_, P2_ );  L31 := Distanc2( P3_, P1_ );
+     L03 := Distanc2( P0_, P3_ );  L12 := Distanc2( P1_, P2_ );
+
+     LL1 := L01 + L23;
+     LL2 := L02 + L31;
+     LL3 := L03 + L12;
+
+     Result := ( L23 * ( L01 * ( LL2 + LL3 - LL1 ) - L02 * L03 )
+               + L31 * ( L02 * ( LL3 + LL1 - LL2 ) - L03 * L01 )
+               + L12 * ( L03 * ( LL1 + LL2 - LL3 ) - L01 * L02 )
+               - L23 * L31 * L12 ) / 144;
+end;
+
+function HeronVolume( const P0_,P1_,P2_,P3_:TSinglePos3D ) :Single;
+begin
+     Result := Roo2( HeronVolum2( P0_, P1_, P2_, P3_ ) );
+end;
+
+function HeronVolume( const P0_,P1_,P2_,P3_:TDoublePos3D ) :Double;
+begin
+     Result := Roo2( HeronVolum2( P0_, P1_, P2_, P3_ ) );
+end;
+
+//------------------------------------------------------------------------------
 
 function TriNormal( const P1_,P2_,P3_:TSinglePos3D ) :TSingleVec3D;
 begin
@@ -197,62 +318,149 @@ begin
      Result := CrossProduct( P3_ - P2_, P1_ - P2_ ).Unitor;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
-function CircumCenter( const P0_,P1_,P2_,P3_:TSingle3D ) :TSingle3D;
-var
-   L01, L23, LL1,
-   L02, L31, LL2,
-   L03, L12, LL3,
-   W0, W1, W2, W3 :Single;
+function Barycenter( const P1_,P2_:TSinglePos3D ) :TSinglePos3D;
 begin
-     L01 := Distanc2( P0_, P1_ );  L23 := Distanc2( P2_, P3_ );
-     L02 := Distanc2( P0_, P2_ );  L31 := Distanc2( P3_, P1_ );
-     L03 := Distanc2( P0_, P3_ );  L12 := Distanc2( P1_, P2_ );
-
-     LL1 := L01 * L23;
-     LL2 := L02 * L31;
-     LL3 := L03 * L12;
-
-     W0 := LL1 * ( L31 + L12 - L23 ) + LL2 * ( L12 + L23 - L31 ) + LL3 * ( L23 + L31 - L12 ) - 2 * L23 * L31 * L12;
-     W1 := LL1 * ( L02 + L03 - L23 ) + LL2 * ( L03 + L23 - L02 ) + LL3 * ( L23 + L02 - L03 ) - 2 * L23 * L02 * L03;
-     W2 := LL1 * ( L03 + L31 - L01 ) + LL2 * ( L03 + L01 - L31 ) + LL3 * ( L01 + L31 - L03 ) - 2 * L01 * L31 * L03;
-     W3 := LL1 * ( L02 + L12 - L01 ) + LL2 * ( L12 + L01 - L02 ) + LL3 * ( L01 + L02 - L12 ) - 2 * L01 * L02 * L12;
-
-     { W0+W1+W2+W3 = 8 * Pow2( 6 * HeronVolume( P0, P1, P2, P3 ) ) }
-
-     Result := ( W0 * P0_ + W1 * P1_ + W2 * P2_ + W3 * P3_ )
-             / ( W0       + W1       + W2       + W3       );
+     Result := Ave( P1_, P2_ );
 end;
 
-function CircumCenter( const P0_,P1_,P2_,P3_:TDouble3D ) :TDouble3D;
-var
-   L01, L23, LL1,
-   L02, L31, LL2,
-   L03, L12, LL3,
-   W0, W1, W2, W3 :Double;
+function Barycenter( const P1_,P2_:TDoublePos3D ) :TDoublePos3D;
 begin
-     L01 := Distanc2( P0_, P1_ );  L23 := Distanc2( P2_, P3_ );
-     L02 := Distanc2( P0_, P2_ );  L31 := Distanc2( P3_, P1_ );
-     L03 := Distanc2( P0_, P3_ );  L12 := Distanc2( P1_, P2_ );
-
-     LL1 := L01 * L23;
-     LL2 := L02 * L31;
-     LL3 := L03 * L12;
-
-     W0 := LL1 * ( L31 + L12 - L23 ) + LL2 * ( L12 + L23 - L31 ) + LL3 * ( L23 + L31 - L12 ) - 2 * L23 * L31 * L12;
-     W1 := LL1 * ( L02 + L03 - L23 ) + LL2 * ( L03 + L23 - L02 ) + LL3 * ( L23 + L02 - L03 ) - 2 * L23 * L02 * L03;
-     W2 := LL1 * ( L03 + L31 - L01 ) + LL2 * ( L03 + L01 - L31 ) + LL3 * ( L01 + L31 - L03 ) - 2 * L01 * L31 * L03;
-     W3 := LL1 * ( L02 + L12 - L01 ) + LL2 * ( L12 + L01 - L02 ) + LL3 * ( L01 + L02 - L12 ) - 2 * L01 * L02 * L12;
-
-     { W0+W1+W2+W3 = 8 * Pow2( 6 * HeronVolume( P0, P1, P2, P3 ) ) }
-
-     Result := ( W0 * P0_ + W1 * P1_ + W2 * P2_ + W3 * P3_ )
-             / ( W0       + W1       + W2       + W3       );
+     Result := Ave( P1_, P2_ );
 end;
 
-{
-function CircumCenter( const P1_,P2_,P3_,P4_:TSingle3D ) :TSingle3D;
+function Barycenter( const P1_,P2_,P3_:TSinglePos3D ) :TSinglePos3D;
+begin
+     Result := Ave( P1_, P2_, P3_ );
+end;
+
+function Barycenter( const P1_,P2_,P3_:TDoublePos3D ) :TDoublePos3D;
+begin
+     Result := Ave( P1_, P2_, P3_ );
+end;
+
+function Barycenter( const P0_,P1_,P2_,P3_:TSinglePos3D ) :TSinglePos3D;
+begin
+     Result := Ave( P0_, P1_, P2_, P3_ );
+end;
+
+function Barycenter( const P0_,P1_,P2_,P3_:TDoublePos3D ) :TDoublePos3D;
+begin
+     Result := Ave( P0_, P1_, P2_, P3_ );
+end;
+
+//------------------------------------------------------------------------------
+
+function InnerRadius( const P1_,P2_,P3_:TSinglePos3D ) :Single;
+var
+   L1, L2, L3, S :Single;
+begin
+     L1 := Distance( P2_, P3_ );
+     L2 := Distance( P3_, P1_ );
+     L3 := Distance( P1_, P2_ );
+
+     S := ( L1 + L2 + L3 ) / 2;
+
+     Result := Roo2( ( S - L1 ) * ( S - L2 ) * ( S - L3 ) / S );
+end;
+
+function InnerRadius( const P1_,P2_,P3_:TDoublePos3D ) :Double;
+var
+   L1, L2, L3, S :Single;
+begin
+     L1 := Distance( P2_, P3_ );
+     L2 := Distance( P3_, P1_ );
+     L3 := Distance( P1_, P2_ );
+
+     S := ( L1 + L2 + L3 ) / 2;
+
+     Result := Roo2( ( S - L1 ) * ( S - L2 ) * ( S - L3 ) / S );
+end;
+
+function InnerRadius( const P0_,P1_,P2_,P3_:TSinglePos3D ) :Single;
+var
+   V, A0, A1, A2, A3 :Single;
+begin
+     V := HeronVolume( P0_, P1_, P2_, P3_ );
+
+     A0 := HeronArea( P1_, P2_, P3_ );
+     A1 := HeronArea( P0_, P3_, P2_ );
+     A2 := HeronArea( P3_, P0_, P1_ );
+     A3 := HeronArea( P2_, P1_, P0_ );
+
+     Result := 3 * V / ( A0 + A1 + A2 + A3 );
+end;
+
+function InnerRadius( const P0_,P1_,P2_,P3_:TDoublePos3D ) :Double;
+var
+   V, A0, A1, A2, A3 :Double;
+begin
+     V := HeronVolume( P0_, P1_, P2_, P3_ );
+
+     A0 := HeronArea( P1_, P2_, P3_ );
+     A1 := HeronArea( P0_, P3_, P2_ );
+     A2 := HeronArea( P3_, P0_, P1_ );
+     A3 := HeronArea( P2_, P1_, P0_ );
+
+     Result := 3 * V / ( A0 + A1 + A2 + A3 );
+end;
+
+//------------------------------------------------------------------------------
+
+function InnerCenter( const P1_,P2_,P3_:TSinglePos3D ) :TSinglePos3D;
+var
+   L1, L2, L3 :Single;
+begin
+     L1 := Distance( P2_, P3_ );
+     L2 := Distance( P3_, P1_ );
+     L3 := Distance( P1_, P2_ );
+
+     Result := ( L1 * P1_ + L2 * P2_ + L3 * P3_ )
+             / ( L1       + L2       + L3       );
+end;
+
+function InnerCenter( const P1_,P2_,P3_:TDoublePos3D ) :TDoublePos3D;
+var
+   L1, L2, L3 :Double;
+begin
+     L1 := Distance( P2_, P3_ );
+     L2 := Distance( P3_, P1_ );
+     L3 := Distance( P1_, P2_ );
+
+     Result := ( L1 * P1_ + L2 * P2_ + L3 * P3_ )
+             / ( L1       + L2       + L3       );
+end;
+
+function InnerCenter( const P0_,P1_,P2_,P3_:TSinglePos3D ) :TSinglePos3D;
+var
+   A0, A1, A2, A3 :Single;
+begin
+     A0 := HeronArea( P1_, P2_, P3_ );
+     A1 := HeronArea( P0_, P3_, P2_ );
+     A2 := HeronArea( P3_, P0_, P1_ );
+     A3 := HeronArea( P2_, P1_, P0_ );
+
+     Result := ( A0 * P0_ + A1 * P1_ + A2 * P2_ + A3 * P3_ )
+             / ( A0       + A1       + A2       + A3       );
+end;
+
+function InnerCenter( const P0_,P1_,P2_,P3_:TDoublePos3D ) :TDoublePos3D;
+var
+   A0, A1, A2, A3 :Double;
+begin
+     A0 := HeronArea( P1_, P2_, P3_ );
+     A1 := HeronArea( P0_, P3_, P2_ );
+     A2 := HeronArea( P3_, P0_, P1_ );
+     A3 := HeronArea( P2_, P1_, P0_ );
+
+     Result := ( A0 * P0_ + A1 * P1_ + A2 * P2_ + A3 * P3_ )
+             / ( A0       + A1       + A2       + A3       );
+end;
+
+//------------------------------------------------------------------------------
+
+function CircumCenter( const P1_,P2_,P3_,P4_:TSinglePos3D ) :TSinglePos3D;
 var
    L1, L2, L3, L4 :Single;
    M :TSingleM3;
@@ -280,7 +488,7 @@ begin
      Result := M.Inverse * V / 2;
 end;
 
-function CircumCenter( const P1_,P2_,P3_,P4_:TDouble3D ) :TDouble3D;
+function CircumCenter( const P1_,P2_,P3_,P4_:TDoublePos3D ) :TDoublePos3D;
 var
    L1, L2, L3, L4 :Double;
    M :TDoubleM3;
@@ -307,114 +515,69 @@ begin
 
      Result := M.Inverse * V / 2;
 end;
-}
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
-function HeronVolum2( const P0_,P1_,P2_,P3_:TSingle3D ) :Single;
+function MarginCorner( const V1_,V2_:TSingleVec3D; Margin_:Single ) :TSingleVec3D;
 var
-   L01, L23, LL1,
-   L02, L31, LL2,
-   L03, L12, LL3 :Single;
+   R :Single;
+   E1, E2 :TSingleVec3D;
 begin
-     L01 := Distanc2( P0_, P1_ );  L23 := Distanc2( P2_, P3_ );
-     L02 := Distanc2( P0_, P2_ );  L31 := Distanc2( P3_, P1_ );
-     L03 := Distanc2( P0_, P3_ );  L12 := Distanc2( P1_, P2_ );
+     R := InnerRadius( TSingle3D.Create( 0, 0, 0 ), V1_, V2_ );
 
-     LL1 := L01 + L23;
-     LL2 := L02 + L31;
-     LL3 := L03 + L12;
+     if R < Margin_ then Margin_ := R;
 
-     Result := ( L23 * ( L01 * ( LL2 + LL3 - LL1 ) - L02 * L03 )
-               + L31 * ( L02 * ( LL3 + LL1 - LL2 ) - L03 * L01 )
-               + L12 * ( L03 * ( LL1 + LL2 - LL3 ) - L01 * L02 )
-               - L23 * L31 * L12 ) / 144;
+     E1 := V1_.Unitor;
+     E2 := V2_.Unitor;
+
+     Result := ( Margin_ / Roo2( 1 - Pow2( DotProduct( E1, E2 ) ) ) ) * ( E1 + E2 );
 end;
 
-function HeronVolum2( const P0_,P1_,P2_,P3_:TDouble3D ) :Double;
+function MarginCorner( const V1_,V2_:TDoubleVec3D; Margin_:Double ) :TDoubleVec3D;
 var
-   L01, L23, LL1,
-   L02, L31, LL2,
-   L03, L12, LL3 :Double;
+   R :Double;
+   E1, E2 :TDoubleVec3D;
 begin
-     L01 := Distanc2( P0_, P1_ );  L23 := Distanc2( P2_, P3_ );
-     L02 := Distanc2( P0_, P2_ );  L31 := Distanc2( P3_, P1_ );
-     L03 := Distanc2( P0_, P3_ );  L12 := Distanc2( P1_, P2_ );
+     R := InnerRadius( TDouble3D.Create( 0, 0, 0 ), V1_, V2_ );
 
-     LL1 := L01 + L23;
-     LL2 := L02 + L31;
-     LL3 := L03 + L12;
+     if R < Margin_ then Margin_ := R;
 
-     Result := ( L23 * ( L01 * ( LL2 + LL3 - LL1 ) - L02 * L03 )
-               + L31 * ( L02 * ( LL3 + LL1 - LL2 ) - L03 * L01 )
-               + L12 * ( L03 * ( LL1 + LL2 - LL3 ) - L01 * L02 )
-               - L23 * L31 * L12 ) / 144;
+     E1 := V1_.Unitor;
+     E2 := V2_.Unitor;
+
+     Result := ( Margin_ / Roo2( 1 - Pow2( DotProduct( E1, E2 ) ) ) ) * ( E1 + E2 );
 end;
 
-function HeronVolume( const P0_,P1_,P2_,P3_:TSingle3D ) :Single;
+//------------------------------------------------------------------------------
+
+function MarginCorner( const P0_,P1_,P2_:TSinglePos3D; Margin_:Single ) :TSinglePos3D;
+var
+   R :Single;
+   E1, E2 :TSingleVec3D;
 begin
-     Result := Roo2( HeronVolum2( P0_, P1_, P2_, P3_ ) );
+     R := InnerRadius( P0_, P1_, P2_ );
+
+     if R < Margin_ then Margin_ := R;
+
+     E1 := P0_.UnitorTo( P1_ );
+     E2 := P0_.UnitorTo( P2_ );
+
+     Result := ( Margin_ / Roo2( 1 - Pow2( DotProduct( E1, E2 ) ) ) ) * ( E1 + E2 ) + P0_;
 end;
 
-function HeronVolume( const P0_,P1_,P2_,P3_:TDouble3D ) :Double;
+function MarginCorner( const P0_,P1_,P2_:TDoublePos3D; Margin_:Double ) :TDoublePos3D;
+var
+   R :Double;
+   E1, E2 :TDoubleVec3D;
 begin
-     Result := Roo2( HeronVolum2( P0_, P1_, P2_, P3_ ) );
-end;
+     R := InnerRadius( P0_, P1_, P2_ );
 
-////////////////////////////////////////////////////////////////////////////////
+     if R < Margin_ then Margin_ := R;
 
-function MarginCorner( const V0_,V1_:TSingleVec3D; const Margin_:Single ) :TSingleVec3D;
-begin
-     Result := ( Margin_ / Roo2( 1 - Pow2( DotProduct( V0_, V1_ ) ) ) ) * ( V0_ + V1_ );
-end;
+     E1 := P0_.UnitorTo( P1_ );
+     E2 := P0_.UnitorTo( P2_ );
 
-function MarginCorner( const V0_,V1_:TDoubleVec3D; const Margin_:Double ) :TDoubleVec3D;
-begin
-     Result := ( Margin_ / Roo2( 1 - Pow2( DotProduct( V0_, V1_ ) ) ) ) * ( V0_ + V1_ );
-end;
-
-////////////////////////////////////////////////////////////////////////////////
-
-function MarginCorner( const P0_,P1_,P2_:TSingleVec3D; const Margin_:Single ) :TSingleVec3D;
-begin
-     Result := P1_ + MarginCorner( P1_.UnitorTo( P0_ ), P1_.UnitorTo( P2_ ), Margin_ );
-end;
-
-function MarginCorner( const P0_,P1_,P2_:TDoubleVec3D; const Margin_:Double ) :TDoubleVec3D;
-begin
-     Result := P1_ + MarginCorner( P1_.UnitorTo( P0_ ), P1_.UnitorTo( P2_ ), Margin_ );
-end;
-
-////////////////////////////////////////////////////////////////////////////////
-
-function Barycenter( const P1_,P2_:TSingle3D ) :TSingle3D;
-begin
-     Result := Ave( P1_, P2_ );
-end;
-
-function Barycenter( const P1_,P2_:TDouble3D ) :TDouble3D;
-begin
-     Result := Ave( P1_, P2_ );
-end;
-
-function Barycenter( const P1_,P2_,P3_:TSingle3D ) :TSingle3D;
-begin
-     Result := Ave( P1_, P2_, P3_ );
-end;
-
-function Barycenter( const P1_,P2_,P3_:TDouble3D ) :TDouble3D;
-begin
-     Result := Ave( P1_, P2_, P3_ );
-end;
-
-function Barycenter( const P0_,P1_,P2_,P3_:TSingle3D ) :TSingle3D;
-begin
-     Result := Ave( P0_, P1_, P2_, P3_ );
-end;
-
-function Barycenter( const P0_,P1_,P2_,P3_:TDouble3D ) :TDouble3D;
-begin
-     Result := Ave( P0_, P1_, P2_, P3_ );
+     Result := ( Margin_ / Roo2( 1 - Pow2( DotProduct( E1, E2 ) ) ) ) * ( E1 + E2 ) + P0_;
 end;
 
 //############################################################################## □
