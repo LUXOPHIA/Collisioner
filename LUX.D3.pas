@@ -157,18 +157,50 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Implicit( const V_:TDoubleSiz3D ) :TDouble3D;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleRay3D
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleArea3D
 
-     TSingleRay3D = record
+     TSingleArea3D = record
+     private
+       ///// アクセス
+       function GetPoin( const I_:Integer ) :TSingle3D;
+     public
+       Min :TSingle3D;
+       Max :TSingle3D;
+       /////
+       constructor Create( const MinX_,MinY_,MinZ_,MaxX_,MaxY_,MaxZ_:Single ); overload;
+       constructor Create( const Min_,Max_:TSingle3D ); overload;
+       ///// プロパティ
+       property Poin[ const I_:Integer ] :TSingle3D read GetPoin;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea3D
+
+     TDoubleArea3D = record
+     private
+       ///// アクセス
+       function GetPoin( const I_:Integer ) :TDouble3D;
+     public
+       Min :TDouble3D;
+       Max :TDouble3D;
+       /////
+       constructor Create( const MinX_,MinY_,MinZ_,MaxX_,MaxY_,MaxZ_:Double ); overload;
+       constructor Create( const Min_,Max_:TDouble3D ); overload;
+       ///// プロパティ
+       property Poin[ const I_:Integer ] :TDouble3D read GetPoin;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleArrow3D
+
+     TSingleArrow3D = record
      private
      public
        Pos :TSinglePos3D;
        Vec :TSingleVec3D;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleRay3D
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArrow3D
 
-     TDoubleRay3D = record
+     TDoubleArrow3D = record
      private
      public
        Pos :TDoublePos3D;
@@ -889,6 +921,105 @@ begin
           Z := V_.Z;
      end;
 end;
+
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleArea3D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+function TSingleArea3D.GetPoin( const I_:Integer ) :TSingle3D;
+begin
+     case I_ of
+       0: Result := TSingle3D.Create( Min.X, Min.Y, Min.Z );
+       1: Result := TSingle3D.Create( Max.X, Min.Y, Min.Z );
+       2: Result := TSingle3D.Create( Min.X, Max.Y, Min.Z );
+       3: Result := TSingle3D.Create( Max.X, Max.Y, Min.Z );
+       4: Result := TSingle3D.Create( Min.X, Min.Y, Max.Z );
+       5: Result := TSingle3D.Create( Max.X, Min.Y, Max.Z );
+       6: Result := TSingle3D.Create( Min.X, Max.Y, Max.Z );
+       7: Result := TSingle3D.Create( Max.X, Max.Y, Max.Z );
+     end;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TSingleArea3D.Create( const MinX_,MinY_,MinZ_,MaxX_,MaxY_,MaxZ_:Single );
+begin
+     with Min do
+     begin
+          X := MinX_;
+          Y := MinY_;
+          Z := MinZ_;
+     end;
+
+     with Max do
+     begin
+          X := MaxX_;
+          Y := MaxY_;
+          Z := MaxZ_;
+     end;
+end;
+
+constructor TSingleArea3D.Create( const Min_,Max_:TSingle3D );
+begin
+     Min := Min_;
+     Max := Max_;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea3D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+function TDoubleArea3D.GetPoin( const I_:Integer ) :TDouble3D;
+begin
+     case I_ of
+       0: Result := TDouble3D.Create( Min.X, Min.Y, Min.Z );
+       1: Result := TDouble3D.Create( Max.X, Min.Y, Min.Z );
+       2: Result := TDouble3D.Create( Min.X, Max.Y, Min.Z );
+       3: Result := TDouble3D.Create( Max.X, Max.Y, Min.Z );
+       4: Result := TDouble3D.Create( Min.X, Min.Y, Max.Z );
+       5: Result := TDouble3D.Create( Max.X, Min.Y, Max.Z );
+       6: Result := TDouble3D.Create( Min.X, Max.Y, Max.Z );
+       7: Result := TDouble3D.Create( Max.X, Max.Y, Max.Z );
+     end;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TDoubleArea3D.Create( const MinX_,MinY_,MinZ_,MaxX_,MaxY_,MaxZ_:Double );
+begin
+     with Min do
+     begin
+          X := MinX_;
+          Y := MinY_;
+          Z := MinZ_;
+     end;
+
+     with Max do
+     begin
+          X := MaxX_;
+          Y := MaxY_;
+          Z := MaxZ_;
+     end;
+end;
+
+constructor TDoubleArea3D.Create( const Min_,Max_:TDouble3D );
+begin
+     Min := Min_;
+     Max := Max_;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleArrow3D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArrow3D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
