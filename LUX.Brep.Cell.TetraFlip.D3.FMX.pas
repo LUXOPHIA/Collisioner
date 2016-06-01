@@ -187,13 +187,13 @@ begin
                     T0.P3 := C0.Poin[ _[ 3 ] ].Pos;
                end;
 
-               T0.C102 := MarginCorner( T0.P1, T0.P0, T0.P2, _EdgeRadius );
-               T0.C203 := MarginCorner( T0.P2, T0.P0, T0.P3, _EdgeRadius );
-               T0.P301 := MarginCorner( T0.P3, T0.P0, T0.P1, _EdgeRadius );
+               T0.C102 := MarginCorner( T0.P0, T0.P1, T0.P2, _EdgeRadius );
+               T0.C203 := MarginCorner( T0.P0, T0.P2, T0.P3, _EdgeRadius );
+               T0.P301 := MarginCorner( T0.P0, T0.P3, T0.P1, _EdgeRadius );
 
-               T0.C021 := MarginCorner( T0.P0, T0.P2, T0.P1, _EdgeRadius );
-               T0.C032 := MarginCorner( T0.P0, T0.P3, T0.P2, _EdgeRadius );
-               T0.C013 := MarginCorner( T0.P0, T0.P1, T0.P3, _EdgeRadius );
+               T0.C021 := MarginCorner( T0.P2, T0.P0, T0.P1, _EdgeRadius );
+               T0.C032 := MarginCorner( T0.P3, T0.P0, T0.P2, _EdgeRadius );
+               T0.C013 := MarginCorner( T0.P1, T0.P0, T0.P3, _EdgeRadius );
 
                Ps := Ps + [ T0.C021, T0.C102, T0.C203,
                             T0.C032, T0.C203, T0.P301,
@@ -204,9 +204,9 @@ begin
 
                if not ( Assigned( C1 ) and Assigned( C1.Poin[ C0.Vert[ K ] ] ) ) then
                begin
-                    T0.C312 := MarginCorner( T0.P3, T0.P1, T0.P2, _EdgeRadius );
-                    T0.C123 := MarginCorner( T0.P1, T0.P2, T0.P3, _EdgeRadius );
-                    T0.C231 := MarginCorner( T0.P2, T0.P3, T0.P1, _EdgeRadius );
+                    T0.C312 := MarginCorner( T0.P1, T0.P3, T0.P2, _EdgeRadius );
+                    T0.C123 := MarginCorner( T0.P2, T0.P1, T0.P3, _EdgeRadius );
+                    T0.C231 := MarginCorner( T0.P3, T0.P2, T0.P1, _EdgeRadius );
 
                     Ps := Ps + [ T0.P2  , T0.P1  , T0.C312,
                                  T0.C312, T0.C123, T0.P2  ,
@@ -274,10 +274,10 @@ begin
           begin
                with _VertTable[ K ] do
                begin
-                    T0.V0 := C0.VoroVec[ _[ 0 ] ];
-                    T0.V1 := C0.VoroVec[ _[ 1 ] ];
-                    T0.V2 := C0.VoroVec[ _[ 2 ] ];
-                    T0.V3 := C0.VoroVec[ _[ 3 ] ];
+                    T0.V0 := C0.VoroEdge[ _[ 0 ] ];
+                    T0.V1 := C0.VoroEdge[ _[ 1 ] ];
+                    T0.V2 := C0.VoroEdge[ _[ 2 ] ];
+                    T0.V3 := C0.VoroEdge[ _[ 3 ] ];
                end;
 
                T0.C23 := T0.S + MarginCorner( T0.V2, T0.V3, _EdgeRadius );
@@ -296,10 +296,10 @@ begin
                begin
                     T1.S := C1.CircumCenter;
 
-                    T1.V0 := C1.VoroVec[ C0.Join[ K, 0 ] ];
-                    T1.V1 := C1.VoroVec[ C0.Join[ K, 1 ] ];
-                    T1.V2 := C1.VoroVec[ C0.Join[ K, 2 ] ];
-                    T1.V3 := C1.VoroVec[ C0.Join[ K, 3 ] ];
+                    T1.V0 := C1.VoroEdge[ C0.Join[ K, 0 ] ];
+                    T1.V1 := C1.VoroEdge[ C0.Join[ K, 1 ] ];
+                    T1.V2 := C1.VoroEdge[ C0.Join[ K, 2 ] ];
+                    T1.V3 := C1.VoroEdge[ C0.Join[ K, 3 ] ];
 
                     T1.C01 := T1.S + MarginCorner( T1.V0, T1.V1, _EdgeRadius );
                     T1.C02 := T1.S + MarginCorner( T1.V0, T1.V2, _EdgeRadius );
