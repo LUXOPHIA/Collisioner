@@ -189,22 +189,32 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Poin[ const I_:Integer ] :TDouble3D read GetPoin;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleArrow3D
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleRay3D
 
-     TSingleArrow3D = record
+     TSingleRay3D = record
      private
+       ///// アクセス
+       function GetUnitor :TSingleRay3D; inline;
+       procedure SetUnitor( const Unitor_:TSingleRay3D ); inline;
      public
        Pos :TSinglePos3D;
        Vec :TSingleVec3D;
+       ///// プロパティ
+       property Unitor :TSingleRay3D read GetUnitor write SetUnitor;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArrow3D
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleRay3D
 
-     TDoubleArrow3D = record
+     TDoubleRay3D = record
      private
+       ///// アクセス
+       function GetUnitor :TDoubleRay3D; inline;
+       procedure SetUnitor( const Unitor_:TDoubleRay3D ); inline;
      public
        Pos :TDoublePos3D;
        Vec :TDoubleVec3D;
+       ///// プロパティ
+       property Unitor :TDoubleRay3D read GetUnitor write SetUnitor;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -922,10 +932,11 @@ begin
      end;
 end;
 
-
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleArea3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
 
 function TSingleArea3D.GetPoin( const I_:Integer ) :TSingle3D;
 begin
@@ -970,6 +981,8 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
+/////////////////////////////////////////////////////////////////////// アクセス
+
 function TDoubleArea3D.GetPoin( const I_:Integer ) :TDouble3D;
 begin
      case I_ of
@@ -1009,15 +1022,43 @@ begin
      Max := Max_;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleArrow3D
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleRay3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TSingleRay3D.GetUnitor :TSingleRay3D;
+begin
+     Result.Pos := Pos       ;
+     Result.Vec := Vec.Unitor;
+end;
+
+procedure TSingleRay3D.SetUnitor( const Unitor_:TSingleRay3D );
+begin
+     Pos :=            Unitor_.Pos;
+     Vec := Vec.Size * Unitor_.Vec;
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArrow3D
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleRay3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TDoubleRay3D.GetUnitor :TDoubleRay3D;
+begin
+     Result.Pos := Pos       ;
+     Result.Vec := Vec.Unitor;
+end;
+
+procedure TDoubleRay3D.SetUnitor( const Unitor_:TDoubleRay3D );
+begin
+     Pos :=            Unitor_.Pos;
+     Vec := Vec.Size * Unitor_.Vec;
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
