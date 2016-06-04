@@ -167,10 +167,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        Min :TSingle3D;
        Max :TSingle3D;
        /////
-       constructor Create( const MinX_,MinY_,MinZ_,MaxX_,MaxY_,MaxZ_:Single ); overload;
+       constructor Create( const Min_,Max_:Single ); overload;
+       constructor Create( const MinX_,MinY_,MinZ_,
+                                 MaxX_,MaxY_,MaxZ_:Single ); overload;
        constructor Create( const Min_,Max_:TSingle3D ); overload;
        ///// プロパティ
        property Poin[ const I_:Integer ] :TSingle3D read GetPoin;
+       ///// 定数
+       class function MinArea :TSingleArea3D; static;
+       class function ZeroArea :TSingleArea3D; static;
+       class function MaxArea :TSingleArea3D; static;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea3D
@@ -183,10 +189,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        Min :TDouble3D;
        Max :TDouble3D;
        /////
-       constructor Create( const MinX_,MinY_,MinZ_,MaxX_,MaxY_,MaxZ_:Double ); overload;
+       constructor Create( const Min_,Max_:Double ); overload;
+       constructor Create( const MinX_,MinY_,MinZ_,
+                                 MaxX_,MaxY_,MaxZ_:Double ); overload;
        constructor Create( const Min_,Max_:TDouble3D ); overload;
        ///// プロパティ
        property Poin[ const I_:Integer ] :TDouble3D read GetPoin;
+       ///// 定数
+       class function MinArea :TDoubleArea3D; static;
+       class function ZeroArea :TDoubleArea3D; static;
+       class function MaxArea :TDoubleArea3D; static;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleRay3D
@@ -201,6 +213,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        Vec :TSingleVec3D;
        ///// プロパティ
        property Unitor :TSingleRay3D read GetUnitor write SetUnitor;
+       ///// メソッド
+       function GoPos( const Len_:Single ) :TSingle3D;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleRay3D
@@ -215,6 +229,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        Vec :TDoubleVec3D;
        ///// プロパティ
        property Unitor :TDoubleRay3D read GetUnitor write SetUnitor;
+       ///// メソッド
+       function GoPos( const Len_:Double ) :TDouble3D;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -248,7 +264,7 @@ function Ave( const P1_,P2_,P3_,P4_:TDouble3D ) :TDouble3D; inline; overload;
 
 implementation //############################################################### ■
 
-uses System.Math;
+uses System.SysUtils, System.Math;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -954,7 +970,14 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TSingleArea3D.Create( const MinX_,MinY_,MinZ_,MaxX_,MaxY_,MaxZ_:Single );
+constructor TSingleArea3D.Create( const Min_,Max_:Single );
+begin
+     Create( Min_, Min_, Min_,
+             Max_, Max_, Max_ );
+end;
+
+constructor TSingleArea3D.Create( const MinX_,MinY_,MinZ_,
+                                        MaxX_,MaxY_,MaxZ_:Single );
 begin
      with Min do
      begin
@@ -975,6 +998,23 @@ constructor TSingleArea3D.Create( const Min_,Max_:TSingle3D );
 begin
      Min := Min_;
      Max := Max_;
+end;
+
+/////////////////////////////////////////////////////////////////////////// 定数
+
+class function TSingleArea3D.MinArea :TSingleArea3D;
+begin
+     Result := TSingleArea3D.Create( +Single.MaxValue, -Single.MaxValue );
+end;
+
+class function TSingleArea3D.ZeroArea :TSingleArea3D;
+begin
+     Result := TSingleArea3D.Create( 0, 0 );
+end;
+
+class function TSingleArea3D.MaxArea :TSingleArea3D;
+begin
+     Result := TSingleArea3D.Create( -Single.MaxValue, +Single.MaxValue );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea3D
@@ -999,7 +1039,14 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TDoubleArea3D.Create( const MinX_,MinY_,MinZ_,MaxX_,MaxY_,MaxZ_:Double );
+constructor TDoubleArea3D.Create( const Min_,Max_:Double );
+begin
+     Create( Min_, Min_, Min_,
+             Max_, Max_, Max_ );
+end;
+
+constructor TDoubleArea3D.Create( const MinX_,MinY_,MinZ_,
+                                        MaxX_,MaxY_,MaxZ_:Double );
 begin
      with Min do
      begin
@@ -1022,6 +1069,23 @@ begin
      Max := Max_;
 end;
 
+/////////////////////////////////////////////////////////////////////////// 定数
+
+class function TDoubleArea3D.MinArea :TDoubleArea3D;
+begin
+     Result := TDoubleArea3D.Create( +Double.MaxValue, -Double.MaxValue );
+end;
+
+class function TDoubleArea3D.ZeroArea :TDoubleArea3D;
+begin
+     Result := TDoubleArea3D.Create( 0, 0 );
+end;
+
+class function TDoubleArea3D.MaxArea :TDoubleArea3D;
+begin
+     Result := TDoubleArea3D.Create( -Double.MaxValue, +Double.MaxValue );
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleRay3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -1042,6 +1106,13 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TSingleRay3D.GoPos( const Len_:Single ) :TSingle3D;
+begin
+     Result := Len_ * Vec + Pos;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleRay3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -1061,6 +1132,13 @@ begin
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TDoubleRay3D.GoPos( const Len_:Double ) :TDouble3D;
+begin
+     Result := Len_ * Vec + Pos;
+end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
