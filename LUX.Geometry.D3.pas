@@ -112,9 +112,16 @@ function MarginCorner( const V1_,V2_:TDoubleVec3D; Margin_:Double ) :TDoubleVec3
 function MarginCorner( const P0_,P1_,P2_:TSinglePos3D; Margin_:Single ) :TSinglePos3D; overload;
 function MarginCorner( const P0_,P1_,P2_:TDoublePos3D; Margin_:Double ) :TDoublePos3D; overload;
 
+function Reflect( const InV_,Nor_:TSingle3D ) :TSingle3D; overload;
+function Reflect( const InV_,Nor_:TDouble3D ) :TDouble3D; overload;
+
+function Refract( const InV_,Nor_:TSingle3D; const RaI_:Single; out RaV_:TSingle3D; out ReW_:Single ) :Boolean; overload;
+function Refract( const InV_,Nor_:TDouble3D; const RaI_:Double; out RaV_:TDouble3D; out ReW_:Double ) :Boolean; overload;
+
 implementation //############################################################### ■
 
-uses LUX.Matrix.L3;
+uses System.Math,
+     LUX.Matrix.L3;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -578,6 +585,78 @@ begin
      E2 := P0_.UnitorTo( P2_ );
 
      Result := ( Margin_ / Roo2( 1 - Pow2( DotProduct( E1, E2 ) ) ) ) * ( E1 + E2 ) + P0_;
+end;
+
+//------------------------------------------------------------------------------
+
+function Reflect( const InV_,Nor_:TSingle3D ) :TSingle3D;
+begin
+     Result := InV_ - 2 * DotProduct( InV_, Nor_ ) * Nor_;
+end;
+
+function Reflect( const InV_,Nor_:TDouble3D ) :TDouble3D;
+begin
+     Result := InV_ - 2 * DotProduct( InV_, Nor_ ) * Nor_;
+end;
+
+//------------------------------------------------------------------------------
+
+function Refract( const InV_,Nor_:TSingle3D; const RaI_:Single; out RaV_:TSingle3D; out ReW_:Single ) :Boolean;
+var
+   N2, C, C2, G, G2, N2C :Single;
+begin
+     N2 := Pow2( RaI_ );
+
+     C := -DotProduct( InV_, Nor_ );  C2 := Pow2( C );
+
+     G2 := N2 + C2 - 1;
+
+     Result := ( G2 >= 0 );
+
+     if Result then
+     begin
+          G := Roo2( G2 );
+
+          RaV_ := ( InV_ + ( C - G ) * Nor_ ) / RaI_;
+
+          N2C := N2 * C;
+
+          ReW_ := ( Pow2( (   C - G ) / (   C + G ) )
+                  + Pow2( ( N2C - G ) / ( N2C + G ) ) ) / 2;
+          { 近似
+          R := Pow2( ( RaI_ - 1 ) / ( RaI_ + 1 ) );
+          ReW_ := R + ( 1 - R ) * IntPower( 1 - C, 5 );
+          }
+     end;
+end;
+
+function Refract( const InV_,Nor_:TDouble3D; const RaI_:Double; out RaV_:TDouble3D; out ReW_:Double ) :Boolean;
+var
+   N2, C, C2, G, G2, N2C :Double;
+begin
+     N2 := Pow2( RaI_ );
+
+     C := -DotProduct( InV_, Nor_ );  C2 := Pow2( C );
+
+     G2 := N2 + C2 - 1;
+
+     Result := ( G2 >= 0 );
+
+     if Result then
+     begin
+          G := Roo2( G2 );
+
+          RaV_ := ( InV_ + ( C - G ) * Nor_ ) / RaI_;
+
+          N2C := N2 * C;
+
+          ReW_ := ( Pow2( (   C - G ) / (   C + G ) )
+                  + Pow2( ( N2C - G ) / ( N2C + G ) ) ) / 2;
+          { 近似
+          R := Pow2( ( RaI_ - 1 ) / ( RaI_ + 1 ) );
+          ReW_ := R + ( 1 - R ) * IntPower( 1 - C, 5 );
+          }
+     end;
 end;
 
 //############################################################################## □
