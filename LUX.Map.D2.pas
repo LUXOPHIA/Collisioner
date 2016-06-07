@@ -61,10 +61,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        ///// プロパティ
        property Bric[ const X_,Y_:Integer ] :T_Item  read GetItem   write SetItem  ; default;
-       property BricX                    :Integer read   _CountX write SetCountX;
-       property BricY                    :Integer read   _CountY write SetCountY;
-       property GridX                    :Integer read GetGridX  write SetGridX ;
-       property GridY                    :Integer read GetGridY  write SetGridY ;
+       property BricX                       :Integer read   _CountX write SetCountX;
+       property BricY                       :Integer read   _CountY write SetCountY;
+       property GridX                       :Integer read GetGridX  write SetGridX ;
+       property GridY                       :Integer read GetGridY  write SetGridY ;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGridArray2D<T_Item>
@@ -84,10 +84,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        destructor Destroy; override;
        ///// プロパティ
        property Grid[ const X_,Y_:Integer ] :T_Item  read GetItem   write SetItem  ; default;
-       property GridX                    :Integer read   _CountX write SetCountX;
-       property GridY                    :Integer read   _CountY write SetCountY;
-       property BricX                    :Integer read GetBricX  write SetBricX ;
-       property BricY                    :Integer read GetBricY  write SetBricY ;
+       property GridX                       :Integer read   _CountX write SetCountX;
+       property GridY                       :Integer read   _CountY write SetCountY;
+       property BricX                       :Integer read GetBricX  write SetBricX ;
+       property BricY                       :Integer read GetBricY  write SetBricY ;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
