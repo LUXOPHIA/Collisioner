@@ -14,9 +14,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      public
        ///// 型変換
-       class function RandomBS1 :Single; static;
-       class function RandomBS2 :Single; static;
-       class function RandomBS4 :Single; static;
+       class function RandBS1 :Single; static;
+       class function RandBS2 :Single; static;
+       class function RandBS4 :Single; static;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDouble
@@ -25,9 +25,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      public
        ///// 型変換
-       class function RandomBS1 :Double; static;
-       class function RandomBS2 :Double; static;
-       class function RandomBS4 :Double; static;
+       class function RandBS1 :Double; static;
+       class function RandBS2 :Double; static;
+       class function RandBS4 :Double; static;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TdSingle
@@ -260,19 +260,19 @@ uses System.Math;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-class function TSingle.RandomBS1 :Single;
+class function TSingle.RandBS1 :Single;
 begin
      Result := Random - 0.5;
 end;
 
-class function TSingle.RandomBS2 :Single;
+class function TSingle.RandBS2 :Single;
 begin
-     Result := RandomBS1 + RandomBS1;
+     Result := RandBS1 + RandBS1;
 end;
 
-class function TSingle.RandomBS4 :Single;
+class function TSingle.RandBS4 :Single;
 begin
-     Result := RandomBS2 + RandomBS2;
+     Result := RandBS2 + RandBS2;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDouble
@@ -281,19 +281,19 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-class function TDouble.RandomBS1 :Double;
+class function TDouble.RandBS1 :Double;
 begin
      Result := Random - 0.5;
 end;
 
-class function TDouble.RandomBS2 :Double;
+class function TDouble.RandBS2 :Double;
 begin
-     Result := RandomBS1 + RandomBS1;
+     Result := RandBS1 + RandBS1;
 end;
 
-class function TDouble.RandomBS4 :Double;
+class function TDouble.RandBS4 :Double;
 begin
-     Result := RandomBS2 + RandomBS2;
+     Result := RandBS2 + RandBS2;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TdSingle
