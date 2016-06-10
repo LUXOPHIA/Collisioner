@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses System.Math.Vectors,
-     LUX;
+     LUX, LUX.D1;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -51,6 +51,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function VectorTo( const P_:TSingle3D ) :TSingle3D;
        function UnitorTo( const P_:TSingle3D ) :TSingle3D;
        class function RandG :TSingle3D; inline; static;
+       class function RandBS1 :TSingle3D; inline; static;
+       class function RandBS2 :TSingle3D; inline; static;
+       class function RandBS4 :TSingle3D; inline; static;
      end;
 
      TSinglePos3D = TSingle3D;
@@ -98,6 +101,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function VectorTo( const P_:TDouble3D ) :TDouble3D;
        function UnitorTo( const P_:TDouble3D ) :TDouble3D;
        class function RandG :TDouble3D; inline; static;
+       class function RandBS1 :TDouble3D; inline; static;
+       class function RandBS2 :TDouble3D; inline; static;
+       class function RandBS4 :TDouble3D; inline; static;
      end;
 
      TDoublePos3D = TDouble3D;
@@ -461,6 +467,8 @@ begin
      Result := VectorTo( P_ ).Unitor;
 end;
 
+//------------------------------------------------------------------------------
+
 class function TSingle3D.RandG :TSingle3D;
 begin
      with Result do
@@ -468,6 +476,38 @@ begin
           X := System.Math.RandG( 0, 1 );
           Y := System.Math.RandG( 0, 1 );
           Z := System.Math.RandG( 0, 1 );
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+class function TSingle3D.RandBS1 :TSingle3D;
+begin
+     with Result do
+     begin
+          X := TSingle.RandBS1;
+          Y := TSingle.RandBS1;
+          Z := TSingle.RandBS1;
+     end;
+end;
+
+class function TSingle3D.RandBS2 :TSingle3D;
+begin
+     with Result do
+     begin
+          X := TSingle.RandBS2;
+          Y := TSingle.RandBS2;
+          Z := TSingle.RandBS2;
+     end;
+end;
+
+class function TSingle3D.RandBS4 :TSingle3D;
+begin
+     with Result do
+     begin
+          X := TSingle.RandBS4;
+          Y := TSingle.RandBS4;
+          Z := TSingle.RandBS4;
      end;
 end;
 
@@ -664,6 +704,8 @@ begin
      Result := VectorTo( P_ ).Unitor;
 end;
 
+//------------------------------------------------------------------------------
+
 class function TDouble3D.RandG :TDouble3D;
 begin
      with Result do
@@ -671,6 +713,38 @@ begin
           X := System.Math.RandG( 0, 1 );
           Y := System.Math.RandG( 0, 1 );
           Z := System.Math.RandG( 0, 1 );
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+class function TDouble3D.RandBS1 :TDouble3D;
+begin
+     with Result do
+     begin
+          X := TDouble.RandBS1;
+          Y := TDouble.RandBS1;
+          Z := TDouble.RandBS1;
+     end;
+end;
+
+class function TDouble3D.RandBS2 :TDouble3D;
+begin
+     with Result do
+     begin
+          X := TDouble.RandBS2;
+          Y := TDouble.RandBS2;
+          Z := TDouble.RandBS2;
+     end;
+end;
+
+class function TDouble3D.RandBS4 :TDouble3D;
+begin
+     with Result do
+     begin
+          X := TDouble.RandBS4;
+          Y := TDouble.RandBS4;
+          Z := TDouble.RandBS4;
      end;
 end;
 

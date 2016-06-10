@@ -43,6 +43,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// 定数
        class function IdentityX :TSingle2D; inline; static;
        class function IdentityY :TSingle2D; inline; static;
+       ///// メソッド
+       class function RandBS1 :TSingle2D; inline; static;
+       class function RandBS2 :TSingle2D; inline; static;
+       class function RandBS4 :TSingle2D; inline; static;
      end;
 
      TSinglePos2D = TSingle2D;
@@ -82,6 +86,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// 定数
        class function IdentityX :TDouble2D; inline; static;
        class function IdentityY :TDouble2D; inline; static;
+       ///// メソッド
+       class function RandBS1 :TDouble2D; inline; static;
+       class function RandBS2 :TDouble2D; inline; static;
+       class function RandBS4 :TDouble2D; inline; static;
      end;
 
      TDoublePos2D = TDouble2D;
@@ -515,6 +523,35 @@ begin
      end;
 end;
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+class function TSingle2D.RandBS1 :TSingle2D;
+begin
+     with Result do
+     begin
+          X := TSingle.RandBS1;
+          Y := TSingle.RandBS1;
+     end;
+end;
+
+class function TSingle2D.RandBS2 :TSingle2D;
+begin
+     with Result do
+     begin
+          X := TSingle.RandBS2;
+          Y := TSingle.RandBS2;
+     end;
+end;
+
+class function TSingle2D.RandBS4 :TSingle2D;
+begin
+     with Result do
+     begin
+          X := TSingle.RandBS4;
+          Y := TSingle.RandBS4;
+     end;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDouble2D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -661,6 +698,35 @@ begin
      begin
           X := 0;
           Y := 1;
+     end;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+class function TDouble2D.RandBS1 :TDouble2D;
+begin
+     with Result do
+     begin
+          X := TSingle.RandBS1;
+          Y := TSingle.RandBS1;
+     end;
+end;
+
+class function TDouble2D.RandBS2 :TDouble2D;
+begin
+     with Result do
+     begin
+          X := TSingle.RandBS2;
+          Y := TSingle.RandBS2;
+     end;
+end;
+
+class function TDouble2D.RandBS4 :TDouble2D;
+begin
+     with Result do
+     begin
+          X := TSingle.RandBS4;
+          Y := TSingle.RandBS4;
      end;
 end;
 
