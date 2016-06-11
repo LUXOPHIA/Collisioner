@@ -25,7 +25,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        Y :Single;
        Z :Single;
        /////
-       constructor Create( const X_,Y_,Z_:Single );
+       constructor Create( const V_:Single ); overload;
+       constructor Create( const X_,Y_,Z_:Single ); overload;
        ///// プロパティ
        property Siz2   :Single    read GetSiz2   write SetSiz2;
        property Size   :Single    read GetSize   write SetSize;
@@ -75,7 +76,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        Y :Double;
        Z :Double;
        /////
-       constructor Create( const X_,Y_,Z_:Double );
+       constructor Create( const V_:Double ); overload;
+       constructor Create( const X_,Y_,Z_:Double ); overload;
        ///// プロパティ
        property Siz2   :Double    read GetSiz2   write SetSiz2;
        property Size   :Double    read GetSize   write SetSize;
@@ -108,6 +110,100 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TDoublePos3D = TDouble3D;
      TDoubleVec3D = TDouble3D;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TdSingle3D
+
+     TdSingle3D = record
+     private
+       ///// アクセス
+       function Geto :TSingle3D; inline;
+       procedure Seto( const o_:TSingle3D ); inline;
+       function Getd :TSingle3D; inline;
+       procedure Setd( const d_:TSingle3D ); inline;
+       function GetSiz2 :TdSingle; inline;
+       procedure SetSiz2( const Siz2_:TdSingle ); inline;
+       function GetSize :TdSingle; inline;
+       procedure SetSize( const Size_:TdSingle ); inline;
+       function GetUnitor :TdSingle3D; inline;
+       procedure SetUnitor( const Unitor_:TdSingle3D ); inline;
+     public
+       X :TdSingle;
+       Y :TdSingle;
+       Z :TdSingle;
+       /////
+       constructor Create( const X_,Y_,Z_:TdSingle );
+       ///// プロパティ
+       property o      :TSingle3D  read Geto      write Seto     ;
+       property d      :TSingle3D  read Getd      write Setd     ;
+       property Siz2   :TdSingle   read GetSiz2   write SetSiz2  ;
+       property Size   :TdSingle   read GetSize   write SetSize  ;
+       property Unitor :TdSingle3D read GetUnitor write SetUnitor;
+       ///// 演算子
+       class operator Negative( const V_:TdSingle3D ) :TdSingle3D; inline;
+       class operator Positive( const V_:TdSingle3D ) :TdSingle3D; inline;
+       class operator Add( const A_,B_:TdSingle3D ) :TdSingle3D; inline;
+       class operator Subtract( const A_,B_:TdSingle3D ) :TdSingle3D; inline;
+       class operator Multiply( const A_:TdSingle3D; const B_:TdSingle ) :TdSingle3D; inline;
+       class operator Multiply( const A_:TdSingle; const B_:TdSingle3D ) :TdSingle3D; inline;
+       class operator Divide( const A_:TdSingle3D; const B_:TdSingle ) :TdSingle3D; inline;
+       ///// 型変換
+       class operator Implicit( const V_:TSingle3D ) :TdSingle3D;
+       class operator Implicit( const V_:TdSingle3D ) :TSingle3D;
+     end;
+
+     TdSinglePos3D = TdSingle3D;
+     TdSingleVec3D = TdSingle3D;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TdDouble3D
+
+     TdDouble3D = record
+     private
+       ///// アクセス
+       function Geto :TDouble3D; inline;
+       procedure Seto( const o_:TDouble3D ); inline;
+       function Getd :TDouble3D; inline;
+       procedure Setd( const d_:TDouble3D ); inline;
+       function GetSiz2 :TdDouble; inline;
+       procedure SetSiz2( const Siz2_:TdDouble ); inline;
+       function GetSize :TdDouble; inline;
+       procedure SetSize( const Size_:TdDouble ); inline;
+       function GetUnitor :TdDouble3D; inline;
+       procedure SetUnitor( const Unitor_:TdDouble3D ); inline;
+     public
+       X :TdDouble;
+       Y :TdDouble;
+       Z :TdDouble;
+       /////
+       constructor Create( const X_,Y_,Z_:TdDouble );
+       ///// プロパティ
+       property o      :TDouble3D  read Geto      write Seto     ;
+       property d      :TDouble3D  read Getd      write Setd     ;
+       property Siz2   :TdDouble   read GetSiz2   write SetSiz2  ;
+       property Size   :TdDouble   read GetSize   write SetSize  ;
+       property Unitor :TdDouble3D read GetUnitor write SetUnitor;
+       ///// 演算子
+       class operator Negative( const V_:TdDouble3D ) :TdDouble3D; inline;
+       class operator Positive( const V_:TdDouble3D ) :TdDouble3D; inline;
+       class operator Add( const A_,B_:TdDouble3D ) :TdDouble3D; inline;
+       class operator Subtract( const A_,B_:TdDouble3D ) :TdDouble3D; inline;
+       class operator Multiply( const A_:TdDouble3D; const B_:TdDouble ) :TdDouble3D; inline;
+       class operator Multiply( const A_:TdDouble; const B_:TdDouble3D ) :TdDouble3D; inline;
+       class operator Divide( const A_:TdDouble3D; const B_:TdDouble ) :TdDouble3D; inline;
+       ///// 型変換
+       class operator Implicit( const V_:TDouble3D ) :TdDouble3D;
+       class operator Implicit( const V_:TdDouble3D ) :TDouble3D;
+     end;
+
+     TdDoublePos3D = TdDouble3D;
+     TdDoubleVec3D = TdDouble3D;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleImplicit3D
+
+     TSingleImplicit3D = reference to function( const P_:TdSingle3D ) :TdSingle;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleImplicit3D
+
+     TDoubleImplicit3D = reference to function( const P_:TdDouble3D ) :TdDouble;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleSiz3D
 
@@ -250,14 +346,26 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 function DotProduct( const A_,B_:TSingleVec3D ) :Single; inline; overload;
 function DotProduct( const A_,B_:TDoubleVec3D ) :Double; inline; overload;
 
+function DotProduct( const A_,B_:TdSingleVec3D ) :TdSingle; inline; overload;
+function DotProduct( const A_,B_:TdDoubleVec3D ) :TdDouble; inline; overload;
+
 function CrossProduct( const A_,B_:TSingleVec3D ) :TSingleVec3D; inline; overload;
 function CrossProduct( const A_,B_:TDoubleVec3D ) :TDoubleVec3D; inline; overload;
+
+function CrossProduct( const A_,B_:TdSingleVec3D ) :TdSingleVec3D; inline; overload;
+function CrossProduct( const A_,B_:TdDoubleVec3D ) :TdDoubleVec3D; inline; overload;
 
 function Distanc2( const A_,B_:TSinglePos3D ) :Single; inline; overload;
 function Distanc2( const A_,B_:TDoublePos3D ) :Double; inline; overload;
 
 function Distance( const A_,B_:TSinglePos3D ) :Single; inline; overload;
 function Distance( const A_,B_:TDoublePos3D ) :Double; inline; overload;
+
+function Distanc2( const A_,B_:TdSinglePos3D ) :TdSingle; inline; overload;
+function Distanc2( const A_,B_:TdDoublePos3D ) :TdDouble; inline; overload;
+
+function Distance( const A_,B_:TdSinglePos3D ) :TdSingle; inline; overload;
+function Distance( const A_,B_:TdDoublePos3D ) :TdDouble; inline; overload;
 
 function Ave( const P1_,P2_:TSingle3D ) :TSingle3D; inline; overload;
 function Ave( const P1_,P2_:TDouble3D ) :TDouble3D; inline; overload;
@@ -267,6 +375,18 @@ function Ave( const P1_,P2_,P3_:TDouble3D ) :TDouble3D; inline; overload;
 
 function Ave( const P1_,P2_,P3_,P4_:TSingle3D ) :TSingle3D; inline; overload;
 function Ave( const P1_,P2_,P3_,P4_:TDouble3D ) :TDouble3D; inline; overload;
+
+function Ave( const P1_,P2_:TdSingle3D ) :TdSingle3D; inline; overload;
+function Ave( const P1_,P2_:TdDouble3D ) :TdDouble3D; inline; overload;
+
+function Ave( const P1_,P2_,P3_:TdSingle3D ) :TdSingle3D; inline; overload;
+function Ave( const P1_,P2_,P3_:TdDouble3D ) :TdDouble3D; inline; overload;
+
+function Ave( const P1_,P2_,P3_,P4_:TdSingle3D ) :TdSingle3D; inline; overload;
+function Ave( const P1_,P2_,P3_,P4_:TdDouble3D ) :TdDouble3D; inline; overload;
+
+function Nabla( const Func_:TSingleImplicit3D; const P_:TSingle3D ) :TSingle3D; inline; overload;
+function Nabla( const Func_:TDoubleImplicit3D; const P_:TDouble3D ) :TDouble3D; inline; overload;
 
 implementation //############################################################### ■
 
@@ -311,6 +431,13 @@ begin
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TSingle3D.Create( const V_:Single );
+begin
+     X := V_;
+     Y := V_;
+     Z := V_;
+end;
 
 constructor TSingle3D.Create( const X_,Y_,Z_:Single );
 begin
@@ -549,6 +676,13 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
+constructor TDouble3D.Create( const V_:Double );
+begin
+     X := V_;
+     Y := V_;
+     Z := V_;
+end;
+
 constructor TDouble3D.Create( const X_,Y_,Z_:Double );
 begin
      X := X_;
@@ -746,6 +880,332 @@ begin
           Y := TDouble.RandBS4;
           Z := TDouble.RandBS4;
      end;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TdSingle3D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TdSingle3D.Geto :TSingle3D;
+begin
+     Result.X := X.o;
+     Result.Y := Y.o;
+     Result.Z := Z.o;
+end;
+
+procedure TdSingle3D.Seto( const o_:TSingle3D );
+begin
+     X.o := o_.X;
+     Y.o := o_.Y;
+     Z.o := o_.Z;
+end;
+
+function TdSingle3D.Getd :TSingle3D;
+begin
+     Result.X := X.d;
+     Result.Y := Y.d;
+     Result.Z := Z.d;
+end;
+
+procedure TdSingle3D.Setd( const d_:TSingle3D );
+begin
+     X.d := d_.X;
+     Y.d := d_.Y;
+     Z.d := d_.Z;
+end;
+
+function TdSingle3D.GetSiz2 :TdSingle;
+begin
+     Result := Pow2( X ) + Pow2( Y ) + Pow2( Z );
+end;
+
+procedure TdSingle3D.SetSiz2( const Siz2_:TdSingle );
+begin
+     Self := Roo2( Siz2_ / Siz2 ) * Self;
+end;
+
+function TdSingle3D.GetSize :TdSingle;
+begin
+     Result := Roo2( Siz2 );
+end;
+
+procedure TdSingle3D.SetSize( const Size_:TdSingle );
+begin
+     Self := Size_ * Unitor;
+end;
+
+function TdSingle3D.GetUnitor :TdSingle3D;
+begin
+     Result := Self / Size;
+end;
+
+procedure TdSingle3D.SetUnitor( const Unitor_:TdSingle3D );
+begin
+     Self := Size * Unitor_;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TdSingle3D.Create( const X_,Y_,Z_:TdSingle );
+begin
+     X := X_;
+     Y := Y_;
+     Z := Z_;
+end;
+
+///////////////////////////////////////////////////////////////////////// 演算子
+
+class operator TdSingle3D.Negative( const V_:TdSingle3D ) :TdSingle3D;
+begin
+     with Result do
+     begin
+          X := -V_.X;
+          Y := -V_.Y;
+          Z := -V_.Z;
+     end;
+end;
+
+class operator TdSingle3D.Positive( const V_:TdSingle3D ) :TdSingle3D;
+begin
+     with Result do
+     begin
+          X := +V_.X;
+          Y := +V_.Y;
+          Z := +V_.Z;
+     end;
+end;
+
+class operator TdSingle3D.Add( const A_,B_:TdSingle3D ) :TdSingle3D;
+begin
+     with Result do
+     begin
+          X := A_.X + B_.X;
+          Y := A_.Y + B_.Y;
+          Z := A_.Z + B_.Z;
+     end;
+end;
+
+class operator TdSingle3D.Subtract( const A_,B_:TdSingle3D ) :TdSingle3D;
+begin
+     with Result do
+     begin
+          X := A_.X - B_.X;
+          Y := A_.Y - B_.Y;
+          Z := A_.Z - B_.Z;
+     end;
+end;
+
+class operator TdSingle3D.Multiply( const A_:TdSingle3D; const B_:TdSingle ) :TdSingle3D;
+begin
+     with Result do
+     begin
+          X := A_.X * B_;
+          Y := A_.Y * B_;
+          Z := A_.Z * B_;
+     end;
+end;
+
+class operator TdSingle3D.Multiply( const A_:TdSingle; const B_:TdSingle3D ) :TdSingle3D;
+begin
+     with Result do
+     begin
+          X := A_ * B_.X;
+          Y := A_ * B_.Y;
+          Z := A_ * B_.Z;
+     end;
+end;
+
+class operator TdSingle3D.Divide( const A_:TdSingle3D; const B_:TdSingle ) :TdSingle3D;
+begin
+     with Result do
+     begin
+          X := A_.X / B_;
+          Y := A_.Y / B_;
+          Z := A_.Z / B_;
+     end;
+end;
+
+///////////////////////////////////////////////////////////////////////// 型変換
+
+class operator TdSingle3D.Implicit( const V_:TSingle3D ) :TdSingle3D;
+const
+     _d :TSingle3D = ( X:0; Y:0; Z:0 );
+begin
+     with Result do
+     begin
+          o := V_;
+          d := _d;
+     end;
+end;
+
+class operator TdSingle3D.Implicit( const V_:TdSingle3D ) :TSingle3D;
+begin
+     Result := V_.o;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TdDouble3D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TdDouble3D.Geto :TDouble3D;
+begin
+     Result.X := X.o;
+     Result.Y := Y.o;
+     Result.Z := Z.o;
+end;
+
+procedure TdDouble3D.Seto( const o_:TDouble3D );
+begin
+     X.o := o_.X;
+     Y.o := o_.Y;
+     Z.o := o_.Z;
+end;
+
+function TdDouble3D.Getd :TDouble3D;
+begin
+     Result.X := X.d;
+     Result.Y := Y.d;
+     Result.Z := Z.d;
+end;
+
+procedure TdDouble3D.Setd( const d_:TDouble3D );
+begin
+     X.d := d_.X;
+     Y.d := d_.Y;
+     Z.d := d_.Z;
+end;
+
+function TdDouble3D.GetSiz2 :TdDouble;
+begin
+     Result := Pow2( X ) + Pow2( Y ) + Pow2( Z );
+end;
+
+procedure TdDouble3D.SetSiz2( const Siz2_:TdDouble );
+begin
+     Self := Roo2( Siz2_ / Siz2 ) * Self;
+end;
+
+function TdDouble3D.GetSize :TdDouble;
+begin
+     Result := Roo2( Siz2 );
+end;
+
+procedure TdDouble3D.SetSize( const Size_:TdDouble );
+begin
+     Self := Size_ * Unitor;
+end;
+
+function TdDouble3D.GetUnitor :TdDouble3D;
+begin
+     Result := Self / Size;
+end;
+
+procedure TdDouble3D.SetUnitor( const Unitor_:TdDouble3D );
+begin
+     Self := Size * Unitor_;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TdDouble3D.Create( const X_,Y_,Z_:TdDouble );
+begin
+     X := X_;
+     Y := Y_;
+     Z := Z_;
+end;
+
+///////////////////////////////////////////////////////////////////////// 演算子
+
+class operator TdDouble3D.Negative( const V_:TdDouble3D ) :TdDouble3D;
+begin
+     with Result do
+     begin
+          X := -V_.X;
+          Y := -V_.Y;
+          Z := -V_.Z;
+     end;
+end;
+
+class operator TdDouble3D.Positive( const V_:TdDouble3D ) :TdDouble3D;
+begin
+     with Result do
+     begin
+          X := +V_.X;
+          Y := +V_.Y;
+          Z := +V_.Z;
+     end;
+end;
+
+class operator TdDouble3D.Add( const A_,B_:TdDouble3D ) :TdDouble3D;
+begin
+     with Result do
+     begin
+          X := A_.X + B_.X;
+          Y := A_.Y + B_.Y;
+          Z := A_.Z + B_.Z;
+     end;
+end;
+
+class operator TdDouble3D.Subtract( const A_,B_:TdDouble3D ) :TdDouble3D;
+begin
+     with Result do
+     begin
+          X := A_.X - B_.X;
+          Y := A_.Y - B_.Y;
+          Z := A_.Z - B_.Z;
+     end;
+end;
+
+class operator TdDouble3D.Multiply( const A_:TdDouble3D; const B_:TdDouble ) :TdDouble3D;
+begin
+     with Result do
+     begin
+          X := A_.X * B_;
+          Y := A_.Y * B_;
+          Z := A_.Z * B_;
+     end;
+end;
+
+class operator TdDouble3D.Multiply( const A_:TdDouble; const B_:TdDouble3D ) :TdDouble3D;
+begin
+     with Result do
+     begin
+          X := A_ * B_.X;
+          Y := A_ * B_.Y;
+          Z := A_ * B_.Z;
+     end;
+end;
+
+class operator TdDouble3D.Divide( const A_:TdDouble3D; const B_:TdDouble ) :TdDouble3D;
+begin
+     with Result do
+     begin
+          X := A_.X / B_;
+          Y := A_.Y / B_;
+          Z := A_.Z / B_;
+     end;
+end;
+
+///////////////////////////////////////////////////////////////////////// 型変換
+
+class operator TdDouble3D.Implicit( const V_:TDouble3D ) :TdDouble3D;
+const
+     _d :TDouble3D = ( X:0; Y:0; Z:0 );
+begin
+     with Result do
+     begin
+          o := V_;
+          d := _d;
+     end;
+end;
+
+class operator TdDouble3D.Implicit( const V_:TdDouble3D ) :TDouble3D;
+begin
+     Result := V_.o;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleSiz3D
@@ -1232,7 +1692,21 @@ begin
              + A_.Z * B_.Z;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+function DotProduct( const A_,B_:TdSingleVec3D ) :TdSingle;
+begin
+     Result := A_.X * B_.X
+             + A_.Y * B_.Y
+             + A_.Z * B_.Z;
+end;
+
+function DotProduct( const A_,B_:TdDoubleVec3D ) :TdDouble;
+begin
+     Result := A_.X * B_.X
+             + A_.Y * B_.Y
+             + A_.Z * B_.Z;
+end;
+
+//------------------------------------------------------------------------------
 
 function CrossProduct( const A_,B_:TSingleVec3D ) :TSingleVec3D;
 begin
@@ -1254,19 +1728,41 @@ begin
      end;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+function CrossProduct( const A_,B_:TdSingleVec3D ) :TdSingleVec3D;
+begin
+     with Result do
+     begin
+          X := A_.Y * B_.Z - A_.Z * B_.Y;
+          Y := A_.Z * B_.X - A_.X * B_.Z;
+          Z := A_.X * B_.Y - A_.Y * B_.X;
+     end;
+end;
+
+function CrossProduct( const A_,B_:TdDoubleVec3D ) :TdDoubleVec3D;
+begin
+     with Result do
+     begin
+          X := A_.Y * B_.Z - A_.Z * B_.Y;
+          Y := A_.Z * B_.X - A_.X * B_.Z;
+          Z := A_.X * B_.Y - A_.Y * B_.X;
+     end;
+end;
+
+//------------------------------------------------------------------------------
 
 function Distanc2( const A_,B_:TSinglePos3D ) :Single;
 begin
-     Result := A_.VectorTo( B_ ).Siz2;
+     Result := Pow2( B_.X - A_.X )
+             + Pow2( B_.Y - A_.Y )
+             + Pow2( B_.Z - A_.Z );
 end;
 
 function Distanc2( const A_,B_:TDoublePos3D ) :Double;
 begin
-     Result := A_.VectorTo( B_ ).Siz2;
+     Result := Pow2( B_.X - A_.X )
+             + Pow2( B_.Y - A_.Y )
+             + Pow2( B_.Z - A_.Z );
 end;
-
-////////////////////////////////////////////////////////////////////////////////
 
 function Distance( const A_,B_:TSinglePos3D ) :Single;
 begin
@@ -1278,7 +1774,31 @@ begin
      Result := Roo2( Distanc2( A_, B_ ) );
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+function Distanc2( const A_,B_:TdSinglePos3D ) :TdSingle;
+begin
+     Result := Pow2( B_.X - A_.X )
+             + Pow2( B_.Y - A_.Y )
+             + Pow2( B_.Z - A_.Z );
+end;
+
+function Distanc2( const A_,B_:TdDoublePos3D ) :TdDouble;
+begin
+     Result := Pow2( B_.X - A_.X )
+             + Pow2( B_.Y - A_.Y )
+             + Pow2( B_.Z - A_.Z );
+end;
+
+function Distance( const A_,B_:TdSinglePos3D ) :TdSingle;
+begin
+     Result := Roo2( Distanc2( A_, B_ ) );
+end;
+
+function Distance( const A_,B_:TdDoublePos3D ) :TdDouble;
+begin
+     Result := Roo2( Distanc2( A_, B_ ) );
+end;
+
+//------------------------------------------------------------------------------
 
 function Ave( const P1_,P2_:TSingle3D ) :TSingle3D;
 begin
@@ -1308,6 +1828,76 @@ end;
 function Ave( const P1_,P2_,P3_,P4_:TDouble3D ) :TDouble3D;
 begin
      Result := ( P1_ + P2_ + P3_ + P4_ ) / 4;
+end;
+
+function Ave( const P1_,P2_:TdSingle3D ) :TdSingle3D;
+begin
+     Result := ( P1_ + P2_ ) / 2;
+end;
+
+function Ave( const P1_,P2_:TdDouble3D ) :TdDouble3D;
+begin
+     Result := ( P1_ + P2_ ) / 2;
+end;
+
+function Ave( const P1_,P2_,P3_:TdSingle3D ) :TdSingle3D;
+begin
+     Result := ( P1_ + P2_ + P3_ ) / 3;
+end;
+
+function Ave( const P1_,P2_,P3_:TdDouble3D ) :TdDouble3D;
+begin
+     Result := ( P1_ + P2_ + P3_ ) / 3;
+end;
+
+function Ave( const P1_,P2_,P3_,P4_:TdSingle3D ) :TdSingle3D;
+begin
+     Result := ( P1_ + P2_ + P3_ + P4_ ) / 4;
+end;
+
+function Ave( const P1_,P2_,P3_,P4_:TdDouble3D ) :TdDouble3D;
+begin
+     Result := ( P1_ + P2_ + P3_ + P4_ ) / 4;
+end;
+
+//------------------------------------------------------------------------------
+
+function Nabla( const Func_:TSingleImplicit3D; const P_:TSingle3D ) :TSingle3D;
+var
+   P :TdSingle3D;
+begin
+     P.o := P_;
+
+     P.d := TSingle3D.Create( 1, 0, 0 );
+
+     Result.X := Func_( P ).d;
+
+     P.d := TSingle3D.Create( 0, 1, 0 );
+
+     Result.Y := Func_( P ).d;
+
+     P.d := TSingle3D.Create( 0, 0, 1 );
+
+     Result.Z := Func_( P ).d;
+end;
+
+function Nabla( const Func_:TDoubleImplicit3D; const P_:TDouble3D ) :TDouble3D;
+var
+   P :TdDouble3D;
+begin
+     P.o := P_;
+
+     P.d := TDouble3D.Create( 1, 0, 0 );
+
+     Result.X := Func_( P ).d;
+
+     P.d := TDouble3D.Create( 0, 1, 0 );
+
+     Result.Y := Func_( P ).d;
+
+     P.d := TDouble3D.Create( 0, 0, 1 );
+
+     Result.Z := Func_( P ).d;
 end;
 
 //############################################################################## □
