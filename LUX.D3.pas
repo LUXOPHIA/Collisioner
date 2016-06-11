@@ -276,9 +276,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property Poin[ const I_:Integer ] :TSingle3D read GetPoin;
        ///// 定数
-       class function MinArea :TSingleArea3D; static;
-       class function ZeroArea :TSingleArea3D; static;
-       class function MaxArea :TSingleArea3D; static;
+       class function NegaInf :TSingleArea3D; inline; static;
+       class function Nega    :TSingleArea3D; inline; static;
+       class function Zero    :TSingleArea3D; inline; static;
+       class function Posi    :TSingleArea3D; inline; static;
+       class function PosiInf :TSingleArea3D; inline; static;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea3D
@@ -298,9 +300,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property Poin[ const I_:Integer ] :TDouble3D read GetPoin;
        ///// 定数
-       class function MinArea :TDoubleArea3D; static;
-       class function ZeroArea :TDoubleArea3D; static;
-       class function MaxArea :TDoubleArea3D; static;
+       class function NegaInf :TDoubleArea3D; inline; static;
+       class function Nega    :TDoubleArea3D; inline; static;
+       class function Zero    :TDoubleArea3D; inline; static;
+       class function Posi    :TDoubleArea3D; inline; static;
+       class function PosiInf :TDoubleArea3D; inline; static;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleRay3D
@@ -1536,19 +1540,33 @@ end;
 
 /////////////////////////////////////////////////////////////////////////// 定数
 
-class function TSingleArea3D.MinArea :TSingleArea3D;
+class function TSingleArea3D.NegaInf :TSingleArea3D;
 begin
-     Result := TSingleArea3D.Create( +Single.MaxValue, -Single.MaxValue );
+     Result := TSingleArea3D.Create( Single.PositiveInfinity,
+                                     Single.NegativeInfinity );
 end;
 
-class function TSingleArea3D.ZeroArea :TSingleArea3D;
+class function TSingleArea3D.Nega :TSingleArea3D;
+begin
+     Result := TSingleArea3D.Create( +Single.MaxValue,
+                                     -Single.MaxValue );
+end;
+
+class function TSingleArea3D.Zero :TSingleArea3D;
 begin
      Result := TSingleArea3D.Create( 0, 0 );
 end;
 
-class function TSingleArea3D.MaxArea :TSingleArea3D;
+class function TSingleArea3D.Posi :TSingleArea3D;
 begin
-     Result := TSingleArea3D.Create( -Single.MaxValue, +Single.MaxValue );
+     Result := TSingleArea3D.Create( -Single.MaxValue,
+                                     +Single.MaxValue );
+end;
+
+class function TSingleArea3D.PosiInf :TSingleArea3D;
+begin
+     Result := TSingleArea3D.Create( Single.NegativeInfinity,
+                                     Single.PositiveInfinity );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea3D
@@ -1605,19 +1623,33 @@ end;
 
 /////////////////////////////////////////////////////////////////////////// 定数
 
-class function TDoubleArea3D.MinArea :TDoubleArea3D;
+class function TDoubleArea3D.NegaInf :TDoubleArea3D;
 begin
-     Result := TDoubleArea3D.Create( +Double.MaxValue, -Double.MaxValue );
+     Result := TDoubleArea3D.Create( Double.PositiveInfinity,
+                                     Double.NegativeInfinity );
 end;
 
-class function TDoubleArea3D.ZeroArea :TDoubleArea3D;
+class function TDoubleArea3D.Nega :TDoubleArea3D;
+begin
+     Result := TDoubleArea3D.Create( +Double.MaxValue,
+                                     -Double.MaxValue );
+end;
+
+class function TDoubleArea3D.Zero :TDoubleArea3D;
 begin
      Result := TDoubleArea3D.Create( 0, 0 );
 end;
 
-class function TDoubleArea3D.MaxArea :TDoubleArea3D;
+class function TDoubleArea3D.Posi :TDoubleArea3D;
 begin
-     Result := TDoubleArea3D.Create( -Double.MaxValue, +Double.MaxValue );
+     Result := TDoubleArea3D.Create( -Double.MaxValue,
+                                     +Double.MaxValue );
+end;
+
+class function TDoubleArea3D.PosiInf :TDoubleArea3D;
+begin
+     Result := TDoubleArea3D.Create( Double.NegativeInfinity,
+                                     Double.PositiveInfinity );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleRay3D
