@@ -416,7 +416,7 @@ end;
 
 function TSingle3D.GetSize :Single;
 begin
-     Result := Roo2( Siz2 );
+     Result := Roo2( GetSiz2 );
 end;
 
 procedure TSingle3D.SetSize( const Size_:Single );
@@ -660,7 +660,7 @@ end;
 
 function TDouble3D.GetSize :Double;
 begin
-     Result := Roo2( Siz2 );
+     Result := Roo2( GetSiz2 );
 end;
 
 procedure TDouble3D.SetSize( const Size_:Double );
