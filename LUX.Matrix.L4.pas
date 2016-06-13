@@ -40,8 +40,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property AxisP :TSingle3D read GetAxisP write SetAxisP;
        ///// ‰‰ŽZŽq
        class operator Multiply( const A_,B_:TSingleM4 ) :TSingleM4;
-       class operator Multiply( const A_:Single; B_:TSingleM4 ) :TSingleM4;
-       class operator Multiply( const A_:TSingleM4; B_:Single ) :TSingleM4;
+       class operator Multiply( const A_:Single; const B_:TSingleM4 ) :TSingleM4;
+       class operator Multiply( const A_:TSingleM4; const B_:Single ) :TSingleM4;
        class operator Multiply( const A_:TSingleM4; const B_:TSingleRay3D ) :TSingleRay3D;
        class operator Divide( const A_:TSingleM4; const B_:Single ) :TSingleM4;
        ///// Œ^•ÏŠ·
@@ -96,8 +96,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property AxisP :TDouble3D read GetAxisP write SetAxisP;
        ///// ‰‰ŽZŽq
        class operator Multiply( const A_,B_:TDoubleM4 ) :TDoubleM4;
-       class operator Multiply( const A_:Double; B_:TDoubleM4 ) :TDoubleM4;
-       class operator Multiply( const A_:TDoubleM4; B_:Double ) :TDoubleM4;
+       class operator Multiply( const A_:Double; const B_:TDoubleM4 ) :TDoubleM4;
+       class operator Multiply( const A_:TDoubleM4; const B_:Double ) :TDoubleM4;
        class operator Multiply( const A_:TDoubleM4; const B_:TDoubleRay3D ) :TDoubleRay3D;
        class operator Divide( const A_:TDoubleM4; const B_:Double ) :TDoubleM4;
        ///// Œ^•ÏŠ·
@@ -299,7 +299,7 @@ begin
      end
 end;
 
-class operator TSingleM4.Multiply( const A_:Single; B_:TSingleM4 ) :TSingleM4;
+class operator TSingleM4.Multiply( const A_:Single; const B_:TSingleM4 ) :TSingleM4;
 begin
      with Result do
      begin
@@ -310,7 +310,7 @@ begin
      end
 end;
 
-class operator TSingleM4.Multiply( const A_:TSingleM4; B_:Single ) :TSingleM4;
+class operator TSingleM4.Multiply( const A_:TSingleM4; const B_:Single ) :TSingleM4;
 begin
      with Result do
      begin
@@ -732,7 +732,7 @@ begin
      end
 end;
 
-class operator TDoubleM4.Multiply( const A_:Double; B_:TDoubleM4 ) :TDoubleM4;
+class operator TDoubleM4.Multiply( const A_:Double; const B_:TDoubleM4 ) :TDoubleM4;
 begin
      with Result do
      begin
@@ -743,7 +743,7 @@ begin
      end
 end;
 
-class operator TDoubleM4.Multiply( const A_:TDoubleM4; B_:Double ) :TDoubleM4;
+class operator TDoubleM4.Multiply( const A_:TDoubleM4; const B_:Double ) :TDoubleM4;
 begin
      with Result do
      begin
