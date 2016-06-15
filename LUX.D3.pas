@@ -276,11 +276,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property Poin[ const I_:Integer ] :TSingle3D read GetPoin;
        ///// 定数
-       class function NegaInf :TSingleArea3D; inline; static;
-       class function Nega    :TSingleArea3D; inline; static;
+       class function NeInf :TSingleArea3D; inline; static;
+       class function NeMax :TSingleArea3D; inline; static;
        class function Zero    :TSingleArea3D; inline; static;
-       class function Posi    :TSingleArea3D; inline; static;
-       class function PosiInf :TSingleArea3D; inline; static;
+       class function PoMax :TSingleArea3D; inline; static;
+       class function PoInf :TSingleArea3D; inline; static;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea3D
@@ -300,11 +300,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property Poin[ const I_:Integer ] :TDouble3D read GetPoin;
        ///// 定数
-       class function NegaInf :TDoubleArea3D; inline; static;
-       class function Nega    :TDoubleArea3D; inline; static;
+       class function NeInf :TDoubleArea3D; inline; static;
+       class function NeMax :TDoubleArea3D; inline; static;
        class function Zero    :TDoubleArea3D; inline; static;
-       class function Posi    :TDoubleArea3D; inline; static;
-       class function PosiInf :TDoubleArea3D; inline; static;
+       class function PoMax :TDoubleArea3D; inline; static;
+       class function PoInf :TDoubleArea3D; inline; static;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleRay3D
@@ -1540,13 +1540,13 @@ end;
 
 /////////////////////////////////////////////////////////////////////////// 定数
 
-class function TSingleArea3D.NegaInf :TSingleArea3D;
+class function TSingleArea3D.NeInf :TSingleArea3D;
 begin
      Result := TSingleArea3D.Create( Single.PositiveInfinity,
                                      Single.NegativeInfinity );
 end;
 
-class function TSingleArea3D.Nega :TSingleArea3D;
+class function TSingleArea3D.NeMax :TSingleArea3D;
 begin
      Result := TSingleArea3D.Create( +Single.MaxValue,
                                      -Single.MaxValue );
@@ -1557,13 +1557,13 @@ begin
      Result := TSingleArea3D.Create( 0, 0 );
 end;
 
-class function TSingleArea3D.Posi :TSingleArea3D;
+class function TSingleArea3D.PoMax :TSingleArea3D;
 begin
      Result := TSingleArea3D.Create( -Single.MaxValue,
                                      +Single.MaxValue );
 end;
 
-class function TSingleArea3D.PosiInf :TSingleArea3D;
+class function TSingleArea3D.PoInf :TSingleArea3D;
 begin
      Result := TSingleArea3D.Create( Single.NegativeInfinity,
                                      Single.PositiveInfinity );
@@ -1623,13 +1623,13 @@ end;
 
 /////////////////////////////////////////////////////////////////////////// 定数
 
-class function TDoubleArea3D.NegaInf :TDoubleArea3D;
+class function TDoubleArea3D.NeInf :TDoubleArea3D;
 begin
      Result := TDoubleArea3D.Create( Double.PositiveInfinity,
                                      Double.NegativeInfinity );
 end;
 
-class function TDoubleArea3D.Nega :TDoubleArea3D;
+class function TDoubleArea3D.NeMax :TDoubleArea3D;
 begin
      Result := TDoubleArea3D.Create( +Double.MaxValue,
                                      -Double.MaxValue );
@@ -1640,13 +1640,13 @@ begin
      Result := TDoubleArea3D.Create( 0, 0 );
 end;
 
-class function TDoubleArea3D.Posi :TDoubleArea3D;
+class function TDoubleArea3D.PoMax :TDoubleArea3D;
 begin
      Result := TDoubleArea3D.Create( -Double.MaxValue,
                                      +Double.MaxValue );
 end;
 
-class function TDoubleArea3D.PosiInf :TDoubleArea3D;
+class function TDoubleArea3D.PoInf :TDoubleArea3D;
 begin
      Result := TDoubleArea3D.Create( Double.NegativeInfinity,
                                      Double.PositiveInfinity );
