@@ -112,11 +112,17 @@ function MarginCorner( const V1_,V2_:TDoubleVec3D; Margin_:Double ) :TDoubleVec3
 function MarginCorner( const P0_,P1_,P2_:TSinglePos3D; Margin_:Single ) :TSinglePos3D; overload;
 function MarginCorner( const P0_,P1_,P2_:TDoublePos3D; Margin_:Double ) :TDoublePos3D; overload;
 
-function Reflect( const InV_,Nor_:TSingle3D ) :TSingle3D; overload;
-function Reflect( const InV_,Nor_:TDouble3D ) :TDouble3D; overload;
+function Reflect( const Ray_,Nor_:TSingle3D ) :TSingle3D; overload;
+function Reflect( const Ray_,Nor_:TDouble3D ) :TDouble3D; overload;
 
-function Refract( const InV_,Nor_:TSingle3D; const RaI_:Single; out RaV_:TSingle3D; out ReW_:Single ) :Boolean; overload;
-function Refract( const InV_,Nor_:TDouble3D; const RaI_:Double; out RaV_:TDouble3D; out ReW_:Double ) :Boolean; overload;
+function ReflectW( const Ray_,Nor_:TSingle3D; const RaI_:Single ) :Single; overload;
+function ReflectW( const Ray_,Nor_:TDouble3D; const RaI_:Double ) :Double; overload;
+
+function Refract( const Ray_,Nor_:TSingle3D; const RaI_:Single ) :TSingle3D; overload;
+function Refract( const Ray_,Nor_:TDouble3D; const RaI_:Double ) :TDouble3D; overload;
+
+function Refract( const Ray_,Nor_:TSingle3D; const RaI_:Single; out RaV_:TSingle3D; out ReW_:Single ) :Boolean; overload;
+function Refract( const Ray_,Nor_:TDouble3D; const RaI_:Double; out RaV_:TDouble3D; out ReW_:Double ) :Boolean; overload;
 
 implementation //############################################################### ■
 
@@ -589,72 +595,158 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Reflect( const InV_,Nor_:TSingle3D ) :TSingle3D;
+function Reflect( const Ray_,Nor_:TSingle3D ) :TSingle3D;
 begin
-     Result := InV_ - 2 * DotProduct( InV_, Nor_ ) * Nor_;
+     Result := Ray_ - 2 * DotProduct( Ray_, Nor_ ) * Nor_;
 end;
 
-function Reflect( const InV_,Nor_:TDouble3D ) :TDouble3D;
+function Reflect( const Ray_,Nor_:TDouble3D ) :TDouble3D;
 begin
-     Result := InV_ - 2 * DotProduct( InV_, Nor_ ) * Nor_;
+     Result := Ray_ - 2 * DotProduct( Ray_, Nor_ ) * Nor_;
 end;
 
 //------------------------------------------------------------------------------
 
-function Refract( const InV_,Nor_:TSingle3D; const RaI_:Single; out RaV_:TSingle3D; out ReW_:Single ) :Boolean;
+function ReflectW( const Ray_,Nor_:TSingle3D; const RaI_:Single ) :Single;
 var
-   N2, C, C2, G, G2, N2C :Single;
+   N2, C, C2, G, G2, N2C, R :Single;
 begin
      N2 := Pow2( RaI_ );
 
-     C := -DotProduct( InV_, Nor_ );  C2 := Pow2( C );
+     C := DotProduct( Ray_, Nor_ );  C2 := Pow2( C );
 
      G2 := N2 + C2 - 1;
 
-     Result := ( G2 >= 0 );
-
-     if Result then
+     if G2 > 0 then
      begin
           G := Roo2( G2 );
 
-          RaV_ := ( InV_ + ( C - G ) * Nor_ ) / RaI_;
-
           N2C := N2 * C;
 
-          ReW_ := ( Pow2( (   C - G ) / (   C + G ) )
-                  + Pow2( ( N2C - G ) / ( N2C + G ) ) ) / 2;
-          { 近似
+          Result := ( Pow2( (   C + G ) / (   C - G ) )
+                    + Pow2( ( N2C + G ) / ( N2C - G ) ) ) / 2;
+          { 近似 }
           R := Pow2( ( RaI_ - 1 ) / ( RaI_ + 1 ) );
-          ReW_ := R + ( 1 - R ) * IntPower( 1 - C, 5 );
-          }
-     end;
+          Result := R + ( 1 - R ) * IntPower( 1 + C, 5 );
+
+     end
+     else Result := 1;
 end;
 
-function Refract( const InV_,Nor_:TDouble3D; const RaI_:Double; out RaV_:TDouble3D; out ReW_:Double ) :Boolean;
+function ReflectW( const Ray_,Nor_:TDouble3D; const RaI_:Double ) :Double;
 var
    N2, C, C2, G, G2, N2C :Double;
 begin
      N2 := Pow2( RaI_ );
 
-     C := -DotProduct( InV_, Nor_ );  C2 := Pow2( C );
+     C := DotProduct( Ray_, Nor_ );  C2 := Pow2( C );
 
      G2 := N2 + C2 - 1;
 
-     Result := ( G2 >= 0 );
+     if G2 > 0 then
+     begin
+          G := Roo2( G2 );
+
+          N2C := N2 * C;
+
+          Result := ( Pow2( (   C + G ) / (   C - G ) )
+                    + Pow2( ( N2C + G ) / ( N2C - G ) ) ) / 2;
+          { 近似
+          R := Pow2( ( RaI_ - 1 ) / ( RaI_ + 1 ) );
+          Result := R + ( 1 - R ) * IntPower( 1 + C, 5 );
+          }
+     end
+     else Result := 1;
+end;
+
+//------------------------------------------------------------------------------
+
+function Refract( const Ray_,Nor_:TSingle3D; const RaI_:Single ) :TSingle3D;
+var
+   N2, C, C2, G, G2 :Single;
+begin
+     N2 := Pow2( RaI_ );
+
+     C := DotProduct( Ray_, Nor_ );  C2 := Pow2( C );
+
+     G2 := N2 + C2 - 1;
+
+     G := Roo2( G2 );
+
+     Result := ( Ray_ - ( C + G ) * Nor_ ) / RaI_;  Result := Result.Unitor;
+end;
+
+function Refract( const Ray_,Nor_:TDouble3D; const RaI_:Double ) :TDouble3D;
+var
+   N2, C, C2, G, G2 :Double;
+begin
+     N2 := Pow2( RaI_ );
+
+     C := DotProduct( Ray_, Nor_ );  C2 := Pow2( C );
+
+     G2 := N2 + C2 - 1;
+
+     G := Roo2( G2 );
+
+     Result := ( Ray_ - ( C + G ) * Nor_ ) / RaI_;  Result := Result.Unitor;
+end;
+
+//------------------------------------------------------------------------------
+
+function Refract( const Ray_,Nor_:TSingle3D; const RaI_:Single; out RaV_:TSingle3D; out ReW_:Single ) :Boolean;
+var
+   N2, C, C2, G, G2, N2C :Single;
+begin
+     N2 := Pow2( RaI_ );
+
+     C := DotProduct( Ray_, Nor_ );  C2 := Pow2( C );
+
+     G2 := N2 + C2 - 1;
+
+     Result := ( G2 > 0 );
 
      if Result then
      begin
           G := Roo2( G2 );
 
-          RaV_ := ( InV_ + ( C - G ) * Nor_ ) / RaI_;
+          RaV_ := ( Ray_ - ( C + G ) * Nor_ ) / RaI_;  RaV_ := RaV_.Unitor;
 
           N2C := N2 * C;
 
-          ReW_ := ( Pow2( (   C - G ) / (   C + G ) )
-                  + Pow2( ( N2C - G ) / ( N2C + G ) ) ) / 2;
+          ReW_ := ( Pow2( (   C + G ) / (   C - G ) )
+                  + Pow2( ( N2C + G ) / ( N2C - G ) ) ) / 2;
           { 近似
           R := Pow2( ( RaI_ - 1 ) / ( RaI_ + 1 ) );
-          ReW_ := R + ( 1 - R ) * IntPower( 1 - C, 5 );
+          ReW_ := R + ( 1 - R ) * IntPower( 1 + C, 5 );
+          }
+     end;
+end;
+
+function Refract( const Ray_,Nor_:TDouble3D; const RaI_:Double; out RaV_:TDouble3D; out ReW_:Double ) :Boolean;
+var
+   N2, C, C2, G, G2, N2C :Double;
+begin
+     N2 := Pow2( RaI_ );
+
+     C := DotProduct( Ray_, Nor_ );  C2 := Pow2( C );
+
+     G2 := N2 + C2 - 1;
+
+     Result := ( G2 > 0 );
+
+     if Result then
+     begin
+          G := Roo2( G2 );
+
+          RaV_ := ( Ray_ - ( C + G ) * Nor_ ) / RaI_;  RaV_ := RaV_.Unitor;
+
+          N2C := N2 * C;
+
+          ReW_ := ( Pow2( (   C + G ) / (   C - G ) )
+                  + Pow2( ( N2C + G ) / ( N2C - G ) ) ) / 2;
+          { 近似
+          R := Pow2( ( RaI_ - 1 ) / ( RaI_ + 1 ) );
+          ReW_ := R + ( 1 - R ) * IntPower( 1 + C, 5 );
           }
      end;
 end;
