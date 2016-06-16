@@ -88,6 +88,40 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Implicit( const V_:Double ) :TdDouble;
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleArea
+
+     TSingleArea = record
+     private
+     public
+       Min :Single;
+       Max :Single;
+       /////
+       constructor Create( const Min_,Max_:Single );
+       ///// 定数
+       class function NeInf :TSingleArea; inline; static;
+       class function NeMax :TSingleArea; inline; static;
+       class function Zero  :TSingleArea; inline; static;
+       class function PoMax :TSingleArea; inline; static;
+       class function PoInf :TSingleArea; inline; static;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea
+
+     TDoubleArea = record
+     private
+     public
+       Min :Double;
+       Max :Double;
+       /////
+       constructor Create( const Min_,Max_:Double );
+       ///// 定数
+       class function NeInf :TDoubleArea; inline; static;
+       class function NeMax :TDoubleArea; inline; static;
+       class function Zero  :TDoubleArea; inline; static;
+       class function PoMax :TDoubleArea; inline; static;
+       class function PoInf :TDoubleArea; inline; static;
+     end;
+
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TIter1D< TValue_ >
@@ -250,7 +284,7 @@ function ArcSin( const X_:TdDouble ) :TdDouble; overload;
 
 implementation //############################################################### ■
 
-uses System.Math;
+uses System.SysUtils, System.Math;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -582,6 +616,92 @@ begin
           o := V_;
           d := 0;
      end;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleArea
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TSingleArea.Create( const Min_,Max_:Single );
+begin
+     Min := Min_;
+     Max := Max_;
+end;
+
+/////////////////////////////////////////////////////////////////////////// 定数
+
+class function TSingleArea.NeInf :TSingleArea;
+begin
+     Result := TSingleArea.Create( Single.PositiveInfinity,
+                                   Single.NegativeInfinity );
+end;
+
+class function TSingleArea.NeMax :TSingleArea;
+begin
+     Result := TSingleArea.Create( +Single.MaxValue,
+                                   -Single.MaxValue );
+end;
+
+class function TSingleArea.Zero :TSingleArea;
+begin
+     Result := TSingleArea.Create( 0, 0 );
+end;
+
+class function TSingleArea.PoMax :TSingleArea;
+begin
+     Result := TSingleArea.Create( -Single.MaxValue,
+                                   +Single.MaxValue );
+end;
+
+class function TSingleArea.PoInf :TSingleArea;
+begin
+     Result := TSingleArea.Create( Single.NegativeInfinity,
+                                   Single.PositiveInfinity );
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TDoubleArea.Create( const Min_,Max_:Double );
+begin
+     Min := Min_;
+     Max := Max_;
+end;
+
+/////////////////////////////////////////////////////////////////////////// 定数
+
+class function TDoubleArea.NeInf :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( Double.PositiveInfinity,
+                                   Double.NegativeInfinity );
+end;
+
+class function TDoubleArea.NeMax :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( +Double.MaxValue,
+                                   -Double.MaxValue );
+end;
+
+class function TDoubleArea.Zero :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( 0, 0 );
+end;
+
+class function TDoubleArea.PoMax :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( -Double.MaxValue,
+                                   +Double.MaxValue );
+end;
+
+class function TDoubleArea.PoInf :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( Double.NegativeInfinity,
+                                   Double.PositiveInfinity );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
