@@ -609,7 +609,7 @@ end;
 
 function ReflectW( const Ray_,Nor_:TSingle3D; const RaI_:Single ) :Single;
 var
-   N2, C, C2, G, G2, N2C, R :Single;
+   N2, C, C2, G, G2, N2C :Single;
 begin
      N2 := Pow2( RaI_ );
 
@@ -625,10 +625,10 @@ begin
 
           Result := ( Pow2( (   C + G ) / (   C - G ) )
                     + Pow2( ( N2C + G ) / ( N2C - G ) ) ) / 2;
-          { 近似 }
+          { 近似
           R := Pow2( ( RaI_ - 1 ) / ( RaI_ + 1 ) );
           Result := R + ( 1 - R ) * IntPower( 1 + C, 5 );
-
+          }
      end
      else Result := 1;
 end;
