@@ -282,6 +282,12 @@ function ArcTan( const X_:TdDouble ) :TdDouble; overload;
 function ArcSin( const X_:TdSingle ) :TdSingle; overload;
 function ArcSin( const X_:TdDouble ) :TdDouble; overload;
 
+function Min( const A_,B_,C_:TdDouble ) :TdDouble; overload;
+function Min( const A_,B_,C_:TdSingle ) :TdSingle; overload;
+
+function Max( const A_,B_,C_:TdSingle ) :TdSingle; overload;
+function Max( const A_,B_,C_:TdDouble ) :TdDouble; overload;
+
 implementation //############################################################### ■
 
 uses System.SysUtils, System.Math;
@@ -1170,6 +1176,68 @@ begin
      begin
           Result.o := ArcSin( o );
           Result.d := d / Roo2( 1 - Pow2( o ) );
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function Min( const A_,B_,C_:TdSingle ) :TdSingle;
+begin
+     if A_ <= B_ then
+     begin
+          if A_ <= C_ then Result := A_
+                      else Result := C_;
+     end
+     else
+     begin
+          if B_ <= C_ then Result := B_
+                      else Result := C_;
+     end;
+end;
+
+function Min( const A_,B_,C_:TdDouble ) :TdDouble;
+begin
+     if A_ <= B_ then
+     begin
+          if A_ <= C_ then Result := A_
+                      else Result := C_;
+     end
+     else
+     begin
+          if B_ <= C_ then Result := B_
+                      else Result := C_;
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function Max( const A_,B_,C_:TdSingle ) :TdSingle;
+begin
+     if A_ >= B_ then
+     begin
+          if A_ >= C_ then Result := A_
+                      else Result := C_;
+     end
+     else
+     begin
+
+          if B_ >= C_ then Result := B_
+                      else Result := C_;
+     end;
+end;
+
+function Max( const A_,B_,C_:TdDouble ) :TdDouble;
+begin
+     if A_ >= B_ then
+     begin
+          if A_ >= C_ then Result := A_
+                      else Result := C_;
+     end
+     else
+     begin
+
+          if B_ >= C_ then Result := B_
+                      else Result := C_;
      end;
 end;
 
