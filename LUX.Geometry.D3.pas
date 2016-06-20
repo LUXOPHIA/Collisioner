@@ -124,6 +124,9 @@ function Refract( const Ray_,Nor_:TDouble3D; const RaI_:Double ) :TDouble3D; ove
 function Refract( const Ray_,Nor_:TSingle3D; const RaI_:Single; out RaV_:TSingle3D; out ReW_:Single ) :Boolean; overload;
 function Refract( const Ray_,Nor_:TDouble3D; const RaI_:Double; out RaV_:TDouble3D; out ReW_:Double ) :Boolean; overload;
 
+function SolidAngle( const P1_,P2_,P3_:TSingle3D; const P_:TSingle3D ) :Single; overload;
+function SolidAngle( const P1_,P2_,P3_:TDouble3D; const P_:TDouble3D ) :Double; overload;
+
 implementation //############################################################### ■
 
 uses System.Math,
@@ -749,6 +752,48 @@ begin
           ReW_ := R + ( 1 - R ) * IntPower( 1 + C, 5 );
           }
      end;
+end;
+
+//------------------------------------------------------------------------------
+
+function SolidAngle( const P1_,P2_,P3_:TSingle3D; const P_:TSingle3D ) :Single;
+var
+   V1, V2, V3 :TSingle3D;
+   L1, L2, L3, A, B :Single;
+begin
+     V1 := P_.VectorTo( P1_ );  L1 := V1.Size;
+     V2 := P_.VectorTo( P2_ );  L2 := V2.Size;
+     V3 := P_.VectorTo( P3_ );  L3 := V3.Size;
+
+     A := V1.X * V2.Y * V3.Z + V2.X * V3.Y * V1.Z + V3.X * V1.Y * V2.Z
+        - V1.X * V3.Y * V2.Z - V2.X * V1.Y * V3.Z - V3.X * V2.Y * V1.Z;
+
+     B := L1 * L2 * L3
+        + L3 * DotProduct( V1, V2 )
+        + L1 * DotProduct( V2, V3 )
+        + L2 * DotProduct( V3, V1 );
+
+     Result := 2 * ArcTan2( A, B );
+end;
+
+function SolidAngle( const P1_,P2_,P3_:TDouble3D; const P_:TDouble3D ) :Double;
+var
+   V1, V2, V3 :TDouble3D;
+   L1, L2, L3, A, B :Double;
+begin
+     V1 := P_.VectorTo( P1_ );  L1 := V1.Size;
+     V2 := P_.VectorTo( P2_ );  L2 := V2.Size;
+     V3 := P_.VectorTo( P3_ );  L3 := V3.Size;
+
+     A := V1.X * V2.Y * V3.Z + V2.X * V3.Y * V1.Z + V3.X * V1.Y * V2.Z
+        - V1.X * V3.Y * V2.Z - V2.X * V1.Y * V3.Z - V3.X * V2.Y * V1.Z;
+
+     B := L1 * L2 * L3
+        + L3 * DotProduct( V1, V2 )
+        + L1 * DotProduct( V2, V3 )
+        + L2 * DotProduct( V3, V1 );
+
+     Result := 2 * ArcTan2( A, B );
 end;
 
 //############################################################################## □
