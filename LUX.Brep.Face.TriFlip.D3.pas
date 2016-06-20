@@ -2,7 +2,7 @@ unit LUX.Brep.Face.TriFlip.D3;
 
 interface //#################################################################### ■
 
-uses LUX, LUX.D3, LUX.Brep.Face.TriFlip;
+uses LUX, LUX.D3, LUX.Geometry.D3, LUX.Brep.Face.TriFlip;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -35,7 +35,13 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TTriFace3D = class( TTriFace<TSingle3D> )
      private
      protected
+       ///// アクセス
+       function GetEdge( const I_:Byte ) :TSingle3D;
+       function GetCircumSphere :TSingleSphere;
      public
+       ///// プロパティ
+       property Edge[ const I_:Byte ] :TSingle3D     read GetEdge        ;
+       property CircumSphere          :TSingleSphere read GetCircumSphere;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel3D
@@ -48,6 +54,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure JoinEdges;
        procedure MakeNormals;
        procedure LoadFromFile( const FileName_:String );
+       function IsInside( const P_:TSingle3D ) :Boolean;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -116,6 +123,18 @@ end;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TTriFace3D.GetEdge( const I_:Byte ) :TSingle3D;
+begin
+     Result := Poin[ _Inc_[ I_ ] ].Pos.VectorTo( Poin[ _Dec_[ I_ ] ].Pos );
+end;
+
+function TTriFace3D.GetCircumSphere :TSingleSphere;
+begin
+     Result := TSingleSphere.Create( Poin[ 1 ].Pos, Poin[ 2 ].Pos, Poin[ 3 ].Pos );
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
@@ -261,6 +280,23 @@ begin
      end;
 
      JoinEdges;
+end;
+
+function TTriFaceModel3D.IsInside( const P_:TSingle3D ) :Boolean;
+var
+   A :Single;
+   I :Integer;
+begin
+     A := 0;
+     for I := 0 to ChildsN-1 do
+     begin
+          with Childs[ I ] do
+          begin
+               A := A + SolidAngle( Poin[ 1 ].Pos, Poin[ 2 ].Pos, Poin[ 3 ].Pos, P_ );
+          end;
+     end;
+
+     Result := A > Pi2;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
