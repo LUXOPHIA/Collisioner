@@ -31,6 +31,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( AOwner_:TComponent ); override;
        destructor Destroy; override;
        ///// プロパティ
+       property Geometry   :TMeshData       read _Geometry                      ;
        property Material   :TMaterialSource read _Material   write _Material    ;
        property TetraModel :TTetraModel3D   read _TetraModel write SetTetraModel;
        property EdgeRadius :Single          read _EdgeRadius write SetEdgeRadius;
