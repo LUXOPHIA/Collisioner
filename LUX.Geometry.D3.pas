@@ -16,7 +16,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        Center :TSingle3D;
        Radiu2 :Single;
        /////
-       constructor Create( const P1_,P2_,P3_,P4_:TSingle3D );
+       constructor Create( const P1_,P2_,P3_,P4_:TSingle3D ); overload;
+       constructor Create( const P1_,P2_,P3_:TSingle3D ); overload;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleSpher2
@@ -27,7 +28,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        Center :TDouble3D;
        Radiu2 :Double;
        /////
-       constructor Create( const P1_,P2_,P3_,P4_:TDouble3D );
+       constructor Create( const P1_,P2_,P3_,P4_:TDouble3D ); overload;
+       constructor Create( const P1_,P2_,P3_:TDouble3D ); overload;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleSphere
@@ -38,7 +40,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        Center :TSingle3D;
        Radius :Single;
        /////
-       constructor Create( const P1_,P2_,P3_,P4_:TSingle3D );
+       constructor Create( const P1_,P2_,P3_,P4_:TSingle3D ); overload;
+       constructor Create( const P1_,P2_,P3_:TSingle3D ); overload;
        ///// 型変換
        class operator Implicit( const Spher2_:TSingleSpher2 ) :TSingleSphere;
        class operator Implicit( const Sphere_:TSingleSphere ) :TSingleSpher2;
@@ -54,7 +57,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        Center :TDouble3D;
        Radius :Double;
        /////
-       constructor Create( const P1_,P2_,P3_,P4_:TDouble3D );
+       constructor Create( const P1_,P2_,P3_,P4_:TDouble3D ); overload;
+       constructor Create( const P1_,P2_,P3_:TDouble3D ); overload;
        ///// 型変換
        class operator Implicit( const Spher2_:TDoubleSpher2 ) :TDoubleSphere;
        class operator Implicit( const Sphere_:TDoubleSphere ) :TDoubleSpher2;
@@ -106,6 +110,9 @@ function InnerCenter( const P0_,P1_,P2_,P3_:TDoublePos3D ) :TDoublePos3D; overlo
 function CircumCenter( const P1_,P2_,P3_,P4_:TSinglePos3D ) :TSinglePos3D; overload;
 function CircumCenter( const P1_,P2_,P3_,P4_:TDoublePos3D ) :TDoublePos3D; overload;
 
+function CircumSphereCenter( const P1_,P2_,P3_:TSingle3D ) :TSingle3D; overload;
+function CircumSphereCenter( const P1_,P2_,P3_:TDouble3D ) :TDouble3D; overload;
+
 function MarginCorner( const V1_,V2_:TSingleVec3D; Margin_:Single ) :TSingleVec3D; overload;
 function MarginCorner( const V1_,V2_:TDoubleVec3D; Margin_:Double ) :TDoubleVec3D; overload;
 
@@ -143,7 +150,20 @@ uses System.Math,
 constructor TSingleSpher2.Create( const P1_,P2_,P3_,P4_:TSingle3D );
 begin
      Center := CircumCenter( P1_, P2_, P3_, P4_ );
-     Radiu2 := Distanc2( Center, P1_ );
+
+     Radiu2 := ( Distanc2( Center, P1_ )
+               + Distanc2( Center, P2_ )
+               + Distanc2( Center, P3_ )
+               + Distanc2( Center, P4_ ) ) / 4;
+end;
+
+constructor TSingleSpher2.Create( const P1_,P2_,P3_:TSingle3D );
+begin
+     Center := CircumSphereCenter( P1_, P2_, P3_ );
+
+     Radiu2 := ( Distanc2( Center, P1_ )
+               + Distanc2( Center, P2_ )
+               + Distanc2( Center, P3_ ) ) / 3;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleSpher2
@@ -155,7 +175,20 @@ end;
 constructor TDoubleSpher2.Create( const P1_,P2_,P3_,P4_:TDouble3D );
 begin
      Center := CircumCenter( P1_, P2_, P3_, P4_ );
-     Radiu2 := Distanc2( Center, P1_ );
+
+     Radiu2 := ( Distanc2( Center, P1_ )
+               + Distanc2( Center, P2_ )
+               + Distanc2( Center, P3_ )
+               + Distanc2( Center, P4_ ) ) / 4;
+end;
+
+constructor TDoubleSpher2.Create( const P1_,P2_,P3_:TDouble3D );
+begin
+     Center := CircumSphereCenter( P1_, P2_, P3_ );
+
+     Radiu2 := ( Distanc2( Center, P1_ )
+               + Distanc2( Center, P2_ )
+               + Distanc2( Center, P3_ ) ) / 3;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleSphere
@@ -167,6 +200,11 @@ end;
 constructor TSingleSphere.Create( const P1_,P2_,P3_,P4_:TSingle3D );
 begin
      Self := TSingleSpher2.Create( P1_, P2_, P3_, P4_ );
+end;
+
+constructor TSingleSphere.Create( const P1_,P2_,P3_:TSingle3D );
+begin
+     Self := TSingleSpher2.Create( P1_, P2_, P3_ );
 end;
 
 ///////////////////////////////////////////////////////////////////////// 型変換
@@ -209,6 +247,11 @@ end;
 constructor TDoubleSphere.Create( const P1_,P2_,P3_,P4_:TDouble3D );
 begin
      Self := TDoubleSpher2.Create( P1_, P2_, P3_, P4_ );
+end;
+
+constructor TDoubleSphere.Create( const P1_,P2_,P3_:TDouble3D );
+begin
+     Self := TDoubleSpher2.Create( P1_, P2_, P3_ );
 end;
 
 ///////////////////////////////////////////////////////////////////////// 型変換
@@ -530,6 +573,42 @@ begin
      end;
 
      Result := M.Inverse * V / 2;
+end;
+
+//------------------------------------------------------------------------------
+
+function CircumSphereCenter( const P1_,P2_,P3_:TSingle3D ) :TSingle3D;
+var
+   L1, L2, L3,
+   W1, W2, W3 :Single;
+begin
+     L1 := Distance( P2_, P3_ );
+     L2 := Distance( P3_, P1_ );
+     L3 := Distance( P1_, P2_ );
+
+     W1 := L1 * ( L2 + L3 - L1 );
+     W2 := L2 * ( L3 + L1 - L2 );
+     W3 := L3 * ( L1 + L2 - L3 );
+
+     Result := ( W1 * P1_ + W2 * P2_ + W3 * P3_ )
+             / ( W1       + W2       + W3       );
+end;
+
+function CircumSphereCenter( const P1_,P2_,P3_:TDouble3D ) :TDouble3D;
+var
+   L1, L2, L3,
+   W1, W2, W3 :Double;
+begin
+     L1 := Distance( P2_, P3_ );
+     L2 := Distance( P3_, P1_ );
+     L3 := Distance( P1_, P2_ );
+
+     W1 := L1 * ( L2 + L3 - L1 );
+     W2 := L2 * ( L3 + L1 - L2 );
+     W3 := L3 * ( L1 + L2 - L3 );
+
+     Result := ( W1 * P1_ + W2 * P2_ + W3 * P3_ )
+             / ( W1       + W2       + W3       );
 end;
 
 //------------------------------------------------------------------------------
