@@ -8,6 +8,28 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingle
+
+     TSingle = record
+     private
+     public
+       ///// 型変換
+       class function RandBS1 :Single; static;
+       class function RandBS2 :Single; static;
+       class function RandBS4 :Single; static;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDouble
+
+     TDouble = record
+     private
+     public
+       ///// 型変換
+       class function RandBS1 :Double; static;
+       class function RandBS2 :Double; static;
+       class function RandBS4 :Double; static;
+     end;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TdSingle
 
      TdSingle = record
@@ -64,6 +86,40 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Implicit( const V_:Integer ) :TdDouble;
        class operator Implicit( const V_:Int64 ) :TdDouble;
        class operator Implicit( const V_:Double ) :TdDouble;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleArea
+
+     TSingleArea = record
+     private
+     public
+       Min :Single;
+       Max :Single;
+       /////
+       constructor Create( const Min_,Max_:Single );
+       ///// 定数
+       class function NeInf :TSingleArea; inline; static;
+       class function NeMax :TSingleArea; inline; static;
+       class function Zero  :TSingleArea; inline; static;
+       class function PoMax :TSingleArea; inline; static;
+       class function PoInf :TSingleArea; inline; static;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea
+
+     TDoubleArea = record
+     private
+     public
+       Min :Double;
+       Max :Double;
+       /////
+       constructor Create( const Min_,Max_:Double );
+       ///// 定数
+       class function NeInf :TDoubleArea; inline; static;
+       class function NeMax :TDoubleArea; inline; static;
+       class function Zero  :TDoubleArea; inline; static;
+       class function PoMax :TDoubleArea; inline; static;
+       class function PoInf :TDoubleArea; inline; static;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -226,11 +282,59 @@ function ArcTan( const X_:TdDouble ) :TdDouble; overload;
 function ArcSin( const X_:TdSingle ) :TdSingle; overload;
 function ArcSin( const X_:TdDouble ) :TdDouble; overload;
 
+function Min( const A_,B_,C_:TdDouble ) :TdDouble; overload;
+function Min( const A_,B_,C_:TdSingle ) :TdSingle; overload;
+
+function Max( const A_,B_,C_:TdSingle ) :TdSingle; overload;
+function Max( const A_,B_,C_:TdDouble ) :TdDouble; overload;
+
 implementation //############################################################### ■
 
-uses System.Math;
+uses System.SysUtils, System.Math;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingle
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+class function TSingle.RandBS1 :Single;
+begin
+     Result := Random - 0.5;
+end;
+
+class function TSingle.RandBS2 :Single;
+begin
+     Result := RandBS1 + RandBS1;
+end;
+
+class function TSingle.RandBS4 :Single;
+begin
+     Result := RandBS2 + RandBS2;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDouble
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+class function TDouble.RandBS1 :Double;
+begin
+     Result := Random - 0.5;
+end;
+
+class function TDouble.RandBS2 :Double;
+begin
+     Result := RandBS1 + RandBS1;
+end;
+
+class function TDouble.RandBS4 :Double;
+begin
+     Result := RandBS2 + RandBS2;
+end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TdSingle
 
@@ -518,6 +622,92 @@ begin
           o := V_;
           d := 0;
      end;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleArea
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TSingleArea.Create( const Min_,Max_:Single );
+begin
+     Min := Min_;
+     Max := Max_;
+end;
+
+/////////////////////////////////////////////////////////////////////////// 定数
+
+class function TSingleArea.NeInf :TSingleArea;
+begin
+     Result := TSingleArea.Create( Single.PositiveInfinity,
+                                   Single.NegativeInfinity );
+end;
+
+class function TSingleArea.NeMax :TSingleArea;
+begin
+     Result := TSingleArea.Create( +Single.MaxValue,
+                                   -Single.MaxValue );
+end;
+
+class function TSingleArea.Zero :TSingleArea;
+begin
+     Result := TSingleArea.Create( 0, 0 );
+end;
+
+class function TSingleArea.PoMax :TSingleArea;
+begin
+     Result := TSingleArea.Create( -Single.MaxValue,
+                                   +Single.MaxValue );
+end;
+
+class function TSingleArea.PoInf :TSingleArea;
+begin
+     Result := TSingleArea.Create( Single.NegativeInfinity,
+                                   Single.PositiveInfinity );
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TDoubleArea.Create( const Min_,Max_:Double );
+begin
+     Min := Min_;
+     Max := Max_;
+end;
+
+/////////////////////////////////////////////////////////////////////////// 定数
+
+class function TDoubleArea.NeInf :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( Double.PositiveInfinity,
+                                   Double.NegativeInfinity );
+end;
+
+class function TDoubleArea.NeMax :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( +Double.MaxValue,
+                                   -Double.MaxValue );
+end;
+
+class function TDoubleArea.Zero :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( 0, 0 );
+end;
+
+class function TDoubleArea.PoMax :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( -Double.MaxValue,
+                                   +Double.MaxValue );
+end;
+
+class function TDoubleArea.PoInf :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( Double.NegativeInfinity,
+                                   Double.PositiveInfinity );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -817,7 +1007,7 @@ begin
      end;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function Pow3( const X_:TdSingle ) :TdSingle;
 begin
@@ -837,7 +1027,7 @@ begin
      end;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function Roo2( const X_:TdSingle ) :TdSingle;
 begin
@@ -857,7 +1047,7 @@ begin
      end;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function ArcCos( const C_:TdSingle ) :TdSingle;
 begin
@@ -877,7 +1067,7 @@ begin
      end;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function Abso( const V_:TdSingle ) :TdSingle;
 begin
@@ -889,7 +1079,7 @@ begin
      Result := Sign( V_.o ) * V_;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function Sin( const X_:TdSingle ) :TdSingle;
 begin
@@ -909,7 +1099,7 @@ begin
      end;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function Cos( const X_:TdSingle ) :TdSingle;
 begin
@@ -929,7 +1119,7 @@ begin
      end;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function Tan( const X_:TdSingle ) :TdSingle;
 begin
@@ -949,7 +1139,7 @@ begin
      end;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function ArcTan( const X_:TdSingle ) :TdSingle;
 begin
@@ -969,7 +1159,7 @@ begin
      end;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function ArcSin( const X_:TdSingle ) :TdSingle;
 begin
@@ -986,6 +1176,68 @@ begin
      begin
           Result.o := ArcSin( o );
           Result.d := d / Roo2( 1 - Pow2( o ) );
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function Min( const A_,B_,C_:TdSingle ) :TdSingle;
+begin
+     if A_ <= B_ then
+     begin
+          if A_ <= C_ then Result := A_
+                      else Result := C_;
+     end
+     else
+     begin
+          if B_ <= C_ then Result := B_
+                      else Result := C_;
+     end;
+end;
+
+function Min( const A_,B_,C_:TdDouble ) :TdDouble;
+begin
+     if A_ <= B_ then
+     begin
+          if A_ <= C_ then Result := A_
+                      else Result := C_;
+     end
+     else
+     begin
+          if B_ <= C_ then Result := B_
+                      else Result := C_;
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function Max( const A_,B_,C_:TdSingle ) :TdSingle;
+begin
+     if A_ >= B_ then
+     begin
+          if A_ >= C_ then Result := A_
+                      else Result := C_;
+     end
+     else
+     begin
+
+          if B_ >= C_ then Result := B_
+                      else Result := C_;
+     end;
+end;
+
+function Max( const A_,B_,C_:TdDouble ) :TdDouble;
+begin
+     if A_ >= B_ then
+     begin
+          if A_ >= C_ then Result := A_
+                      else Result := C_;
+     end
+     else
+     begin
+
+          if B_ >= C_ then Result := B_
+                      else Result := C_;
      end;
 end;
 
