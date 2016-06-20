@@ -33,7 +33,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 implementation //############################################################### ■
 
-uses System.Classes, System.SysUtils, System.RTLConsts,
+uses System.Classes, System.SysUtils, System.RTLConsts, System.Math.Vectors,
      LUX.D3;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
@@ -53,6 +53,7 @@ uses System.Classes, System.SysUtils, System.RTLConsts,
 procedure HMeshData.SaveToFileBinSTL( const FileName_:String; const Text_:AnsiString = '' );
 var
    Cs :array [ 0..80-1 ] of AnsiChar;
+   PC :PAnsiChar;
    N, I :Cardinal;
    Face :packed record
            Nor  :TSingle3D;
@@ -65,7 +66,9 @@ begin
      with TFileStream.Create( FileName_, fmCreate ) do
      begin
           try
-             Write( Text_, 80 );
+             StrLCopy( Cs, PAnsiChar( Text_ ), Length( Cs )-1 );
+
+             Write( Cs, 80 );
 
              N := IndexBuffer.Length div 3;
 
