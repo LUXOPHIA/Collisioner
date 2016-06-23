@@ -228,6 +228,14 @@ function Max( const A_,B_,C_:Integer ) :Integer; overload;
 function Max( const A_,B_,C_:Single ) :Single; overload;
 function Max( const A_,B_,C_:Double ) :Double; overload;
 
+function MinI( const A_,B_:Integer ) :Byte; inline; overload;
+function MinI( const A_,B_:Single ) :Byte; inline; overload;
+function MinI( const A_,B_:Double ) :Byte; inline; overload;
+
+function MaxI( const A_,B_:Integer ) :Byte; inline; overload;
+function MaxI( const A_,B_:Single ) :Byte; inline; overload;
+function MaxI( const A_,B_:Double ) :Byte; inline; overload;
+
 function MinI( const A_,B_,C_:Integer ) :Integer; inline; overload;
 function MinI( const A_,B_,C_:Single ) :Integer; inline; overload;
 function MinI( const A_,B_,C_:Double ) :Integer; inline; overload;
@@ -624,7 +632,7 @@ end;
 
 {$ENDIF}
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function Pow2( const X_:Integer ) :Integer;
 begin
@@ -641,7 +649,7 @@ begin
      Result := Sqr( X_ );
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function Pow3( const X_:Integer ) :Integer;
 begin
@@ -658,7 +666,7 @@ begin
      Result := X_ * Pow2( X_ );
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function Roo2( const X_:Single ) :Single;
 begin
@@ -670,7 +678,7 @@ begin
      Result := Sqrt( X_ );
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function Roo3( const X_:Single ) :Single;
 begin
@@ -682,7 +690,7 @@ begin
      Result := Power( X_, 1/3 );
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function ClipRange( const X_,Min_,Max_:Integer ) :Integer;
 begin
@@ -708,7 +716,7 @@ begin
                   else Result := X_;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function Min( const A_,B_,C_:Integer ) :Integer;
 begin
@@ -752,7 +760,7 @@ begin
      end;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function Max( const A_,B_,C_:Integer ) :Integer;
 begin
@@ -799,7 +807,47 @@ begin
      end;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
+
+function MinI( const A_,B_:Integer ) :Byte;
+begin
+     if A_ <= B_ then Result := 1
+                 else Result := 2;
+end;
+
+function MinI( const A_,B_:Single ) :Byte;
+begin
+     if A_ <= B_ then Result := 1
+                 else Result := 2;
+end;
+
+function MinI( const A_,B_:Double ) :Byte;
+begin
+     if A_ <= B_ then Result := 1
+                 else Result := 2;
+end;
+
+//------------------------------------------------------------------------------
+
+function MaxI( const A_,B_:Integer ) :Byte;
+begin
+     if A_ <= B_ then Result := 2
+                 else Result := 1;
+end;
+
+function MaxI( const A_,B_:Single ) :Byte;
+begin
+     if A_ <= B_ then Result := 2
+                 else Result := 1;
+end;
+
+function MaxI( const A_,B_:Double ) :Byte;
+begin
+     if A_ <= B_ then Result := 2
+                 else Result := 1;
+end;
+
+//------------------------------------------------------------------------------
 
 function MinI( const A_,B_,C_:Integer ) :Integer;
 begin
@@ -843,7 +891,7 @@ begin
      end;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function MaxI( const A_,B_,C_:Integer ) :Integer;
 begin
@@ -887,7 +935,7 @@ begin
      end;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function MinI( const Vs_:array of Integer ) :Integer;
 var
@@ -942,7 +990,7 @@ begin
      end
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function MaxI( const Vs_:array of Integer ) :Integer;
 var
@@ -997,7 +1045,7 @@ begin
      end
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function RealMod( const X_,Range_:Integer ) :Integer;
 begin
@@ -1009,7 +1057,7 @@ begin
      Result := X_ mod Range_;  if Result < 0 then Inc( Result, Range_ );
 end;
 
-////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 function FileToBytes( const FileName_:string ) :TBytes;
 begin
