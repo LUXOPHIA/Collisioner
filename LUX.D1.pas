@@ -282,6 +282,12 @@ function ArcTan( const X_:TdDouble ) :TdDouble; overload;
 function ArcSin( const X_:TdSingle ) :TdSingle; overload;
 function ArcSin( const X_:TdDouble ) :TdDouble; overload;
 
+function Min( const A_,B_:TdDouble ) :TdDouble; overload;
+function Min( const A_,B_:TdSingle ) :TdSingle; overload;
+
+function Max( const A_,B_:TdSingle ) :TdSingle; overload;
+function Max( const A_,B_:TdDouble ) :TdDouble; overload;
+
 function Min( const A_,B_,C_:TdDouble ) :TdDouble; overload;
 function Min( const A_,B_,C_:TdSingle ) :TdSingle; overload;
 
@@ -1177,6 +1183,34 @@ begin
           Result.o := ArcSin( o );
           Result.d := d / Roo2( 1 - Pow2( o ) );
      end;
+end;
+
+//------------------------------------------------------------------------------
+
+function Min( const A_,B_:TdDouble ) :TdDouble;
+begin
+     if A_ <= B_ then Result := A_
+                 else Result := B_;
+end;
+
+function Min( const A_,B_:TdSingle ) :TdSingle;
+begin
+     if A_ <= B_ then Result := A_
+                 else Result := B_;
+end;
+
+//------------------------------------------------------------------------------
+
+function Max( const A_,B_:TdSingle ) :TdSingle;
+begin
+     if A_ <= B_ then Result := B_
+                 else Result := A_;
+end;
+
+function Max( const A_,B_:TdDouble ) :TdDouble;
+begin
+     if A_ <= B_ then Result := B_
+                 else Result := A_;
 end;
 
 //------------------------------------------------------------------------------
