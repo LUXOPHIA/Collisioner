@@ -43,7 +43,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
        _TEMP :TFold;
      protected
-       _OuterCells :TTetraModel<TDelaPoin,TDelaCell>;
        ///// メソッド
        procedure Init3;
      public
@@ -51,7 +50,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const P1_,P2_,P3_:TSingle3D ); overload;
        destructor Destroy; override;
        ///// メソッド
-       procedure DeleteChilds; override;
        function AddCell( const Poin0_,Poin1_,Poin2_,Poin3_:TDelaPoin ) :TDelaCell;
        function HitCell( const Pos_:TSingle3D ) :TDelaCell;
        function AddPoin( const Pos_:TSingle3D ) :TDelaPoin;
@@ -141,8 +139,6 @@ constructor TDelaunay3D.Create;
 begin
      inherited;
 
-     _OuterCells := TTetraModel<TDelaPoin,TDelaCell>.Create;
-
      _TEMP := TFold.Create;
 end;
 
@@ -161,25 +157,16 @@ destructor TDelaunay3D.Destroy;
 begin
      _TEMP.Free;
 
-     _OuterCells.Free;
-
      inherited;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TDelaunay3D.DeleteChilds;
-begin
-     inherited;
-
-     _OuterCells.DeleteChilds;
-end;
-
 function TDelaunay3D.AddCell( const Poin0_,Poin1_,Poin2_,Poin3_:TDelaPoin ) :TDelaCell;
 var
    I :Shortint;
 begin
-     Result := TDelaCell.Create;
+     Result := TDelaCell.Create( Self );
 
      with Result do
      begin
@@ -194,14 +181,10 @@ begin
 
           if I < 0 then
           begin
-               Paren := TDelaCell( Self );
-
                _CS2 := CircumSpher2;
           end
           else
           begin
-               Paren := TDelaCell( _OuterCells );
-
                with _CS2 do
                begin
                     Center := FaceNorm[ I ];
@@ -215,16 +198,6 @@ function TDelaunay3D.HitCell( const Pos_:TSingle3D ) :TDelaCell;
 var
    I :Integer;
 begin
-     with _OuterCells do
-     begin
-          for I := 0 to ChildsN-1 do
-          begin
-               Result := Childs[ I ];
-
-               if Result.HitOK( Pos_ ) then Exit;
-          end;
-     end;
-
      for I := 0 to ChildsN-1 do
      begin
           Result := Childs[ I ];
