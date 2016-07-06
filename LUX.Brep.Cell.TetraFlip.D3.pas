@@ -6,7 +6,9 @@ uses LUX, LUX.D3, LUX.Geometry.D3, LUX.Graph, LUX.Graph.Tree, LUX.Brep, LUX.Brep
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
-     TTetraPoin3D = class;
+     TTetraPoin3D  = class;
+     TTetraCell3D  = class;
+     TTetraModel3D = class;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -66,8 +68,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TTetraModel3D<_TPoin_:class;_TCell_:class> = class( TTetraModel<_TPoin_,_TCell_> )
      private
+       ///// アクセス
+       function Get_Self :TTetraModel3D; inline;
      protected
+       ///// プロパティ
+       property _Self :TTetraModel3D read Get_Self;
      public
+       procedure LoadFromFile( const FileName_:String );
+       procedure SaveToFile( const FileName_:String );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTetraModel3D
@@ -76,6 +84,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
      public
+       procedure LoadFromFile( const FileName_:String );
+       procedure SaveToFile( const FileName_:String );
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -85,6 +95,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
 implementation //############################################################### ■
+
+uses System.Classes, System.SysUtils, System.RegularExpressions;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -229,9 +241,26 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
+function TTetraModel3D<_TPoin_,_TCell_>.Get_Self :TTetraModel3D;
+begin
+     Result := TTetraModel3D( Self );
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TTetraModel3D<_TPoin_,_TCell_>.LoadFromFile( const FileName_:String );
+begin
+     _Self.LoadFromFile( FileName_ );
+end;
+
+procedure TTetraModel3D<_TPoin_,_TCell_>.SaveToFile( const FileName_:String );
+begin
+     _Self.SaveToFile( FileName_ );
+end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTetraModel3D
 
@@ -240,6 +269,197 @@ end;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TTetraModel3D.LoadFromFile( const FileName_:String );
+var
+   RP, RC :TRegEx;
+   L :String;
+   PoinN, CellN,
+   I, J,
+   PoinI, CellI, VertI, BondI :Integer;
+begin
+     RP := TRegEx.Create( 'PoinsN\s*=\s*(\d+)', [ roCompiled ] );
+     RC := TRegEx.Create( 'CellsN\s*=\s*(\d+)', [ roCompiled ] );
+
+     with TFileReader.Create( FileName_, TEncoding.UTF8 ) do
+     begin
+          L := ReadLine;
+
+          Assert( L = '#TetraFlip', L );
+
+          //////////
+
+          PoinN := -1;
+          CellN := -1;
+
+          while not EndOfStream do
+          begin
+               L := ReadLine;
+
+               if L = '' then Break;
+
+               with RP.Match( L ) do
+               begin
+                    if Success then PoinN := Groups[ 1 ].Value.ToInteger;
+               end;
+
+               with RC.Match( L ) do
+               begin
+                    if Success then CellN := Groups[ 1 ].Value.ToInteger;
+               end;
+          end;
+
+          Assert( not EndOfStream );
+
+          Assert( PoinN >= 0, PoinN.ToString );
+          Assert( CellN >= 0, CellN.ToString );
+
+          //////////
+
+          DeleteChilds;
+
+          with _PoinModel do
+          begin
+               for I := 0 to PoinN-1 do
+               begin
+                    with TTetraPoin3D.Create( _PoinModel ) do
+                    begin
+                         Pos := TSingle3D.Create( ReadSingle,
+                                                  ReadSingle,
+                                                  ReadSingle );
+                    end;
+               end;
+          end;
+
+          for I := 0 to CellN-1 do
+          begin
+               with TTetraCell3D.Create( Self ) do
+               begin
+                    for J := 0 to 3 do
+                    begin
+                         PoinI := ReadInteger;
+
+                         if PoinI >= 0 then
+                         begin
+                              Poin[ J ] := _PoinModel.Childs[ PoinI ];
+                         end
+                         else
+                         begin
+                              Poin[ J ] := nil;
+                         end;
+                    end;
+               end;
+          end;
+
+          for I := 0 to CellN-1 do
+          begin
+               with Childs[ I ] do
+               begin
+                    for J := 0 to 3 do
+                    begin
+                         CellI := ReadInteger;
+                         VertI := ReadByte;
+                         BondI := ReadByte;
+
+                         if CellI >= 0 then
+                         begin
+                              Cell[ J ] := Self.Childs[ CellI ];
+                              Vert[ J ] := VertI               ;
+                              Bond[ J ] := BondI               ;
+                         end
+                         else
+                         begin
+                              Cell[ J ] := nil;
+                              Vert[ J ] := 0  ;
+                              Bond[ J ] := 0  ;
+                         end;
+                    end;
+               end;
+          end;
+
+          Free;
+     end;
+end;
+
+procedure TTetraModel3D.SaveToFile( const FileName_:String );
+var
+   F :TFileStream;
+   I, J :Integer;
+begin
+     F := TFileStream.Create( FileName_, fmCreate );
+
+     with TStreamWriter.Create( F, TEncoding.UTF8 ) do
+     begin
+          WriteLine( '#TetraFlip' );
+
+          WriteLine( 'PoinsN=' + _PoinModel.ChildsN.ToString );
+          WriteLine( 'CellsN=' +            ChildsN.ToString );
+
+          WriteLine( '' );
+
+          Free;
+     end;
+
+     with TBinaryWriter.Create( F ) do
+     begin
+          with _PoinModel do
+          begin
+               for I := 0 to ChildsN-1 do
+               begin
+                    with Childs[ I ] do
+                    begin
+                         with Pos do
+                         begin
+                              Write( X );
+                              Write( Y );
+                              Write( Z );
+                         end;
+                    end;
+               end;
+          end;
+
+          for I := 0 to ChildsN-1 do
+          begin
+               with Childs[ I ] do
+               begin
+                    for J := 0 to 3 do
+                    begin
+                         if Assigned( Poin[ J ] )
+                         then Write( Poin[ J ].Order )
+                         else Write( Integer( -1 )   );
+                    end;
+               end;
+          end;
+
+          for I := 0 to ChildsN-1 do
+          begin
+               with Childs[ I ] do
+               begin
+                    for J := 0 to 3 do
+                    begin
+                         if Assigned( Cell[ J ] ) then
+                         begin
+                              Write( Cell[ J ].Order );
+                              Write( Vert[ J ]       );
+                              Write( Bond[ J ]       );
+                         end
+                         else
+                         begin
+                              Write( Integer( -1 ) );
+                              Write( Byte   (  0 ) );
+                              Write( Byte   (  0 ) );
+                         end;
+                    end;
+               end;
+          end;
+
+          Free;
+     end;
+
+     F.Free;
+end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
