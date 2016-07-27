@@ -283,6 +283,8 @@ function RevBytes( const Value_:UInt64 ) :UInt64; overload;
 function RevBytes( const Value_:Int64 ) :Int64; overload;
 function RevBytes( const Value_:Double ) :Double; overload;
 
+function CharsToStr( const Cs_:TArray<AnsiChar> ) :AnsiString;
+
 function FileToBytes( const FileName_:string ) :TBytes;
 
 implementation //############################################################### ■
@@ -1184,11 +1186,12 @@ asm
 end;
 
 function RevBytes( const Value_:Single ) :Single;
-asm
-{$IFDEF CPUX64 }
-   mov rax, rcx
-{$ENDIF}
-   bswap eax
+var
+   V :Cardinal;
+begin
+     V := RevBytes( PCardinal( @Value_ )^ );
+
+     Result := PSingle( @V )^;
 end;
 
 //------------------------------------------------------------------------------
@@ -1224,18 +1227,27 @@ asm
 end;
 
 function RevBytes( const Value_:Double ) :Double;
-asm
-{$IF Defined( CPUX86 ) }
-   mov   edx, [ ebp + $08 ]
-   mov   eax, [ ebp + $0c ]
-   bswap edx
-   bswap eax
-{$ELSEIF Defined( CPUX64 ) }
-   mov   rax, rcx
-   bswap rax
-{$ELSE}
-   {$Message Fatal 'RevByte has not been implemented for this architecture.' }
-{$ENDIF}
+var
+   V :UInt64;
+begin
+     V := RevBytes( PUInt64( @Value_ )^ );
+
+     Result := PDouble( @V )^;
+end;
+
+//------------------------------------------------------------------------------
+
+function CharsToStr( const Cs_:TArray<AnsiChar> ) :AnsiString;
+var
+   I :Integer;
+begin
+     Result := '';
+
+     for I := 0 to High( Cs_ ) do
+     begin
+          if Cs_[ I ] = Char(nil) then Result := Result + CRLF
+                                  else Result := Result + Cs_[ I ];
+     end;
 end;
 
 //------------------------------------------------------------------------------
