@@ -272,6 +272,17 @@ function MaxI( const Vs_:array of Double ) :Integer; overload;
 function RealMod( const X_,Range_:Integer ) :Integer; overload;
 function RealMod( const X_,Range_:Int64 ) :Int64; overload;
 
+function RevByte( const Value_:Word ) :Word; overload;
+function RevByte( const Value_:Smallint ) :Smallint; overload;
+
+function RevByte( const Value_:Cardinal ) :Cardinal; overload;
+function RevByte( const Value_:Integer ) :Integer; overload;
+function RevByte( const Value_:Single ) :Single; overload;
+
+function RevByte( const Value_:UInt64 ) :UInt64; overload;
+function RevByte( const Value_:Int64 ) :Int64; overload;
+function RevByte( const Value_:Double ) :Double; overload;
+
 function FileToBytes( const FileName_:string ) :TBytes;
 
 implementation //############################################################### ■
@@ -1134,6 +1145,97 @@ end;
 function RealMod( const X_,Range_:Int64 ) :Int64;
 begin
      Result := X_ mod Range_;  if Result < 0 then Inc( Result, Range_ );
+end;
+
+//------------------------------------------------------------------------------
+
+function RevByte( const Value_:Word ) :Word;
+asm
+{$IFDEF CPUX64 }
+   mov rax, rcx
+{$ENDIF}
+   xchg al, ah
+end;
+
+function RevByte( const Value_:Smallint ) :Smallint;
+asm
+{$IFDEF CPUX64 }
+   mov rax, rcx
+{$ENDIF}
+   xchg al, ah
+end;
+
+//------------------------------------------------------------------------------
+
+function RevByte( const Value_:Cardinal ) :Cardinal;
+asm
+{$IFDEF CPUX64 }
+   mov rax, rcx
+{$ENDIF}
+   bswap eax
+end;
+
+function RevByte( const Value_:Integer ) :Integer;
+asm
+{$IFDEF CPUX64 }
+   mov rax, rcx
+{$ENDIF}
+   bswap eax
+end;
+
+function RevByte( const Value_:Single ) :Single;
+asm
+{$IFDEF CPUX64 }
+   mov rax, rcx
+{$ENDIF}
+   bswap eax
+end;
+
+//------------------------------------------------------------------------------
+
+function RevByte( const Value_:UInt64 ) :UInt64;
+asm
+{$IF Defined( CPUX86 ) }
+   mov   edx, [ ebp + $08 ]
+   mov   eax, [ ebp + $0c ]
+   bswap edx
+   bswap eax
+{$ELSEIF Defined( CPUX64 ) }
+   mov   rax, rcx
+   bswap rax
+{$ELSE}
+   {$Message Fatal 'RevByte has not been implemented for this architecture.' }
+{$ENDIF}
+end;
+
+function RevByte( const Value_:Int64 ) :Int64;
+asm
+{$IF Defined( CPUX86 ) }
+   mov   edx, [ ebp + $08 ]
+   mov   eax, [ ebp + $0c ]
+   bswap edx
+   bswap eax
+{$ELSEIF Defined( CPUX64 ) }
+   mov   rax, rcx
+   bswap rax
+{$ELSE}
+   {$Message Fatal 'RevByte has not been implemented for this architecture.' }
+{$ENDIF}
+end;
+
+function RevByte( const Value_:Double ) :Double;
+asm
+{$IF Defined( CPUX86 ) }
+   mov   edx, [ ebp + $08 ]
+   mov   eax, [ ebp + $0c ]
+   bswap edx
+   bswap eax
+{$ELSEIF Defined( CPUX64 ) }
+   mov   rax, rcx
+   bswap rax
+{$ELSE}
+   {$Message Fatal 'RevByte has not been implemented for this architecture.' }
+{$ENDIF}
 end;
 
 //------------------------------------------------------------------------------
