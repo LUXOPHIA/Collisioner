@@ -272,16 +272,16 @@ function MaxI( const Vs_:array of Double ) :Integer; overload;
 function RealMod( const X_,Range_:Integer ) :Integer; overload;
 function RealMod( const X_,Range_:Int64 ) :Int64; overload;
 
-function RevByte( const Value_:Word ) :Word; overload;
-function RevByte( const Value_:Smallint ) :Smallint; overload;
+function RevBytes( const Value_:Word ) :Word; overload;
+function RevBytes( const Value_:Smallint ) :Smallint; overload;
 
-function RevByte( const Value_:Cardinal ) :Cardinal; overload;
-function RevByte( const Value_:Integer ) :Integer; overload;
-function RevByte( const Value_:Single ) :Single; overload;
+function RevBytes( const Value_:Cardinal ) :Cardinal; overload;
+function RevBytes( const Value_:Integer ) :Integer; overload;
+function RevBytes( const Value_:Single ) :Single; overload;
 
-function RevByte( const Value_:UInt64 ) :UInt64; overload;
-function RevByte( const Value_:Int64 ) :Int64; overload;
-function RevByte( const Value_:Double ) :Double; overload;
+function RevBytes( const Value_:UInt64 ) :UInt64; overload;
+function RevBytes( const Value_:Int64 ) :Int64; overload;
+function RevBytes( const Value_:Double ) :Double; overload;
 
 function FileToBytes( const FileName_:string ) :TBytes;
 
@@ -1149,7 +1149,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function RevByte( const Value_:Word ) :Word;
+function RevBytes( const Value_:Word ) :Word;
 asm
 {$IFDEF CPUX64 }
    mov rax, rcx
@@ -1157,7 +1157,7 @@ asm
    xchg al, ah
 end;
 
-function RevByte( const Value_:Smallint ) :Smallint;
+function RevBytes( const Value_:Smallint ) :Smallint;
 asm
 {$IFDEF CPUX64 }
    mov rax, rcx
@@ -1167,7 +1167,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function RevByte( const Value_:Cardinal ) :Cardinal;
+function RevBytes( const Value_:Cardinal ) :Cardinal;
 asm
 {$IFDEF CPUX64 }
    mov rax, rcx
@@ -1175,7 +1175,7 @@ asm
    bswap eax
 end;
 
-function RevByte( const Value_:Integer ) :Integer;
+function RevBytes( const Value_:Integer ) :Integer;
 asm
 {$IFDEF CPUX64 }
    mov rax, rcx
@@ -1183,7 +1183,7 @@ asm
    bswap eax
 end;
 
-function RevByte( const Value_:Single ) :Single;
+function RevBytes( const Value_:Single ) :Single;
 asm
 {$IFDEF CPUX64 }
    mov rax, rcx
@@ -1193,7 +1193,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function RevByte( const Value_:UInt64 ) :UInt64;
+function RevBytes( const Value_:UInt64 ) :UInt64;
 asm
 {$IF Defined( CPUX86 ) }
    mov   edx, [ ebp + $08 ]
@@ -1208,7 +1208,7 @@ asm
 {$ENDIF}
 end;
 
-function RevByte( const Value_:Int64 ) :Int64;
+function RevBytes( const Value_:Int64 ) :Int64;
 asm
 {$IF Defined( CPUX86 ) }
    mov   edx, [ ebp + $08 ]
@@ -1223,7 +1223,7 @@ asm
 {$ENDIF}
 end;
 
-function RevByte( const Value_:Double ) :Double;
+function RevBytes( const Value_:Double ) :Double;
 asm
 {$IF Defined( CPUX86 ) }
    mov   edx, [ ebp + $08 ]
