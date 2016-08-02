@@ -2,8 +2,7 @@
 
 interface //#################################################################### ■
 
-uses System.Classes, System.SysUtils, System.UITypes, System.Math.Vectors,
-     FMX.Graphics, FMX.Types3D, FMX.Controls3D, FMX.Objects3D;
+uses System.Types, System.SysUtils, System.Classes, System.Math.Vectors;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -36,18 +35,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Translate :TPoint3D read GetTranslate write SetTranslate;
        ///// 定数
        class function Identity :TMatrix3D; static;
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HBitmapData
-
-     HBitmapData = record helper for TBitmapData
-     private
-       ///// アクセス
-       function GetColor( const X_,Y_:Integer ) :TAlphaColor;
-       procedure SetColor( const X_,Y_:Integer; const Color_:TAlphaColor );
-     public
-       ///// プロパティ
-       property Color[ const X_,Y_:Integer ] :TAlphaColor read GetColor write SetColor;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRay3D
@@ -114,49 +101,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HCanvas
-
-     HCanvas = class helper for TCanvas
-     private
-     protected
-       ///// アクセス
-       function GetMatrix :TMatrix;
-       procedure SetMatrix( const Matrix_:TMatrix );
-     public
-       property Matrix :TMatrix read GetMatrix write SetMatrix;
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HControl3D
-
-     HControl3D = class helper for TControl3D
-     private
-     protected
-       ///// アクセス
-       function GetAbsolMatrix :TMatrix3D;
-       procedure SetAbsoluteMatrix( const AbsoluteMatrix_:TMatrix3D ); virtual;
-       function GetLocalMatrix :TMatrix3D; virtual;
-       procedure SetLocalMatrix( const LocalMatrix_:TMatrix3D ); virtual;
-       ///// メソッド
-       procedure RecalcFamilyAbsolute;
-       procedure RecalcChildrenAbsolute;
-     public
-       ///// プロパティ
-       property AbsoluteMatrix :TMatrix3D read GetAbsolMatrix write SetAbsoluteMatrix;
-       property LocalMatrix    :TMatrix3D read GetLocalMatrix write SetLocalMatrix   ;
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HCustomMesh
-
-     HCustomMesh = class helper for TCustomMesh
-     private
-     protected
-       ///// アクセス
-       function GetMeshData :TMeshData;
-     public
-       ///// プロパティ
-       property MeshData :TMeshData read GetMeshData;
-     end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TIter< TValue_ >
 
@@ -289,8 +233,7 @@ function FileToBytes( const FileName_:string ) :TBytes;
 
 implementation //############################################################### ■
 
-uses System.Math,
-     FMX.Types;
+uses System.Math;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -334,24 +277,6 @@ begin
           m41 := 0;  m42 := 0;  m43 := 0;  m44 := 1;
      end;
 end;
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HBitmapData
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-/////////////////////////////////////////////////////////////////////// アクセス
-
-function HBitmapData.GetColor( const X_,Y_:Integer ) :TAlphaColor;
-begin
-     Result := GetPixel( X_, Y_ );
-end;
-
-procedure HBitmapData.SetColor( const X_,Y_:Integer; const Color_:TAlphaColor );
-begin
-     SetPixel( X_, Y_, Color_ );
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TRay3D
 
@@ -485,116 +410,6 @@ begin
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HCanvas
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-/////////////////////////////////////////////////////////////////////// アクセス
-
-function HCanvas.GetMatrix :TMatrix;
-begin
-     with Self do
-     begin
-          Result := FMatrix;
-     end;
-end;
-
-procedure HCanvas.SetMatrix( const Matrix_:TMatrix );
-begin
-     inherited SetMatrix( Matrix_ );
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HControl3D
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-/////////////////////////////////////////////////////////////////////// アクセス
-
-function HControl3D.GetAbsolMatrix :TMatrix3D;
-begin
-     if FRecalcAbsolute then
-     begin
-          if FParent is TControl3D then FAbsoluteMatrix := FLocalMatrix * TControl3D(FParent).AbsoluteMatrix
-                                   else FAbsoluteMatrix := FLocalMatrix;
-
-          Result := FAbsoluteMatrix;
-
-          FInvAbsoluteMatrix := FAbsoluteMatrix.Inverse;
-
-          FRecalcAbsolute := False;
-     end
-     else Result := FAbsoluteMatrix;
-end;
-
-procedure HControl3D.SetAbsoluteMatrix( const AbsoluteMatrix_:TMatrix3D );
-begin
-        FAbsoluteMatrix := AbsoluteMatrix_;
-     FInvAbsoluteMatrix := AbsoluteMatrix_.Inverse;
-
-     if Assigned( FParent ) and ( FParent is TControl3D )
-     then FLocalMatrix := FAbsoluteMatrix * TControl3D( FParent ).AbsoluteMatrix.Inverse
-     else FLocalMatrix := FAbsoluteMatrix;
-
-     RecalcChildrenAbsolute;
-end;
-
-function HControl3D.GetLocalMatrix :TMatrix3D;
-begin
-     Result := FLocalMatrix;
-end;
-
-procedure HControl3D.SetLocalMatrix( const LocalMatrix_:TMatrix3D );
-begin
-     FLocalMatrix := LocalMatrix_;
-
-     RecalcFamilyAbsolute;
-end;
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-procedure HControl3D.RecalcFamilyAbsolute;
-begin
-     RecalcAbsolute;
-end;
-
-procedure HControl3D.RecalcChildrenAbsolute;
-var
-   F :TFmxObject;
-begin
-     FRecalcAbsolute := False;
-
-     if Assigned( Children ) then
-     begin
-          for F in Children do
-          begin
-               if F is TControl3D then TControl3D( F ).RecalcFamilyAbsolute;
-          end;
-     end;
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HCustomMesh
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-/////////////////////////////////////////////////////////////////////// アクセス
-
-function HCustomMesh.GetMeshData :TMeshData;
-begin
-     Result := Data;
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TIter< TValue_ >
 
