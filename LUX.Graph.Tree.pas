@@ -6,9 +6,10 @@ uses LUX, LUX.Graph;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
-     TTreeItem                = class;
-     TTreeNode                = class;
-     TTreeNode<_TNode_:class> = class;
+     TTreeItem                          = class;
+     TTreeNode                          = class;
+     TTreeNode<_TParen_,_TChild_:class> = class;
+     TTreeNode<_TNode_:class>           = class;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -88,25 +89,29 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Swap( const I1_,I2_:Integer ); overload;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTreeNode<_TNode_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTreeNode<_TParen_,_TChild_>
 
-     TTreeNode<_TNode_:class> = class( TTreeNode )
+     TTreeNode<_TParen_,_TChild_:class> = class( TTreeNode )
      private
      protected
        ///// アクセス
-       function GetParen :_TNode_; reintroduce;
-       procedure SetParen( const Paren_:_TNode_ ); reintroduce;
-       function GetHead :_TNode_; reintroduce;
-       function GetTail :_TNode_; reintroduce;
-       function GetChilds( const I_:Integer ) :_TNode_; reintroduce;
-       procedure SetChilds( const I_:Integer; const Child_:_TNode_ ); reintroduce;
+       function GetParen :_TParen_; reintroduce;
+       procedure SetParen( const Paren_:_TParen_ ); reintroduce;
+       function GetHead :_TChild_; reintroduce;
+       function GetTail :_TChild_; reintroduce;
+       function GetChilds( const I_:Integer ) :_TChild_; reintroduce;
+       procedure SetChilds( const I_:Integer; const Child_:_TChild_ ); reintroduce;
      public
        ///// プロパティ
-       property Paren                      :_TNode_ read GetParen  write SetParen ;
-       property Head                       :_TNode_ read GetHead                  ;
-       property Tail                       :_TNode_ read GetTail                  ;
-       property Childs[ const I_:Integer ] :_TNode_ read GetChilds write SetChilds; default;
+       property Paren                      :_TParen_ read GetParen  write SetParen ;
+       property Head                       :_TChild_ read GetHead                  ;
+       property Tail                       :_TChild_ read GetTail                  ;
+       property Childs[ const I_:Integer ] :_TChild_ read GetChilds write SetChilds; default;
      end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTreeNode<_TNode_>
+
+     TTreeNode<_TNode_:class> = class( TTreeNode<_TNode_,_TNode_> ) end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
 
@@ -481,7 +486,7 @@ begin
      Swap( Childs[ I1_ ], Childs[ I2_ ] );
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTreeNode<_TNode_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTreeNode<_TParen_,_TChild_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -489,39 +494,47 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TTreeNode<_TNode_>.GetParen :_TNode_;
+function TTreeNode<_TParen_,_TChild_>.GetParen :_TParen_;
 begin
-     Result := _TNode_( inherited GetParen );
+     Result := _TParen_( inherited GetParen );
 end;
 
-procedure TTreeNode<_TNode_>.SetParen( const Paren_:_TNode_ );
+procedure TTreeNode<_TParen_,_TChild_>.SetParen( const Paren_:_TParen_ );
 begin
      inherited SetParen( TTreeNode( Paren_ ) );
 end;
 
 //------------------------------------------------------------------------------
 
-function TTreeNode<_TNode_>.GetHead :_TNode_;
+function TTreeNode<_TParen_,_TChild_>.GetHead :_TChild_;
 begin
-     Result := _TNode_( inherited GetHead );
+     Result := _TChild_( inherited GetHead );
 end;
 
-function TTreeNode<_TNode_>.GetTail :_TNode_;
+function TTreeNode<_TParen_,_TChild_>.GetTail :_TChild_;
 begin
-     Result := _TNode_( inherited GetTail );
+     Result := _TChild_( inherited GetTail );
 end;
 
 //------------------------------------------------------------------------------
 
-function TTreeNode<_TNode_>.GetChilds( const I_:Integer ) :_TNode_;
+function TTreeNode<_TParen_,_TChild_>.GetChilds( const I_:Integer ) :_TChild_;
 begin
-     Result := _TNode_( inherited GetChilds( I_ ) );
+     Result := _TChild_( inherited GetChilds( I_ ) );
 end;
 
-procedure TTreeNode<_TNode_>.SetChilds( const I_:Integer; const Child_:_TNode_ );
+procedure TTreeNode<_TParen_,_TChild_>.SetChilds( const I_:Integer; const Child_:_TChild_ );
 begin
      inherited SetChilds( I_, TTreeNode( Child_ ) );
 end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTreeNode<_TNode_>
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
