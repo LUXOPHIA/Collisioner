@@ -53,6 +53,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function IdentityX :TSingle2D; inline; static;
        class function IdentityY :TSingle2D; inline; static;
        ///// メソッド
+       function VectorTo( const P_:TSingle2D ) :TSingle2D;
+       function UnitorTo( const P_:TSingle2D ) :TSingle2D;
+       class function RandG :TSingle2D; inline; static;
        class function RandBS1 :TSingle2D; inline; static;
        class function RandBS2 :TSingle2D; inline; static;
        class function RandBS4 :TSingle2D; inline; static;
@@ -96,6 +99,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function IdentityX :TDouble2D; inline; static;
        class function IdentityY :TDouble2D; inline; static;
        ///// メソッド
+       function VectorTo( const P_:TDouble2D ) :TDouble2D;
+       function UnitorTo( const P_:TDouble2D ) :TDouble2D;
+       class function RandG :TDouble2D; inline; static;
        class function RandBS1 :TDouble2D; inline; static;
        class function RandBS2 :TDouble2D; inline; static;
        class function RandBS4 :TDouble2D; inline; static;
@@ -420,11 +426,17 @@ function Distanc2( const A_,B_:TdDoublePos2D ) :TdDouble; inline; overload;
 function Distance( const A_,B_:TdSinglePos2D ) :TdSingle; inline; overload;
 function Distance( const A_,B_:TdDoublePos2D ) :TdDouble; inline; overload;
 
-function Ave( const A_,B_:TSingle2D ) :TSingle2D; inline; overload;
-function Ave( const A_,B_:TDouble2D ) :TDouble2D; inline; overload;
+function Ave( const P1_,P2_:TSingle2D ) :TSingle2D; inline; overload;
+function Ave( const P1_,P2_:TDouble2D ) :TDouble2D; inline; overload;
 
-function Ave( const A_,B_:TdSingle2D ) :TdSingle2D; inline; overload;
-function Ave( const A_,B_:TdDouble2D ) :TdDouble2D; inline; overload;
+function Ave( const P1_,P2_:TdSingle2D ) :TdSingle2D; inline; overload;
+function Ave( const P1_,P2_:TdDouble2D ) :TdDouble2D; inline; overload;
+
+function Ave( const P1_,P2_,P3_:TSingle2D ) :TSingle2D; inline; overload;
+function Ave( const P1_,P2_,P3_:TDouble2D ) :TDouble2D; inline; overload;
+
+function Ave( const P1_,P2_,P3_:TdSingle2D ) :TdSingle2D; inline; overload;
+function Ave( const P1_,P2_,P3_:TdDouble2D ) :TdDouble2D; inline; overload;
 
 implementation //############################################################### ■
 
@@ -588,6 +600,29 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
+
+function TSingle2D.VectorTo( const P_:TSingle2D ) :TSingle2D;
+begin
+     Result := P_ - Self;
+end;
+
+function TSingle2D.UnitorTo( const P_:TSingle2D ) :TSingle2D;
+begin
+     Result := VectorTo( P_ ).Unitor;
+end;
+
+//------------------------------------------------------------------------------
+
+class function TSingle2D.RandG :TSingle2D;
+begin
+     with Result do
+     begin
+          X := System.Math.RandG( 0, 1 );
+          Y := System.Math.RandG( 0, 1 );
+     end;
+end;
+
+//------------------------------------------------------------------------------
 
 class function TSingle2D.RandBS1 :TSingle2D;
 begin
@@ -766,6 +801,29 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
+
+function TDouble2D.VectorTo( const P_:TDouble2D ) :TDouble2D;
+begin
+     Result := P_ - Self;
+end;
+
+function TDouble2D.UnitorTo( const P_:TDouble2D ) :TDouble2D;
+begin
+     Result := VectorTo( P_ ).Unitor;
+end;
+
+//------------------------------------------------------------------------------
+
+class function TDouble2D.RandG :TDouble2D;
+begin
+     with Result do
+     begin
+          X := System.Math.RandG( 0, 1 );
+          Y := System.Math.RandG( 0, 1 );
+     end;
+end;
+
+//------------------------------------------------------------------------------
 
 class function TDouble2D.RandBS1 :TDouble2D;
 begin
@@ -1760,24 +1818,46 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Ave( const A_,B_:TSingle2D ) :TSingle2D;
+function Ave( const P1_,P2_:TSingle2D ) :TSingle2D;
 begin
-     Result := ( A_ + B_ ) / 2;
+     Result := ( P1_ + P2_ ) / 2;
 end;
 
-function Ave( const A_,B_:TDouble2D ) :TDouble2D;
+function Ave( const P1_,P2_:TDouble2D ) :TDouble2D;
 begin
-     Result := ( A_ + B_ ) / 2;
+     Result := ( P1_ + P2_ ) / 2;
 end;
 
-function Ave( const A_,B_:TdSingle2D ) :TdSingle2D;
+function Ave( const P1_,P2_:TdSingle2D ) :TdSingle2D;
 begin
-     Result := ( A_ + B_ ) / 2;
+     Result := ( P1_ + P2_ ) / 2;
 end;
 
-function Ave( const A_,B_:TdDouble2D ) :TdDouble2D;
+function Ave( const P1_,P2_:TdDouble2D ) :TdDouble2D;
 begin
-     Result := ( A_ + B_ ) / 2;
+     Result := ( P1_ + P2_ ) / 2;
+end;
+
+//------------------------------------------------------------------------------
+
+function Ave( const P1_,P2_,P3_:TSingle2D ) :TSingle2D;
+begin
+     Result := ( P1_ + P2_ + P3_ ) / 3;
+end;
+
+function Ave( const P1_,P2_,P3_:TDouble2D ) :TDouble2D;
+begin
+     Result := ( P1_ + P2_ + P3_ ) / 3;
+end;
+
+function Ave( const P1_,P2_,P3_:TdSingle2D ) :TdSingle2D;
+begin
+     Result := ( P1_ + P2_ + P3_ ) / 3;
+end;
+
+function Ave( const P1_,P2_,P3_:TdDouble2D ) :TdDouble2D;
+begin
+     Result := ( P1_ + P2_ + P3_ ) / 3;
 end;
 
 //############################################################################## □
