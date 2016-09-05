@@ -2,8 +2,8 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Delauney2D'
-  ClientHeight = 600
-  ClientWidth = 800
+  ClientHeight = 520
+  ClientWidth = 630
   Position = ScreenCenter
   FormFactor.Width = 320
   FormFactor.Height = 480
@@ -11,4 +11,45 @@ object Form1: TForm1
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignerMasterStyle = 0
+  object Panel1: TPanel
+    Align = Right
+    Position.X = 510.000000000000000000
+    Size.Width = 120.000000000000000000
+    Size.Height = 520.000000000000000000
+    Size.PlatformDefault = False
+    StyleLookup = 'pushpanel'
+    TabOrder = 0
+    object Button1: TButton
+      Position.X = 10.000000000000000000
+      Position.Y = 10.000000000000000000
+      Size.Width = 100.000000000000000000
+      Size.Height = 50.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Text = #28857#25955#24067
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Position.X = 10.000000000000000000
+      Position.Y = 70.000000000000000000
+      Size.Width = 100.000000000000000000
+      Size.Height = 50.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      Text = #12463#12522#12450
+      OnClick = Button2Click
+    end
+  end
+  object PaintBox1: TPaintBox
+    Align = Client
+    ClipChildren = True
+    Margins.Left = 10.000000000000000000
+    Margins.Top = 10.000000000000000000
+    Margins.Bottom = 10.000000000000000000
+    Size.Width = 500.000000000000000000
+    Size.Height = 500.000000000000000000
+    Size.PlatformDefault = False
+    OnMouseDown = PaintBox1MouseDown
+    OnPaint = PaintBox1Paint
+  end
 end
