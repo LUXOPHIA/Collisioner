@@ -22,11 +22,11 @@ type
     procedure Button2Click(Sender: TObject);
   private
     { private êÈåæ }
-    function ScrToPos( const S_:TPointF ) :TDouble2D;
-    function PosToScr( const P_:TDouble2D ) :TPointF;
+    function ScrToPos( const S_:TPointF ) :TSingle2D;
+    function PosToScr( const P_:TSingle2D ) :TPointF;
   public
     { public êÈåæ }
-    _Delaunay :TDelaunay;
+    _Delaunay :TDelaunay2D;
     /////
     procedure DrawPoin( const Canvas_:TCanvas );
     procedure DrawCirc( const Canvas_:TCanvas );
@@ -45,13 +45,13 @@ uses System.Math, System.Math.Vectors;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
-function TForm1.ScrToPos( const S_:TPointF ) :TDouble2D;
+function TForm1.ScrToPos( const S_:TPointF ) :TSingle2D;
 begin
      Result := S_ - TPointF.Create( PaintBox1.Width  / 2,
                                     PaintBox1.Height / 2 );
 end;
 
-function TForm1.PosToScr( const P_:TDouble2D ) :TPointF;
+function TForm1.PosToScr( const P_:TSingle2D ) :TPointF;
 begin
      Result := TPointF( P_ ) + TPointF.Create( PaintBox1.Width  / 2,
                                                PaintBox1.Height / 2 );
@@ -61,7 +61,7 @@ end;
 
 procedure TForm1.DrawPoin( const Canvas_:TCanvas );
 var
-   P :TPoin;
+   P :TDelaPoin2D;
 begin
      with Canvas_ do
      begin
@@ -78,7 +78,7 @@ begin
 
           for P in _Delaunay.Poins do
           begin
-               with PosToScr( P.Position ) do
+               with PosToScr( P.Pos ) do
                begin
                     FillEllipse( TRectF.Create( X - 5, Y - 5, X + 5, Y + 5 ), 1 );
                     DrawEllipse( TRectF.Create( X - 5, Y - 5, X + 5, Y + 5 ), 1 );
@@ -89,7 +89,7 @@ end;
 
 procedure TForm1.DrawCirc( const Canvas_:TCanvas );
 var
-   F :TFace;
+   F :TDelaFace2D;
 begin
      with Canvas_ do
      begin
@@ -115,7 +115,7 @@ end;
 
 procedure TForm1.DrawFace( const Canvas_:TCanvas );
 var
-   F :TFace;
+   F :TDelaFace2D;
    P :TPolygon;
 begin
      with Canvas_ do
@@ -137,10 +137,10 @@ begin
                begin
                     if Open = 0 then
                     begin
-                         P := [ PosToScr( Poin[ 1 ].Position ),
-                                PosToScr( Poin[ 2 ].Position ),
-                                PosToScr( Poin[ 3 ].Position ),
-                                PosToScr( Poin[ 1 ].Position ) ];
+                         P := [ PosToScr( Poin[ 1 ].Pos ),
+                                PosToScr( Poin[ 2 ].Pos ),
+                                PosToScr( Poin[ 3 ].Pos ),
+                                PosToScr( Poin[ 1 ].Pos ) ];
 
                          FillPolygon( P, 1 );
                          DrawPolygon( P, 1 );
@@ -152,11 +152,11 @@ end;
 
 procedure TForm1.DrawVolo( const Canvas_:TCanvas );
 //------------------------------------------------
-     function CenterPos( const Face_:TFace ) :TDouble2D;
+     function CenterPos( const Face_:TDelaFace2D ) :TSingle2D;
      //------------------------------------------------
-          function EdgeCenter( const P1_,P2_:TPoin ) :TDouble2D;
+          function EdgeCenter( const P1_,P2_:TDelaPoin2D ) :TSingle2D;
           begin
-               Result := ( P1_.Position + P2_.Position ) / 2 - 10000 * Face_.Circle.Center;
+               Result := ( P1_.Pos + P2_.Pos ) / 2 - 10000 * Face_.Circle.Center;
           end;
      //------------------------------------------------
      begin
@@ -172,7 +172,7 @@ procedure TForm1.DrawVolo( const Canvas_:TCanvas );
      end;
 //------------------------------------------------
 var
-   F :TFace;
+   F :TDelaFace2D;
    C, P1, P2, P3 :TPointF;
 begin
      with Canvas_ do
@@ -208,7 +208,7 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-     _Delaunay := TDelaunay.Create;
+     _Delaunay := TDelaunay2D.Create;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
@@ -241,7 +241,7 @@ procedure TForm1.Button1Click(Sender: TObject);
 var
    N :Integer;
 begin
-     for N := 1 to 100 do _Delaunay.AddPoin( TDouble2D.RandG * Min( PaintBox1.Width, PaintBox1.Height ) / 4 );
+     for N := 1 to 100 do _Delaunay.AddPoin( TSingle2D.RandG * Min( PaintBox1.Width, PaintBox1.Height ) / 4 );
 
      PaintBox1.Repaint;
 end;
