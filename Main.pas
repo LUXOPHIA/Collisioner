@@ -1,12 +1,13 @@
-unit Main;
+Ôªøunit Main;
 
-interface //#################################################################### Å°
+interface //#################################################################### ‚ñ†
 
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   FMX.Objects, FMX.StdCtrls, FMX.Controls.Presentation,
-  LUX, LUX.D2, LUX.Geometry.D2, LUX.Brep.Face.TriFlip.D2.Delaunay;
+  LUX, LUX.D2, LUX.Brep.Face.TriFlip.D2.Delaunay,
+  Core;
 
 type
   TForm1 = class(TForm)
@@ -21,12 +22,12 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
   private
-    { private êÈåæ }
+    { private ÂÆ£Ë®Ä }
     function ScrToPos( const S_:TPointF ) :TSingle2D;
     function PosToScr( const P_:TSingle2D ) :TPointF;
   public
-    { public êÈåæ }
-    _Delaunay :TDelaunay2D;
+    { public ÂÆ£Ë®Ä }
+    _Delaunay :TDelaunay2D<TMyDelaPoin2D,TMyDelaFace2D>;
     /////
     procedure DrawPoin( const Canvas_:TCanvas );
     procedure DrawCirc( const Canvas_:TCanvas );
@@ -37,7 +38,7 @@ type
 var
   Form1: TForm1;
 
-implementation //############################################################### Å°
+implementation //############################################################### ‚ñ†
 
 uses System.Math, System.Math.Vectors;
 
@@ -208,7 +209,7 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-     _Delaunay := TDelaunay2D.Create;
+     _Delaunay := TDelaunay2D<TMyDelaPoin2D,TMyDelaFace2D>.Create;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
@@ -253,4 +254,4 @@ begin
      PaintBox1.Repaint;
 end;
 
-end. //######################################################################### Å°
+end. //######################################################################### ‚ñ†
