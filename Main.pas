@@ -61,7 +61,7 @@ end;
 
 procedure TForm1.DrawPoin( const Canvas_:TCanvas );
 var
-   P :TDelaPoin2D;
+   I :Integer;
 begin
      with Canvas_ do
      begin
@@ -76,9 +76,9 @@ begin
                Color := TAlphaColorRec.Red;
           end;
 
-          for P in _Delaunay.Poins do
+          for I := 0 to _Delaunay.PoinModel.ChildsN-1 do
           begin
-               with PosToScr( P.Pos ) do
+               with PosToScr( _Delaunay.PoinModel.Childs[ I ].Pos ) do
                begin
                     FillEllipse( TRectF.Create( X - 5, Y - 5, X + 5, Y + 5 ), 1 );
                     DrawEllipse( TRectF.Create( X - 5, Y - 5, X + 5, Y + 5 ), 1 );
@@ -89,7 +89,7 @@ end;
 
 procedure TForm1.DrawCirc( const Canvas_:TCanvas );
 var
-   F :TDelaFace2D;
+   I :Integer;
 begin
      with Canvas_ do
      begin
@@ -99,9 +99,9 @@ begin
                Color := TAlphaColorRec.Lime;
           end;
 
-          for F in _Delaunay.Faces do
+          for I := 0 to _Delaunay.ChildsN-1 do
           begin
-               with F do
+               with TDelaFace2D( _Delaunay.Childs[ I ] ) do
                begin
                     if Open = 0 then
                     begin
@@ -115,7 +115,7 @@ end;
 
 procedure TForm1.DrawFace( const Canvas_:TCanvas );
 var
-   F :TDelaFace2D;
+   I :Integer;
    P :TPolygon;
 begin
      with Canvas_ do
@@ -131,9 +131,9 @@ begin
                Color := TAlphaColorRec.White;
           end;
 
-          for F in _Delaunay.Faces do
+          for I := 0 to _Delaunay.ChildsN-1 do
           begin
-               with F do
+               with TDelaFace2D( _Delaunay.Childs[ I ] ) do
                begin
                     if Open = 0 then
                     begin
@@ -172,7 +172,7 @@ procedure TForm1.DrawVolo( const Canvas_:TCanvas );
      end;
 //------------------------------------------------
 var
-   F :TDelaFace2D;
+   I :Integer;
    C, P1, P2, P3 :TPointF;
 begin
      with Canvas_ do
@@ -183,9 +183,9 @@ begin
                Color := TAlphaColorRec.Black;
           end;
 
-          for F in _Delaunay.Faces do
+          for I := 0 to _Delaunay.ChildsN-1 do
           begin
-               with F do
+               with TDelaFace2D( _Delaunay.Childs[ I ] ) do
                begin
                     if Open = 0 then
                     begin
@@ -248,7 +248,7 @@ end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
-     _Delaunay.Clear;
+     _Delaunay.DeleteChilds;
 
      PaintBox1.Repaint;
 end;

@@ -1,82 +1,64 @@
-unit LUX.Brep.Face.TriFlip.D2.Delaunay;
+Ôªøunit LUX.Brep.Face.TriFlip.D2.Delaunay;
 
-interface //#################################################################### Å°
+interface //#################################################################### ‚ñ†
 
 uses System.Generics.Collections,
      LUX, LUX.D2, LUX.Geometry.D2, LUX.Brep.Face.TriFlip.D2;
 
-type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$Åyå^Åz
+type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„ÄêÂûã„Äë
 
      TDelaPoin2D = class;
      TDelaFace2D = class;
 
-     //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉåÉRÅ[ÉhÅz
+     //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„É¨„Ç≥„Éº„Éâ„Äë
 
-     //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉNÉâÉXÅz
+     //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„ÇØ„É©„Çπ„Äë
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDelaPoin2D
 
-     TDelaPoin2D = class
+     TDelaPoin2D = class( TTriPoin2D )
      private
      protected
-       _Pos :TSingle2D;
-       ///// ÉAÉNÉZÉX
      public
-       constructor Create( const Pos_:TSingle2D );
-       ///// ÉvÉçÉpÉeÉB
-       property Pos :TSingle2D read _Pos;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDelaFace2D
 
-     TDelaFace2D = class
+     TDelaFace2D = class( TTriFace2D )
      private
      protected
-       _Poin   :array [ 1..3 ] of TDelaPoin2D;
-       _Face   :array [ 1..3 ] of TDelaFace2D;
-       _Corn   :array [ 1..3 ] of Byte;
        _Open   :Byte;
        _Circle :TSingleCircle;
-       ///// ÉAÉNÉZÉX
+       ///// „Ç¢„ÇØ„Çª„Çπ
        function GetPoin( const I_:Byte ) :TDelaPoin2D;
        procedure SetPoin( const I_:Byte; const Poin_:TDelaPoin2D );
        function GetFace( const I_:Byte ) :TDelaFace2D;
        procedure SetFace( const I_:Byte; const Face_:TDelaFace2D );
-       function GetCorn( const I_:Byte ) :Byte;
-       procedure SetCorn( const I_,Corn_:Byte );
      public
        constructor Create( const Poin1_,Poin2_,Poin3_:TDelaPoin2D; const Open_:Byte );
-       ///// ÉvÉçÉpÉeÉB
-       property Poin[ const I_:Byte ] :TDelaPoin2D         read GetPoin write SetPoin;
-       property Face[ const I_:Byte ] :TDelaFace2D         read GetFace write SetFace;
-       property Corn[ const I_:Byte ] :Byte          read GetCorn write SetCorn;
-       property Open                  :Byte          read _Open   write _Open;
-       property Circle                :TSingleCircle read _Circle;
+       ///// „Éó„É≠„Éë„ÉÜ„Ç£
+       property Poin[ const I_:Byte ] :TDelaPoin2D   read GetPoin   write SetPoin;
+       property Face[ const I_:Byte ] :TDelaFace2D   read GetFace   write SetFace;
+       property Open                  :Byte          read   _Open   write   _Open;
+       property Circle                :TSingleCircle read   _Circle              ;
        /////
        function IsHitCircle( const Pos_:TSingle2D ) :Boolean;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDelaunay2D
 
-     TDelaunay2D = class
+     TDelaunay2D = class( TTriFaceModel2D )
      private
-       _P1 :TDelaPoin2D;
-       _P2 :TDelaPoin2D;
-       /////
+       ///// „É°„ÇΩ„ÉÉ„Éâ
        procedure InitFace;
      protected
-       _Poins :TObjectList<TDelaPoin2D>;
-       _Faces :TObjectList<TDelaFace2D>;
-       ///// ÉÅÉ\ÉbÉh
+       ///// „É°„ÇΩ„ÉÉ„Éâ
        function NewPoin( const Pos_:TSingle2D ) :TDelaPoin2D;
        function NewFace( const Poin1_,Poin2_,Poin3_:TDelaPoin2D; const Open_:Byte ) :TDelaFace2D;
      public
-       constructor Create;
+       constructor Create; override;
        destructor Destroy; override;
-       ///// ÉvÉçÉpÉeÉB
-       property Poins :TObjectList<TDelaPoin2D> read _Poins;
-       property Faces :TObjectList<TDelaFace2D> read _Faces;
-       ///// ÉÅÉ\ÉbÉh
+       ///// „É°„ÇΩ„ÉÉ„Éâ
        function HitCircleFace( const Pos_:TSingle2D ) :TDelaFace2D;
        procedure AddPoin3( const Poin_:TDelaPoin2D; const Face_:TDelaFace2D ); overload;
        function AddPoin3( const Pos_:TSingle2D; const Face_:TDelaFace2D ) :TDelaPoin2D; overload;
@@ -84,18 +66,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function AddPoin3( const Pos_:TSingle2D ) :TDelaPoin2D; overload;
        procedure AddPoin( const Poin_:TDelaPoin2D ); overload;
        function AddPoin( const Pos_:TSingle2D ) :TDelaPoin2D; overload;
-       procedure Clear;
      end;
 
-//const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyíËêîÅz
+//const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„ÄêÂÆöÊï∞„Äë
 
-//var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyïœêîÅz
+//var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„ÄêÂ§âÊï∞„Äë
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉãÅ[É`ÉìÅz
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„É´„Éº„ÉÅ„É≥„Äë
 
-implementation //############################################################### Å°
+implementation //############################################################### ‚ñ†
 
-type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉåÉRÅ[ÉhÅz
+type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„É¨„Ç≥„Éº„Éâ„Äë
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TVertLR
 
@@ -117,7 +98,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        VertR :Byte;
      end;
 
-const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyíËêîÅz
+const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„ÄêÂÆöÊï∞„Äë
 
       VertTable :array [ 1..3 ] of TVertLR
         = ( ( L:2; R:3 ), ( L:3; R:1 ), ( L:1; R:2 ) );
@@ -127,7 +108,7 @@ const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
             ( ( 0, 0, 1, 3 ), ( 0, 3, 0, 1 ), ( 0, 1, 3, 0 ) ),
             ( ( 0, 0, 2, 1 ), ( 0, 1, 0, 2 ), ( 0, 2, 1, 0 ) ) );
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉåÉRÅ[ÉhÅz
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„É¨„Ç≥„Éº„Éâ„Äë
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TVertLR
 
@@ -141,7 +122,7 @@ const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉNÉâÉXÅz
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„ÇØ„É©„Çπ„Äë
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDelaPoin2D
 
@@ -151,49 +132,32 @@ const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TDelaPoin2D.Create( const Pos_:TSingle2D );
-begin
-     inherited Create;
-
-     _Pos := Pos_;
-end;
-
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDelaFace2D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
-/////////////////////////////////////////////////////////////////////// ÉAÉNÉZÉX
+/////////////////////////////////////////////////////////////////////// „Ç¢„ÇØ„Çª„Çπ
 
 function TDelaFace2D.GetPoin( const I_:Byte ) :TDelaPoin2D;
 begin
-     Result := _Poin[ I_ ];
+     Result := TDelaPoin2D( inherited Poin[ I_ ] );
 end;
 
 procedure TDelaFace2D.SetPoin( const I_:Byte; const Poin_:TDelaPoin2D );
 begin
-     _Poin[ I_ ] := Poin_;
+     inherited Poin[ I_ ] := Poin_;
 end;
 
 function TDelaFace2D.GetFace( const I_:Byte ) :TDelaFace2D;
 begin
-     Result := _Face[ I_ ];
+     Result := TDelaFace2D( inherited Face[ I_ ] );
 end;
 
 procedure TDelaFace2D.SetFace( const I_:Byte; const Face_:TDelaFace2D );
 begin
-     _Face[ I_ ] := Face_;
-end;
-
-function TDelaFace2D.GetCorn( const I_:Byte ) :Byte;
-begin
-     Result := _Corn[ I_ ];
-end;
-
-procedure TDelaFace2D.SetCorn( const I_,Corn_:Byte );
-begin
-     _Corn[ I_ ] := Corn_;
+     inherited Face[ I_ ] := Face_;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -226,7 +190,7 @@ begin
      end;
 end;
 
-/////////////////////////////////////////////////////////////////////// ÉÅÉ\ÉbÉh
+/////////////////////////////////////////////////////////////////////// „É°„ÇΩ„ÉÉ„Éâ
 
 function TDelaFace2D.IsHitCircle( const Pos_:TSingle2D ) :Boolean;
 begin
@@ -243,10 +207,14 @@ end;
 
 procedure TDelaunay2D.InitFace;
 var
+   P1, P2 :TDelaPoin2D;
    C1, C2 :TDelaFace2D;
 begin
-     C1 := NewFace( nil, _P1, _P2, 1 );
-     C2 := NewFace( nil, _P2, _P1, 1 );
+     P1 := TDelaPoin2D( PoinModel.Childs[ 0 ] );
+     P2 := TDelaPoin2D( PoinModel.Childs[ 1 ] );
+
+     C1 := NewFace( nil, P1, P2, 1 );
+     C2 := NewFace( nil, P2, P1, 1 );
 
      with C1 do
      begin
@@ -265,20 +233,18 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
-/////////////////////////////////////////////////////////////////////// ÉÅÉ\ÉbÉh
+/////////////////////////////////////////////////////////////////////// „É°„ÇΩ„ÉÉ„Éâ
 
 function TDelaunay2D.NewPoin( const Pos_:TSingle2D ) :TDelaPoin2D;
 begin
-     Result := TDelaPoin2D.Create( Pos_ );
-
-     _Poins.Add( Result );
+     Result := TDelaPoin2D.Create( Pos_, _PoinModel );
 end;
 
 function TDelaunay2D.NewFace( const Poin1_,Poin2_,Poin3_:TDelaPoin2D; const Open_:Byte ) :TDelaFace2D;
 begin
      Result := TDelaFace2D.Create( Poin1_, Poin2_, Poin3_, Open_ );
 
-     _Faces.Add( Result );
+     Result.Paren := TDelaFace2D( Self );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -287,28 +253,25 @@ constructor TDelaunay2D.Create;
 begin
      inherited;
 
-     _Poins := TObjectList<TDelaPoin2D>.Create;
-     _Faces := TObjectList<TDelaFace2D>.Create;
 end;
 
 destructor TDelaunay2D.Destroy;
 begin
-     _Poins.Free;
-     _Faces.Free;
 
      inherited;
 end;
 
-/////////////////////////////////////////////////////////////////////// ÉÅÉ\ÉbÉh
+/////////////////////////////////////////////////////////////////////// „É°„ÇΩ„ÉÉ„Éâ
 
 function TDelaunay2D.HitCircleFace( const Pos_:TSingle2D ) :TDelaFace2D;
+var
+   I :Integer;
 begin
-     with _Faces do
+     for I := 0 to ChildsN-1 do
      begin
-          for Result in _Faces do
-          begin
-               if Result.IsHitCircle( Pos_ ) then Exit;
-          end;
+          Result := TDelaFace2D( Childs[ I ] );
+
+          if Result.IsHitCircle( Pos_ ) then Exit;
      end;
 
      Result := nil;
@@ -317,7 +280,7 @@ end;
 //------------------------------------------------------------------------------
 
 procedure TDelaunay2D.AddPoin3( const Poin_:TDelaPoin2D; const Face_:TDelaFace2D );
-//••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+//ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•
      function FaceTree( const Face_:TDelaFace2D; const Vert_:Byte ) :TFaceJoint;
      var
         JL, JR :TFaceJoint;
@@ -350,7 +313,7 @@ procedure TDelaunay2D.AddPoin3( const Poin_:TDelaPoin2D; const Face_:TDelaFace2D
                          end
                     end;
 
-                    _Faces.Remove( Face_ );
+                    Face_.Free;
 
                     with Result do
                     begin
@@ -379,7 +342,7 @@ procedure TDelaunay2D.AddPoin3( const Poin_:TDelaPoin2D; const Face_:TDelaFace2D
                end;
           end;
      end;
-     //•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+     //ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•
      procedure Connect( const J_,JL_,JR_:TFaceJoint );
      begin
           with J_ do
@@ -396,7 +359,7 @@ procedure TDelaunay2D.AddPoin3( const Poin_:TDelaPoin2D; const Face_:TDelaFace2D
                end;
           end;
      end;
-//••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+//ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•
 var
    J1, J2, J3 :TFaceJoint;
 begin
@@ -406,7 +369,7 @@ begin
           J2 := FaceTree( Face[ 2 ], Corn[ 2 ] );
           J3 := FaceTree( Face[ 3 ], Corn[ 3 ] );
 
-          _Faces.Remove( Face_ );
+          Face_.Free;
      end;
 
      Connect( J1, J2, J3 );
@@ -435,13 +398,9 @@ end;
 
 procedure TDelaunay2D.AddPoin( const Poin_:TDelaPoin2D );
 begin
-     case _Poins.Count of
-       1: _P1 := Poin_;
-       2: begin
-               _P2 := Poin_;
-
-               InitFace;
-          end;
+     case PoinModel.ChildsN of
+       1: ;
+       2: InitFace;
      else AddPoin3( Poin_ );
      end;
 end;
@@ -451,20 +410,12 @@ begin
      Result := NewPoin( Pos_ );  AddPoin( Result );
 end;
 
-//------------------------------------------------------------------------------
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„É´„Éº„ÉÅ„É≥„Äë
 
-procedure TDelaunay2D.Clear;
-begin
-     _Poins.Clear;
-     _Faces.Clear;
-end;
+//############################################################################## ‚ñ°
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉãÅ[É`ÉìÅz
+initialization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ ÂàùÊúüÂåñ
 
-//############################################################################## Å†
+finalization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ ÊúÄÁµÇÂåñ
 
-initialization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ èâä˙âª
-
-finalization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ ç≈èIâª
-
-end. //######################################################################### Å°
+end. //######################################################################### ‚ñ†
