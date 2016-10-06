@@ -1,4 +1,4 @@
-program Delauney2D;
+program Triangulation;
 
 uses
   System.StartUpCopy,
