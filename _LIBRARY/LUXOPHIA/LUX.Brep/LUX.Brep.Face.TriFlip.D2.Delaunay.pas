@@ -49,11 +49,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _Open :Byte;
        ///// アクセス
-       function GetPoin( const I_:Byte ) :TDelaPoin2D;
-       procedure SetPoin( const I_:Byte; const Poin_:TDelaPoin2D );
-       function GetFace( const I_:Byte ) :TDelaFace2D;
-       procedure SetFace( const I_:Byte; const Face_:TDelaFace2D );
-       function GetCircle :TSingleCircle;
+       function GetPoin( const I_:Byte ) :TDelaPoin2D; virtual;
+       procedure SetPoin( const I_:Byte; const Poin_:TDelaPoin2D ); virtual;
+       function GetFace( const I_:Byte ) :TDelaFace2D; virtual;
+       procedure SetFace( const I_:Byte; const Face_:TDelaFace2D ); virtual;
+       function GetCircle :TSingleCircle; virtual;
      public
        ///// プロパティ
        property Poin[ const I_:Byte ] :TDelaPoin2D   read GetPoin   write SetPoin;

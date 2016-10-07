@@ -61,11 +61,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _Face :TTriFace<_TPos_>;
        _Corn :Byte;
        ///// アクセス
-       function GetFace :TTriFace<_TPos_>;
-       procedure SetFace( const Face_:TTriFace<_TPos_> );
-       function GetCorn :Byte;
-       procedure SetCorn( const Corn_:Byte );
-       function GetFaceN :Integer;
+       function GetFace :TTriFace<_TPos_>; virtual;
+       procedure SetFace( const Face_:TTriFace<_TPos_> ); virtual;
+       function GetCorn :Byte; virtual;
+       procedure SetCorn( const Corn_:Byte ); virtual;
+       function GetFaceN :Integer; virtual;
      public
        ///// プロパティ
        property Face   :TTriFace<_TPos_> read GetFace  write SetFace;
@@ -85,16 +85,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _Face :array [ 1..3 ] of TTriFace<_TPos_>;
        _Data :Byte;
        ///// アクセス
-       function GetPoin( const I_:Byte ) :TTriPoin<_TPos_>;
-       procedure SetPoin( const I_:Byte; const Poin_:TTriPoin<_TPos_> );
-       function GetFace( const I_:Byte ) :TTriFace<_TPos_>;
-       procedure SetFace( const I_:Byte; const Face_:TTriFace<_TPos_> );
-       function GetCorn( const I_:Byte ) :Byte;
-       procedure SetCorn( const I_,Corn_:Byte );
-       function GetFlip :Boolean;
-       procedure SetFlip( const Flip_:Boolean );
-       function GetFlag :Boolean;
-       procedure SetFlag( const Flag_:Boolean );
+       function GetPoin( const I_:Byte ) :TTriPoin<_TPos_>; virtual;
+       procedure SetPoin( const I_:Byte; const Poin_:TTriPoin<_TPos_> ); virtual;
+       function GetFace( const I_:Byte ) :TTriFace<_TPos_>; virtual;
+       procedure SetFace( const I_:Byte; const Face_:TTriFace<_TPos_> ); virtual;
+       function GetCorn( const I_:Byte ) :Byte; virtual;
+       procedure SetCorn( const I_,Corn_:Byte ); virtual;
+       function GetFlip :Boolean; virtual;
+       procedure SetFlip( const Flip_:Boolean ); virtual;
+       function GetFlag :Boolean; virtual;
+       procedure SetFlag( const Flag_:Boolean ); virtual;
      public
        constructor Create; override;
        destructor Destroy; override;
