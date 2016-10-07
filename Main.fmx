@@ -36,7 +36,7 @@ object Form1: TForm1
       Size.Height = 50.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
-      Text = #12463#12522#12450
+      Text = #32048#20998#21106
       OnClick = Button2Click
     end
   end
