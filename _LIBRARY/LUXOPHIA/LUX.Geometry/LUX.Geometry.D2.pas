@@ -327,14 +327,9 @@ begin
      L2 := P2_.Siz2;  E2 := P1_ - P3_;
      L3 := P3_.Siz2;  E3 := P2_ - P1_;
 
-     W := 2 * ( E2.X * E1.Y - E1.X * E2.Y );
-     {
-     W := 2 * ( E3.X * E2.Y - E2.X * E3.Y );
-     W := 2 * ( E1.X * E3.Y - E3.X * E1.Y );
      W := 2 * ( P2_.X * P1_.Y - P1_.X * P2_.Y
               + P3_.X * P2_.Y - P2_.X * P3_.Y
               + P1_.X * P3_.Y - P3_.X * P1_.Y );
-     }
 
      with Result do
      begin
@@ -352,14 +347,9 @@ begin
      L2 := P2_.Siz2;  E2 := P1_ - P3_;
      L3 := P3_.Siz2;  E3 := P2_ - P1_;
 
-     W := 2 * ( E2.X * E1.Y - E1.X * E2.Y );
-     {
-     W := 2 * ( E3.X * E2.Y - E2.X * E3.Y );
-     W := 2 * ( E1.X * E3.Y - E3.X * E1.Y );
      W := 2 * ( P2_.X * P1_.Y - P1_.X * P2_.Y
               + P3_.X * P2_.Y - P2_.X * P3_.Y
               + P1_.X * P3_.Y - P3_.X * P1_.Y );
-     }
 
      with Result do
      begin
