@@ -147,9 +147,9 @@ begin
 
           for I := 0 to _Delaunay.ChildsN-1 do
           begin
-               with TDelaFace2D( _Delaunay.Childs[ I ] ) do
+               with TMyDelaFace2D( _Delaunay.Childs[ I ] ) do
                begin
-                    if Open = 0 then
+                    if Inside then
                     begin
                          P := [ PosToScr( Poin[ 1 ].Pos ),
                                 PosToScr( Poin[ 2 ].Pos ),
@@ -194,11 +194,12 @@ begin
           begin
                Kind  := TBrushKind.Solid;
                Color := TAlphaColorRec.Black;
+               Thickness := 1;
           end;
 
           for I := 0 to _Delaunay.ChildsN-1 do
           begin
-               with TDelaFace2D( _Delaunay.Childs[ I ] ) do
+               with TMyDelaFace2D( _Delaunay.Childs[ I ] ) do
                begin
                     if Open = 0 then
                     begin
@@ -350,6 +351,11 @@ begin
 
      _Delaunay.DeleteChilds;
 
+     _Delaunay.AddPoin( TSingle2D.Create( -10000, -10000 ) ).Inside := +1;
+     _Delaunay.AddPoin( TSingle2D.Create( +10000, -10000 ) ).Inside := +1;
+     _Delaunay.AddPoin( TSingle2D.Create( -10000, +10000 ) ).Inside := +1;
+     _Delaunay.AddPoin( TSingle2D.Create( +10000, +10000 ) ).Inside := +1;
+
      PaintBox1.Repaint;
 end;
 
@@ -359,6 +365,11 @@ var
    P0, P1, V0, V1 :TSingle2D;
    A :Single;
 begin
+     if not Assigned( _EdgePoins ) then
+     begin
+          Result := 0;  Exit;
+     end;
+
      Result := 0;
 
      P0 := _EdgePoins[ 0 ];
@@ -396,9 +407,7 @@ var
 begin
      InitEdgePoins( 20 );
 
-     _Delaunay.DeleteChilds;
-
-     for P in _EdgePoins do _Delaunay.AddPoin( P );
+     for P in _EdgePoins do _Delaunay.AddPoin( P ).Inside := 0;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -408,6 +417,8 @@ begin
      _MouseState := [];
 
      _Delaunay := TDelaunay2D<TMyDelaPoin2D,TMyDelaFace2D>.Create;
+
+     ClearModel;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
@@ -474,20 +485,24 @@ var
    P :TSingle2D;
    N, I :Integer;
    F :TMyDelaFace2D;
+label
+     FIND;
 begin
+     FIND:
      for I := 0 to _Delaunay.ChildsN-1 do
      begin
           F := TMyDelaFace2D( _Delaunay.Childs[ I ] );
 
           if ( F.Open = 0 ) and
-             ( InsideEdges( F.Circle.Center ) < -0.5 ) and
-             ( F.Circle.Radius > 20 ) then
+             ( TMyDelaPoin2D( F.Poin[1] ).Inside <= 0 ) and
+             ( TMyDelaPoin2D( F.Poin[2] ).Inside <= 0 ) and
+             ( TMyDelaPoin2D( F.Poin[3] ).Inside <= 0 ) and
+               F.Inside and
+             ( F.Circle.Radius > 15 ) then
           begin
-               Caption := InsideEdges( F.Circle.Center ).ToString;
+               _Delaunay.AddPoin3( F.Circle.Center, F ).Inside := -1;
 
-               _Delaunay.AddPoin3( F.Circle.Center, F );
-
-               Break;
+               goto FIND;
           end;
      end;
 
