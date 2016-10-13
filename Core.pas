@@ -2,7 +2,7 @@
 
 interface //#################################################################### ■
 
-uses LUX, LUX.D2, LUX.Brep.Face.TriFlip.D2.Delaunay;
+uses LUX, LUX.D2, LUX.Brep.Face.TriFlip.D2.Triangulation;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -10,26 +10,41 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMyDelaPoin2D
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMyPoin
 
-     TMyDelaPoin2D = class( TDelaPoin2D )
+     TMyPoin = class( TTriGenPoin )
      private
      protected
-       _Inside :ShortInt;
      public
-       property Inside :ShortInt read _Inside write _Inside;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMyDelaFace2D
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMyFace
 
-     TMyDelaFace2D = class( TDelaFace2D )
+     TMyFace = class( TTriGenFace )
      private
      protected
-       _Inside :Boolean;
        ///// アクセス
-       procedure SetPoin( const I_:Byte; const Poin_:TDelaPoin2D ); override;
+       function GetPoin( const I_:Byte ) :TMyPoin; reintroduce;
+       procedure SetPoin( const I_:Byte; const Poin_:TMyPoin ); reintroduce;
+       function GetFace( const I_:Byte ) :TMyFace; reintroduce;
+       procedure SetFace( const I_:Byte; const Face_:TMyFace ); reintroduce;
      public
-       property Inside :Boolean read _Inside write _Inside;
+       ///// プロパティ
+       property Poin[ const I_:Byte ] :TMyPoin   read GetPoin   write SetPoin;
+       property Face[ const I_:Byte ] :TMyFace   read GetFace   write SetFace;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMyModel
+
+     TMyModel = class( TTriGenModel<TMyPoin,TMyFace> )
+     private
+     protected
+       ///// アクセス
+       function GetChild( const I_:Integer ) :TMyFace; reintroduce;
+       procedure SetChild( const I_:Integer; const Child_:TMyFace ); reintroduce;
+     public
+       ///// プロパティ
+       property Childs[ const I_:Integer ] :TMyFace read GetChild write SetChild;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -46,7 +61,7 @@ uses Main;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMyDelaPoin2D
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMyPoin
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -54,20 +69,52 @@ uses Main;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMyDelaFace2D
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMyFace
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
-procedure TMyDelaFace2D.SetPoin( const I_:Byte; const Poin_:TDelaPoin2D );
-begin
-     inherited;
+/////////////////////////////////////////////////////////////////////// アクセス
 
-     _Inside := ( Assigned( Poin[1] ) ) and
-                ( Assigned( Poin[2] ) ) and
-                ( Assigned( Poin[3] ) ) and
-                ( Form1.InsideEdges( Circle.Center ) < -0.5 );
+function TMyFace.GetPoin( const I_:Byte ) :TMyPoin;
+begin
+     Result := TMyPoin( inherited Poin[ I_ ] );
+end;
+
+procedure TMyFace.SetPoin( const I_:Byte; const Poin_:TMyPoin );
+begin
+     inherited Poin[ I_ ] := Poin_;
+end;
+
+function TMyFace.GetFace( const I_:Byte ) :TMyFace;
+begin
+     Result := TMyFace( inherited Face[ I_ ] );
+end;
+
+procedure TMyFace.SetFace( const I_:Byte; const Face_:TMyFace );
+begin
+     inherited Face[ I_ ] := Face_;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMyModel
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TMyModel.GetChild( const I_:Integer ) :TMyFace;
+begin
+     Result := TMyFace( inherited Childs[ I_ ] );
+end;
+
+procedure TMyModel.SetChild( const I_:Integer; const Child_:TMyFace );
+begin
+     inherited Childs[ I_ ] := Child_;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
