@@ -30,9 +30,9 @@ type
     ///// メソッド
     function ScrToPos( const S_:TPointF ) :TSingle2D;
     function PosToScr( const P_:TSingle2D ) :TPointF;
-    procedure DrawPoin( const Canvas_:TCanvas; const Radius_:Single );
-    procedure DrawFace( const Canvas_:TCanvas; const Thickness_:Single );
-    procedure DrawCurv( const Canvas_:TCanvas; const Thickness_:Single );
+    procedure DrawCurve( const Canvas_:TCanvas; const Thickness_:Single );
+    procedure DrawPoins( const Canvas_:TCanvas; const Radius_:Single );
+    procedure DrawFaces( const Canvas_:TCanvas; const Thickness_:Single );
   public
     { public 宣言 }
     _TriMesh   :TMyModel;
@@ -62,7 +62,37 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TForm1.DrawPoin( const Canvas_:TCanvas; const Radius_:Single );
+procedure TForm1.DrawCurve( const Canvas_:TCanvas; const Thickness_:Single );
+var
+   N, I :Integer;
+   Vs :TPolygon;
+begin
+     if Assigned( _CurvPoins ) then
+     begin
+          N := Length( _CurvPoins );
+
+          SetLength( Vs, N );
+
+          for I := 0 to N-1 do Vs[ I ] := PosToScr( _CurvPoins[ I ] );
+
+          with Canvas_ do
+          begin
+               with Stroke do
+               begin
+                    Kind      := TBrushKind.Solid;
+                    Color     := TAlphaColorRec.Red;
+                    Thickness := Thickness_;
+                    Join      := TStrokeJoin.Round;
+               end;
+
+               DrawPolygon( Vs, 1 );
+          end;
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TForm1.DrawPoins( const Canvas_:TCanvas; const Radius_:Single );
 var
    I :Integer;
 begin
@@ -85,7 +115,7 @@ begin
      end;
 end;
 
-procedure TForm1.DrawFace( const Canvas_:TCanvas; const Thickness_:Single );
+procedure TForm1.DrawFaces( const Canvas_:TCanvas; const Thickness_:Single );
 var
    I :Integer;
    Ps :TPolygon;
@@ -125,33 +155,6 @@ begin
      end;
 end;
 
-//------------------------------------------------------------------------------
-
-procedure TForm1.DrawCurv( const Canvas_:TCanvas; const Thickness_:Single );
-var
-   N, I :Integer;
-   Vs :TPolygon;
-begin
-     N := Length( _CurvPoins );
-
-     SetLength( Vs, N );
-
-     for I := 0 to N-1 do Vs[ I ] := PosToScr( _CurvPoins[ I ] );
-
-     with Canvas_ do
-     begin
-          with Stroke do
-          begin
-               Kind      := TBrushKind.Solid;
-               Color     := TAlphaColorRec.Red;
-               Thickness := Thickness_;
-               Join      := TStrokeJoin.Round;
-          end;
-
-          DrawPolygon( Vs, 1 );
-     end;
-end;
-
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -174,11 +177,11 @@ procedure TForm1.PaintBox1Paint(Sender: TObject; Canvas: TCanvas);
 begin
      Canvas.Clear( TAlphaColorRec.White );
 
-     DrawFace( Canvas, 1 );
+     DrawFaces( Canvas, 1 );
 
-     DrawPoin( Canvas, 3 );
+     DrawPoins( Canvas, 3 );
 
-     DrawCurv( Canvas, 4 );
+     DrawCurve( Canvas, 4 );
 end;
 
 //------------------------------------------------------------------------------

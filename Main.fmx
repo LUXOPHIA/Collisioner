@@ -1,7 +1,7 @@
 object Form1: TForm1
   Left = 0
   Top = 0
-  Caption = 'Triangulation'
+  Caption = 'Musculus'
   ClientHeight = 620
   ClientWidth = 930
   Position = ScreenCenter
