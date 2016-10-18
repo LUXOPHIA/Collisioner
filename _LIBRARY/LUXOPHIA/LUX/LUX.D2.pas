@@ -55,6 +55,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        function VectorTo( const P_:TSingle2D ) :TSingle2D;
        function UnitorTo( const P_:TSingle2D ) :TSingle2D;
+       function DistanTo( const P_:TSingle2D ) :Single;
+       function RotL90 :TSingle2D;
+       function RotR90 :TSingle2D;
        class function RandG :TSingle2D; inline; static;
        class function RandBS1 :TSingle2D; inline; static;
        class function RandBS2 :TSingle2D; inline; static;
@@ -101,6 +104,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        function VectorTo( const P_:TDouble2D ) :TDouble2D;
        function UnitorTo( const P_:TDouble2D ) :TDouble2D;
+       function DistanTo( const P_:TDouble2D ) :Double;
+       function RotL90 :TDouble2D;
+       function RotR90 :TDouble2D;
        class function RandG :TDouble2D; inline; static;
        class function RandBS1 :TDouble2D; inline; static;
        class function RandBS2 :TDouble2D; inline; static;
@@ -671,6 +677,25 @@ begin
      Result := VectorTo( P_ ).Unitor;
 end;
 
+function TSingle2D.DistanTo( const P_:TSingle2D ) :Single;
+begin
+     Result := VectorTo( P_ ).Size;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingle2D.RotL90 :TSingle2D;
+begin
+     Result.X := -Y;
+     Result.Y := +X;
+end;
+
+function TSingle2D.RotR90 :TSingle2D;
+begin
+     Result.X := +Y;
+     Result.Y := -X;
+end;
+
 //------------------------------------------------------------------------------
 
 class function TSingle2D.RandG :TSingle2D;
@@ -870,6 +895,25 @@ end;
 function TDouble2D.UnitorTo( const P_:TDouble2D ) :TDouble2D;
 begin
      Result := VectorTo( P_ ).Unitor;
+end;
+
+function TDouble2D.DistanTo( const P_:TDouble2D ) :Double;
+begin
+     Result := VectorTo( P_ ).Size;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDouble2D.RotL90 :TDouble2D;
+begin
+     Result.X := -Y;
+     Result.Y := +X;
+end;
+
+function TDouble2D.RotR90 :TDouble2D;
+begin
+     Result.X := +Y;
+     Result.Y := -X;
 end;
 
 //------------------------------------------------------------------------------
