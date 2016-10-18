@@ -39,16 +39,20 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TTriGenModel<_TPoin_:TTriGenPoin,constructor;
                   _TFace_:TTriGenFace,constructor> = class( TDelaunay2D<_TPoin_,_TFace_> )
      private
-     protected
        _EdgePoins :array of TSingle2D;
+     protected
+       _Radius :Single;
      public
        /////
        constructor Create; override;
        destructor Destroy; override;
+       ///// プロパティ
+       property Radius :Single read _Radius write _Radius;
        ///// メソッド
-       procedure MakeMesh( const Ps_:array of TSingle2D; const MinL_:Single );
+       procedure MakeMesh( const Ps_:TArray<TSingle2D> );
        function InsideEdges( const P_:TSingle2D ) :Single;
-       procedure PoissonSubDiv( const Radius_:Single );
+       procedure PoissonSubDiv;
+       procedure FairMesh;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -104,6 +108,7 @@ constructor TTriGenModel<_TPoin_,_TFace_>.Create;
 begin
      inherited;
 
+     _Radius := 1;
 end;
 
 
@@ -115,12 +120,13 @@ end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-procedure TTriGenModel<_TPoin_,_TFace_>.MakeMesh( const Ps_:array of TSingle2D; const MinL_:Single );
+procedure TTriGenModel<_TPoin_,_TFace_>.MakeMesh( const Ps_:TArray<TSingle2D> );
 var
    A :TSingleArea2D;
+   Ps :TArray<TSingle2D>;
    Ls :array of Single;
-   IntL, L, T :Single;
-   H, N, I, I0, I1 :Integer;
+   EL, L, Ld, T :Single;
+   PsN, PsH, EsN, I, I0, I1 :Integer;
    P0, P1, P :TSingle2D;
 begin
      DeleteChilds;
@@ -137,32 +143,38 @@ begin
 
      //////////
 
-     SetLength( Ls, Length( Ps_ ) );
+     Ps := Ps_ + [ Ps_[0] ];
 
-     H := High( Ps_ );
+     PsN := Length( Ps );
+     PsH := High  ( Ps );
 
-     P0 := Ps_[ 0 ];
+     SetLength( Ls, PsN );
+
      Ls[ 0 ] := 0;
-     for I := 1 to H do
+     P0 := Ps[ 0 ];
+     for I := 1 to PsH do
      begin
-          P1 := Ps_[ I ];
+          P1 := Ps[ I ];
 
           Ls[ I ] := Ls[ I-1 ] + Distance( P0, P1 );
 
           P0 := P1;
      end;
 
-     N := Ceil( Ls[ H ] / MinL_ );
+     //////////
 
-     IntL := Ls[ H ] / N;
+     EL := _Radius * Roo2(2);
 
-     SetLength( _EdgePoins, N );
+     EsN := Ceil( Ls[ PsH ] / EL );
 
+     Ld := Ls[ PsH ] / EsN;
+
+     SetLength( _EdgePoins, EsN );
+
+     L  := 0;
      I0 := 0;  I1 := 1;
-     for I := 0 to N-1 do
+     for I := 0 to EsN-1 do
      begin
-          L := IntL * I;
-
           while Ls[ I1 ] <= L do
           begin
                I0 := I1;  Inc( I1 );
@@ -171,15 +183,19 @@ begin
           T := ( L        - Ls[ I0 ] )
              / ( Ls[ I1 ] - Ls[ I0 ] );
 
-          P0 := Ps_[ I0 ];
-          P1 := Ps_[ I1 ];
+          P0 := Ps[ I0 ];
+          P1 := Ps[ I1 ];
 
           _EdgePoins[ I ] := ( P1 - P0 ) * T + P0;
+
+          L := L + Ld;
      end;
 
      //////////
 
      for P in _EdgePoins do TTriGenPoin( AddPoin( P ) ).Inside := 0;
+
+     PoissonSubDiv;
 end;
 
 //------------------------------------------------------------------------------
@@ -187,20 +203,18 @@ end;
 function TTriGenModel<_TPoin_,_TFace_>.InsideEdges( const P_:TSingle2D ) :Single;
 var
    I :Integer;
-   P0, P1, V0, V1 :TSingle2D;
+   P0, P1, P2, V0, V1 :TSingle2D;
    A :Single;
 begin
-     if not Assigned( _EdgePoins ) then
-     begin
-          Result := 0;  Exit;
-     end;
-
      Result := 0;
 
-     P0 := _EdgePoins[ 0 ];
+     if not Assigned( _EdgePoins ) then Exit;
+
+     P2 := _EdgePoins[ 0 ];
+     P1 := P2;
      for I := 1 to High( _EdgePoins )-1 do
      begin
-          P1 := _EdgePoins[ I ];
+          P0 := P1;  P1 := _EdgePoins[ I ];
 
           V0 := P0 - P_;
           V1 := P1 - P_;
@@ -209,14 +223,10 @@ begin
                         V0.X * V1.X + V0.Y * V1.Y );
 
           Result := Result + A;
-
-          P0 := P1;
      end;
 
-     P1 := _EdgePoins[ I ];
-
-     V0 := P0 - P_;
-     V1 := P1 - P_;
+     V0 := P1 - P_;
+     V1 := P2 - P_;
 
      A := ArcTan2( V0.X * V1.Y - V0.Y * V1.X,
                    V0.X * V1.X + V0.Y * V1.Y );
@@ -228,7 +238,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TTriGenModel<_TPoin_,_TFace_>.PoissonSubDiv( const Radius_:Single );
+procedure TTriGenModel<_TPoin_,_TFace_>.PoissonSubDiv;
 var
    I :Integer;
    F :_TFace_;
@@ -245,13 +255,30 @@ begin
              ( _TPoin_( F.Poin[2] ).Inside <= 0 ) and
              ( _TPoin_( F.Poin[3] ).Inside <= 0 ) and
                F.Inside and
-             ( F.Circle.Radius > Radius_ ) then
+             ( F.Circle.Radius > _Radius ) then
           begin
                TTriGenPoin( AddPoin3( F.Circle.Center, F ) ).Inside := -1;
 
                goto FIND;
           end;
      end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TTriGenModel<_TPoin_,_TFace_>.FairMesh;
+var
+   I :Integer;
+   F :_TFace_;
+begin
+     for I := ChildsN-1 downto 0 do
+     begin
+          F := _TFace_( Childs[ I ] );
+
+          if not F.Inside then F.Free;
+     end;
+
+     for I := 3 downto 0 do PoinModel.Childs[ I ].Free;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
