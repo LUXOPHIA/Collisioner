@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses System.Math.Vectors,
-     LUX, LUX.D1;
+     LUX, LUX.D1, LUX.D2;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -40,6 +40,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_:Single; const B_:TSingle3D ) :TSingle3D;
        class operator Divide( const A_:TSingle3D; const B_:Single ) :TSingle3D;
        ///// 型変換
+       class operator Implicit( const V_:TSingle2D ) :TSingle3D;
+       class operator Implicit( const V_:TSingle3D ) :TSingle2D;
        class operator Implicit( const V_:TPoint3D ) :TSingle3D;
        class operator Implicit( const V_:TSingle3D ) :TPoint3D;
        class operator Implicit( const V_:TVector3D ) :TSingle3D;
@@ -91,6 +93,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_:Double; const B_:TDouble3D ) :TDouble3D;
        class operator Divide( const A_:TDouble3D; const B_:Double ) :TDouble3D;
        ///// 型変換
+       class operator Implicit( const V_:TDouble2D ) :TDouble3D;
+       class operator Implicit( const V_:TDouble3D ) :TDouble2D;
        class operator Implicit( const V_:TPoint3D ) :TDouble3D;
        class operator Implicit( const V_:TDouble3D ) :TPoint3D;
        class operator Implicit( const V_:TVector3D ) :TDouble3D;
@@ -524,6 +528,25 @@ end;
 
 ///////////////////////////////////////////////////////////////////////// 型変換
 
+class operator TSingle3D.Implicit( const V_:TSingle2D ) :TSingle3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := 0;
+     end;
+end;
+
+class operator TSingle3D.Implicit( const V_:TSingle3D ) :TSingle2D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+     end;
+end;
+
 class operator TSingle3D.Implicit( const V_:TPoint3D ) :TSingle3D;
 begin
      with Result do
@@ -767,6 +790,25 @@ begin
 end;
 
 ///////////////////////////////////////////////////////////////////////// 型変換
+
+class operator TDouble3D.Implicit( const V_:TDouble2D ) :TDouble3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := 0;
+     end;
+end;
+
+class operator TDouble3D.Implicit( const V_:TDouble3D ) :TDouble2D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+     end;
+end;
 
 class operator TDouble3D.Implicit( const V_:TPoint3D ) :TDouble3D;
 begin
