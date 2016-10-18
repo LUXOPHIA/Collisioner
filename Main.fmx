@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 0
   Caption = 'Musculus'
   ClientHeight = 620
-  ClientWidth = 930
+  ClientWidth = 1030
   Position = ScreenCenter
   FormFactor.Width = 320
   FormFactor.Height = 480
@@ -14,34 +14,79 @@ object Form1: TForm1
   object Panel1: TPanel
     Align = Right
     Position.X = 810.000000000000000000
-    Size.Width = 120.000000000000000000
+    Size.Width = 220.000000000000000000
     Size.Height = 620.000000000000000000
     Size.PlatformDefault = False
     StyleLookup = 'pushpanel'
     TabOrder = 0
     object Button1: TButton
-      Position.X = 10.000000000000000000
-      Position.Y = 10.000000000000000000
-      Size.Width = 100.000000000000000000
-      Size.Height = 50.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 1
-      Text = #12463#12522#12450
-      OnClick = Button1Click
-    end
-    object Button2: TButton
-      Position.X = 10.000000000000000000
-      Position.Y = 70.000000000000000000
+      Position.X = 100.000000000000000000
+      Position.Y = 220.000000000000000000
       Size.Width = 100.000000000000000000
       Size.Height = 50.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
-      Text = #32048#20998#21106
-      OnClick = Button2Click
+      Text = #31563#32330#32173#29983#25104
+      OnClick = Button1Click
+    end
+    object Image1: TImage
+      MultiResBitmap = <
+        item
+        end>
+      Position.X = 10.000000000000000000
+      Position.Y = 10.000000000000000000
+      Size.Width = 200.000000000000000000
+      Size.Height = 200.000000000000000000
+      Size.PlatformDefault = False
+    end
+    object GroupBox1: TGroupBox
+      Position.X = 90.000000000000000000
+      Position.Y = 280.000000000000000000
+      Size.Width = 121.000000000000000000
+      Size.Height = 146.000000000000000000
+      Size.PlatformDefault = False
+      Text = #12471#12511#12517#12524#12540#12471#12519#12531
+      TabOrder = 2
+      object Button2: TButton
+        Position.X = 10.000000000000000000
+        Position.Y = 25.000000000000000000
+        Size.Width = 100.000000000000000000
+        Size.Height = 50.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        Text = #23455#34892
+        OnClick = Button2Click
+      end
+      object Button3: TButton
+        Enabled = False
+        Position.X = 10.000000000000000000
+        Position.Y = 85.000000000000000000
+        Size.Width = 100.000000000000000000
+        Size.Height = 50.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        Text = #20572#27490
+        OnClick = Button3Click
+      end
+    end
+    object ScrollBar1: TScrollBar
+      Max = 200.000000000000000000
+      Min = 50.000000000000000000
+      Value = 100.000000000000000000
+      SmallChange = 0.000000000000000000
+      Orientation = Vertical
+      Position.X = 10.000000000000000000
+      Position.Y = 220.000000000000000000
+      Size.Width = 21.000000000000000000
+      Size.Height = 391.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 3
+      OnChange = ScrollBar1Change
     end
   end
-  object PaintBox1: TPaintBox
+  object Viewport3D1: TViewport3D
     Align = Client
+    Camera = Camera1
     ClipChildren = True
     Margins.Left = 10.000000000000000000
     Margins.Top = 10.000000000000000000
@@ -49,9 +94,38 @@ object Form1: TForm1
     Size.Width = 800.000000000000000000
     Size.Height = 600.000000000000000000
     Size.PlatformDefault = False
-    OnMouseDown = PaintBox1MouseDown
-    OnMouseMove = PaintBox1MouseMove
-    OnMouseUp = PaintBox1MouseUp
-    OnPaint = PaintBox1Paint
+    UsingDesignCamera = False
+    OnMouseDown = Viewport3D1MouseDown
+    OnMouseMove = Viewport3D1MouseMove
+    OnMouseUp = Viewport3D1MouseUp
+    OnPaint = Viewport3D1Paint
+    OnResize = Viewport3D1Resize
+    object Camera1: TCamera
+      AngleOfView = 90.000000000000000000
+      Position.Z = -30.000000000000000000
+      Width = 1.000000000000000000
+      Height = 1.000000000000000000
+      Depth = 1.000000000000000000
+    end
+    object Grid3D1: TGrid3D
+      Marks = 4.000000000000000000
+      Frequency = 1.000000000000000000
+      LineColor = x50505050
+      Width = 80.000000000000000000
+      Height = 60.000000000000000000
+      Depth = 0.001000000047497451
+      HitTest = False
+    end
+  end
+  object TextureMaterialSource1: TTextureMaterialSource
+    Left = 720
+    Top = 25
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 10
+    OnTimer = Timer1Timer
+    Left = 30
+    Top = 24
   end
 end
