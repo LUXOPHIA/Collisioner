@@ -1,4 +1,4 @@
-﻿unit MYX.Musculus;
+﻿unit YKX.Swellart;
 
 interface //#################################################################### ■
 
@@ -8,92 +8,84 @@ uses System.Types, System.Classes, System.Math.Vectors,
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
-     TMuscPoin  = class;
-     TMuscVert  = class;
-     TMuscFace  = class;
-     TMuscModel = class;
-     TMuscShape = class;
+     TSwelPoin  = class;
+     TSwelVert  = class;
+     TSwelFace  = class;
+     TSwelModel = class;
+     TSwelShape = class;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMuscPoin  //筋肉格子点のクラス
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelPoin  //格子点のクラス
 
-     TMuscPoin = class( TTriGenPoin )
+     TSwelPoin = class( TTriGenPoin )
      private
      protected
-       _Force :TSingle2D;
+     public
+       constructor Create; override;
+       destructor Destroy; override;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelVert  //三角点のクラス
+
+     TSwelVert = class
+     private
+       _Face :TSwelFace;
+       _Tex  :TSingle2D;
+     public
+       constructor Create( const Face_:TSwelFace );
+       destructor Destroy; override;
+       ///// プロパティ
+       property Face :TSwelFace read   _Face write _Face;  //帰属する三角面
+       property Tex  :TSingle2D read   _Tex  write _Tex ;  //テクスチャ座標
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelFace  //三角面のクラス
+
+     TSwelFace = class( TTriGenFace )
+     private
+     protected
+       _Vert :array [ 1..3 ] of TSwelVert;
+       ///// アクセス
+       function GetPoin( const I_:Byte ) :TSwelPoin; reintroduce;
+       procedure SetPoin( const I_:Byte; const Poin_:TSwelPoin ); reintroduce;
+       function GetFace( const I_:Byte ) :TSwelFace; reintroduce;
+       procedure SetFace( const I_:Byte; const Face_:TSwelFace ); reintroduce;
+       function GetVert( const I_:Byte ) :TSwelVert;
      public
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
-       property Force :TSingle2D read _Force write _Force;  //筋肉に引っ張られる力
+       property Poin[ const I_:Byte ] :TSwelPoin read GetPoin     write SetPoin    ;  //格子点
+       property Face[ const I_:Byte ] :TSwelFace read GetFace     write SetFace    ;  //隣接する三角面
+       property Vert[ const I_:Byte ] :TSwelVert read GetVert                      ;  //三角点
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMuscVert  //筋肉三角点のクラス
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelModel  //メッシュのクラス
 
-     TMuscVert = class
-     private
-       _Face :TMuscFace;
-       _Tex0 :TSingle2D;
-       ///// アクセス
-       function GetTex :TSingle2D;
-     public
-       constructor Create( const Face_:TMuscFace );
-       destructor Destroy; override;
-       ///// プロパティ
-       property Face :TMuscFace read   _Face write _Face;  //帰属する筋肉三角形
-       property Tex0 :TSingle2D read   _Tex0 write _Tex0;  //理想の座標
-       property Tex  :TSingle2D read GetTex             ;  //収縮した際の理想の座標
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMuscFace  //筋肉三角面のクラス
-
-     TMuscFace = class( TTriGenFace )
-     private
-     protected
-       _Vert     :array [ 1..3 ] of TMuscVert;
-       _Contract :Single;
-       ///// アクセス
-       function GetPoin( const I_:Byte ) :TMuscPoin; reintroduce;
-       procedure SetPoin( const I_:Byte; const Poin_:TMuscPoin ); reintroduce;
-       function GetFace( const I_:Byte ) :TMuscFace; reintroduce;
-       procedure SetFace( const I_:Byte; const Face_:TMuscFace ); reintroduce;
-       function GetVert( const I_:Byte ) :TMuscVert;
-     public
-       constructor Create; override;
-       destructor Destroy; override;
-       ///// プロパティ
-       property Poin[ const I_:Byte ] :TMuscPoin read GetPoin     write SetPoin    ;  //筋肉格子点
-       property Face[ const I_:Byte ] :TMuscFace read GetFace     write SetFace    ;  //隣接する筋肉三角面
-       property Vert[ const I_:Byte ] :TMuscVert read GetVert                      ;  //筋肉三角点
-       property Contract              :Single    read   _Contract write   _Contract;  //筋肉収縮率
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMuscModel  //筋肉メッシュのクラス
-
-     TMuscModel = class( TTriGenModel<TMuscPoin,TMuscFace> )
+     TSwelModel = class( TTriGenModel<TSwelPoin,TSwelFace> )
      private
      protected
        ///// アクセス
-       function GetChild( const I_:Integer ) :TMuscFace; reintroduce;
-       procedure SetChild( const I_:Integer; const Child_:TMuscFace ); reintroduce;
+       function GetChild( const I_:Integer ) :TSwelFace; reintroduce;
+       procedure SetChild( const I_:Integer; const Child_:TSwelFace ); reintroduce;
      public
        ///// プロパティ
-       property Childs[ const I_:Integer ] :TMuscFace read GetChild write SetChild;  //筋肉三角面
+       property Childs[ const I_:Integer ] :TSwelFace read GetChild write SetChild;  //三角面
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMuscShape  //筋肉ポリゴンのクラス
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelShape  //ポリゴンのクラス
 
-     TMuscShape = class( TControl3D )
+     TSwelShape = class( TControl3D )
      private
      protected
        _Geometry :TMeshData;
        _Material :TMaterialSource;
-       _Model    :TMuscModel;
+       _Model    :TSwelModel;
        ///// アクセス
-       procedure SetModel( const Model_:TMuscModel );
+       procedure SetModel( const Model_:TSwelModel );
        ///// メソッド
        procedure Render; override;
      public
@@ -101,10 +93,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        destructor Destroy; override;
        ///// プロパティ
        property Material :TMaterialSource read _Material write   _Material;  //シェーダ
-       property Model    :TMuscModel      read _Model    write SetModel   ;  //筋肉メッシュ
+       property Model    :TSwelModel      read _Model    write SetModel   ;  //メッシュ
        ///// メソッド
-       procedure MakeGeometry;    //メッシュの再構築
-       procedure UpdateGeometry;  //メッシュ座標の更新
+       procedure MakeGeometry;    //三角面の再構築
+       procedure UpdateGeometry;  //三角点の更新
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -121,7 +113,7 @@ uses System.SysUtils, System.RTLConsts;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMuscPoin
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelPoin
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -129,20 +121,19 @@ uses System.SysUtils, System.RTLConsts;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TMuscPoin.Create;
+constructor TSwelPoin.Create;
 begin
      inherited;
 
-     _Force := TSingle2D.Create( 0, 0 );
 end;
 
-destructor TMuscPoin.Destroy;
+destructor TSwelPoin.Destroy;
 begin
 
      inherited;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMuscVert
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelVert
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -150,29 +141,23 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TMuscVert.GetTex :TSingle2D;
-begin
-     Result.X := _Tex0.X * _Face.Contract;
-     Result.Y := _Tex0.Y / _Face.Contract;
-end;
-
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TMuscVert.Create( const Face_:TMuscFace );
+constructor TSwelVert.Create( const Face_:TSwelFace );
 begin
      inherited Create;
 
      _Face := Face_;
-     _Tex0 := TSingle2D.Create( 0, 0 );
+     _Tex  := TSingle2D.Create( 0, 0 );
 end;
 
-destructor TMuscVert.Destroy;
+destructor TSwelVert.Destroy;
 begin
 
      inherited;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMuscFace
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelFace
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -180,45 +165,58 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TMuscFace.GetPoin( const I_:Byte ) :TMuscPoin;
+function TSwelFace.GetPoin( const I_:Byte ) :TSwelPoin;
 begin
-     Result := TMuscPoin( inherited Poin[ I_ ] );
+     Result := TSwelPoin( inherited Poin[ I_ ] );
 end;
 
-procedure TMuscFace.SetPoin( const I_:Byte; const Poin_:TMuscPoin );
+procedure TSwelFace.SetPoin( const I_:Byte; const Poin_:TSwelPoin );
 begin
      inherited Poin[ I_ ] := Poin_;
 end;
 
-function TMuscFace.GetFace( const I_:Byte ) :TMuscFace;
+function TSwelFace.GetFace( const I_:Byte ) :TSwelFace;
 begin
-     Result := TMuscFace( inherited Face[ I_ ] );
+     Result := TSwelFace( inherited Face[ I_ ] );
 end;
 
-procedure TMuscFace.SetFace( const I_:Byte; const Face_:TMuscFace );
+procedure TSwelFace.SetFace( const I_:Byte; const Face_:TSwelFace );
 begin
      inherited Face[ I_ ] := Face_;
 end;
 
-function TMuscFace.GetVert( const I_:Byte ) :TMuscVert;
+function TSwelFace.GetVert( const I_:Byte ) :TSwelVert;
 begin
      Result := _Vert[ I_ ];
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TMuscFace.Create;
+constructor TSwelFace.Create;
 begin
      inherited;
 
-     _Vert[ 1 ] := TMuscVert.Create( Self );
-     _Vert[ 2 ] := TMuscVert.Create( Self );
-     _Vert[ 3 ] := TMuscVert.Create( Self );
+     _Vert[ 1 ] := TSwelVert.Create( Self );
+     _Vert[ 2 ] := TSwelVert.Create( Self );
+     _Vert[ 3 ] := TSwelVert.Create( Self );
 
-     _Contract := 1;
+     with _Vert[ 1 ] do
+     begin
+          Tex := TSingle2D.Create( -1, -1 );
+     end;
+
+     with _Vert[ 2 ] do
+     begin
+          Tex := TSingle2D.Create( +1, -1 );
+     end;
+
+     with _Vert[ 3 ] do
+     begin
+          Tex := TSingle2D.Create( -1, +1 );
+     end;
 end;
 
-destructor TMuscFace.Destroy;
+destructor TSwelFace.Destroy;
 begin
      _Vert[ 1 ].Free;
      _Vert[ 2 ].Free;
@@ -227,7 +225,7 @@ begin
      inherited;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMuscModel
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelModel
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -235,19 +233,19 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TMuscModel.GetChild( const I_:Integer ) :TMuscFace;
+function TSwelModel.GetChild( const I_:Integer ) :TSwelFace;
 begin
-     Result := TMuscFace( inherited Childs[ I_ ] );
+     Result := TSwelFace( inherited Childs[ I_ ] );
 end;
 
-procedure TMuscModel.SetChild( const I_:Integer; const Child_:TMuscFace );
+procedure TSwelModel.SetChild( const I_:Integer; const Child_:TSwelFace );
 begin
      inherited Childs[ I_ ] := Child_;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMuscShape
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelShape
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -255,14 +253,14 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-procedure TMuscShape.SetModel( const Model_:TMuscModel );
+procedure TSwelShape.SetModel( const Model_:TSwelModel );
 begin
      _Model := Model_;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TMuscShape.Render;
+procedure TSwelShape.Render;
 begin
      Context.SetMatrix( AbsoluteMatrix );
 
@@ -271,14 +269,14 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TMuscShape.Create( Owner_:TComponent );
+constructor TSwelShape.Create( Owner_:TComponent );
 begin
      inherited;
 
      _Geometry := TMeshData.Create;
 end;
 
-destructor TMuscShape.Destroy;
+destructor TSwelShape.Destroy;
 begin
      _Geometry.Free;
 
@@ -287,7 +285,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TMuscShape.MakeGeometry;
+procedure TSwelShape.MakeGeometry;
 var
    N, K, I :Integer;
 begin
@@ -313,11 +311,10 @@ begin
      UpdateGeometry;
 end;
 
-procedure TMuscShape.UpdateGeometry;
+procedure TSwelShape.UpdateGeometry;
 var
    Tc :TPointF;
    N, I, K :Integer;
-   Pc :TSingle2D;
 begin
      Tc := TPointF.Create( 0.5, 0.5 );
 
@@ -328,14 +325,10 @@ begin
           begin
                with _Model.Childs[ N ] do
                begin
-                    Pc := 0.1 * ( Poin[ 1 ].Pos
-                                + Poin[ 2 ].Pos
-                                + Poin[ 3 ].Pos ) / 3;
-
                     for K := 1 to 3 do
                     begin
-                         Vertices [ I ] := TSingle3D( 0.9 * Poin[ K ].Pos + Pc );
-                         TexCoord0[ I ] := Tc + Vert[ K ].Tex0 / ( 2 * _Model.Radius );
+                         Vertices [ I ] := TSingle3D( Poin[ K ].Pos );
+                         TexCoord0[ I ] := Tc + Vert[ K ].Tex / 2;
 
                          Inc( I );
                     end;
