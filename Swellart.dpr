@@ -1,4 +1,4 @@
-program Musculus;
+program Swellart;
 
 uses
   System.StartUpCopy,
@@ -20,7 +20,7 @@ uses
   LUX.Matrix.L2 in '_LIBRARY\LUXOPHIA\LUX.Matrix\LUX.Matrix.L2.pas',
   LUX.Brep.Face.TriFlip.D2 in '_LIBRARY\LUXOPHIA\LUX.Brep\LUX.Brep.Face.TriFlip.D2.pas',
   LUX.Brep.Face.TriFlip.D2.Delaunay in '_LIBRARY\LUXOPHIA\LUX.Brep\LUX.Brep.Face.TriFlip.D2.Delaunay.pas',
-  MYX.Musculus in 'MYX.Musculus.pas',
+  YKX.Swellart in 'YKX.Swellart.pas',
   LUX.Brep.Face.TriFlip.D2.Triangulation in '_LIBRARY\LUXOPHIA\LUX.Brep\LUX.Brep.Face.TriFlip.D2.Triangulation.pas';
 
 {$R *.res}

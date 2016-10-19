@@ -26,7 +26,7 @@ object Form1: TForm1
       Size.Height = 50.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
-      Text = #31563#32330#32173#29983#25104
+      Text = #21021#26399#21270
       OnClick = Button1Click
     end
     object Image1: TImage
@@ -45,7 +45,7 @@ object Form1: TForm1
       Size.Width = 121.000000000000000000
       Size.Height = 146.000000000000000000
       Size.PlatformDefault = False
-      Text = #12471#12511#12517#12524#12540#12471#12519#12531
+      Text = #26368#36969#21270
       TabOrder = 2
       object Button2: TButton
         Position.X = 10.000000000000000000
@@ -68,20 +68,6 @@ object Form1: TForm1
         Text = #20572#27490
         OnClick = Button3Click
       end
-    end
-    object ScrollBar1: TScrollBar
-      Max = 200.000000000000000000
-      Min = 50.000000000000000000
-      Value = 100.000000000000000000
-      SmallChange = 0.000000000000000000
-      Orientation = Vertical
-      Position.X = 10.000000000000000000
-      Position.Y = 220.000000000000000000
-      Size.Width = 21.000000000000000000
-      Size.Height = 391.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 3
-      OnChange = ScrollBar1Change
     end
   end
   object Viewport3D1: TViewport3D
