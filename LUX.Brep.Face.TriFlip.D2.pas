@@ -33,11 +33,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        ///// アクセス
        function GetEdge( const I_:Byte ) :TSingle2D;
+       function GetNorv( const I_:Byte ) :TSingle2D;
        function GetCircumCircle :TSingleCircle;
+       function GetBarycenter :TSingle2D;
      public
        ///// プロパティ
        property Edge[ const I_:Byte ] :TSingle2D     read GetEdge        ;
+       property Norv[ const I_:Byte ] :TSingle2D     read GetNorv        ;
        property CircumCircle          :TSingleCircle read GetCircumCircle;
+       property Barycenter            :TSingle2D     read GetBarycenter  ;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel2D
@@ -86,9 +90,19 @@ begin
      Result := Poin[ _Inc_[ I_ ] ].Pos.VectorTo( Poin[ _Dec_[ I_ ] ].Pos );
 end;
 
+function TTriFace2D.GetNorv( const I_:Byte ) :TSingle2D;
+begin
+     Result := GetEdge( I_ ).RotR90.Unitor;
+end;
+
 function TTriFace2D.GetCircumCircle :TSingleCircle;
 begin
      Result := TSingleCircle.Create( Poin[ 1 ].Pos, Poin[ 2 ].Pos, Poin[ 3 ].Pos );
+end;
+
+function TTriFace2D.GetBarycenter :TSingle2D;
+begin
+     Result := Ave( Poin[ 1 ].Pos, Poin[ 2 ].Pos, Poin[ 3 ].Pos );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
