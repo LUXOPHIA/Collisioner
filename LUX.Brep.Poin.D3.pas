@@ -23,7 +23,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TPoinModel3D
 
-     TPoinModel3D = class( TPoinModel<TPoin3D> )
+     TPoinModel3D = class( TPoinModel<TSingle3D,TPoin3D> )
      private
      protected
      public
