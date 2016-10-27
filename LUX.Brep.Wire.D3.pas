@@ -17,7 +17,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TWire3D<_TPoin_:TPoin<TSingle3D>> = class( TWire<TSingle3D,_TPoin_> )
      private
      protected
+       ///// アクセス
+       function GetLeng :Single;
      public
+       ///// プロパティ
+       property Leng :Single read GetLeng;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TWireModel3D<_TPos_>
@@ -48,6 +52,11 @@ implementation //###############################################################
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
 /////////////////////////////////////////////////////////////////////// アクセス
+
+function TWire3D<_TPoin_>.GetLeng :Single;
+begin
+     Result := Poin0.Pos.DistanTo( Poin1.Pos );
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
