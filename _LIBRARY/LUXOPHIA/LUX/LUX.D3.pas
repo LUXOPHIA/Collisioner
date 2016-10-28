@@ -41,7 +41,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Divide( const A_:TSingle3D; const B_:Single ) :TSingle3D;
        ///// 型変換
        class operator Implicit( const V_:TSingle2D ) :TSingle3D;
-       class operator Implicit( const V_:TSingle3D ) :TSingle2D;
+       class operator Explicit( const V_:TSingle3D ) :TSingle2D;
        class operator Implicit( const V_:TPoint3D ) :TSingle3D;
        class operator Implicit( const V_:TSingle3D ) :TPoint3D;
        class operator Implicit( const V_:TVector3D ) :TSingle3D;
@@ -53,10 +53,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        function VectorTo( const P_:TSingle3D ) :TSingle3D;
        function UnitorTo( const P_:TSingle3D ) :TSingle3D;
-       class function RandG :TSingle3D; inline; static;
-       class function RandBS1 :TSingle3D; inline; static;
-       class function RandBS2 :TSingle3D; inline; static;
-       class function RandBS4 :TSingle3D; inline; static;
+       function DistanTo( const P_:TSingle3D ) :Single;
+       class function RandG :TSingle3D; static;
+       class function RandBS1 :TSingle3D; static;
+       class function RandBS2 :TSingle3D; static;
+       class function RandBS4 :TSingle3D; static;
      end;
 
      TSinglePos3D = TSingle3D;
@@ -94,7 +95,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Divide( const A_:TDouble3D; const B_:Double ) :TDouble3D;
        ///// 型変換
        class operator Implicit( const V_:TDouble2D ) :TDouble3D;
-       class operator Implicit( const V_:TDouble3D ) :TDouble2D;
+       class operator Explicit( const V_:TDouble3D ) :TDouble2D;
        class operator Implicit( const V_:TPoint3D ) :TDouble3D;
        class operator Implicit( const V_:TDouble3D ) :TPoint3D;
        class operator Implicit( const V_:TVector3D ) :TDouble3D;
@@ -106,10 +107,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        function VectorTo( const P_:TDouble3D ) :TDouble3D;
        function UnitorTo( const P_:TDouble3D ) :TDouble3D;
-       class function RandG :TDouble3D; inline; static;
-       class function RandBS1 :TDouble3D; inline; static;
-       class function RandBS2 :TDouble3D; inline; static;
-       class function RandBS4 :TDouble3D; inline; static;
+       function DistanTo( const P_:TDouble3D ) :Double;
+       class function RandG :TDouble3D; static;
+       class function RandBS1 :TDouble3D; static;
+       class function RandBS2 :TDouble3D; static;
+       class function RandBS4 :TDouble3D; static;
      end;
 
      TDoublePos3D = TDouble3D;
@@ -538,7 +540,7 @@ begin
      end;
 end;
 
-class operator TSingle3D.Implicit( const V_:TSingle3D ) :TSingle2D;
+class operator TSingle3D.Explicit( const V_:TSingle3D ) :TSingle2D;
 begin
      with Result do
      begin
@@ -619,6 +621,11 @@ end;
 function TSingle3D.UnitorTo( const P_:TSingle3D ) :TSingle3D;
 begin
      Result := VectorTo( P_ ).Unitor;
+end;
+
+function TSingle3D.DistanTo( const P_:TSingle3D ) :Single;
+begin
+     Result := VectorTo( P_ ).Size;
 end;
 
 //------------------------------------------------------------------------------
@@ -801,7 +808,7 @@ begin
      end;
 end;
 
-class operator TDouble3D.Implicit( const V_:TDouble3D ) :TDouble2D;
+class operator TDouble3D.Explicit( const V_:TDouble3D ) :TDouble2D;
 begin
      with Result do
      begin
@@ -882,6 +889,11 @@ end;
 function TDouble3D.UnitorTo( const P_:TDouble3D ) :TDouble3D;
 begin
      Result := VectorTo( P_ ).Unitor;
+end;
+
+function TDouble3D.DistanTo( const P_:TDouble3D ) :Double;
+begin
+     Result := VectorTo( P_ ).Size;
 end;
 
 //------------------------------------------------------------------------------
