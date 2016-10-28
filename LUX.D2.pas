@@ -53,6 +53,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function IdentityX :TSingle2D; inline; static;
        class function IdentityY :TSingle2D; inline; static;
        ///// メソッド
+       function VectorTo( const P_:TSingle2D ) :TSingle2D;
+       function UnitorTo( const P_:TSingle2D ) :TSingle2D;
+       function DistanTo( const P_:TSingle2D ) :Single;
+       function RotL90 :TSingle2D;
+       function RotR90 :TSingle2D;
+       class function RandG :TSingle2D; inline; static;
        class function RandBS1 :TSingle2D; inline; static;
        class function RandBS2 :TSingle2D; inline; static;
        class function RandBS4 :TSingle2D; inline; static;
@@ -96,6 +102,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function IdentityX :TDouble2D; inline; static;
        class function IdentityY :TDouble2D; inline; static;
        ///// メソッド
+       function VectorTo( const P_:TDouble2D ) :TDouble2D;
+       function UnitorTo( const P_:TDouble2D ) :TDouble2D;
+       function DistanTo( const P_:TDouble2D ) :Double;
+       function RotL90 :TDouble2D;
+       function RotR90 :TDouble2D;
+       class function RandG :TDouble2D; inline; static;
        class function RandBS1 :TDouble2D; inline; static;
        class function RandBS2 :TDouble2D; inline; static;
        class function RandBS4 :TDouble2D; inline; static;
@@ -394,6 +406,66 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property d :TDoubleEllipse2D read Getd write Setd;
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleArea2D
+
+     TSingleArea2D = record
+     private
+       ///// アクセス
+       function GetPoin( const I_:Integer ) :TSingle2D;
+       function GetSizeX :Single;
+       procedure SetSizeX( const SizeX_:Single );
+       function GetSizeY :Single;
+       procedure SetSizeY( const SizeY_:Single );
+     public
+       Min :TSingle2D;
+       Max :TSingle2D;
+       /////
+       constructor Create( const Min_,Max_:Single ); overload;
+       constructor Create( const MinX_,MinY_,
+                                 MaxX_,MaxY_:Single ); overload;
+       constructor Create( const Min_,Max_:TSingle2D ); overload;
+       ///// プロパティ
+       property Poin[ const I_:Integer ] :TSingle2D read GetPoin                ;
+       property SizeX                    :Single    read GetSizeX write SetSizeX;
+       property SizeY                    :Single    read GetSizeY write SetSizeY;
+       ///// 定数
+       class function NeInf :TSingleArea2D; inline; static;
+       class function NeMax :TSingleArea2D; inline; static;
+       class function Zero  :TSingleArea2D; inline; static;
+       class function PoMax :TSingleArea2D; inline; static;
+       class function PoInf :TSingleArea2D; inline; static;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea2D
+
+     TDoubleArea2D = record
+     private
+       ///// アクセス
+       function GetPoin( const I_:Integer ) :TDouble2D;
+       function GetSizeX :Double;
+       procedure SetSizeX( const SizeX_:Double );
+       function GetSizeY :Double;
+       procedure SetSizeY( const SizeY_:Double );
+     public
+       Min :TDouble2D;
+       Max :TDouble2D;
+       /////
+       constructor Create( const Min_,Max_:Double ); overload;
+       constructor Create( const MinX_,MinY_,
+                                 MaxX_,MaxY_:Double ); overload;
+       constructor Create( const Min_,Max_:TDouble2D ); overload;
+       ///// プロパティ
+       property Poin[ const I_:Integer ] :TDouble2D read GetPoin                ;
+       property SizeX                    :Double    read GetSizeX write SetSizeX;
+       property SizeY                    :Double    read GetSizeY write SetSizeY;
+       ///// 定数
+       class function NeInf :TDoubleArea2D; inline; static;
+       class function NeMax :TDoubleArea2D; inline; static;
+       class function Zero  :TDoubleArea2D; inline; static;
+       class function PoMax :TDoubleArea2D; inline; static;
+       class function PoInf :TDoubleArea2D; inline; static;
+     end;
+
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -420,15 +492,21 @@ function Distanc2( const A_,B_:TdDoublePos2D ) :TdDouble; inline; overload;
 function Distance( const A_,B_:TdSinglePos2D ) :TdSingle; inline; overload;
 function Distance( const A_,B_:TdDoublePos2D ) :TdDouble; inline; overload;
 
-function Ave( const A_,B_:TSingle2D ) :TSingle2D; inline; overload;
-function Ave( const A_,B_:TDouble2D ) :TDouble2D; inline; overload;
+function Ave( const P1_,P2_:TSingle2D ) :TSingle2D; inline; overload;
+function Ave( const P1_,P2_:TDouble2D ) :TDouble2D; inline; overload;
 
-function Ave( const A_,B_:TdSingle2D ) :TdSingle2D; inline; overload;
-function Ave( const A_,B_:TdDouble2D ) :TdDouble2D; inline; overload;
+function Ave( const P1_,P2_:TdSingle2D ) :TdSingle2D; inline; overload;
+function Ave( const P1_,P2_:TdDouble2D ) :TdDouble2D; inline; overload;
+
+function Ave( const P1_,P2_,P3_:TSingle2D ) :TSingle2D; inline; overload;
+function Ave( const P1_,P2_,P3_:TDouble2D ) :TDouble2D; inline; overload;
+
+function Ave( const P1_,P2_,P3_:TdSingle2D ) :TdSingle2D; inline; overload;
+function Ave( const P1_,P2_,P3_:TdDouble2D ) :TdDouble2D; inline; overload;
 
 implementation //############################################################### ■
 
-uses System.Math;
+uses System.SysUtils, System.Math;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -588,6 +666,48 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
+
+function TSingle2D.VectorTo( const P_:TSingle2D ) :TSingle2D;
+begin
+     Result := P_ - Self;
+end;
+
+function TSingle2D.UnitorTo( const P_:TSingle2D ) :TSingle2D;
+begin
+     Result := VectorTo( P_ ).Unitor;
+end;
+
+function TSingle2D.DistanTo( const P_:TSingle2D ) :Single;
+begin
+     Result := VectorTo( P_ ).Size;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingle2D.RotL90 :TSingle2D;
+begin
+     Result.X := -Y;
+     Result.Y := +X;
+end;
+
+function TSingle2D.RotR90 :TSingle2D;
+begin
+     Result.X := +Y;
+     Result.Y := -X;
+end;
+
+//------------------------------------------------------------------------------
+
+class function TSingle2D.RandG :TSingle2D;
+begin
+     with Result do
+     begin
+          X := System.Math.RandG( 0, 1 );
+          Y := System.Math.RandG( 0, 1 );
+     end;
+end;
+
+//------------------------------------------------------------------------------
 
 class function TSingle2D.RandBS1 :TSingle2D;
 begin
@@ -766,6 +886,48 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
+
+function TDouble2D.VectorTo( const P_:TDouble2D ) :TDouble2D;
+begin
+     Result := P_ - Self;
+end;
+
+function TDouble2D.UnitorTo( const P_:TDouble2D ) :TDouble2D;
+begin
+     Result := VectorTo( P_ ).Unitor;
+end;
+
+function TDouble2D.DistanTo( const P_:TDouble2D ) :Double;
+begin
+     Result := VectorTo( P_ ).Size;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDouble2D.RotL90 :TDouble2D;
+begin
+     Result.X := -Y;
+     Result.Y := +X;
+end;
+
+function TDouble2D.RotR90 :TDouble2D;
+begin
+     Result.X := +Y;
+     Result.Y := -X;
+end;
+
+//------------------------------------------------------------------------------
+
+class function TDouble2D.RandG :TDouble2D;
+begin
+     with Result do
+     begin
+          X := System.Math.RandG( 0, 1 );
+          Y := System.Math.RandG( 0, 1 );
+     end;
+end;
+
+//------------------------------------------------------------------------------
 
 class function TDouble2D.RandBS1 :TDouble2D;
 begin
@@ -1688,6 +1850,232 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleArea2D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TSingleArea2D.GetPoin( const I_:Integer ) :TSingle2D;
+begin
+     case I_ of
+       0: Result := TSingle2D.Create( Min.X, Min.Y );
+       1: Result := TSingle2D.Create( Max.X, Min.Y );
+       2: Result := TSingle2D.Create( Min.X, Max.Y );
+       3: Result := TSingle2D.Create( Max.X, Max.Y );
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingleArea2D.GetSizeX :Single;
+begin
+     Result := Max.X - Min.X;
+end;
+
+procedure TSingleArea2D.SetSizeX( const SizeX_:Single );
+var
+   C, S :Single;
+begin
+     C := ( Min.X + Max.X ) / 2;
+
+     S := SizeX_ / 2;
+
+     Min.X := C - S;
+     Max.X := C + S;
+end;
+
+function TSingleArea2D.GetSizeY :Single;
+begin
+     Result := Max.Y - Min.Y;
+end;
+
+procedure TSingleArea2D.SetSizeY( const SizeY_:Single );
+var
+   C, S :Single;
+begin
+     C := ( Min.Y + Max.Y ) / 2;
+
+     S := SizeY_ / 2;
+
+     Min.Y := C - S;
+     Max.Y := C + S;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TSingleArea2D.Create( const Min_,Max_:Single );
+begin
+     Create( Min_, Min_,
+             Max_, Max_ );
+end;
+
+constructor TSingleArea2D.Create( const MinX_,MinY_,
+                                        MaxX_,MaxY_:Single );
+begin
+     with Min do
+     begin
+          X := MinX_;
+          Y := MinY_;
+     end;
+
+     with Max do
+     begin
+          X := MaxX_;
+          Y := MaxY_;
+     end;
+end;
+
+constructor TSingleArea2D.Create( const Min_,Max_:TSingle2D );
+begin
+     Min := Min_;
+     Max := Max_;
+end;
+
+/////////////////////////////////////////////////////////////////////////// 定数
+
+class function TSingleArea2D.NeInf :TSingleArea2D;
+begin
+     Result := TSingleArea2D.Create( Single.PositiveInfinity,
+                                     Single.NegativeInfinity );
+end;
+
+class function TSingleArea2D.NeMax :TSingleArea2D;
+begin
+     Result := TSingleArea2D.Create( +Single.MaxValue,
+                                     -Single.MaxValue );
+end;
+
+class function TSingleArea2D.Zero :TSingleArea2D;
+begin
+     Result := TSingleArea2D.Create( 0, 0 );
+end;
+
+class function TSingleArea2D.PoMax :TSingleArea2D;
+begin
+     Result := TSingleArea2D.Create( -Single.MaxValue,
+                                     +Single.MaxValue );
+end;
+
+class function TSingleArea2D.PoInf :TSingleArea2D;
+begin
+     Result := TSingleArea2D.Create( Single.NegativeInfinity,
+                                     Single.PositiveInfinity );
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea2D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TDoubleArea2D.GetPoin( const I_:Integer ) :TDouble2D;
+begin
+     case I_ of
+       0: Result := TDouble2D.Create( Min.X, Min.Y );
+       1: Result := TDouble2D.Create( Max.X, Min.Y );
+       2: Result := TDouble2D.Create( Min.X, Max.Y );
+       3: Result := TDouble2D.Create( Max.X, Max.Y );
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleArea2D.GetSizeX :Double;
+begin
+     Result := Max.X - Min.X;
+end;
+
+procedure TDoubleArea2D.SetSizeX( const SizeX_:Double );
+var
+   C, S :Double;
+begin
+     C := ( Min.X + Max.X ) / 2;
+
+     S := SizeX_ / 2;
+
+     Min.X := C - S;
+     Max.X := C + S;
+end;
+
+function TDoubleArea2D.GetSizeY :Double;
+begin
+     Result := Max.Y - Min.Y;
+end;
+
+procedure TDoubleArea2D.SetSizeY( const SizeY_:Double );
+var
+   C, S :Double;
+begin
+     C := ( Min.Y + Max.Y ) / 2;
+
+     S := SizeY_ / 2;
+
+     Min.Y := C - S;
+     Max.Y := C + S;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TDoubleArea2D.Create( const Min_,Max_:Double );
+begin
+     Create( Min_, Min_,
+             Max_, Max_ );
+end;
+
+constructor TDoubleArea2D.Create( const MinX_,MinY_,
+                                        MaxX_,MaxY_:Double );
+begin
+     with Min do
+     begin
+          X := MinX_;
+          Y := MinY_;
+     end;
+
+     with Max do
+     begin
+          X := MaxX_;
+          Y := MaxY_;
+     end;
+end;
+
+constructor TDoubleArea2D.Create( const Min_,Max_:TDouble2D );
+begin
+     Min := Min_;
+     Max := Max_;
+end;
+
+/////////////////////////////////////////////////////////////////////////// 定数
+
+class function TDoubleArea2D.NeInf :TDoubleArea2D;
+begin
+     Result := TDoubleArea2D.Create( Double.PositiveInfinity,
+                                     Double.NegativeInfinity );
+end;
+
+class function TDoubleArea2D.NeMax :TDoubleArea2D;
+begin
+     Result := TDoubleArea2D.Create( +Double.MaxValue,
+                                     -Double.MaxValue );
+end;
+
+class function TDoubleArea2D.Zero :TDoubleArea2D;
+begin
+     Result := TDoubleArea2D.Create( 0, 0 );
+end;
+
+class function TDoubleArea2D.PoMax :TDoubleArea2D;
+begin
+     Result := TDoubleArea2D.Create( -Double.MaxValue,
+                                     +Double.MaxValue );
+end;
+
+class function TDoubleArea2D.PoInf :TDoubleArea2D;
+begin
+     Result := TDoubleArea2D.Create( Double.NegativeInfinity,
+                                     Double.PositiveInfinity );
+end;
+
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
@@ -1760,24 +2148,46 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Ave( const A_,B_:TSingle2D ) :TSingle2D;
+function Ave( const P1_,P2_:TSingle2D ) :TSingle2D;
 begin
-     Result := ( A_ + B_ ) / 2;
+     Result := ( P1_ + P2_ ) / 2;
 end;
 
-function Ave( const A_,B_:TDouble2D ) :TDouble2D;
+function Ave( const P1_,P2_:TDouble2D ) :TDouble2D;
 begin
-     Result := ( A_ + B_ ) / 2;
+     Result := ( P1_ + P2_ ) / 2;
 end;
 
-function Ave( const A_,B_:TdSingle2D ) :TdSingle2D;
+function Ave( const P1_,P2_:TdSingle2D ) :TdSingle2D;
 begin
-     Result := ( A_ + B_ ) / 2;
+     Result := ( P1_ + P2_ ) / 2;
 end;
 
-function Ave( const A_,B_:TdDouble2D ) :TdDouble2D;
+function Ave( const P1_,P2_:TdDouble2D ) :TdDouble2D;
 begin
-     Result := ( A_ + B_ ) / 2;
+     Result := ( P1_ + P2_ ) / 2;
+end;
+
+//------------------------------------------------------------------------------
+
+function Ave( const P1_,P2_,P3_:TSingle2D ) :TSingle2D;
+begin
+     Result := ( P1_ + P2_ + P3_ ) / 3;
+end;
+
+function Ave( const P1_,P2_,P3_:TDouble2D ) :TDouble2D;
+begin
+     Result := ( P1_ + P2_ + P3_ ) / 3;
+end;
+
+function Ave( const P1_,P2_,P3_:TdSingle2D ) :TdSingle2D;
+begin
+     Result := ( P1_ + P2_ + P3_ ) / 3;
+end;
+
+function Ave( const P1_,P2_,P3_:TdDouble2D ) :TdDouble2D;
+begin
+     Result := ( P1_ + P2_ + P3_ ) / 3;
 end;
 
 //############################################################################## □
