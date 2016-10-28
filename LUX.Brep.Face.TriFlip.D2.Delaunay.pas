@@ -60,14 +60,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Face[ const I_:Byte ] :TDelaFace2D   read GetFace   write SetFace;
        property Open                  :Byte          read   _Open   write   _Open;
        property Circle                :TSingleCircle read GetCircle              ;
-       /////
+       ///// メソッド
        function IsHitCircle( const Pos_:TSingle2D ) :Boolean;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDelaunay2D<_TPoin_,_TFace_>
 
      TDelaunay2D<_TPoin_:TDelaPoin2D,constructor;
-                 _TFace_:TDelaFace2D,constructor> = class( TTriFaceModel2D )
+                 _TFace_:TDelaFace2D,constructor> = class( TTriFaceModel2D<_TPoin_> )
      private
        ///// メソッド
        procedure InitFace;

@@ -6,16 +6,14 @@ uses LUX, LUX.D3, LUX.Graph.Tree, LUX.Brep.Poin;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
-     TTriPoin<_TPos_>      = class;
-
-     TTriFace<_TPos_>      = class;
-     TTriFaceModel<_TPos_> = class;
+     TTriPoin<_TPos_:record> = class;
+     TTriFace<_TPos_:record> = class;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCornIter
 
-     TCornIter<_TPos_> = record
+     TCornIter<_TPos_:record> = record
      private
        _Face :TTriFace<_TPos_>;
        _Corn :Byte;
@@ -55,7 +53,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriPoin<_TPos_>
 
-     TTriPoin<_TPos_> = class( TPoin<_TPos_> )
+     TTriPoin<_TPos_:record> = class( TPoin<_TPos_> )
      private
      protected
        _Face :TTriFace<_TPos_>;
@@ -78,7 +76,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFace<_TPos_>
 
-     TTriFace<_TPos_> = class( TTreeNode<TTriFace<_TPos_>> )
+     TTriFace<_TPos_:record> = class( TTreeLeaf<TTreeNode> )
      private
      protected
        _Poin :array [ 1..3 ] of TTriPoin<_TPos_>;
@@ -110,15 +108,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel
 
-     TTriFaceModel<_TPos_> = class( TTreeNode<TTriFace<_TPos_>> )
+     TTriFaceModel<_TPos_ :record;
+                   _TPoin_:TPoin<_TPos_>> = class( TTreeNode<TTriFace<_TPos_>> )
      private
      protected
-       _PoinModel :TPoinModel<TTriPoin<_TPos_>>;
+       _PoinModel :TPoinModel<_TPos_,_TPoin_>;
      public
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
-       property PoinModel :TPoinModel<TTriPoin<_TPos_>> read _PoinModel;
+       property PoinModel :TPoinModel<_TPos_,_TPoin_> read _PoinModel;
        ///// メソッド
        procedure DeleteChilds; override;
        function CheckEdges :Integer;
@@ -534,14 +533,14 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TTriFaceModel<_TPos_>.Create;
+constructor TTriFaceModel<_TPos_,_TPoin_>.Create;
 begin
      inherited;
 
-     _PoinModel := TPoinModel<TTriPoin<_TPos_>>.Create;
+     _PoinModel := TPoinModel<_TPos_,_TPoin_>.Create;
 end;
 
-destructor TTriFaceModel<_TPos_>.Destroy;
+destructor TTriFaceModel<_TPos_,_TPoin_>.Destroy;
 begin
      _PoinModel.Free;
 
@@ -550,7 +549,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TTriFaceModel<_TPos_>.DeleteChilds;
+procedure TTriFaceModel<_TPos_,_TPoin_>.DeleteChilds;
 begin
      inherited;
 
@@ -559,7 +558,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TTriFaceModel<_TPos_>.CheckEdges :Integer;
+function TTriFaceModel<_TPos_,_TPoin_>.CheckEdges :Integer;
 var
    I, C0, C1 :Integer;
    F0, F1 :TTriFace<_TPos_>;
@@ -587,7 +586,7 @@ begin
      end;
 end;
 
-function TTriFaceModel<_TPos_>.CheckFaceLings :Integer;
+function TTriFaceModel<_TPos_,_TPoin_>.CheckFaceLings :Integer;
 var
    V :TTriPoin<_TPos_>;
    F0, F, F1 :TTriFace<_TPos_>;
@@ -597,7 +596,7 @@ begin
 
      for I := 0 to PoinModel.ChildsN-1 do
      begin
-          V := PoinModel.Childs[ I ];
+          V := TTriPoin<_TPos_>( PoinModel.Childs[ I ] );
 
           F0 :=      V.Face;
           C0 := _Inc_[ V.Corn ];

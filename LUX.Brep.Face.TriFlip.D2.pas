@@ -2,14 +2,13 @@
 
 interface //#################################################################### ■
 
-uses LUX, LUX.D2, LUX.Geometry.D2, LUX.Brep.Face.TriFlip;
+uses System.RegularExpressions,
+     LUX, LUX.D2, LUX.Geometry.D2, LUX.Brep.Face.TriFlip;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
-     TTriPoin2D      = class;
-
-     TTriFace2D      = class;
-     TTriFaceModel2D = class;
+     TTriPoin2D = class;
+     TTriFace2D = class;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -33,17 +32,25 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        ///// アクセス
        function GetEdge( const I_:Byte ) :TSingle2D;
+       function GetNorv( const I_:Byte ) :TSingle2D;
        function GetCircumCircle :TSingleCircle;
+       function GetBarycenter :TSingle2D;
      public
        ///// プロパティ
        property Edge[ const I_:Byte ] :TSingle2D     read GetEdge        ;
+       property Norv[ const I_:Byte ] :TSingle2D     read GetNorv        ;
        property CircumCircle          :TSingleCircle read GetCircumCircle;
+       property Barycenter            :TSingle2D     read GetBarycenter  ;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel2D
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel2D<_TPoin_>
 
-     TTriFaceModel2D = class( TTriFaceModel<TSingle2D> )
+     TTriFaceModel2D<_TPoin_:TTriPoin2D> = class( TTriFaceModel<TSingle2D,_TPoin_> )
      private
+       ///// メソッド
+       function GetVec( const G_:TGroupCollection ) :TSingle2D;
+       function GetPoin( const M_:TMatch; const Ts_:TArray<TSingle2D> ) :TTriPoin2D;
+       procedure AddFace( const P1_,P2_,P3_:TTriPoin2D );
      protected
      public
        ///// メソッド
@@ -59,7 +66,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 implementation //############################################################### ■
 
-uses System.Classes, System.SysUtils, System.RegularExpressions;
+uses System.Classes, System.SysUtils;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -86,16 +93,58 @@ begin
      Result := Poin[ _Inc_[ I_ ] ].Pos.VectorTo( Poin[ _Dec_[ I_ ] ].Pos );
 end;
 
+function TTriFace2D.GetNorv( const I_:Byte ) :TSingle2D;
+begin
+     Result := GetEdge( I_ ).RotR90.Unitor;
+end;
+
 function TTriFace2D.GetCircumCircle :TSingleCircle;
 begin
      Result := TSingleCircle.Create( Poin[ 1 ].Pos, Poin[ 2 ].Pos, Poin[ 3 ].Pos );
 end;
 
+function TTriFace2D.GetBarycenter :TSingle2D;
+begin
+     Result := Ave( Poin[ 1 ].Pos, Poin[ 2 ].Pos, Poin[ 3 ].Pos );
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel2D
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel2D<_TPoin_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+function TTriFaceModel2D<_TPoin_>.GetVec( const G_:TGroupCollection ) :TSingle2D;
+begin
+     with Result do
+     begin
+          X := G_.Item[ 1 ].Value.ToSingle;
+          Y := G_.Item[ 2 ].Value.ToSingle;
+     end;
+end;
+
+function TTriFaceModel2D<_TPoin_>.GetPoin( const M_:TMatch; const Ts_:TArray<TSingle2D> ) :TTriPoin2D;
+var
+   N :Integer;
+begin
+     if M_.Success and TryStrToInt( M_.Groups[ 1 ].Value, N ) then
+     begin
+          Result := TTriPoin2D( PoinModel.Childs[ N-1 ] );
+
+          if TryStrToInt( M_.Groups[ 2 ].Value, N ) then Result._Tex := Ts_[ N-1 ];
+     end
+     else Result := nil;
+end;
+
+procedure TTriFaceModel2D<_TPoin_>.AddFace( const P1_,P2_,P3_:TTriPoin2D );
+begin
+     with TTriFace2D( TTriFace2D.Create( Self ) ) do
+     begin
+          Poin[ 1 ] := P1_;
+          Poin[ 2 ] := P2_;
+          Poin[ 3 ] := P3_;
+     end;
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
@@ -103,7 +152,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TTriFaceModel2D.JoinEdges;
+procedure TTriFaceModel2D<_TPoin_>.JoinEdges;
 var
    I :Integer;
 begin
@@ -113,43 +162,9 @@ begin
      end
 end;
 
-procedure TTriFaceModel2D.LoadFromFile( const FileName_:String );
+procedure TTriFaceModel2D<_TPoin_>.LoadFromFile( const FileName_:String );
 var
    Ts :TArray<TSingle2D>;
-//･･････････････････････････････････････････････････････････････
-     function GetVec( const G_:TGroupCollection ) :TSingle2D;
-     begin
-          with Result do
-          begin
-               X := G_.Item[ 1 ].Value.ToSingle;
-               Y := G_.Item[ 2 ].Value.ToSingle;
-          end;
-     end;
-     //･････････････････････････････････････････････････････････
-     function GetPoin( const M_:TMatch ) :TTriPoin2D;
-     var
-        N :Integer;
-     begin
-          if M_.Success and TryStrToInt( M_.Groups[ 1 ].Value, N ) then
-          begin
-               Result := TTriPoin2D( PoinModel.Childs[ N-1 ] );
-
-               if TryStrToInt( M_.Groups[ 2 ].Value, N ) then Result._Tex := Ts[ N-1 ];
-          end
-          else Result := nil;
-     end;
-     //･････････････････････････････････････････････････････････
-     procedure AddFace( const P1_,P2_,P3_:TTriPoin2D );
-     begin
-          with TTriFace2D( TTriFace2D.Create( Self ) ) do
-          begin
-               Poin[ 1 ] := P1_;
-               Poin[ 2 ] := P2_;
-               Poin[ 3 ] := P3_;
-          end;
-     end;
-//･･････････････････････････････････････････････････････････････
-var
    RV, RT, RF, RI :TRegEx;
    S :String;
    Ms :TMatchCollection;
@@ -196,15 +211,15 @@ begin
                     begin
                          Ms := RI.Matches( Groups[ 1 ].Value );
 
-                         P1 := GetPoin( Ms[ 0 ] );
-                         P2 := GetPoin( Ms[ 1 ] );
-                         P3 := GetPoin( Ms[ 2 ] );
+                         P1 := GetPoin( Ms[ 0 ], Ts );
+                         P2 := GetPoin( Ms[ 1 ], Ts );
+                         P3 := GetPoin( Ms[ 2 ], Ts );
 
                          AddFace( P1, P2, P3 );
 
                          for I := 3 to Ms.Count-1 do
                          begin
-                              P2 := P3;  P3 := GetPoin( Ms[ I ] );
+                              P2 := P3;  P3 := GetPoin( Ms[ I ], Ts );
 
                               AddFace( P1, P2, P3 );
                          end;
