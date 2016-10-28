@@ -6,12 +6,12 @@ uses LUX, LUX.Graph;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
-     TTreeItem                          = class;
-     TTreeNode                          = class;
-     TTreeNode<_TParen_,_TChild_:class> = class;
-     TTreeNode<_TNode_:class>           = class;
-     TTreeRoot<_TChild_:class>          = class;
-     TTreeLeaf<_TParen_:class>          = class;
+     TTreeItem                              = class;
+     TTreeNode                              = class;
+   //TTreeNode<_TParen_,_TChild_:TTreeNode> = class;
+   //TTreeNode<_TNode_:TTreeNode>           = class;
+   //TTreeRoot<_TChild_:TTreeNode>          = class;
+   //TTreeLeaf<_TParen_:TTreeNode>          = class;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -93,7 +93,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTreeNode<_TParen_,_TChild_>
 
-     TTreeNode<_TParen_,_TChild_:class> = class( TTreeNode )
+     TTreeNode<_TParen_,_TChild_:TTreeNode> = class( TTreeNode )
      private
      protected
        ///// アクセス
@@ -113,7 +113,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTreeNode<_TNode_>
 
-     TTreeNode<_TNode_:class> = class( TTreeNode<_TNode_,_TNode_> )
+     TTreeNode<_TNode_:TTreeNode> = class( TTreeNode<_TNode_,_TNode_> )
      private
      protected
      public
@@ -121,7 +121,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTreeRoot<_TChild_>
 
-     TTreeRoot<_TChild_:class> = class( TTreeNode<_TChild_> )
+     TTreeRoot<_TChild_:TTreeNode> = class( TTreeNode<_TChild_> )
      private
      protected
        ///// プロパティ
@@ -135,7 +135,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTreeLeaf<_TParen_>
 
-     TTreeLeaf<_TParen_:class> = class( TTreeNode<_TParen_> )
+     TTreeLeaf<_TParen_:TTreeNode> = class( TTreeNode<_TParen_> )
      private
      protected
        ///// プロパティ
