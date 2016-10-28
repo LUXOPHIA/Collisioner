@@ -322,7 +322,6 @@ begin
           with _SwelModel do
           begin
                MakeMesh( _SwelCurve );  //メッシュを生成
-             //PoissonSubDiv;           //一様細分割
                FairMesh;                //不要な格子点と三角面を削除
           end;
 

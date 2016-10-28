@@ -38,8 +38,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const Face_:TSwelFace );
        destructor Destroy; override;
        ///// プロパティ
-       property Face :TSwelFace read   _Face write _Face;  //帰属する三角面
-       property Tex  :TSingle2D read   _Tex  write _Tex ;  //テクスチャ座標
+       property Face :TSwelFace read _Face write _Face;  //帰属する三角面
+       property Tex  :TSingle2D read _Tex  write _Tex ;  //テクスチャ座標
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelFace  //三角面のクラス
