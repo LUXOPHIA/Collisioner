@@ -1,103 +1,29 @@
-unit LUX.Brep.Face.TriFlip.D2.Delaunay;
+Ôªøunit LUX.Brep.Face.TriFlip.D2.Delaunay;
 
-interface //######################################################################################## Å°
+interface //#################################################################### ‚ñ†
 
 uses System.Generics.Collections,
-     LUX, LUX.D2, LUX.Geometry.D2;
+     LUX, LUX.D2, LUX.Geometry.D2, LUX.Brep.Face.TriFlip.D2;
 
-type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$Åyå^Åz
+type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„ÄêÂûã„Äë
 
-     TPoin = class;
-     TFace = class;
+     TDelaPoin2D = class;
+     TDelaFace2D = class;
 
-     //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉåÉRÅ[ÉhÅz
+     //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„É¨„Ç≥„Éº„Éâ„Äë
 
-     //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉNÉâÉXÅz
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TFaceJoint
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TPoin
-
-     TPoin = class
+     TFaceJoint = record
      private
-     protected
-       _Position :TDouble2D;
-       ///// ÉAÉNÉZÉX
      public
-       constructor Create( const Position_:TDouble2D );
-       ///// ÉvÉçÉpÉeÉB
-       property Position :TDouble2D read _Position;
+       FaceL :TDelaFace2D;
+       FaceR :TDelaFace2D;
+       VertL :Byte;
+       VertR :Byte;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TFace
-
-     TFace = class
-     private
-     protected
-       _Poin   :array [ 1..3 ] of TPoin;
-       _Face   :array [ 1..3 ] of TFace;
-       _Corn   :array [ 1..3 ] of Byte;
-       _Open   :Byte;
-       _Circle :TDoubleCircle;
-       ///// ÉAÉNÉZÉX
-       function GetPoin( const I_:Byte ) :TPoin;
-       procedure SetPoin( const I_:Byte; const Poin_:TPoin );
-       function GetFace( const I_:Byte ) :TFace;
-       procedure SetFace( const I_:Byte; const Face_:TFace );
-       function GetCorn( const I_:Byte ) :Byte;
-       procedure SetCorn( const I_,Corn_:Byte );
-     public
-       constructor Create( const Poin1_,Poin2_,Poin3_:TPoin; const Open_:Byte );
-       ///// ÉvÉçÉpÉeÉB
-       property Poin[ const I_:Byte ] :TPoin         read GetPoin write SetPoin;
-       property Face[ const I_:Byte ] :TFace         read GetFace write SetFace;
-       property Corn[ const I_:Byte ] :Byte          read GetCorn write SetCorn;
-       property Open                  :Byte          read _Open   write _Open;
-       property Circle                :TDoubleCircle read _Circle;
-       /////
-       function IsHitCircle( const Pos_:TDouble2D ) :Boolean;
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDelaunay
-
-     TDelaunay = class
-     private
-       _P1 :TPoin;
-       _P2 :TPoin;
-       /////
-       procedure InitFace;
-     protected
-       _Poins :TObjectList<TPoin>;
-       _Faces :TObjectList<TFace>;
-       ///// ÉÅÉ\ÉbÉh
-       function NewPoin( const Pos_:TDouble2D ) :TPoin;
-       function NewFace( const Poin1_,Poin2_,Poin3_:TPoin; const Open_:Byte ) :TFace;
-     public
-       constructor Create;
-       destructor Destroy; override;
-       ///// ÉvÉçÉpÉeÉB
-       property Poins :TObjectList<TPoin> read _Poins;
-       property Faces :TObjectList<TFace> read _Faces;
-       ///// ÉÅÉ\ÉbÉh
-       function HitCircleFace( const Pos_:TDouble2D ) :TFace;
-       procedure AddPoin3( const Poin_:TPoin; const Face_:TFace ); overload;
-       function AddPoin3( const Pos_:TDouble2D; const Face_:TFace ) :TPoin; overload;
-       procedure AddPoin3( const Poin_:TPoin ); overload;
-       function AddPoin3( const Pos_:TDouble2D ) :TPoin; overload;
-       procedure AddPoin( const Poin_:TPoin ); overload;
-       function AddPoin( const Pos_:TDouble2D ) :TPoin; overload;
-       procedure Clear;
-     end;
-
-//const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyíËêîÅz
-
-//var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyïœêîÅz
-
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉãÅ[É`ÉìÅz
-
-implementation //################################################################################### Å°
-
-type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉåÉRÅ[ÉhÅz
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TVertLR
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TVertLR
 
      TVertLR = record
      private
@@ -106,18 +32,65 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        R :Byte;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TFaceJoint
+     //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„ÇØ„É©„Çπ„Äë
 
-     TFaceJoint = record
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDelaPoin2D
+
+     TDelaPoin2D = class( TTriPoin2D )
      private
+     protected
      public
-       FaceL :TFace;
-       FaceR :TFace;
-       VertL :Byte;
-       VertR :Byte;
      end;
 
-const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyíËêîÅz
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDelaFace2D
+
+     TDelaFace2D = class( TTriFace2D )
+     private
+     protected
+       _Open :Byte;
+       ///// „Ç¢„ÇØ„Çª„Çπ
+       function GetPoin( const I_:Byte ) :TDelaPoin2D; reintroduce; virtual;
+       procedure SetPoin( const I_:Byte; const Poin_:TDelaPoin2D ); reintroduce; virtual;
+       function GetFace( const I_:Byte ) :TDelaFace2D; reintroduce; virtual;
+       procedure SetFace( const I_:Byte; const Face_:TDelaFace2D ); reintroduce; virtual;
+       function GetCircle :TSingleCircle; virtual;
+     public
+       ///// „Éó„É≠„Éë„ÉÜ„Ç£
+       property Poin[ const I_:Byte ] :TDelaPoin2D   read GetPoin   write SetPoin;
+       property Face[ const I_:Byte ] :TDelaFace2D   read GetFace   write SetFace;
+       property Open                  :Byte          read   _Open   write   _Open;
+       property Circle                :TSingleCircle read GetCircle              ;
+       ///// „É°„ÇΩ„ÉÉ„Éâ
+       function IsHitCircle( const Pos_:TSingle2D ) :Boolean;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDelaunay2D<_TPoin_,_TFace_>
+
+     TDelaunay2D<_TPoin_:TDelaPoin2D,constructor;
+                 _TFace_:TDelaFace2D,constructor> = class( TTriFaceModel2D<_TPoin_> )
+     private
+       ///// „É°„ÇΩ„ÉÉ„Éâ
+       procedure InitFace;
+       function FaceTree( const Poin_:_TPoin_; const Face_:_TFace_; const Vert_:Byte ) :TFaceJoint;
+       procedure Connect( const J_,JL_,JR_:TFaceJoint );
+     protected
+       ///// „É°„ÇΩ„ÉÉ„Éâ
+       function NewPoin( const Pos_:TSingle2D ) :_TPoin_;
+       function NewFace( const Poin1_,Poin2_,Poin3_:_TPoin_; const Open_:Byte ) :_TFace_;
+     public
+       constructor Create; override;
+       destructor Destroy; override;
+       ///// „É°„ÇΩ„ÉÉ„Éâ
+       function HitCircleFace( const Pos_:TSingle2D ) :_TFace_;
+       procedure AddPoin3( const Poin_:_TPoin_; const Face_:_TFace_ ); overload;
+       function AddPoin3( const Pos_:TSingle2D; const Face_:_TFace_ ) :_TPoin_; overload;
+       procedure AddPoin3( const Poin_:_TPoin_ ); overload;
+       function AddPoin3( const Pos_:TSingle2D ) :_TPoin_; overload;
+       procedure AddPoin( const Poin_:_TPoin_ ); overload;
+       function AddPoin( const Pos_:TSingle2D ) :_TPoin_; overload;
+     end;
+
+const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„ÄêÂÆöÊï∞„Äë
 
       VertTable :array [ 1..3 ] of TVertLR
         = ( ( L:2; R:3 ), ( L:3; R:1 ), ( L:1; R:2 ) );
@@ -127,340 +100,305 @@ const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
             ( ( 0, 0, 1, 3 ), ( 0, 3, 0, 1 ), ( 0, 1, 3, 0 ) ),
             ( ( 0, 0, 2, 1 ), ( 0, 1, 0, 2 ), ( 0, 2, 1, 0 ) ) );
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉåÉRÅ[ÉhÅz
+//var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„ÄêÂ§âÊï∞„Äë
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TVertLR
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„É´„Éº„ÉÅ„É≥„Äë
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+implementation //############################################################### ‚ñ†
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„É¨„Ç≥„Éº„Éâ„Äë
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TFaceJoint
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TVertLR
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉNÉâÉXÅz
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TFaceJoint
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TPoin
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„ÇØ„É©„Çπ„Äë
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDelaPoin2D
 
-constructor TPoin.Create( const Position_:TDouble2D );
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDelaFace2D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// „Ç¢„ÇØ„Çª„Çπ
+
+function TDelaFace2D.GetPoin( const I_:Byte ) :TDelaPoin2D;
 begin
-     inherited Create;
-
-     _Position := Position_;
+     Result := TDelaPoin2D( inherited Poin[ I_ ] );
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TFace
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-/////////////////////////////////////////////////////////////////////////////////////////// ÉAÉNÉZÉX
-
-function TFace.GetPoin( const I_:Byte ) :TPoin;
+procedure TDelaFace2D.SetPoin( const I_:Byte; const Poin_:TDelaPoin2D );
 begin
-     Result := _Poin[ I_ ];
+     inherited Poin[ I_ ] := Poin_;
 end;
 
-procedure TFace.SetPoin( const I_:Byte; const Poin_:TPoin );
+function TDelaFace2D.GetFace( const I_:Byte ) :TDelaFace2D;
 begin
-     _Poin[ I_ ] := Poin_;
+     Result := TDelaFace2D( inherited Face[ I_ ] );
 end;
 
-function TFace.GetFace( const I_:Byte ) :TFace;
+procedure TDelaFace2D.SetFace( const I_:Byte; const Face_:TDelaFace2D );
 begin
-     Result := _Face[ I_ ];
+     inherited Face[ I_ ] := Face_;
 end;
 
-procedure TFace.SetFace( const I_:Byte; const Face_:TFace );
-begin
-     _Face[ I_ ] := Face_;
-end;
-
-function TFace.GetCorn( const I_:Byte ) :Byte;
-begin
-     Result := _Corn[ I_ ];
-end;
-
-procedure TFace.SetCorn( const I_,Corn_:Byte );
-begin
-     _Corn[ I_ ] := Corn_;
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TFace.Create( const Poin1_,Poin2_,Poin3_:TPoin; const Open_:Byte );
-//----------------------------------------------------------------------------
-     function EdgeCircle( const P1_,P2_:TPoin ) :TDoubleCircle;
+function TDelaFace2D.GetCircle :TSingleCircle;
+//ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•
+     function EdgeCircle( const P1_,P2_:TDelaPoin2D ) :TSingleCircle;
      begin
           with Result do
           begin
-               Center := LineNormal( P1_.Position, P2_.Position ).Unitor;
-               Radius := ( DotProduct( Center, P1_.Position ) + DotProduct( Center, P2_.Position ) ) / 2;
+               Center := LineNormal( P1_.Pos, P2_.Pos ).Unitor;
+               Radius := ( DotProduct( Center, P1_.Pos ) + DotProduct( Center, P2_.Pos ) ) / 2;
           end;
      end;
-//----------------------------------------------------------------------------
+//ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•ÔΩ•
 begin
-     inherited Create;
-
-     Poin[ 1 ] := Poin1_;
-     Poin[ 2 ] := Poin2_;
-     Poin[ 3 ] := Poin3_;
-
-     Open := Open_;
-
-     case Open_ of
-       0: _Circle := TDoubleCircle.Create( Poin1_.Position, Poin2_.Position, Poin3_.Position );
-       1: _Circle := EdgeCircle( Poin2_, Poin3_ );
-       2: _Circle := EdgeCircle( Poin3_, Poin1_ );
-       3: _Circle := EdgeCircle( Poin1_, Poin2_ );
+     case _Open of
+       0: Result := TSingleCircle.Create( Poin[1].Pos, Poin[2].Pos, Poin[3].Pos );
+       1: Result := EdgeCircle( Poin[2], Poin[3] );
+       2: Result := EdgeCircle( Poin[3], Poin[1] );
+       3: Result := EdgeCircle( Poin[1], Poin[2] );
      end;
 end;
 
-/////////////////////////////////////////////////////////////////////////////////////////// ÉÅÉ\ÉbÉh
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-function TFace.IsHitCircle( const Pos_:TDouble2D ) :Boolean;
+/////////////////////////////////////////////////////////////////////// „É°„ÇΩ„ÉÉ„Éâ
+
+function TDelaFace2D.IsHitCircle( const Pos_:TSingle2D ) :Boolean;
 begin
-     with _Circle do
+     with Circle do
      begin
           if Open = 0 then Result := ( Distance  ( Pos_, Center ) < Radius )
                       else Result := ( DotProduct( Pos_, Center ) < Radius );
      end;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDelaunay
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDelaunay2D<_TPoin_,_TFace_>
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
-procedure TDelaunay.InitFace;
+procedure TDelaunay2D<_TPoin_,_TFace_>.InitFace;
 var
-   C1, C2 :TFace;
+   P1, P2 :_TPoin_;
+   C1, C2 :_TFace_;
 begin
-     C1 := NewFace( nil, _P1, _P2, 1 );
-     C2 := NewFace( nil, _P2, _P1, 1 );
+     P1 := _TPoin_( PoinModel.Childs[ 0 ] );
+     P2 := _TPoin_( PoinModel.Childs[ 1 ] );
 
-     with C1 do
-     begin
-          Face[ 1 ] := C2;  Corn[ 1 ] := 1;
-          Face[ 2 ] := C2;  Corn[ 2 ] := 3;
-          Face[ 3 ] := C2;  Corn[ 3 ] := 2;
-     end;
+     C1 := NewFace( nil, P1, P2, 1 );
+     C2 := NewFace( nil, P2, P1, 1 );
 
-     with C2 do
-     begin
-          Face[ 1 ] := C1;  Corn[ 1 ] := 1;
-          Face[ 2 ] := C1;  Corn[ 2 ] := 3;
-          Face[ 3 ] := C1;  Corn[ 3 ] := 2;
-     end;
+     C1.Face[ 1 ] := C2;  C1.Corn[ 1 ] := 1;
+     C1.Face[ 2 ] := C2;  C1.Corn[ 2 ] := 3;
+     C1.Face[ 3 ] := C2;  C1.Corn[ 3 ] := 2;
+
+     C2.Face[ 1 ] := C1;  C2.Corn[ 1 ] := 1;
+     C2.Face[ 2 ] := C1;  C2.Corn[ 2 ] := 3;
+     C2.Face[ 3 ] := C1;  C2.Corn[ 3 ] := 2;
 end;
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+//------------------------------------------------------------------------------
 
-/////////////////////////////////////////////////////////////////////////////////////////// ÉAÉNÉZÉX
-
-/////////////////////////////////////////////////////////////////////////////////////////// ÉÅÉ\ÉbÉh
-
-function TDelaunay.NewPoin( const Pos_:TDouble2D ) :TPoin;
+function TDelaunay2D<_TPoin_,_TFace_>.FaceTree( const Poin_:_TPoin_; const Face_:_TFace_; const Vert_:Byte ) :TFaceJoint;
+var
+   JL, JR :TFaceJoint;
+   C :_TFace_;
 begin
-     Result := TPoin.Create( Pos_ );
-
-     _Poins.Add( Result );
-end;
-
-function TDelaunay.NewFace( const Poin1_,Poin2_,Poin3_:TPoin; const Open_:Byte ) :TFace;
-begin
-     Result := TFace.Create( Poin1_, Poin2_, Poin3_, Open_ );
-
-     _Faces.Add( Result );
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TDelaunay.Create;
-begin
-     inherited;
-
-     _Poins := TObjectList<TPoin>.Create;
-     _Faces := TObjectList<TFace>.Create;
-end;
-
-destructor TDelaunay.Destroy;
-begin
-     _Poins.Free;
-     _Faces.Free;
-
-     inherited;
-end;
-
-/////////////////////////////////////////////////////////////////////////////////////////// ÉÅÉ\ÉbÉh
-
-function TDelaunay.HitCircleFace( const Pos_:TDouble2D ) :TFace;
-begin
-     with _Faces do
-     begin
-          for Result in _Faces do
+          if Face_.IsHitCircle( Poin_.Pos ) then
           begin
-               if Result.IsHitCircle( Pos_ ) then Exit;
+               with VertTable[ Vert_ ] do
+               begin
+                    JL := FaceTree( Poin_, Face_.Face[ R ], Face_.Corn[ R ] );
+                    JR := FaceTree( Poin_, Face_.Face[ L ], Face_.Corn[ L ] );
+               end;
+
+               with JL do
+               begin
+                    with FaceR do
+                    begin
+                         Face[ VertR ] := JR.FaceL;
+                         Corn[ VertR ] := JR.VertL;
+                    end
+               end;
+               with JR do
+               begin
+                    with FaceL do
+                    begin
+                         Face[ VertL ] := JL.FaceR;
+                         Corn[ VertL ] := JL.VertR;
+                    end
+               end;
+
+               Face_.Free;
+
+               with Result do
+               begin
+                    FaceL := JL.FaceL;  VertL := JL.VertL;
+                    FaceR := JR.FaceR;  VertR := JR.VertR;
+               end;
+          end
+          else
+          begin
+               with VertTable[ Vert_ ] do C := NewFace( Face_.Poin[ L ], Poin_, Face_.Poin[ R ], OpenTable[ 2, Vert_, Face_.Open ] );
+
+               C.Face[ 2 ] := Face_;
+               C.Corn[ 2 ] := Vert_;
+
+               Face_.Face[ Vert_ ] := C;
+               Face_.Corn[ Vert_ ] := 2;
+
+               with Result do
+               begin
+                    FaceL := C;  VertL := 3;
+                    FaceR := C;  VertR := 1;
+               end;
           end;
+end;
+
+procedure TDelaunay2D<_TPoin_,_TFace_>.Connect( const J_,JL_,JR_:TFaceJoint );
+begin
+     with J_ do
+     begin
+          with FaceL do
+          begin
+               Face[ VertL ] := JL_.FaceR;
+               Corn[ VertL ] := JL_.VertR;
+          end;
+          with FaceR do
+          begin
+               Face[ VertR ] := JR_.FaceL;
+               Corn[ VertR ] := JR_.VertL;
+          end;
+     end;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// „É°„ÇΩ„ÉÉ„Éâ
+
+function TDelaunay2D<_TPoin_,_TFace_>.NewPoin( const Pos_:TSingle2D ) :_TPoin_;
+begin
+     Result := _TPoin_.Create;
+
+     Result.Paren := _TPoin_( _PoinModel );
+     Result.Pos   := Pos_;
+end;
+
+function TDelaunay2D<_TPoin_,_TFace_>.NewFace( const Poin1_,Poin2_,Poin3_:_TPoin_; const Open_:Byte ) :_TFace_;
+begin
+     Result := _TFace_.Create;
+
+     Result.Paren   := _TFace_( Self );
+     Result.Open    := Open_;
+     Result.Poin[1] := Poin1_;
+     Result.Poin[2] := Poin2_;
+     Result.Poin[3] := Poin3_;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TDelaunay2D<_TPoin_,_TFace_>.Create;
+begin
+     inherited;
+
+end;
+
+destructor TDelaunay2D<_TPoin_,_TFace_>.Destroy;
+begin
+
+     inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// „É°„ÇΩ„ÉÉ„Éâ
+
+function TDelaunay2D<_TPoin_,_TFace_>.HitCircleFace( const Pos_:TSingle2D ) :_TFace_;
+var
+   I :Integer;
+begin
+     for I := 0 to ChildsN-1 do
+     begin
+          Result := _TFace_( Childs[ I ] );
+
+          if Result.IsHitCircle( Pos_ ) then Exit;
      end;
 
      Result := nil;
 end;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
-procedure TDelaunay.AddPoin3( const Poin_:TPoin; const Face_:TFace );
-//---------------------------------------------------------------------------
-     function FaceTree( const Face_:TFace; const Vert_:Byte ) :TFaceJoint;
-     var
-        JL, JR :TFaceJoint;
-        C :TFace;
-     begin
-          with Face_ do
-          begin
-               if IsHitCircle( Poin_.Position ) then
-               begin
-                    with VertTable[ Vert_ ] do
-                    begin
-                         JL := FaceTree( Face[ R ], Corn[ R ] );
-                         JR := FaceTree( Face[ L ], Corn[ L ] );
-                    end;
-
-                    with JL do
-                    begin
-                         with FaceR do
-                         begin
-                              Face[ VertR ] := JR.FaceL;
-                              Corn[ VertR ] := JR.VertL;
-                         end
-                    end;
-                    with JR do
-                    begin
-                         with FaceL do
-                         begin
-                              Face[ VertL ] := JL.FaceR;
-                              Corn[ VertL ] := JL.VertR;
-                         end
-                    end;
-
-                    _Faces.Remove( Face_ );
-
-                    with Result do
-                    begin
-                         FaceL := JL.FaceL;  VertL := JL.VertL;
-                         FaceR := JR.FaceR;  VertR := JR.VertR;
-                    end;
-               end
-               else
-               begin
-                    with VertTable[ Vert_ ] do C := NewFace( Poin[ L ], Poin_, Poin[ R ], OpenTable[ 2, Vert_, Open ] );
-
-                    with C do
-                    begin
-                         Face[ 2 ] := Face_;
-                         Corn[ 2 ] := Vert_;
-                    end;
-
-                    Face[ Vert_ ] := C;
-                    Corn[ Vert_ ] := 2;
-
-                    with Result do
-                    begin
-                         FaceL := C;  VertL := 3;
-                         FaceR := C;  VertR := 1;
-                    end;
-               end;
-          end;
-     end;
-     //----------------------------------------------------------------------
-     procedure Connect( const J_,JL_,JR_:TFaceJoint );
-     begin
-          with J_ do
-          begin
-               with FaceL do
-               begin
-                    Face[ VertL ] := JL_.FaceR;
-                    Corn[ VertL ] := JL_.VertR;
-               end;
-               with FaceR do
-               begin
-                    Face[ VertR ] := JR_.FaceL;
-                    Corn[ VertR ] := JR_.VertL;
-               end;
-          end;
-     end;
-//---------------------------------------------------------------------------
+procedure TDelaunay2D<_TPoin_,_TFace_>.AddPoin3( const Poin_:_TPoin_; const Face_:_TFace_ );
 var
    J1, J2, J3 :TFaceJoint;
 begin
-     with Face_ do
-     begin
-          J1 := FaceTree( Face[ 1 ], Corn[ 1 ] );
-          J2 := FaceTree( Face[ 2 ], Corn[ 2 ] );
-          J3 := FaceTree( Face[ 3 ], Corn[ 3 ] );
+     J1 := FaceTree( Poin_, Face_.Face[ 1 ], Face_.Corn[ 1 ] );
+     J2 := FaceTree( Poin_, Face_.Face[ 2 ], Face_.Corn[ 2 ] );
+     J3 := FaceTree( Poin_, Face_.Face[ 3 ], Face_.Corn[ 3 ] );
 
-          _Faces.Remove( Face_ );
-     end;
+     Face_.Free;
 
      Connect( J1, J2, J3 );
      Connect( J2, J3, J1 );
      Connect( J3, J1, J2 );
 end;
 
-function TDelaunay.AddPoin3( const Pos_:TDouble2D; const Face_:TFace ) :TPoin;
+//------------------------------------------------------------------------------
+
+function TDelaunay2D<_TPoin_,_TFace_>.AddPoin3( const Pos_:TSingle2D; const Face_:_TFace_ ) :_TPoin_;
 begin
      Result := NewPoin( Pos_ );  AddPoin3( Result, Face_ );
 end;
 
-procedure TDelaunay.AddPoin3( const Poin_:TPoin );
+procedure TDelaunay2D<_TPoin_,_TFace_>.AddPoin3( const Poin_:_TPoin_ );
 begin
-     AddPoin3( Poin_, HitCircleFace( Poin_.Position ) );
+     AddPoin3( Poin_, HitCircleFace( Poin_.Pos ) );
 end;
 
-function TDelaunay.AddPoin3( const Pos_:TDouble2D ) :TPoin;
+function TDelaunay2D<_TPoin_,_TFace_>.AddPoin3( const Pos_:TSingle2D ) :_TPoin_;
 begin
      Result := NewPoin( Pos_ );  AddPoin3( Result );
 end;
 
-procedure TDelaunay.AddPoin( const Poin_:TPoin );
-begin
-     case _Poins.Count of
-       1: _P1 := Poin_;
-       2: begin
-               _P2 := Poin_;
+//------------------------------------------------------------------------------
 
-               InitFace;
-          end;
+procedure TDelaunay2D<_TPoin_,_TFace_>.AddPoin( const Poin_:_TPoin_ );
+begin
+     case PoinModel.ChildsN of
+       1: ;
+       2: InitFace;
      else AddPoin3( Poin_ );
      end;
 end;
 
-function TDelaunay.AddPoin( const Pos_:TDouble2D ) :TPoin;
+function TDelaunay2D<_TPoin_,_TFace_>.AddPoin( const Pos_:TSingle2D ) :_TPoin_;
 begin
      Result := NewPoin( Pos_ );  AddPoin( Result );
 end;
 
-procedure TDelaunay.Clear;
-begin
-     _Poins.Clear;
-     _Faces.Clear;
-end;
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„É´„Éº„ÉÅ„É≥„Äë
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉãÅ[É`ÉìÅz
+//############################################################################## ‚ñ°
 
-//################################################################################################## Å†
+initialization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ ÂàùÊúüÂåñ
 
-initialization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ èâä˙âª
+finalization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ ÊúÄÁµÇÂåñ
 
-finalization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ ç≈èIâª
-
-end. //############################################################################################# Å°
+end. //######################################################################### ‚ñ†
