@@ -1,37 +1,29 @@
-﻿unit LUX.Brep.Poin;
+﻿unit LUX.Brep.Wire.M2;
 
 interface //#################################################################### ■
 
-uses LUX, LUX.Graph.Tree;
+uses LUX, LUX.D2, LUX.Matrix.L2, LUX.Brep.Poin, LUX.Brep.Wire;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
-     TPoin<_TPos_:record> = class;
+     TWireM2<_TPoin_:TPoin<TSingleM2>> = class;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TPoin<_TPos_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TWireM2<_TPos_>
 
-     TPoin<_TPos_:record> = class( TTreeLeaf<TTreeNode> )
+     TWireM2<_TPoin_:TPoin<TSingleM2>> = class( TWire<TSingleM2,_TPoin_> )
      private
      protected
-       _Pos :_TPos_;
-       ///// アクセス
-       function GetPos :_TPos_; virtual;
-       procedure SetPos( const Pos_:_TPos_ ); virtual;
      public
-       constructor Create( const Pos_:_TPos_ ); overload;
-       constructor Create( const Pos_:_TPos_; const Paren_:TTreeNode ); overload;
-       ///// プロパティ
-       property Pos :_TPos_ read GetPos write SetPos;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TPoinModel<_TPos_,_TPoin_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TWireModelM2<_TPos_>
 
-     TPoinModel<_TPos_ :record;
-                _TPoin_:TPoin<_TPos_>> = class( TTreeRoot<_TPoin_> )
+     TWireModelM2<_TPoin_:TPoin<TSingleM2>;
+                  _TWire_:TWireM2<_TPoin_>> = class( TWireModel<TSingleM2,_TPoin_,_TWire_> )
      private
      protected
      public
@@ -49,7 +41,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TPoin<_TPos_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TWireM2<_TPoin_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -57,33 +49,9 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TPoin<_TPos_>.GetPos :_TPos_;
-begin
-     Result := _Pos;
-end;
-
-procedure TPoin<_TPos_>.SetPos( const Pos_:_TPos_ );
-begin
-     _Pos := Pos_;
-end;
-
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TPoin<_TPos_>.Create( const Pos_:_TPos_ );
-begin
-     inherited Create;
-
-     _Pos := Pos_;
-end;
-
-constructor TPoin<_TPos_>.Create( const Pos_:_TPos_; const Paren_:TTreeNode );
-begin
-     inherited Create( Paren_ );
-
-     _Pos := Pos_;
-end;
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TPoinModel<_TPos_,_TPoin_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TWireModelM2<_TPoin_,_TWire_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
