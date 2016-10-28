@@ -40,6 +40,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        constructor Create; override;
        destructor Destroy; override;
+       ///// プロパティ
+       property PoinModel :TPoinModel<_TPos_,_TPoin_> read _PoinModel;
+       ///// メソッド
+       procedure DeleteChilds; override;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -104,6 +108,15 @@ begin
      _PoinModel.Free;
 
      inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TWireModel<_TPos_,_TPoin_,_TWire_>.DeleteChilds;
+begin
+     inherited DeleteChilds;
+
+     PoinModel.DeleteChilds;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
