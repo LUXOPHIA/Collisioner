@@ -1,25 +1,23 @@
-unit LUX.Brep.Face.TriFlip;
+Ôªøunit LUX.Brep.Face.TriFlip;
 
-interface //#################################################################### Å°
+interface //#################################################################### ‚ñ†
 
 uses LUX, LUX.D3, LUX.Graph.Tree, LUX.Brep.Poin;
 
-type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$Åyå^Åz
+type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„ÄêÂûã„Äë
 
-     TTriPoin<_TPos_>      = class;
+     TTriPoin<_TPos_:record> = class;
+     TTriFace<_TPos_:record> = class;
 
-     TTriFace<_TPos_>      = class;
-     TTriFaceModel<_TPos_> = class;
-
-     //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉåÉRÅ[ÉhÅz
+     //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„É¨„Ç≥„Éº„Éâ„Äë
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCornIter
 
-     TCornIter<_TPos_> = record
+     TCornIter<_TPos_:record> = record
      private
        _Face :TTriFace<_TPos_>;
        _Corn :Byte;
-       ///// ÉAÉNÉZÉX
+       ///// „Ç¢„ÇØ„Çª„Çπ
        function GetFlip :TCornIter<_TPos_>;
        procedure SetFlip( Flip_:TCornIter<_TPos_> );
        function GetFacePrev :TCornIter<_TPos_>;
@@ -31,7 +29,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetVert :TTriPoin<_TPos_>;
      public
        constructor Create( Face_:TTriFace<_TPos_>; Corn_:Byte );
-       ///// ÉvÉçÉpÉeÉB
+       ///// „Éó„É≠„Éë„ÉÜ„Ç£
        property Face     :TTriFace<_TPos_>  read   _Face     write   _Face    ;
        property Corn     :Byte              read   _Corn     write   _Corn    ;
        property Flip     :TCornIter<_TPos_> read GetFlip     write SetFlip    ;
@@ -40,10 +38,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property VertPrev :TCornIter<_TPos_> read GetVertPrev write SetVertPrev;
        property VertNext :TCornIter<_TPos_> read GetVertNext write SetVertNext;
        property Vert     :TTriPoin<_TPos_>  read GetVert                      ;
-       ///// ââéZéq
+       ///// ÊºîÁÆóÂ≠ê
        class operator Equal( const A_,B_:TCornIter<_TPos_> ) :Boolean;
        class operator NotEqual( const A_,B_:TCornIter<_TPos_> ) :Boolean;
-       ///// ÉÅÉ\ÉbÉh
+       ///// „É°„ÇΩ„ÉÉ„Éâ
        procedure GoFlip;
        procedure GoFacePrev;
        procedure GoFaceNext;
@@ -51,92 +49,93 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure GoVertNext;
      end;
 
-     //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉNÉâÉXÅz
+     //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„ÇØ„É©„Çπ„Äë
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriPoin<_TPos_>
 
-     TTriPoin<_TPos_> = class( TPoin<_TPos_> )
+     TTriPoin<_TPos_:record> = class( TPoin<_TPos_> )
      private
      protected
        _Face :TTriFace<_TPos_>;
        _Corn :Byte;
-       ///// ÉAÉNÉZÉX
-       function GetFace :TTriFace<_TPos_>;
-       procedure SetFace( const Face_:TTriFace<_TPos_> );
-       function GetCorn :Byte;
-       procedure SetCorn( const Corn_:Byte );
-       function GetFaceN :Integer;
+       ///// „Ç¢„ÇØ„Çª„Çπ
+       function GetFace :TTriFace<_TPos_>; virtual;
+       procedure SetFace( const Face_:TTriFace<_TPos_> ); virtual;
+       function GetCorn :Byte; virtual;
+       procedure SetCorn( const Corn_:Byte ); virtual;
+       function GetFaceN :Integer; virtual;
      public
-       ///// ÉvÉçÉpÉeÉB
+       ///// „Éó„É≠„Éë„ÉÜ„Ç£
        property Face   :TTriFace<_TPos_> read GetFace  write SetFace;
        property Corn   :Byte             read GetCorn  write SetCorn;
        property FaceN  :Integer          read GetFaceN              ;
-       ///// ÉÅÉ\ÉbÉh
+       ///// „É°„ÇΩ„ÉÉ„Éâ
        class function JoinOK( const C1_,C2_:TCornIter<_TPos_> ) :Boolean;
        procedure JoinEdge;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFace<_TPos_>
 
-     TTriFace<_TPos_> = class( TTreeNode<TTriFace<_TPos_>> )
+     TTriFace<_TPos_:record> = class( TTreeLeaf<TTreeNode> )
      private
-       ///// ÉÅÉ\ÉbÉh
-       procedure Insert( const I_:Byte );
-       procedure Remove( const I_:Byte );
      protected
        _Poin :array [ 1..3 ] of TTriPoin<_TPos_>;
        _Face :array [ 1..3 ] of TTriFace<_TPos_>;
        _Data :Byte;
-       ///// ÉAÉNÉZÉX
-       function GetPoin( const I_:Byte ) :TTriPoin<_TPos_>;
-       procedure SetPoin( const I_:Byte; const Poin_:TTriPoin<_TPos_> );
-       function GetFace( const I_:Byte ) :TTriFace<_TPos_>;
-       procedure SetFace( const I_:Byte; const Face_:TTriFace<_TPos_> );
-       function GetCorn( const I_:Byte ) :Byte;
-       procedure SetCorn( const I_,Corn_:Byte );
-       function GetFlip :Boolean;
-       procedure SetFlip( const Flip_:Boolean );
-       function GetFlag :Boolean;
-       procedure SetFlag( const Flag_:Boolean );
+       ///// „Ç¢„ÇØ„Çª„Çπ
+       function GetPoin( const I_:Byte ) :TTriPoin<_TPos_>; virtual;
+       procedure SetPoin( const I_:Byte; const Poin_:TTriPoin<_TPos_> ); virtual;
+       function GetFace( const I_:Byte ) :TTriFace<_TPos_>; virtual;
+       procedure SetFace( const I_:Byte; const Face_:TTriFace<_TPos_> ); virtual;
+       function GetCorn( const I_:Byte ) :Byte; virtual;
+       procedure SetCorn( const I_,Corn_:Byte ); virtual;
+       function GetFlip :Boolean; virtual;
+       procedure SetFlip( const Flip_:Boolean ); virtual;
+       function GetFlag :Boolean; virtual;
+       procedure SetFlag( const Flag_:Boolean ); virtual;
      public
        constructor Create; override;
        destructor Destroy; override;
-       ///// ÉvÉçÉpÉeÉB
+       ///// „Éó„É≠„Éë„ÉÜ„Ç£
        property Poin[ const I_:Byte ] :TTriPoin<_TPos_> read GetPoin write SetPoin;
        property Face[ const I_:Byte ] :TTriFace<_TPos_> read GetFace write SetFace;
        property Corn[ const I_:Byte ] :Byte             read GetCorn write SetCorn;
        property Flip                  :Boolean          read GetFlip write SetFlip;
        property Flag                  :Boolean          read GetFlag write SetFlag;
+       ///// „É°„ÇΩ„ÉÉ„Éâ
+       procedure BasteCorn( const Corn_:Byte );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel
 
-     TTriFaceModel<_TPos_> = class( TTreeNode<TTriFace<_TPos_>> )
+     TTriFaceModel<_TPos_ :record;
+                   _TPoin_:TPoin<_TPos_>> = class( TTreeNode<TTriFace<_TPos_>> )
      private
      protected
-       _PoinModel :TPoinModel<TTriPoin<_TPos_>>;
+       _PoinModel :TPoinModel<_TPos_,_TPoin_>;
      public
        constructor Create; override;
        destructor Destroy; override;
-       ///// ÉvÉçÉpÉeÉB
-       property PoinModel :TPoinModel<TTriPoin<_TPos_>> read _PoinModel;
-       ///// ÉÅÉ\ÉbÉh
+       ///// „Éó„É≠„Éë„ÉÜ„Ç£
+       property PoinModel :TPoinModel<_TPos_,_TPoin_> read _PoinModel;
+       ///// „É°„ÇΩ„ÉÉ„Éâ
+       procedure DeleteChilds; override;
        function CheckEdges :Integer;
        function CheckFaceLings :Integer;
      end;
 
-const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyíËêîÅz
+const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„ÄêÂÆöÊï∞„Äë
 
       _Inc_ :array [ 1..3 ] of Byte = ( 2, 3, 1 );
       _Dec_ :array [ 1..3 ] of Byte = ( 3, 1, 2 );
 
-//var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyïœêîÅz
+//var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„ÄêÂ§âÊï∞„Äë
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉãÅ[É`ÉìÅz
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„É´„Éº„ÉÅ„É≥„Äë
 
-implementation //############################################################### Å°
+implementation //############################################################### ‚ñ†
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉåÉRÅ[ÉhÅz
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„É¨„Ç≥„Éº„Éâ„Äë
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCornIter<_TPos_>
 
@@ -199,7 +198,7 @@ begin
      _Corn := Corn_;
 end;
 
-///////////////////////////////////////////////////////////////////////// ââéZéq
+///////////////////////////////////////////////////////////////////////// ÊºîÁÆóÂ≠ê
 
 class operator TCornIter<_TPos_>.Equal( const A_,B_:TCornIter<_TPos_> ) :Boolean;
 begin
@@ -211,7 +210,7 @@ begin
      Result := not ( A_ = B_ );
 end;
 
-/////////////////////////////////////////////////////////////////////// ÉAÉNÉZÉX
+/////////////////////////////////////////////////////////////////////// „Ç¢„ÇØ„Çª„Çπ
 
 procedure TCornIter<_TPos_>.GoFlip;
 var
@@ -246,7 +245,7 @@ begin
      GoFacePrev;
 end;
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉNÉâÉXÅz
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„ÇØ„É©„Çπ„Äë
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriPoin<_TPos_>
 
@@ -254,7 +253,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
-/////////////////////////////////////////////////////////////////////// ÉAÉNÉZÉX
+/////////////////////////////////////////////////////////////////////// „Ç¢„ÇØ„Çª„Çπ
 
 function TTriPoin<_TPos_>.GetFace :TTriFace<_TPos_>;
 begin
@@ -303,7 +302,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-/////////////////////////////////////////////////////////////////////// ÉÅÉ\ÉbÉh
+/////////////////////////////////////////////////////////////////////// „É°„ÇΩ„ÉÉ„Éâ
 
 class function TTriPoin<_TPos_>.JoinOK( const C1_,C2_:TCornIter<_TPos_> ) :Boolean;
 begin
@@ -345,7 +344,7 @@ begin
                 T0 := P0;  T1 := P1;
                            H0 := P1;  H1 := P2;
 
-                ///// å„ï˚
+                ///// ÂæåÊñπ
 
                 S0 := H0;  S1 := H1;
                            S2 := H1;
@@ -376,7 +375,7 @@ begin
 
                 until S3 = T0;
 
-                ///// ëOï˚
+                ///// ÂâçÊñπ
 
                 S0 := H0;  S1 := H1;
                            S2 := H1;
@@ -416,40 +415,9 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
-procedure TTriFace<_TPos_>.Insert( const I_:Byte );
-var
-   V :TTriPoin<_TPos_>;
-   C0, C1, C2 :TCornIter<_TPos_>;
-begin
-     V := _Poin[ I_ ];
-
-     C1 := TCornIter<_TPos_>.Create( Self, I_ ).FaceNext;
-
-     if Assigned( V._Face ) then
-     begin
-          C0 := TCornIter<_TPos_>.Create( V._Face, V._Corn ).FaceNext;
-
-          C2 := C0.VertNext;
-
-          C0.VertNext := C1;  C1.VertNext := C2;
-     end
-     else
-     begin
-          C1.VertNext := C1;
-     end;
-
-     V._Face := Self;
-     V._Corn := I_;
-end;
-
-procedure TTriFace<_TPos_>.Remove( const I_:Byte );
-begin
-
-end;
-
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
-/////////////////////////////////////////////////////////////////////// ÉAÉNÉZÉX
+/////////////////////////////////////////////////////////////////////// „Ç¢„ÇØ„Çª„Çπ
 
 function TTriFace<_TPos_>.GetPoin( const I_:Byte ) :TTriPoin<_TPos_>;
 begin
@@ -458,11 +426,7 @@ end;
 
 procedure TTriFace<_TPos_>.SetPoin( const I_:Byte; const Poin_:TTriPoin<_TPos_> );
 begin
-     if Assigned( _Poin[ I_ ] ) then Remove( I_ );
-
-                  _Poin[ I_ ] := Poin_;
-
-     if Assigned( _Poin[ I_ ] ) then Insert( I_ );
+     _Poin[ I_ ] := Poin_;
 end;
 
 function TTriFace<_TPos_>.GetFace( const I_:Byte ) :TTriFace<_TPos_>;
@@ -529,11 +493,36 @@ end;
 
 destructor TTriFace<_TPos_>.Destroy;
 begin
-     if Assigned( _Poin[ 1 ] ) then Remove( 1 );
-     if Assigned( _Poin[ 2 ] ) then Remove( 2 );
-     if Assigned( _Poin[ 3 ] ) then Remove( 3 );
 
      inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// „É°„ÇΩ„ÉÉ„Éâ
+
+procedure TTriFace<_TPos_>.BasteCorn( const Corn_:Byte );
+var
+   V :TTriPoin<_TPos_>;
+   C0, C1, C2 :TCornIter<_TPos_>;
+begin
+     V := _Poin[ Corn_ ];
+
+     C1 := TCornIter<_TPos_>.Create( Self, Corn_ ).FaceNext;
+
+     if Assigned( V._Face ) then
+     begin
+          C0 := TCornIter<_TPos_>.Create( V._Face, V._Corn ).FaceNext;
+
+          C2 := C0.VertNext;
+
+          C0.VertNext := C1;  C1.VertNext := C2;
+     end
+     else
+     begin
+          C1.VertNext := C1;
+     end;
+
+     V._Face := Self;
+     V._Corn := Corn_;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel
@@ -544,23 +533,32 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TTriFaceModel<_TPos_>.Create;
+constructor TTriFaceModel<_TPos_,_TPoin_>.Create;
 begin
      inherited;
 
-     _PoinModel := TPoinModel<TTriPoin<_TPos_>>.Create;
+     _PoinModel := TPoinModel<_TPos_,_TPoin_>.Create;
 end;
 
-destructor TTriFaceModel<_TPos_>.Destroy;
+destructor TTriFaceModel<_TPos_,_TPoin_>.Destroy;
 begin
      _PoinModel.Free;
 
      inherited;
 end;
 
-/////////////////////////////////////////////////////////////////////// ÉÅÉ\ÉbÉh
+/////////////////////////////////////////////////////////////////////// „É°„ÇΩ„ÉÉ„Éâ
 
-function TTriFaceModel<_TPos_>.CheckEdges :Integer;
+procedure TTriFaceModel<_TPos_,_TPoin_>.DeleteChilds;
+begin
+     inherited;
+
+     _PoinModel.DeleteChilds;
+end;
+
+//------------------------------------------------------------------------------
+
+function TTriFaceModel<_TPos_,_TPoin_>.CheckEdges :Integer;
 var
    I, C0, C1 :Integer;
    F0, F1 :TTriFace<_TPos_>;
@@ -588,7 +586,7 @@ begin
      end;
 end;
 
-function TTriFaceModel<_TPos_>.CheckFaceLings :Integer;
+function TTriFaceModel<_TPos_,_TPoin_>.CheckFaceLings :Integer;
 var
    V :TTriPoin<_TPos_>;
    F0, F, F1 :TTriFace<_TPos_>;
@@ -598,7 +596,7 @@ begin
 
      for I := 0 to PoinModel.ChildsN-1 do
      begin
-          V := PoinModel.Childs[ I ];
+          V := TTriPoin<_TPos_>( PoinModel.Childs[ I ] );
 
           F0 :=      V.Face;
           C0 := _Inc_[ V.Corn ];
@@ -618,12 +616,12 @@ begin
      end
 end;
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ÅyÉãÅ[É`ÉìÅz
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$„Äê„É´„Éº„ÉÅ„É≥„Äë
 
-//############################################################################## Å†
+//############################################################################## ‚ñ°
 
-initialization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ èâä˙âª
+initialization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ ÂàùÊúüÂåñ
 
-finalization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ ç≈èIâª
+finalization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ ÊúÄÁµÇÂåñ
 
-end. //######################################################################### Å°
+end. //######################################################################### ‚ñ†
