@@ -269,13 +269,20 @@ end;
 procedure TTriGenModel<_TPoin_,_TFace_>.FairMesh;
 var
    I :Integer;
-   F :_TFace_;
 begin
      for I := ChildsN-1 downto 0 do
      begin
-          F := _TFace_( Childs[ I ] );
+          with TTriGenFace( Childs[ I ] ) do
+          begin
+               if not Inside then
+               begin
+                    if Assigned( Face[ 1 ] ) then Face[ 1 ].Face[ Corn[ 1 ] ] := nil;
+                    if Assigned( Face[ 2 ] ) then Face[ 2 ].Face[ Corn[ 2 ] ] := nil;
+                    if Assigned( Face[ 3 ] ) then Face[ 3 ].Face[ Corn[ 3 ] ] := nil;
 
-          if not F.Inside then F.Free;
+                    Free;
+               end;
+          end;
      end;
 
      for I := 3 downto 0 do PoinModel.Childs[ I ].Free;
