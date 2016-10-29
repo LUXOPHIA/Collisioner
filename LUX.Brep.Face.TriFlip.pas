@@ -108,8 +108,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel
 
-     TTriFaceModel<_TPos_ :record;
-                   _TPoin_:TPoin<_TPos_>> = class( TTreeNode<TTriFace<_TPos_>> )
+     TTriFaceModel<_TPos_ :record          ;
+                   _TPoin_:TTriPoin<_TPos_>;
+                   _TFace_:TTriFace<_TPos_>> = class( TTreeRoot<_TFace_> )
      private
      protected
        _PoinModel :TPoinModel<_TPos_,_TPoin_>;
@@ -533,14 +534,14 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TTriFaceModel<_TPos_,_TPoin_>.Create;
+constructor TTriFaceModel<_TPos_,_TPoin_,_TFace_>.Create;
 begin
      inherited;
 
      _PoinModel := TPoinModel<_TPos_,_TPoin_>.Create;
 end;
 
-destructor TTriFaceModel<_TPos_,_TPoin_>.Destroy;
+destructor TTriFaceModel<_TPos_,_TPoin_,_TFace_>.Destroy;
 begin
      _PoinModel.Free;
 
@@ -549,7 +550,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TTriFaceModel<_TPos_,_TPoin_>.DeleteChilds;
+procedure TTriFaceModel<_TPos_,_TPoin_,_TFace_>.DeleteChilds;
 begin
      inherited;
 
@@ -558,7 +559,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TTriFaceModel<_TPos_,_TPoin_>.CheckEdges :Integer;
+function TTriFaceModel<_TPos_,_TPoin_,_TFace_>.CheckEdges :Integer;
 var
    I, C0, C1 :Integer;
    F0, F1 :TTriFace<_TPos_>;
@@ -586,7 +587,7 @@ begin
      end;
 end;
 
-function TTriFaceModel<_TPos_,_TPoin_>.CheckFaceLings :Integer;
+function TTriFaceModel<_TPos_,_TPoin_,_TFace_>.CheckFaceLings :Integer;
 var
    V :TTriPoin<_TPos_>;
    F0, F, F1 :TTriFace<_TPos_>;
