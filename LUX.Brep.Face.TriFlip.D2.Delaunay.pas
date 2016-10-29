@@ -49,25 +49,25 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _Open :Byte;
        ///// アクセス
-       function GetPoin( const I_:Byte ) :TDelaPoin2D;
-       procedure SetPoin( const I_:Byte; const Poin_:TDelaPoin2D );
-       function GetFace( const I_:Byte ) :TDelaFace2D;
-       procedure SetFace( const I_:Byte; const Face_:TDelaFace2D );
-       function GetCircle :TSingleCircle;
+       function GetPoin( const I_:Byte ) :TDelaPoin2D; reintroduce; virtual;
+       procedure SetPoin( const I_:Byte; const Poin_:TDelaPoin2D ); reintroduce; virtual;
+       function GetFace( const I_:Byte ) :TDelaFace2D; reintroduce; virtual;
+       procedure SetFace( const I_:Byte; const Face_:TDelaFace2D ); reintroduce; virtual;
+       function GetCircle :TSingleCircle; virtual;
      public
        ///// プロパティ
        property Poin[ const I_:Byte ] :TDelaPoin2D   read GetPoin   write SetPoin;
        property Face[ const I_:Byte ] :TDelaFace2D   read GetFace   write SetFace;
        property Open                  :Byte          read   _Open   write   _Open;
        property Circle                :TSingleCircle read GetCircle              ;
-       /////
+       ///// メソッド
        function IsHitCircle( const Pos_:TSingle2D ) :Boolean;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDelaunay2D<_TPoin_,_TFace_>
 
      TDelaunay2D<_TPoin_:TDelaPoin2D,constructor;
-                 _TFace_:TDelaFace2D,constructor> = class( TTriFaceModel2D )
+                 _TFace_:TDelaFace2D,constructor> = class( TTriFaceModel2D<_TPoin_> )
      private
        ///// メソッド
        procedure InitFace;
@@ -298,19 +298,19 @@ function TDelaunay2D<_TPoin_,_TFace_>.NewPoin( const Pos_:TSingle2D ) :_TPoin_;
 begin
      Result := _TPoin_.Create;
 
-     Result.Pos   :=  Pos_     ;
      Result.Paren := _TPoin_( _PoinModel );
+     Result.Pos   := Pos_;
 end;
 
 function TDelaunay2D<_TPoin_,_TFace_>.NewFace( const Poin1_,Poin2_,Poin3_:_TPoin_; const Open_:Byte ) :_TFace_;
 begin
      Result := _TFace_.Create;
 
+     Result.Paren   := _TFace_( Self );
+     Result.Open    := Open_;
      Result.Poin[1] := Poin1_;
      Result.Poin[2] := Poin2_;
      Result.Poin[3] := Poin3_;
-     Result.Open    := Open_;
-     Result.Paren   := _TFace_( Self );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
