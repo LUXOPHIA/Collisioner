@@ -1,10 +1,12 @@
-unit LUX.Matrix.L2;
+ï»¿unit LUX.Matrix.L2;
 
-interface //#################################################################### ¡
+interface //#################################################################### â– 
 
-type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$yŒ^z
+uses LUX.D2;
 
-     //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$yƒŒƒR[ƒhz
+type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ã€å‹ã€‘
+
+     //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ã€ãƒ¬ã‚³ãƒ¼ãƒ‰ã€‘
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleM2
 
@@ -18,9 +20,19 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        /////
        constructor Create( const _11_,_12_,
                                  _21_,_22_:Single );
-       ///// ƒvƒƒpƒeƒB
-       ///// ‰‰Zq
-       ///// ƒƒ\ƒbƒh
+       ///// ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
+       ///// æ¼”ç®—å­
+       class operator Negative( const V_:TSingleM2 ) :TSingleM2;
+       class operator Positive( const V_:TSingleM2 ) :TSingleM2;
+       class operator Add( const A_,B_:TSingleM2 ) :TSingleM2;
+       class operator Subtract( const A_,B_:TSingleM2 ) :TSingleM2;
+       class operator Multiply( const A_,B_:TSingleM2 ) :TSingleM2;
+       class operator Multiply( const A_:TSingleM2; const B_:Single ) :TSingleM2;
+       class operator Multiply( const A_:Single; const B_:TSingleM2 ) :TSingleM2;
+       class operator Multiply( const A_:TSingle2D; const B_:TSingleM2 ) :TSingle2D;
+       class operator Multiply( const A_:TSingleM2; const B_:TSingle2D ) :TSingle2D;
+       class operator Divide( const A_:TSingleM2; const B_:Single ) :TSingleM2;
+       ///// ãƒ¡ã‚½ãƒƒãƒ‰
        function Det :Single;
      end;
 
@@ -36,23 +48,33 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        /////
        constructor Create( const _11_,_12_,
                                  _21_,_22_:Double );
-       ///// ƒvƒƒpƒeƒB
-       ///// ‰‰Zq
-       ///// ƒƒ\ƒbƒh
+       ///// ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
+       ///// æ¼”ç®—å­
+       class operator Negative( const V_:TDoubleM2 ) :TDoubleM2;
+       class operator Positive( const V_:TDoubleM2 ) :TDoubleM2;
+       class operator Add( const A_,B_:TDoubleM2 ) :TDoubleM2;
+       class operator Subtract( const A_,B_:TDoubleM2 ) :TDoubleM2;
+       class operator Multiply( const A_,B_:TDoubleM2 ) :TDoubleM2;
+       class operator Multiply( const A_:TDoubleM2; const B_:Double ) :TDoubleM2;
+       class operator Multiply( const A_:Double; const B_:TDoubleM2 ) :TDoubleM2;
+       class operator Multiply( const A_:TDouble2D; const B_:TDoubleM2 ) :TDouble2D;
+       class operator Multiply( const A_:TDoubleM2; const B_:TDouble2D ) :TDouble2D;
+       class operator Divide( const A_:TDoubleM2; const B_:Double ) :TDoubleM2;
+       ///// ãƒ¡ã‚½ãƒƒãƒ‰
        function Det :Double;
      end;
 
-     //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$yƒNƒ‰ƒXz
+     //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ã€ã‚¯ãƒ©ã‚¹ã€‘
 
-//const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$y’è”z
+//const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ã€å®šæ•°ã€‘
 
-//var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$y•Ï”z
+//var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ã€å¤‰æ•°ã€‘
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$yƒ‹[ƒ`ƒ“z
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ã€ãƒ«ãƒ¼ãƒãƒ³ã€‘
 
-implementation //############################################################### ¡
+implementation //############################################################### â– 
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$yƒŒƒR[ƒhz
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ã€ãƒ¬ã‚³ãƒ¼ãƒ‰ã€‘
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleM2
 
@@ -66,9 +88,115 @@ begin
      _21 := _21_;  _22 := _22_;
 end;
 
-///////////////////////////////////////////////////////////////////////// ‰‰Zq
+///////////////////////////////////////////////////////////////////////// æ¼”ç®—å­
 
-///////////////////////////////////////////////////////////////////////// Œ^•ÏŠ·
+class operator TSingleM2.Positive( const V_:TSingleM2 ) :TSingleM2;
+begin
+     with Result do
+     begin
+          _11 := +V_._11;  _12 := +V_._12;
+          _21 := +V_._21;  _22 := +V_._22;
+     end
+end;
+
+class operator TSingleM2.Negative( const V_:TSingleM2 ) :TSingleM2;
+begin
+     with Result do
+     begin
+          _11 := -V_._11;  _12 := -V_._12;
+          _21 := -V_._21;  _22 := -V_._22;
+     end
+end;
+
+class operator TSingleM2.Add( const A_,B_:TSingleM2 ) :TSingleM2;
+begin
+     with Result do
+     begin
+          _11 := A_._11 + B_._11;  _12 := A_._12 + B_._12;
+          _21 := A_._21 + B_._21;  _22 := A_._22 + B_._22;
+     end
+end;
+
+class operator TSingleM2.Subtract( const A_,B_:TSingleM2 ) :TSingleM2;
+begin
+     with Result do
+     begin
+          _11 := A_._11 - B_._11;  _12 := A_._12 - B_._12;
+          _21 := A_._21 - B_._21;  _22 := A_._22 - B_._22;
+     end
+end;
+
+class operator TSingleM2.Multiply( const A_,B_:TSingleM2 ) :TSingleM2;
+begin
+     // _11 _12    _11 _12
+     // _21 _22 Ã— _21 _22
+
+     with Result do
+     begin
+          _11 := A_._11 * B_._11 + A_._12 * B_._21;
+          _12 := A_._11 * B_._12 + A_._12 * B_._22;
+
+          _21 := A_._21 * B_._11 + A_._22 * B_._21;
+          _22 := A_._21 * B_._12 + A_._22 * B_._22;
+     end
+end;
+
+class operator TSingleM2.Multiply( const A_:TSingleM2; const B_:Single ) :TSingleM2;
+begin
+     with Result do
+     begin
+          _11 := A_._11 * B_;  _12 := A_._12 * B_;
+          _21 := A_._21 * B_;  _22 := A_._22 * B_;
+     end
+end;
+
+class operator TSingleM2.Multiply( const A_:Single; const B_:TSingleM2 ) :TSingleM2;
+begin
+     with Result do
+     begin
+          _11 := A_ * B_._11;  _12 := A_ * B_._12;
+          _21 := A_ * B_._21;  _22 := A_ * B_._22;
+     end
+end;
+
+class operator TSingleM2.Multiply( const A_:TSingle2D; const B_:TSingleM2 ) :TSingle2D;
+begin
+     {
+               _11 _12
+        X Y Ã— _21 _22
+     }
+
+     with Result do
+     begin
+          X := A_.X * B_._11 + A_.Y * B_._21;
+          Y := A_.X * B_._12 + A_.Y * B_._22;
+     end
+end;
+
+class operator TSingleM2.Multiply( const A_:TSingleM2; const B_:TSingle2D ) :TSingle2D;
+begin
+     {
+       _11 _12    X
+       _21 _22 Ã— Y
+     }
+
+     with Result do
+     begin
+          X := A_._11 * B_.X + A_._12 * B_.Y;
+          Y := A_._21 * B_.X + A_._22 * B_.Y;
+     end
+end;
+
+class operator TSingleM2.Divide( const A_:TSingleM2; const B_:Single ) :TSingleM2;
+begin
+     with Result do
+     begin
+          _11 := A_._11 / B_;  _12 := A_._12 / B_;
+          _21 := A_._21 / B_;  _22 := A_._22 / B_;
+     end
+end;
+
+///////////////////////////////////////////////////////////////////////// å‹å¤‰æ›
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -89,9 +217,115 @@ begin
      _21 := _21_;  _22 := _22_;
 end;
 
-///////////////////////////////////////////////////////////////////////// ‰‰Zq
+///////////////////////////////////////////////////////////////////////// æ¼”ç®—å­
 
-///////////////////////////////////////////////////////////////////////// Œ^•ÏŠ·
+class operator TDoubleM2.Positive( const V_:TDoubleM2 ) :TDoubleM2;
+begin
+     with Result do
+     begin
+          _11 := +V_._11;  _12 := +V_._12;
+          _21 := +V_._21;  _22 := +V_._22;
+     end
+end;
+
+class operator TDoubleM2.Negative( const V_:TDoubleM2 ) :TDoubleM2;
+begin
+     with Result do
+     begin
+          _11 := -V_._11;  _12 := -V_._12;
+          _21 := -V_._21;  _22 := -V_._22;
+     end
+end;
+
+class operator TDoubleM2.Add( const A_,B_:TDoubleM2 ) :TDoubleM2;
+begin
+     with Result do
+     begin
+          _11 := A_._11 + B_._11;  _12 := A_._12 + B_._12;
+          _21 := A_._21 + B_._21;  _22 := A_._22 + B_._22;
+     end
+end;
+
+class operator TDoubleM2.Subtract( const A_,B_:TDoubleM2 ) :TDoubleM2;
+begin
+     with Result do
+     begin
+          _11 := A_._11 - B_._11;  _12 := A_._12 - B_._12;
+          _21 := A_._21 - B_._21;  _22 := A_._22 - B_._22;
+     end
+end;
+
+class operator TDoubleM2.Multiply( const A_,B_:TDoubleM2 ) :TDoubleM2;
+begin
+     // _11 _12    _11 _12
+     // _21 _22 Ã— _21 _22
+
+     with Result do
+     begin
+          _11 := A_._11 * B_._11 + A_._12 * B_._21;
+          _12 := A_._11 * B_._12 + A_._12 * B_._22;
+
+          _21 := A_._21 * B_._11 + A_._22 * B_._21;
+          _22 := A_._21 * B_._12 + A_._22 * B_._22;
+     end
+end;
+
+class operator TDoubleM2.Multiply( const A_:TDoubleM2; const B_:Double ) :TDoubleM2;
+begin
+     with Result do
+     begin
+          _11 := A_._11 * B_;  _12 := A_._12 * B_;
+          _21 := A_._21 * B_;  _22 := A_._22 * B_;
+     end
+end;
+
+class operator TDoubleM2.Multiply( const A_:Double; const B_:TDoubleM2 ) :TDoubleM2;
+begin
+     with Result do
+     begin
+          _11 := A_ * B_._11;  _12 := A_ * B_._12;
+          _21 := A_ * B_._21;  _22 := A_ * B_._22;
+     end
+end;
+
+class operator TDoubleM2.Multiply( const A_:TDouble2D; const B_:TDoubleM2 ) :TDouble2D;
+begin
+     {
+               _11 _12
+        X Y Ã— _21 _22
+     }
+
+     with Result do
+     begin
+          X := A_.X * B_._11 + A_.Y * B_._21;
+          Y := A_.X * B_._12 + A_.Y * B_._22;
+     end
+end;
+
+class operator TDoubleM2.Multiply( const A_:TDoubleM2; const B_:TDouble2D ) :TDouble2D;
+begin
+     {
+       _11 _12    X
+       _21 _22 Ã— Y
+     }
+
+     with Result do
+     begin
+          X := A_._11 * B_.X + A_._12 * B_.Y;
+          Y := A_._21 * B_.X + A_._22 * B_.Y;
+     end
+end;
+
+class operator TDoubleM2.Divide( const A_:TDoubleM2; const B_:Double ) :TDoubleM2;
+begin
+     with Result do
+     begin
+          _11 := A_._11 / B_;  _12 := A_._12 / B_;
+          _21 := A_._21 / B_;  _22 := A_._22 / B_;
+     end
+end;
+
+///////////////////////////////////////////////////////////////////////// å‹å¤‰æ›
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -100,14 +334,14 @@ begin
      Result := _11 * _22 - _21 * _12;
 end;
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$yƒNƒ‰ƒXz
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ã€ã‚¯ãƒ©ã‚¹ã€‘
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$yƒ‹[ƒ`ƒ“z
+//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ã€ãƒ«ãƒ¼ãƒãƒ³ã€‘
 
-//##############################################################################  
+//############################################################################## â–¡
 
-initialization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ ‰Šú‰»
+initialization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ åˆæœŸåŒ–
 
-finalization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ I—¹‰»
+finalization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ çµ‚äº†åŒ–
 
-end. //######################################################################### ¡
+end. //######################################################################### â– 
