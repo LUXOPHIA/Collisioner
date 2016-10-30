@@ -2,7 +2,7 @@
 
 interface //#################################################################### ■
 
-uses LUX, LUX.D2, LUX.Geometry;
+uses LUX, LUX.D2, LUX.Geometry, LUX.Matrix.L2;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -98,6 +98,9 @@ function ClosedCurveLength( const Ps_:array of TDouble2D ) :Single; overload;
 
 function BoundingBox( const Ps_:array of TSingle2D ) :TSingleArea2D; overload;
 function BoundingBox( const Ps_:array of TDouble2D ) :TDoubleArea2D; overload;
+
+function ShapeMatch( const Vs0_,Vs1_:array of TSingle2D ) :TSingleM2; overload;
+function ShapeMatch( const Vs0_,Vs1_:array of TDouble2D ) :TDoubleM2; overload;
 
 implementation //############################################################### ■
 
@@ -477,6 +480,60 @@ begin
           if Result.Max.X < P.X then Result.Max.X := P.X;
           if Result.Max.Y < P.Y then Result.Max.Y := P.Y;
      end;
+end;
+
+//------------------------------------------------------------------------------
+
+function ShapeMatch( const Vs0_,Vs1_:array of TSingle2D ) :TSingleM2;
+var
+   I :Integer;
+   V0, V1 :TSingle2D;
+   M :TSingleM2;
+begin
+     Result := TSingleM2.Create( 0, 0,
+                                 0, 0 );
+
+     for I := 0 to High( Vs0_ ) do
+     begin
+          V0 := Vs0_[ I ];
+          V1 := Vs1_[ I ];
+
+          with M do
+          begin
+               _11 := V1.X * V0.X + V1.Y * V0.Y;  _12 := V1.X * V0.Y - V1.Y * V0.X;
+               _21 := V1.Y * V0.X - V1.X * V0.Y;  _22 := V1.X * V0.X + V1.Y * V0.Y;
+          end;
+
+          Result := Result + M;
+     end;
+
+     Result := Result / Roo2( Pow2( Result._11 ) + Pow2( Result._12 ) );
+end;
+
+function ShapeMatch( const Vs0_,Vs1_:array of TDouble2D ) :TDoubleM2;
+var
+   I :Integer;
+   V0, V1 :TDouble2D;
+   M :TDoubleM2;
+begin
+     Result := TDoubleM2.Create( 0, 0,
+                                 0, 0 );
+
+     for I := 0 to High( Vs0_ ) do
+     begin
+          V0 := Vs0_[ I ];
+          V1 := Vs1_[ I ];
+
+          with M do
+          begin
+               _11 := V1.X * V0.X + V1.Y * V0.Y;  _12 := V1.X * V0.Y - V1.Y * V0.X;
+               _21 := V1.Y * V0.X - V1.X * V0.Y;  _22 := V1.X * V0.X + V1.Y * V0.Y;
+          end;
+
+          Result := Result + M;
+     end;
+
+     Result := Result / Roo2( Pow2( Result._11 ) + Pow2( Result._12 ) );
 end;
 
 //############################################################################## □
