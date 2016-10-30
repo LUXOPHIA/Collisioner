@@ -194,6 +194,8 @@ begin
      //////////
 
      for P in _EdgePoins do TTriGenPoin( AddPoin( P ) ).Inside := 0;
+
+     PoissonSubDiv;
 end;
 
 //------------------------------------------------------------------------------

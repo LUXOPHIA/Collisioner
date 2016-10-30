@@ -2,90 +2,81 @@
 
 interface //#################################################################### ■
 
-uses System.Types, System.Classes, System.Math.Vectors,
+uses System.Types, System.Classes, System.Math.Vectors, System.Threading,
      FMX.Types3D, FMX.Controls3D, FMX.MaterialSources,
      LUX, LUX.D2, LUX.D3, LUX.Brep.Face.TriFlip.D2.Triangulation;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
-     TSwelPoin  = class;
-     TSwelVert  = class;
-     TSwelFace  = class;
-     TSwelModel = class;
-     TSwelShape = class;
+     TDougPoin  = class;
+     TDougFace  = class;
+     TDougModel = class;
+     TDougShape = class;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelPoin  //格子点のクラス
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDougPoin  //格子点のクラス
 
-     TSwelPoin = class( TTriGenPoin )
+     TDougPoin = class( TTriGenPoin )
      private
      protected
-     public
-       constructor Create; override;
-       destructor Destroy; override;
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelVert  //三角点のクラス
-
-     TSwelVert = class
-     private
-       _Face :TSwelFace;
-       _Tex  :TSingle2D;
-     public
-       constructor Create( const Face_:TSwelFace );
-       destructor Destroy; override;
-       ///// プロパティ
-       property Face :TSwelFace read   _Face write _Face;  //帰属する三角面
-       property Tex  :TSingle2D read   _Tex  write _Tex ;  //テクスチャ座標
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelFace  //三角面のクラス
-
-     TSwelFace = class( TTriGenFace )
-     private
-     protected
-       _Vert :array [ 1..3 ] of TSwelVert;
-       ///// アクセス
-       function GetPoin( const I_:Byte ) :TSwelPoin; reintroduce;
-       procedure SetPoin( const I_:Byte; const Poin_:TSwelPoin ); reintroduce;
-       function GetFace( const I_:Byte ) :TSwelFace; reintroduce;
-       procedure SetFace( const I_:Byte; const Face_:TSwelFace ); reintroduce;
-       function GetVert( const I_:Byte ) :TSwelVert;
+       _Pos0  :TSingle2D;
+       _Tex   :TPointF;
+       _Force :TSingle2D;
      public
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
-       property Poin[ const I_:Byte ] :TSwelPoin read GetPoin     write SetPoin    ;  //格子点
-       property Face[ const I_:Byte ] :TSwelFace read GetFace     write SetFace    ;  //隣接する三角面
-       property Vert[ const I_:Byte ] :TSwelVert read GetVert                      ;  //三角点
+       property Pos0  :TSingle2D read _Pos0  write _Pos0 ;  //初期の座標
+       property Tex   :TPointF   read _Tex   write _Tex  ;  //テクスチャ座標
+       property Force :TSingle2D read _Force write _Force;  //力
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelModel  //メッシュのクラス
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDougFace  //三角面のクラス
 
-     TSwelModel = class( TTriGenModel<TSwelPoin,TSwelFace> )
+     TDougFace = class( TTriGenFace )
      private
      protected
        ///// アクセス
-       function GetChild( const I_:Integer ) :TSwelFace; reintroduce;
-       procedure SetChild( const I_:Integer; const Child_:TSwelFace ); reintroduce;
+       function GetPoin( const I_:Byte ) :TDougPoin; reintroduce;
+       procedure SetPoin( const I_:Byte; const Poin_:TDougPoin ); reintroduce;
+       function GetFace( const I_:Byte ) :TDougFace; reintroduce;
+       procedure SetFace( const I_:Byte; const Face_:TDougFace ); reintroduce;
+       function GerBarycenter0 :TSingle2D;
      public
+       constructor Create; override;
+       destructor Destroy; override;
        ///// プロパティ
-       property Childs[ const I_:Integer ] :TSwelFace read GetChild write SetChild;  //三角面
+       property Poin[ const I_:Byte ] :TDougPoin read GetPoin        write SetPoin;  //格子点
+       property Face[ const I_:Byte ] :TDougFace read GetFace        write SetFace;  //隣接する三角面
+       property Barycenter0           :TSingle2D read GerBarycenter0              ;  //初期の重心
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelShape  //ポリゴンのクラス
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDougModel  //メッシュのクラス
 
-     TSwelShape = class( TControl3D )
+     TDougModel = class( TTriGenModel<TDougPoin,TDougFace> )
+     private
+     protected
+       ///// アクセス
+       function GetChild( const I_:Integer ) :TDougFace; reintroduce;
+       procedure SetChild( const I_:Integer; const Child_:TDougFace ); reintroduce;
+     public
+       ///// プロパティ
+       property Childs[ const I_:Integer ] :TDougFace read GetChild write SetChild;  //三角面
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDougShape  //ポリゴンのクラス
+
+     TDougShape = class( TControl3D )
      private
      protected
        _Geometry :TMeshData;
        _Material :TMaterialSource;
-       _Model    :TSwelModel;
+       _Model    :TDougModel;
        ///// アクセス
-       procedure SetModel( const Model_:TSwelModel );
+       procedure SetModel( const Model_:TDougModel );
        ///// メソッド
        procedure Render; override;
      public
@@ -93,7 +84,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        destructor Destroy; override;
        ///// プロパティ
        property Material :TMaterialSource read _Material write   _Material;  //シェーダ
-       property Model    :TSwelModel      read _Model    write SetModel   ;  //メッシュ
+       property Model    :TDougModel      read _Model    write SetModel   ;  //メッシュ
        ///// メソッド
        procedure MakeGeometry;    //三角面の再構築
        procedure UpdateGeometry;  //三角点の更新
@@ -101,7 +92,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
 
-//var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【変数】
+var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【変数】
+
+    _ThreadPool :TThreadPool;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
@@ -113,7 +106,7 @@ uses System.SysUtils, System.RTLConsts;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelPoin
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDougPoin
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -121,19 +114,20 @@ uses System.SysUtils, System.RTLConsts;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TSwelPoin.Create;
+constructor TDougPoin.Create;
 begin
      inherited;
 
+     _Tex := TPointF.Create( 0, 0 );
 end;
 
-destructor TSwelPoin.Destroy;
+destructor TDougPoin.Destroy;
 begin
 
      inherited;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelVert
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDougFace
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -141,91 +135,46 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TSwelVert.Create( const Face_:TSwelFace );
+function TDougFace.GetPoin( const I_:Byte ) :TDougPoin;
 begin
-     inherited Create;
-
-     _Face := Face_;
-     _Tex  := TSingle2D.Create( 0, 0 );
+     Result := TDougPoin( inherited Poin[ I_ ] );
 end;
 
-destructor TSwelVert.Destroy;
-begin
-
-     inherited;
-end;
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelFace
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-/////////////////////////////////////////////////////////////////////// アクセス
-
-function TSwelFace.GetPoin( const I_:Byte ) :TSwelPoin;
-begin
-     Result := TSwelPoin( inherited Poin[ I_ ] );
-end;
-
-procedure TSwelFace.SetPoin( const I_:Byte; const Poin_:TSwelPoin );
+procedure TDougFace.SetPoin( const I_:Byte; const Poin_:TDougPoin );
 begin
      inherited Poin[ I_ ] := Poin_;
 end;
 
-function TSwelFace.GetFace( const I_:Byte ) :TSwelFace;
+function TDougFace.GetFace( const I_:Byte ) :TDougFace;
 begin
-     Result := TSwelFace( inherited Face[ I_ ] );
+     Result := TDougFace( inherited Face[ I_ ] );
 end;
 
-procedure TSwelFace.SetFace( const I_:Byte; const Face_:TSwelFace );
+procedure TDougFace.SetFace( const I_:Byte; const Face_:TDougFace );
 begin
      inherited Face[ I_ ] := Face_;
 end;
 
-function TSwelFace.GetVert( const I_:Byte ) :TSwelVert;
+function TDougFace.GerBarycenter0 :TSingle2D;
 begin
-     Result := _Vert[ I_ ];
+     Result := Ave( Poin[ 1 ].Pos0, Poin[ 2 ].Pos0, Poin[ 3 ].Pos0 );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TSwelFace.Create;
+constructor TDougFace.Create;
 begin
      inherited;
 
-     _Vert[ 1 ] := TSwelVert.Create( Self );
-     _Vert[ 2 ] := TSwelVert.Create( Self );
-     _Vert[ 3 ] := TSwelVert.Create( Self );
-
-     with _Vert[ 1 ] do
-     begin
-          Tex := TSingle2D.Create( -1, -1 );
-     end;
-
-     with _Vert[ 2 ] do
-     begin
-          Tex := TSingle2D.Create( +1, -1 );
-     end;
-
-     with _Vert[ 3 ] do
-     begin
-          Tex := TSingle2D.Create( -1, +1 );
-     end;
 end;
 
-destructor TSwelFace.Destroy;
+destructor TDougFace.Destroy;
 begin
-     _Vert[ 1 ].Free;
-     _Vert[ 2 ].Free;
-     _Vert[ 3 ].Free;
 
      inherited;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelModel
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDougModel
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -233,19 +182,19 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TSwelModel.GetChild( const I_:Integer ) :TSwelFace;
+function TDougModel.GetChild( const I_:Integer ) :TDougFace;
 begin
-     Result := TSwelFace( inherited Childs[ I_ ] );
+     Result := TDougFace( inherited Childs[ I_ ] );
 end;
 
-procedure TSwelModel.SetChild( const I_:Integer; const Child_:TSwelFace );
+procedure TDougModel.SetChild( const I_:Integer; const Child_:TDougFace );
 begin
      inherited Childs[ I_ ] := Child_;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSwelShape
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDougShape
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -253,14 +202,14 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-procedure TSwelShape.SetModel( const Model_:TSwelModel );
+procedure TDougShape.SetModel( const Model_:TDougModel );
 begin
      _Model := Model_;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TSwelShape.Render;
+procedure TDougShape.Render;
 begin
      Context.SetMatrix( AbsoluteMatrix );
 
@@ -269,14 +218,14 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TSwelShape.Create( Owner_:TComponent );
+constructor TDougShape.Create( Owner_:TComponent );
 begin
      inherited;
 
      _Geometry := TMeshData.Create;
 end;
 
-destructor TSwelShape.Destroy;
+destructor TDougShape.Destroy;
 begin
      _Geometry.Free;
 
@@ -285,24 +234,29 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TSwelShape.MakeGeometry;
+procedure TDougShape.MakeGeometry;
 var
-   N, K, I :Integer;
+   I, J, K :Integer;
 begin
      with _Geometry do
      begin
-          VertexBuffer.Length := 3{Poin} * _Model.ChildsN{Face};
+          VertexBuffer.Length := _Model.PoinModel.ChildsN{Poin};
 
           with IndexBuffer do
           begin
                Length := 3{Poin} * _Model.ChildsN{Face};
 
-               I := 0;
-               for N := 0 to _Model.ChildsN-1 do
+               J := 0;
+               for I := 0 to _Model.ChildsN-1 do
                begin
-                    for K := 1 to 3 do
+                    with _Model.Childs[ I ] do
                     begin
-                         Indices[ I ] := I;  Inc( I );
+                         for K := 1 to 3 do
+                         begin
+                              Indices[ J ] := Poin[ K ].Order;
+
+                              Inc( J );
+                         end;
                     end;
                end;
           end;
@@ -311,27 +265,21 @@ begin
      UpdateGeometry;
 end;
 
-procedure TSwelShape.UpdateGeometry;
+procedure TDougShape.UpdateGeometry;
 var
-   Tc :TPointF;
-   N, I, K :Integer;
+   I, J :Integer;
 begin
-     Tc := TPointF.Create( 0.5, 0.5 );
-
      with _Geometry.VertexBuffer do
      begin
-          I := 0;
-          for N := 0 to _Model.ChildsN-1 do
+          J := 0;
+          for I := 0 to _Model.PoinModel.ChildsN-1 do
           begin
-               with _Model.Childs[ N ] do
+               with _Model.PoinModel.Childs[ I ] do
                begin
-                    for K := 1 to 3 do
-                    begin
-                         Vertices [ I ] := TSingle3D( Poin[ K ].Pos );
-                         TexCoord0[ I ] := Tc + Vert[ K ].Tex / 2;
+                    Vertices [ J ] := TSingle3D( Pos );
+                    TexCoord0[ J ] :=            Tex  ;
 
-                         Inc( I );
-                    end;
+                    Inc( J );
                end;
           end;
      end;
@@ -343,6 +291,10 @@ end;
 
 initialization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 初期化
 
+     _ThreadPool := TThreadPool.Create;
+
 finalization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 最終化
+
+     _ThreadPool.Free;
 
 end. //######################################################################### ■

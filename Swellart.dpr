@@ -21,7 +21,9 @@ uses
   LUX.Brep.Face.TriFlip.D2 in '_LIBRARY\LUXOPHIA\LUX.Brep\LUX.Brep.Face.TriFlip.D2.pas',
   LUX.Brep.Face.TriFlip.D2.Delaunay in '_LIBRARY\LUXOPHIA\LUX.Brep\LUX.Brep.Face.TriFlip.D2.Delaunay.pas',
   YKX.Swellart in 'YKX.Swellart.pas',
-  LUX.Brep.Face.TriFlip.D2.Triangulation in '_LIBRARY\LUXOPHIA\LUX.Brep\LUX.Brep.Face.TriFlip.D2.Triangulation.pas';
+  LUX.Brep.Face.TriFlip.D2.Triangulation in '_LIBRARY\LUXOPHIA\LUX.Brep\LUX.Brep.Face.TriFlip.D2.Triangulation.pas',
+  LUX.Map.D2 in '_LIBRARY\LUXOPHIA\LUX.Map\LUX.Map.D2.pas',
+  LUX.Map.D1 in '_LIBRARY\LUXOPHIA\LUX.Map\LUX.Map.D1.pas';
 
 {$R *.res}
 
