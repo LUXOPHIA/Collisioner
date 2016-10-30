@@ -45,7 +45,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel2D<_TPoin_>
 
-     TTriFaceModel2D<_TPoin_:TTriPoin2D> = class( TTriFaceModel<TSingle2D,_TPoin_> )
+     TTriFaceModel2D<_TPoin_:TTriPoin2D;
+                     _TFace_:TTriFace2D> = class( TTriFaceModel<TSingle2D,_TPoin_,_TFace_> )
      private
        ///// メソッド
        function GetVec( const G_:TGroupCollection ) :TSingle2D;
@@ -114,7 +115,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
-function TTriFaceModel2D<_TPoin_>.GetVec( const G_:TGroupCollection ) :TSingle2D;
+function TTriFaceModel2D<_TPoin_,_TFace_>.GetVec( const G_:TGroupCollection ) :TSingle2D;
 begin
      with Result do
      begin
@@ -123,7 +124,7 @@ begin
      end;
 end;
 
-function TTriFaceModel2D<_TPoin_>.GetPoin( const M_:TMatch; const Ts_:TArray<TSingle2D> ) :TTriPoin2D;
+function TTriFaceModel2D<_TPoin_,_TFace_>.GetPoin( const M_:TMatch; const Ts_:TArray<TSingle2D> ) :TTriPoin2D;
 var
    N :Integer;
 begin
@@ -136,7 +137,7 @@ begin
      else Result := nil;
 end;
 
-procedure TTriFaceModel2D<_TPoin_>.AddFace( const P1_,P2_,P3_:TTriPoin2D );
+procedure TTriFaceModel2D<_TPoin_,_TFace_>.AddFace( const P1_,P2_,P3_:TTriPoin2D );
 begin
      with TTriFace2D( TTriFace2D.Create( Self ) ) do
      begin
@@ -152,7 +153,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TTriFaceModel2D<_TPoin_>.JoinEdges;
+procedure TTriFaceModel2D<_TPoin_,_TFace_>.JoinEdges;
 var
    I :Integer;
 begin
@@ -162,7 +163,7 @@ begin
      end
 end;
 
-procedure TTriFaceModel2D<_TPoin_>.LoadFromFile( const FileName_:String );
+procedure TTriFaceModel2D<_TPoin_,_TFace_>.LoadFromFile( const FileName_:String );
 var
    Ts :TArray<TSingle2D>;
    RV, RT, RF, RI :TRegEx;
