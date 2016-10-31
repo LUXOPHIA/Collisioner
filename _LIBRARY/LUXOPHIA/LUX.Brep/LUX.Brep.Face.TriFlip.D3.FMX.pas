@@ -12,9 +12,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceObject3D
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceShape3D
 
-     TTriFaceObject3D = class( TControl3D )
+     TTriFaceShape3D = class( TControl3D )
      private
        ///// メソッド
        procedure MakeGeometry;
@@ -48,11 +48,11 @@ uses System.SysUtils, System.RTLConsts;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceObject3D
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceShape3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
-procedure TTriFaceObject3D.MakeGeometry;
+procedure TTriFaceShape3D.MakeGeometry;
 var
    I, N :Integer;
 begin
@@ -95,14 +95,14 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-procedure TTriFaceObject3D.SetModel( const Model_:TTriFaceModel3D );
+procedure TTriFaceShape3D.SetModel( const Model_:TTriFaceModel3D );
 begin
      _Model := Model_;  MakeGeometry;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TTriFaceObject3D.Render;
+procedure TTriFaceShape3D.Render;
 begin
      Context.SetMatrix( AbsoluteMatrix );
 
@@ -111,14 +111,14 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TTriFaceObject3D.Create( Owner_:TComponent );
+constructor TTriFaceShape3D.Create( Owner_:TComponent );
 begin
      inherited;
 
      _Geometry := TMeshData.Create;
 end;
 
-destructor TTriFaceObject3D.Destroy;
+destructor TTriFaceShape3D.Destroy;
 begin
      _Geometry.Free;
 

@@ -2,14 +2,13 @@ unit LUX.Brep.Face.TriFlip.D3;
 
 interface //#################################################################### Бб
 
-uses LUX, LUX.D3, LUX.Geometry.D3, LUX.Brep.Face.TriFlip;
+uses System.RegularExpressions,
+     LUX, LUX.D3, LUX.Geometry.D3, LUX.Brep.Face.TriFlip;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$БyМ^Бz
 
-     TTriPoin3D      = class;
-
-     TTriFace3D      = class;
-     TTriFaceModel3D = class;
+     TTriPoin3D = class;
+     TTriFace3D = class;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$БyГМГRБ[ГhБz
 
@@ -44,10 +43,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property CircumSphere          :TSingleSphere read GetCircumSphere;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel3D
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel3D<_TPoin_,_TFace_>
 
-     TTriFaceModel3D = class( TTriFaceModel<TSingle3D> )
+     TTriFaceModel3D<_TPoin_:TTriPoin3D;
+                     _TFace_:TTriFace3D> = class( TTriFaceModel<TSingle3D,_TPoin_,_TFace_> )
      private
+       ///// ГБГ\ГbГh
+       function GetVec( const G_:TGroupCollection ) :TSingle3D;
+       function GetPoin( const M_:TMatch; const Ts_,Ns_:TArray<TSingle3D> ) :TTriPoin3D;
+       procedure AddFace( const P1_,P2_,P3_:TTriPoin3D );
      protected
      public
        ///// ГБГ\ГbГh
@@ -57,6 +61,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function IsInside( const P_:TSingle3D ) :Boolean;
      end;
 
+     TTriFaceModel3D = TTriFaceModel3D<TTriPoin3D,TTriFace3D>;
+
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$БyТшРФБz
 
 //var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$БyХ╧РФБz
@@ -65,7 +71,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 implementation //############################################################### Бб
 
-uses System.Classes, System.SysUtils, System.RegularExpressions;
+uses System.Classes, System.SysUtils;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$БyГМГRБ[ГhБz
 
@@ -138,9 +144,45 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel3D
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel3D<_TPoin_,_TFace_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// ГБГ\ГbГh
+
+function TTriFaceModel3D<_TPoin_,_TFace_>.GetVec( const G_:TGroupCollection ) :TSingle3D;
+begin
+     with Result do
+     begin
+          X := G_.Item[ 1 ].Value.ToSingle;
+          Y := G_.Item[ 2 ].Value.ToSingle;
+          Z := G_.Item[ 3 ].Value.ToSingle;
+     end;
+end;
+
+function TTriFaceModel3D<_TPoin_,_TFace_>.GetPoin( const M_:TMatch; const Ts_,Ns_:TArray<TSingle3D> ) :TTriPoin3D;
+var
+   N :Integer;
+begin
+     if M_.Success and TryStrToInt( M_.Groups[ 1 ].Value, N ) then
+     begin
+          Result := TTriPoin3D( PoinModel.Childs[ N-1 ] );
+
+          if TryStrToInt( M_.Groups[ 2 ].Value, N ) then Result._Tex := Ts_[ N-1 ];
+          if TryStrToInt( M_.Groups[ 3 ].Value, N ) then Result._Nor := Ns_[ N-1 ];
+     end
+     else Result := nil;
+end;
+
+procedure TTriFaceModel3D<_TPoin_,_TFace_>.AddFace( const P1_,P2_,P3_:TTriPoin3D );
+begin
+     with TTriFace3D( TTriFace3D.Create( Self ) ) do
+     begin
+          Poin[ 1 ] := P1_;  BasteCorn( 1 );
+          Poin[ 2 ] := P2_;  BasteCorn( 2 );
+          Poin[ 3 ] := P3_;  BasteCorn( 3 );
+     end;
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
@@ -148,7 +190,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// ГБГ\ГbГh
 
-procedure TTriFaceModel3D.JoinEdges;
+procedure TTriFaceModel3D<_TPoin_,_TFace_>.JoinEdges;
 var
    I :Integer;
 begin
@@ -158,7 +200,7 @@ begin
      end
 end;
 
-procedure TTriFaceModel3D.MakeNormals;
+procedure TTriFaceModel3D<_TPoin_,_TFace_>.MakeNormals;
 var
    I :Integer;
 begin
@@ -168,52 +210,15 @@ begin
      end
 end;
 
-procedure TTriFaceModel3D.LoadFromFile( const FileName_:String );
+procedure TTriFaceModel3D<_TPoin_,_TFace_>.LoadFromFile( const FileName_:String );
 var
    Ns, Ts :TArray<TSingle3D>;
-//ееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееее
-     function GetVec( const G_:TGroupCollection ) :TSingle3D;
-     begin
-          with Result do
-          begin
-               X := G_.Item[ 1 ].Value.ToSingle;
-               Y := G_.Item[ 2 ].Value.ToSingle;
-               Z := G_.Item[ 3 ].Value.ToSingle;
-          end;
-     end;
-     //еееееееееееееееееееееееееееееееееееееееееееееееееееееееее
-     function GetPoin( const M_:TMatch ) :TTriPoin3D;
-     var
-        N :Integer;
-     begin
-          if M_.Success and TryStrToInt( M_.Groups[ 1 ].Value, N ) then
-          begin
-               Result := TTriPoin3D( PoinModel.Childs[ N-1 ] );
-
-               if TryStrToInt( M_.Groups[ 2 ].Value, N ) then Result._Tex := Ts[ N-1 ];
-               if TryStrToInt( M_.Groups[ 3 ].Value, N ) then Result._Nor := Ns[ N-1 ];
-          end
-          else Result := nil;
-     end;
-     //еееееееееееееееееееееееееееееееееееееееееееееееееееееееее
-     procedure AddFace( const P1_,P2_,P3_:TTriPoin3D );
-     begin
-          with TTriFace3D( TTriFace3D.Create( Self ) ) do
-          begin
-               Poin[ 1 ] := P1_;
-               Poin[ 2 ] := P2_;
-               Poin[ 3 ] := P3_;
-          end;
-     end;
-//ееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееее
-var
    RV, RT, RN, RF, RI :TRegEx;
    S :String;
    Ms :TMatchCollection;
    P1, P2, P3 :TTriPoin3D;
    I :Integer;
 begin
-     PoinModel.DeleteChilds;
      DeleteChilds;
 
      RV := TRegEx.Create(  'v[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+([^ \t\n]+)' );
@@ -260,15 +265,15 @@ begin
                     begin
                          Ms := RI.Matches( Groups[ 1 ].Value );
 
-                         P1 := GetPoin( Ms[ 0 ] );
-                         P2 := GetPoin( Ms[ 1 ] );
-                         P3 := GetPoin( Ms[ 2 ] );
+                         P1 := GetPoin( Ms[ 0 ], Ts, Ns );
+                         P2 := GetPoin( Ms[ 1 ], Ts, Ns );
+                         P3 := GetPoin( Ms[ 2 ], Ts, Ns );
 
                          AddFace( P1, P2, P3 );
 
                          for I := 3 to Ms.Count-1 do
                          begin
-                              P2 := P3;  P3 := GetPoin( Ms[ I ] );
+                              P2 := P3;  P3 := GetPoin( Ms[ I ], Ts, Ns );
 
                               AddFace( P1, P2, P3 );
                          end;
@@ -282,7 +287,7 @@ begin
      JoinEdges;
 end;
 
-function TTriFaceModel3D.IsInside( const P_:TSingle3D ) :Boolean;
+function TTriFaceModel3D<_TPoin_,_TFace_>.IsInside( const P_:TSingle3D ) :Boolean;
 var
    A :Single;
    I :Integer;
@@ -290,7 +295,7 @@ begin
      A := 0;
      for I := 0 to ChildsN-1 do
      begin
-          with Childs[ I ] do
+          with TTriFace3D( Childs[ I ] ) do
           begin
                A := A + SolidAngle( Poin[ 1 ].Pos, Poin[ 2 ].Pos, Poin[ 3 ].Pos, P_ );
           end;
