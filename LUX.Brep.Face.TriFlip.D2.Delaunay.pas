@@ -67,7 +67,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDelaunay2D<_TPoin_,_TFace_>
 
      TDelaunay2D<_TPoin_:TDelaPoin2D,constructor;
-                 _TFace_:TDelaFace2D,constructor> = class( TTriFaceModel2D<_TPoin_> )
+                 _TFace_:TDelaFace2D,constructor> = class( TTriFaceModel2D<_TPoin_,_TFace_> )
      private
        ///// メソッド
        procedure InitFace;
