@@ -15,6 +15,24 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDougEdge
+
+     TDougEdge = record
+     private
+       function GetPoin0 :TDougPoin;
+       function GetPoin1 :TDougPoin;
+       function GetEdge :TSingle2D;
+       function GetNorv :TSingle2D;
+     public
+       Face :TDougFace;
+       Vert :Byte;
+       ///// プロパティ
+       property Poin0 :TDougPoin read GetPoin0;
+       property Poin1 :TDougPoin read GetPoin1;
+       property Edge  :TSingle2D read GetEdge ;
+       property Norv  :TSingle2D read GetNorv ;
+     end;
+
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDougPoin  //格子点のクラス
@@ -94,15 +112,42 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【変数】
 
-    _ThreadPool :TThreadPool;
+    _ThreadPool_ :TThreadPool;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
 implementation //############################################################### ■
 
-uses System.SysUtils, System.RTLConsts;
+uses System.SysUtils, System.RTLConsts,
+     LUX.Brep.Face.TriFlip;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDougEdge
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+function TDougEdge.GetPoin0 :TDougPoin;
+begin
+     Result := Face.Poin[ _Inc_[ Vert ] ];
+end;
+
+function TDougEdge.GetPoin1 :TDougPoin;
+begin
+     Result := Face.Poin[ _Dec_[ Vert ] ];
+end;
+
+function TDougEdge.GetEdge :TSingle2D;
+begin
+     Result := Face.Edge[ Vert ];
+end;
+
+function TDougEdge.GetNorv :TSingle2D;
+begin
+     Result := Face.Norv[ Vert ];
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
@@ -291,10 +336,10 @@ end;
 
 initialization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 初期化
 
-     _ThreadPool := TThreadPool.Create;
+     _ThreadPool_ := TThreadPool.Create;
 
 finalization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 最終化
 
-     _ThreadPool.Free;
+     _ThreadPool_.Free;
 
 end. //######################################################################### ■
