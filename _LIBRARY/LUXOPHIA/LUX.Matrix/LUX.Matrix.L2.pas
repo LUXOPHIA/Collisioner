@@ -34,6 +34,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Divide( const A_:TSingleM2; const B_:Single ) :TSingleM2;
        ///// メソッド
        function Det :Single;
+       class function Rotate( const Angle_:Single ) :TSingleM2; static;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleM2
@@ -62,6 +63,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Divide( const A_:TDoubleM2; const B_:Double ) :TDoubleM2;
        ///// メソッド
        function Det :Double;
+       class function Rotate( const Angle_:Double ) :TDoubleM2; static;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -205,6 +207,20 @@ begin
      Result := _11 * _22 - _21 * _12;
 end;
 
+class function TSingleM2.Rotate( const Angle_:Single ) :TSingleM2;
+var
+   C, S :Single;
+begin
+     C := Cos( Angle_ );
+     S := Sin( Angle_ );
+
+     with Result do
+     begin
+          _11 :=  C;  _12 := -S;
+          _21 := +S;  _22 :=  C;
+     end
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleM2
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -332,6 +348,20 @@ end;
 function TDoubleM2.Det :Double;
 begin
      Result := _11 * _22 - _21 * _12;
+end;
+
+class function TDoubleM2.Rotate( const Angle_:Double ) :TDoubleM2;
+var
+   C, S :Double;
+begin
+     C := Cos( Angle_ );
+     S := Sin( Angle_ );
+
+     with Result do
+     begin
+          _11 :=  C;  _12 := -S;
+          _21 := +S;  _22 :=  C;
+     end
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
