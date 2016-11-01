@@ -296,7 +296,7 @@ begin
                begin
                     with _Model.Childs[ I ] do
                     begin
-                         for K := 1 to 3 do
+                         for K := 3 downto 1 do
                          begin
                               Indices[ J ] := Poin[ K ].Order;
 
