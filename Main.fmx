@@ -96,6 +96,8 @@ object Form1: TForm1
       StyleLookup = ''
       TabOrder = 0
       Text = 'MOLD'
+      ExplicitSize.cx = 54.000000000000000000
+      ExplicitSize.cy = 26.000000000000000000
       object Viewport3D1: TViewport3D
         Align = Client
         Camera = Camera1
@@ -146,6 +148,8 @@ object Form1: TForm1
       StyleLookup = ''
       TabOrder = 0
       Text = 'DOUGH'
+      ExplicitSize.cx = 63.000000000000000000
+      ExplicitSize.cy = 26.000000000000000000
       object Image1: TImage
         MultiResBitmap = <
           item

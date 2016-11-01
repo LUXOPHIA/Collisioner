@@ -62,6 +62,9 @@ type
     _MoldCurve :TArray<TSingle2D>;  //手描カーブの配列
     _DougModel :TDougModel;         //メッシュ
     _DougShape :TDougShape;         //ポリゴン
+    _DougEdges :TArray<TDougEdge>;  //輪郭辺の配列
+    /////
+    function InsideEdges( const P_:TSingle2D ) :Single;
   end;
 
 var
@@ -70,6 +73,8 @@ var
 implementation //############################################################### ■
 
 {$R *.fmx}
+
+uses System.Math;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -180,6 +185,28 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
+function TForm1.InsideEdges( const P_:TSingle2D ) :Single;
+var
+   E :TDougEdge;
+   V0, V1 :TSingle2D;
+   A :Single;
+begin
+     Result := 0;
+
+     for E in _DougEdges do
+     begin
+          V0 := E.Poin0.Pos - P_;
+          V1 := E.Poin1.Pos - P_;
+
+          A := ArcTan2( V0.X * V1.Y - V0.Y * V1.X,
+                        V0.X * V1.X + V0.Y * V1.Y );
+
+          Result := Result + A;
+     end;
+
+     Result := Result / Pi2;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 procedure TForm1.FormCreate(Sender: TObject);  //アプリを起動した場合
@@ -237,10 +264,6 @@ begin
           _MouseState := Shift;  //マウスボタンの状態を保存
 
           _MoldCurve := [ ScrToPos( TPointF.Create( X, Y ) ) ];  //描き始めの座標を追加
-
-          _DougModel.DeleteChilds;  //メッシュをクリア
-
-          _DougShape.MakeGeometry;  //ポリゴンを再構築
      end;
 end;
 
@@ -337,8 +360,9 @@ end;
 
 procedure TForm1.Button1Click(Sender: TObject);  //「初期化」ボタンを押した時
 var
-   I :Integer;
+   I, K :Integer;
    P, T :TPointF;
+   E :TDougEdge;
 begin
      for I := 0 to _DougModel.PoinModel.ChildsN-1 do  //すべての三角面を走査
      begin
@@ -358,6 +382,27 @@ begin
      _DougShape.UpdateGeometry;  //ポリゴンを更新
 
      Viewport3D1.Repaint;  //ビューを再描画
+
+     ///// 輪郭辺を特定
+
+     _DougEdges := [];
+     for I := 0 to _DougModel.ChildsN-1 do  //すべての三角面を走査
+     begin
+          E.Face := _DougModel.Childs[ I ];
+
+          with E.Face do
+          begin
+               for K := 1 to 3 do
+               begin
+                    if not Assigned( Face[ K ] ) then
+                    begin
+                         E.Vert := K;
+
+                         _DougEdges := _DougEdges + [ E ];
+                    end;
+               end;
+          end;
+     end;
 end;
 
 //------------------------------------------------------------------------------
@@ -365,20 +410,25 @@ end;
 procedure TForm1.Timer1Timer(Sender: TObject);  //最適化の１フレーム
 var
    N, I, K :Integer;
-   G0, G1 :TSingle2D;
-   P0, P1, P2, V0, V1 :array [1..3] of TSingle2D;
+   G0, G1, N0, N1 :TSingle2D;
+   P0, P1, P2, V0, V1 :array [ 1..3 ] of TSingle2D;
    M :TSingleM2;
+   E0, E1 :TDougEdge;
 begin
      for N := 1 to 10 do
      begin
-          TParallel.For( 0, _DougModel.PoinModel.ChildsN-1, procedure( I:Integer )  //すべての格子点を走査(並列化)
+          ///// 格子点への力を初期化
+
+          TParallel.For( 0, _DougModel.PoinModel.ChildsN-1, procedure( I:Integer )  //すべての格子点を走査(並列化:順不同)
           begin
                with _DougModel.PoinModel.Childs[ I ] do  //格子点
                begin
                     Force := TSingle2D.Create( 0, 0 );  //格子点の力を初期化
                end;
           end,
-          _ThreadPool );
+          _ThreadPool_ );
+
+          ///// Shape Matching 法による復元力の加算
 
           for I := 0 to _DougModel.ChildsN-1 do  //すべての三角面を走査
           begin
@@ -404,31 +454,59 @@ begin
                     begin
                          P2[K] := M * V0[K] + G1;  //理想の座標
 
-                         ///// 位置の制約
-
-                         if P2[K].X < -30 then P2[K].X := -30
-                                          else
-                         if +30 < P2[K].X then P2[K].X := +30;
-
-                         if P2[K].Y < -30 then P2[K].Y := -30
-                                          else
-                         if +30 < P2[K].Y then P2[K].Y := +30;
-
-                         /////
-
                          with Poin[K] do Force := Force + ( P2[K] - P1[K] );  //力を格子点へ加算
                     end;
                end;
           end;
 
-          TParallel.For( 0, _DougModel.PoinModel.ChildsN-1, procedure( I:Integer )  //すべての格子点を走査(並列化)
+          ///// 格子点を力に応じて移動
+
+          TParallel.For( 0, _DougModel.PoinModel.ChildsN-1, procedure( I:Integer )  //すべての格子点を走査(並列化:順不同)
           begin
                with _DougModel.PoinModel.Childs[ I ] do  //格子点
                begin
                     Pos := Pos + 0.1 * Force;  //格子点を移動
                end;
           end,
-          _ThreadPool );
+          _ThreadPool_ );
+
+          ///// 壁による輪郭点の移動制限
+
+          TParallel.For( 0, High( _DougEdges ), procedure( I:Integer )  //すべての輪郭辺を走査(並列化:順不同)
+          var
+             P :TSingle2D;
+          begin
+               with _DougEdges[ I ].Poin0 do
+               begin
+                    P.X := Clamp( Pos.X, -30, +30 );
+                    P.Y := Clamp( Pos.Y, -30, +30 );
+
+                    Pos := P;
+               end;
+          end,
+          _ThreadPool_ );
+
+          ///// 自己交差を防ぐ輪郭点の移動制約
+          {
+          for E0 in _DougEdges do  //すべての輪郭辺を走査
+          begin
+               if InsideEdges( E0.Poin0.Pos ) > 0.5 then  //輪郭辺０の始点が輪郭内の場合
+               begin
+                    N0 := E0.Norv;  //輪郭辺０の法線
+
+                    for E1 in _DougEdges do  //すべての輪郭辺１を走査
+                    begin
+                         if ( E0 <> E1 ) and                            //輪郭辺０と１が同一ではなく
+                            ( InsideEdges( E1.Poin0.Pos ) > 0.5 ) then  //輪郭辺１の始点が輪郭内の場合
+                         begin
+                              N1 := E1.Norv;  //輪郭辺１の法線
+
+
+                         end;
+                    end;
+               end;
+          end;
+          }
      end;
 
      _DougShape.UpdateGeometry;  //ポリゴンの座標を更新
