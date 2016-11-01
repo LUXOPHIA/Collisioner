@@ -17,6 +17,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDougEdge
 
+     (* TDougEdge
+                  Norv
+                   ↑
+     Poin1 ③←Edge┴───② Poin0
+             ＼          ／
+               ＼ Face ／
+                 ＼  ／
+                   ①
+                  Vert
+     *)
+
      TDougEdge = record
      private
        function GetPoin0 :TDougPoin;
@@ -31,6 +42,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Poin1 :TDougPoin read GetPoin1;
        property Edge  :TSingle2D read GetEdge ;
        property Norv  :TSingle2D read GetNorv ;
+       ///// 演算子
+       class operator Equal( const A_,B_:TDougEdge ) :Boolean;
+       class operator NotEqual( const A_,B_:TDougEdge ) :Boolean;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -148,6 +162,20 @@ begin
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+///////////////////////////////////////////////////////////////////////// 演算子
+
+class operator TDougEdge.Equal( const A_,B_:TDougEdge ) :Boolean;
+begin
+     Result := ( A_.Face = B_.Face )
+           and ( A_.Vert = B_.Vert );
+end;
+
+class operator TDougEdge.NotEqual( const A_,B_:TDougEdge ) :Boolean;
+begin
+     Result := ( A_.Face <> B_.Face )
+            or ( A_.Vert <> B_.Vert );
+end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
