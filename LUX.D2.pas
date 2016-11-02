@@ -58,10 +58,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function DistanTo( const P_:TSingle2D ) :Single;
        function RotL90 :TSingle2D;
        function RotR90 :TSingle2D;
-       class function RandG :TSingle2D; inline; static;
-       class function RandBS1 :TSingle2D; inline; static;
-       class function RandBS2 :TSingle2D; inline; static;
-       class function RandBS4 :TSingle2D; inline; static;
+       class function RandG :TSingle2D; static;
+       class function RandBS1 :TSingle2D; static;
+       class function RandBS2 :TSingle2D; static;
+       class function RandBS4 :TSingle2D; static;
      end;
 
      TSinglePos2D = TSingle2D;
@@ -107,10 +107,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function DistanTo( const P_:TDouble2D ) :Double;
        function RotL90 :TDouble2D;
        function RotR90 :TDouble2D;
-       class function RandG :TDouble2D; inline; static;
-       class function RandBS1 :TDouble2D; inline; static;
-       class function RandBS2 :TDouble2D; inline; static;
-       class function RandBS4 :TDouble2D; inline; static;
+       class function RandG :TDouble2D; static;
+       class function RandBS1 :TDouble2D; static;
+       class function RandBS2 :TDouble2D; static;
+       class function RandBS4 :TDouble2D; static;
      end;
 
      TDoublePos2D = TDouble2D;
