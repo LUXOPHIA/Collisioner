@@ -58,10 +58,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function DistanTo( const P_:TSingle2D ) :Single;
        function RotL90 :TSingle2D;
        function RotR90 :TSingle2D;
-       class function RandG :TSingle2D; inline; static;
-       class function RandBS1 :TSingle2D; inline; static;
-       class function RandBS2 :TSingle2D; inline; static;
-       class function RandBS4 :TSingle2D; inline; static;
+       class function RandG :TSingle2D; static;
+       class function RandBS1 :TSingle2D; static;
+       class function RandBS2 :TSingle2D; static;
+       class function RandBS4 :TSingle2D; static;
      end;
 
      TSinglePos2D = TSingle2D;
@@ -107,10 +107,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function DistanTo( const P_:TDouble2D ) :Double;
        function RotL90 :TDouble2D;
        function RotR90 :TDouble2D;
-       class function RandG :TDouble2D; inline; static;
-       class function RandBS1 :TDouble2D; inline; static;
-       class function RandBS2 :TDouble2D; inline; static;
-       class function RandBS4 :TDouble2D; inline; static;
+       class function RandG :TDouble2D; static;
+       class function RandBS1 :TDouble2D; static;
+       class function RandBS2 :TDouble2D; static;
+       class function RandBS4 :TDouble2D; static;
      end;
 
      TDoublePos2D = TDouble2D;
@@ -479,6 +479,12 @@ function DotProduct( const A_,B_:TDoubleVec2D ) :Double; inline; overload;
 
 function DotProduct( const A_,B_:TdSingleVec2D ) :TdSingle; inline; overload;
 function DotProduct( const A_,B_:TdDoubleVec2D ) :TdDouble; inline; overload;
+
+function CrossProduct( const A_,B_:TSingle2D ) :Single; overload;
+function CrossProduct( const A_,B_:TDouble2D ) :Double; overload;
+
+function CrossProduct( const A_,B_:TdSingle2D ) :TdSingle; overload;
+function CrossProduct( const A_,B_:TdDouble2D ) :TdDouble; overload;
 
 function Distanc2( const A_,B_:TSinglePos2D ) :Single; inline; overload;
 function Distanc2( const A_,B_:TDoublePos2D ) :Double; inline; overload;
@@ -2102,6 +2108,28 @@ function DotProduct( const A_,B_:TdDoubleVec2D ) :TdDouble;
 begin
      Result := A_.X * B_.X
              + A_.Y * B_.Y;
+end;
+
+//------------------------------------------------------------------------------
+
+function CrossProduct( const A_,B_:TSingle2D ) :Single;
+begin
+     Result := A_.X * B_.Y - A_.Y * B_.X;
+end;
+
+function CrossProduct( const A_,B_:TDouble2D ) :Double;
+begin
+     Result := A_.X * B_.Y - A_.Y * B_.X;
+end;
+
+function CrossProduct( const A_,B_:TdSingle2D ) :TdSingle;
+begin
+     Result := A_.X * B_.Y - A_.Y * B_.X;
+end;
+
+function CrossProduct( const A_,B_:TdDouble2D ) :TdDouble;
+begin
+     Result := A_.X * B_.Y - A_.Y * B_.X;
 end;
 
 //------------------------------------------------------------------------------
