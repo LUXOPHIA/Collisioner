@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses System.RegularExpressions,
-     LUX, LUX.D2, LUX.Geometry.D2, LUX.Brep.Face.TriFlip;
+     LUX, LUX.D2, LUX.Matrix.L3, LUX.Geometry.D2, LUX.Brep.Face.TriFlip;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -41,6 +41,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Norv[ const I_:Byte ] :TSingle2D     read GetNorv        ;
        property CircumCircle          :TSingleCircle read GetCircumCircle;
        property Barycenter            :TSingle2D     read GetBarycenter  ;
+       ///// メソッド
+       function BaryPos( const P_:TSingle2D ) :TSingleV3;
+       function IsInside( const P_:TSingle2D ) :Boolean;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel2D<_TPoin_>
@@ -57,6 +60,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        procedure JoinEdges;
        procedure LoadFromFile( const FileName_:String );
+       function FindHit( const P_:TSingle2D; out B_:TSingleV3 ) :_TFace_;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -110,6 +114,35 @@ begin
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TTriFace2D.BaryPos( const P_:TSingle2D ) :TSingleV3;
+var
+   P1, P2, P3 :TSingle2D;
+   M :TSingleM3;
+begin
+     P1 := Poin[1].Pos;
+     P2 := Poin[2].Pos;
+     P3 := Poin[3].Pos;
+
+     with M do
+     begin
+          _11 := P1.X;  _12 := P2.X;  _13 := P3.X;
+          _21 := P1.Y;  _22 := P2.Y;  _23 := P3.Y;
+          _31 :=    1;  _32 :=    1;  _33 :=    1;
+     end;
+
+     Result := M.Inverse * TSingleV3.Create( P_.X, P_.Y, 1 );
+end;
+
+function TTriFace2D.IsInside( const P_:TSingle2D ) :Boolean;
+begin
+     with BaryPos( P_ ) do
+     begin
+          Result := ( _1 > 0 ) and ( _2 > 0 ) and ( _3 > 0 );
+     end;
+end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTriFaceModel2D<_TPoin_>
 
@@ -232,6 +265,36 @@ begin
      end;
 
      JoinEdges;
+end;
+
+//------------------------------------------------------------------------------
+
+function TTriFaceModel2D<_TPoin_,_TFace_>.FindHit( const P_:TSingle2D; out B_:TSingleV3 ) :_TFace_;
+var
+   I :Integer;
+   F :_TFace_;
+   B :TSingleV3;
+begin
+     for I := 0 to ChildsN-1 do
+     begin
+          F := Childs[ I ];
+
+          B := F.BaryPos( P_ );
+
+          with B do
+          begin
+               if ( _1 > 0 ) and ( _2 > 0 ) and ( _3 > 0 ) then
+               begin
+                    Result := F;
+
+                    B_ := B;
+
+                    Exit;
+               end;
+          end;
+     end;
+
+     Result := nil;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
