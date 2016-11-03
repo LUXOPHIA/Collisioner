@@ -8,22 +8,36 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleM31
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleV3
 
-     TSingleM31 = record
+     TSingleV3 = record
      private
-       __11 :Single;
-       __21 :Single;
-       __31 :Single;
+       __1 :Single;
+       __2 :Single;
+       __3 :Single;
        ///// アクセス
      public
-       constructor Create( const _11_,_21_,_31_:Single );
+       constructor Create( const _1_,_2_,_3_:Single );
        ///// プロパティ
-       property _11 :Single read __11 write __11;
-       property _21 :Single read __21 write __21;
-       property _31 :Single read __31 write __31;
-       ///// 算術演算子
-       ///// メソッド
+       property _1 :Single read __1 write __1;
+       property _2 :Single read __2 write __2;
+       property _3 :Single read __3 write __3;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleV3
+
+     TDoubleV3 = record
+     private
+       __1 :Double;
+       __2 :Double;
+       __3 :Double;
+       ///// アクセス
+     public
+       constructor Create( const _1_,_2_,_3_:Double );
+       ///// プロパティ
+       property _1 :Double read __1 write __1;
+       property _2 :Double read __2 write __2;
+       property _3 :Double read __3 write __3;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleM3
@@ -62,9 +76,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_,B_:TSingleM3 ) :TSingleM3;
        class operator Multiply( const A_:TSingleM3; const B_:Single ) :TSingleM3;
        class operator Multiply( const A_:Single; const B_:TSingleM3 ) :TSingleM3;
+       class operator Multiply( const A_:TSingleV3; const B_:TSingleM3 ) :TSingleV3;
+       class operator Multiply( const A_:TSingleM3; const B_:TSingleV3 ) :TSingleV3;
        class operator Multiply( const A_:TSingle3D; const B_:TSingleM3 ) :TSingle3D;
        class operator Multiply( const A_:TSingleM3; const B_:TSingle3D ) :TSingle3D;
-       class operator Multiply( const A_:TSingleM3; const B_:TSingleM31 ) :TSingleM31;
        class operator Divide( const A_:TSingleM3; const B_:Single ) :TSingleM3;
        ///// メソッド
        function Transpose :TSingleM3;
@@ -110,6 +125,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_,B_:TDoubleM3 ) :TDoubleM3;
        class operator Multiply( const A_:TDoubleM3; const B_:Double ) :TDoubleM3;
        class operator Multiply( const A_:Double; const B_:TDoubleM3 ) :TDoubleM3;
+       class operator Multiply( const A_:TDoubleV3; const B_:TDoubleM3 ) :TDoubleV3;
+       class operator Multiply( const A_:TDoubleM3; const B_:TDoubleV3 ) :TDoubleV3;
        class operator Multiply( const A_:TDouble3D; const B_:TDoubleM3 ) :TDouble3D;
        class operator Multiply( const A_:TDoubleM3; const B_:TDouble3D ) :TDouble3D;
        class operator Divide( const A_:TDoubleM3; const B_:Double ) :TDoubleM3;
@@ -132,7 +149,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleM31
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleV3
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -140,11 +157,28 @@ implementation //###############################################################
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TSingleM31.Create( const _11_,_21_,_31_:Single );
+constructor TSingleV3.Create( const _1_,_2_,_3_:Single );
 begin
-     _11 := _11_;
-     _21 := _21_;
-     _31 := _31_;
+     _1 := _1_;
+     _2 := _2_;
+     _3 := _3_;
+end;
+
+///////////////////////////////////////////////////////////////////////// 演算子
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleV3
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TDoubleV3.Create( const _1_,_2_,_3_:Double );
+begin
+     _1 := _1_;
+     _2 := _2_;
+     _3 := _3_;
 end;
 
 ///////////////////////////////////////////////////////////////////////// 演算子
@@ -277,9 +311,11 @@ end;
 
 class operator TSingleM3.Multiply( const A_,B_:TSingleM3 ) :TSingleM3;
 begin
-     // _11 _12 _13    _11 _12 _13
-     // _21 _22 _23 × _21 _22 _23
-     // _31 _32 _33    _31 _32 _33
+     {
+       11 12 13    11 12 13
+       21 22 23 × 21 22 23
+       31 32 33    31 32 33
+     }
 
      with Result do
      begin
@@ -317,12 +353,44 @@ begin
      end
 end;
 
+class operator TSingleM3.Multiply( const A_:TSingleV3; const B_:TSingleM3 ) :TSingleV3;
+begin
+     {
+                11 12 13
+       1 2 3 × 21 22 23
+                31 32 33
+     }
+
+     with Result do
+     begin
+          _1 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31;
+          _2 := A_._1 * B_._12 + A_._2 * B_._22 + A_._3 * B_._32;
+          _3 := A_._1 * B_._13 + A_._2 * B_._23 + A_._3 * B_._33;
+     end
+end;
+
+class operator TSingleM3.Multiply( const A_:TSingleM3; const B_:TSingleV3 ) :TSingleV3;
+begin
+     {
+       11 12 13    1
+       21 22 23 × 2
+       31 32 33    3
+     }
+
+     with Result do
+     begin
+          _1 := A_._11 * B_._1 + A_._12 * B_._2 + A_._13 * B_._3;
+          _2 := A_._21 * B_._1 + A_._22 * B_._2 + A_._23 * B_._3;
+          _3 := A_._31 * B_._1 + A_._32 * B_._2 + A_._33 * B_._3;
+     end
+end;
+
 class operator TSingleM3.Multiply( const A_:TSingle3D; const B_:TSingleM3 ) :TSingle3D;
 begin
      {
-                 _11 _12 _13
-        X Y Z × _21 _22 _23
-                 _31 _32 _33
+                11 12 13
+       X Y Z × 21 22 23
+                31 32 33
      }
 
      with Result do
@@ -336,9 +404,9 @@ end;
 class operator TSingleM3.Multiply( const A_:TSingleM3; const B_:TSingle3D ) :TSingle3D;
 begin
      {
-       _11 _12 _13    X
-       _21 _22 _23 × Y
-       _31 _32 _33    Z
+       11 12 13    X
+       21 22 23 × Y
+       31 32 33    Z
      }
 
      with Result do
@@ -346,22 +414,6 @@ begin
           X := A_._11 * B_.X + A_._12 * B_.Y + A_._13 * B_.Z;
           Y := A_._21 * B_.X + A_._22 * B_.Y + A_._23 * B_.Z;
           Z := A_._31 * B_.X + A_._32 * B_.Y + A_._33 * B_.Z;
-     end
-end;
-
-class operator TSingleM3.Multiply( const A_:TSingleM3; const B_:TSingleM31 ) :TSingleM31;
-begin
-     {
-       A_._11 A_._12 A_._13    B_._11
-       A_._21 A_._22 A_._23 × B_._21
-       A_._31 A_._32 A_._33    B_._31
-     }
-
-     with Result do
-     begin
-          _11 := A_._11 * B_._11 + A_._12 * B_._21 + A_._13 * B_._31;
-          _21 := A_._21 * B_._11 + A_._22 * B_._21 + A_._23 * B_._31;
-          _31 := A_._31 * B_._11 + A_._32 * B_._21 + A_._33 * B_._31;
      end
 end;
 
@@ -564,9 +616,11 @@ end;
 
 class operator TDoubleM3.Multiply( const A_,B_:TDoubleM3 ) :TDoubleM3;
 begin
-     // _11 _12 _13    _11 _12 _13
-     // _21 _22 _23 × _21 _22 _23
-     // _31 _32 _33    _31 _32 _33
+     {
+       11 12 13    11 12 13
+       21 22 23 × 21 22 23
+       31 32 33    31 32 33
+     }
 
      with Result do
      begin
@@ -604,12 +658,44 @@ begin
      end
 end;
 
+class operator TDoubleM3.Multiply( const A_:TDoubleV3; const B_:TDoubleM3 ) :TDoubleV3;
+begin
+     {
+                11 12 13
+       1 2 3 × 21 22 23
+                31 32 33
+     }
+
+     with Result do
+     begin
+          _1 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31;
+          _2 := A_._1 * B_._12 + A_._2 * B_._22 + A_._3 * B_._32;
+          _3 := A_._1 * B_._13 + A_._2 * B_._23 + A_._3 * B_._33;
+     end
+end;
+
+class operator TDoubleM3.Multiply( const A_:TDoubleM3; const B_:TDoubleV3 ) :TDoubleV3;
+begin
+     {
+       11 12 13    1
+       21 22 23 × 2
+       31 32 33    3
+     }
+
+     with Result do
+     begin
+          _1 := A_._11 * B_._1 + A_._12 * B_._2 + A_._13 * B_._3;
+          _2 := A_._21 * B_._1 + A_._22 * B_._2 + A_._23 * B_._3;
+          _3 := A_._31 * B_._1 + A_._32 * B_._2 + A_._33 * B_._3;
+     end
+end;
+
 class operator TDoubleM3.Multiply( const A_:TDouble3D; const B_:TDoubleM3 ) :TDouble3D;
 begin
      {
-                 _11 _12 _13
-        X Y Z × _21 _22 _23
-                 _31 _32 _33
+                11 12 13
+       X Y Z × 21 22 23
+                31 32 33
      }
 
      with Result do
@@ -623,9 +709,9 @@ end;
 class operator TDoubleM3.Multiply( const A_:TDoubleM3; const B_:TDouble3D ) :TDouble3D;
 begin
      {
-       _11 _12 _13    X
-       _21 _22 _23 × Y
-       _31 _32 _33    Z
+       11 12 13    X
+       21 22 23 × Y
+       31 32 33    Z
      }
 
      with Result do
