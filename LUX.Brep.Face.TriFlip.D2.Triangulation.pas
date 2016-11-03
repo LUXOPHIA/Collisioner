@@ -39,7 +39,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TTriGenModel<_TPoin_:TTriGenPoin,constructor;
                   _TFace_:TTriGenFace,constructor> = class( TDelaunay2D<_TPoin_,_TFace_> )
      private
-       _EdgePoins :array of TSingle2D;
+       _EdgePoins :TArray<TSingle2D>;
      protected
        _Radius :Single;
      public
@@ -201,39 +201,9 @@ end;
 //------------------------------------------------------------------------------
 
 function TTriGenModel<_TPoin_,_TFace_>.InsideEdges( const P_:TSingle2D ) :Single;
-var
-   I :Integer;
-   P0, P1, P2, V0, V1 :TSingle2D;
-   A :Single;
 begin
-     Result := 0;
-
-     if not Assigned( _EdgePoins ) then Exit;
-
-     P2 := _EdgePoins[ 0 ];
-     P1 := P2;
-     for I := 1 to High( _EdgePoins )-1 do
-     begin
-          P0 := P1;  P1 := _EdgePoins[ I ];
-
-          V0 := P0 - P_;
-          V1 := P1 - P_;
-
-          A := ArcTan2( V0.X * V1.Y - V0.Y * V1.X,
-                        V0.X * V1.X + V0.Y * V1.Y );
-
-          Result := Result + A;
-     end;
-
-     V0 := P1 - P_;
-     V1 := P2 - P_;
-
-     A := ArcTan2( V0.X * V1.Y - V0.Y * V1.X,
-                   V0.X * V1.X + V0.Y * V1.Y );
-
-     Result := Result + A;
-
-     Result := Result / Pi2;
+     if Assigned( _EdgePoins ) then Result := InsideLoop( P_, _EdgePoins )
+                               else Result := 0;
 end;
 
 //------------------------------------------------------------------------------
