@@ -72,8 +72,8 @@ function HeronAre2( const L1_,L2_,L3_:Double ) :Double; overload;
 function HeronArea( const L1_,L2_,L3_:Single ) :Single; overload;
 function HeronArea( const L1_,L2_,L3_:Double ) :Double; overload;
 
-function LineNormal( const P1_,P2_:TSingle2D ) :TSingle2D; overload;
-function LineNormal( const P1_,P2_:TDouble2D ) :TDouble2D; overload;
+function LineNormal( const P0_,P1_:TSingle2D ) :TSingle2D; overload;
+function LineNormal( const P0_,P1_:TDouble2D ) :TDouble2D; overload;
 
 function Barycenter( const P1_,P2_:TSinglePos2D ) :TSinglePos2D; overload;
 function Barycenter( const P1_,P2_:TDoublePos2D ) :TDoublePos2D; overload;
@@ -102,9 +102,12 @@ function BoundingBox( const Ps_:array of TDouble2D ) :TDoubleArea2D; overload;
 function ShapeMatch( const Vs0_,Vs1_:array of TSingle2D ) :TSingleM2; overload;
 function ShapeMatch( const Vs0_,Vs1_:array of TDouble2D ) :TDoubleM2; overload;
 
+function InsideLoop( const P_:TSingle2D; const Ps_:TArray<TSingle2D> ) :Single; overload;
+function InsideLoop( const P_:TDouble2D; const Ps_:TArray<TDouble2D> ) :Double; overload;
+
 implementation //############################################################### ■
 
-uses System.SysUtils;
+uses System.SysUtils, System.Math;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -236,21 +239,21 @@ end;
 
 //------------------------------------------------------------------------------
 
-function LineNormal( const P1_,P2_:TSingle2D ) :TSingle2D;
+function LineNormal( const P0_,P1_:TSingle2D ) :TSingle2D;
 begin
-     with P2_ - P1_ do
+     with P0_.VectorTo( P1_ ) do
      begin
-          Result.X := -Y;
-          Result.Y := +X;
+          Result.X := +Y;
+          Result.Y := -X;
      end;
 end;
 
-function LineNormal( const P1_,P2_:TDouble2D ) :TDouble2D;
+function LineNormal( const P0_,P1_:TDouble2D ) :TDouble2D;
 begin
-     with P2_ - P1_ do
+     with P0_.VectorTo( P1_ ) do
      begin
-          Result.X := -Y;
-          Result.Y := +X;
+          Result.X := +Y;
+          Result.Y := -X;
      end;
 end;
 
@@ -534,6 +537,76 @@ begin
      end;
 
      Result := Result / Roo2( Pow2( Result._11 ) + Pow2( Result._12 ) );
+end;
+
+//------------------------------------------------------------------------------
+
+function InsideLoop( const P_:TSingle2D; const Ps_:TArray<TSingle2D> ) :Single;
+var
+   I :Integer;
+   P0, P1, P2, V0, V1 :TSingle2D;
+   A :Single;
+begin
+     Result := 0;
+
+     P2 := Ps_[ 0 ];
+     P1 := P2;
+     for I := 1 to High( Ps_ )-1 do
+     begin
+          P0 := P1;  P1 := Ps_[ I ];
+
+          V0 := P0 - P_;
+          V1 := P1 - P_;
+
+          A := ArcTan2( V0.X * V1.Y - V0.Y * V1.X,
+                        V0.X * V1.X + V0.Y * V1.Y );
+
+          Result := Result + A;
+     end;
+
+     V0 := P1 - P_;
+     V1 := P2 - P_;
+
+     A := ArcTan2( V0.X * V1.Y - V0.Y * V1.X,
+                   V0.X * V1.X + V0.Y * V1.Y );
+
+     Result := Result + A;
+
+     Result := Result / Pi2;
+end;
+
+function InsideLoop( const P_:TDouble2D; const Ps_:TArray<TDouble2D> ) :Double;
+var
+   I :Integer;
+   P0, P1, P2, V0, V1 :TDouble2D;
+   A :Double;
+begin
+     Result := 0;
+
+     P2 := Ps_[ 0 ];
+     P1 := P2;
+     for I := 1 to High( Ps_ )-1 do
+     begin
+          P0 := P1;  P1 := Ps_[ I ];
+
+          V0 := P0 - P_;
+          V1 := P1 - P_;
+
+          A := ArcTan2( V0.X * V1.Y - V0.Y * V1.X,
+                        V0.X * V1.X + V0.Y * V1.Y );
+
+          Result := Result + A;
+     end;
+
+     V0 := P1 - P_;
+     V1 := P2 - P_;
+
+     A := ArcTan2( V0.X * V1.Y - V0.Y * V1.X,
+                   V0.X * V1.X + V0.Y * V1.Y );
+
+     Result := Result + A;
+
+     Result := Result / Pi2;
 end;
 
 //############################################################################## □

@@ -15,6 +15,38 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDougEdge
+
+     (* TDougEdge
+                  Norv
+                   ↑
+     Poin1 ③←Edge┴───② Poin0
+             ＼          ／
+               ＼ Face ／
+                 ＼  ／
+                   ①
+                  Vert
+     *)
+
+     TDougEdge = record
+     private
+       function GetPoin0 :TDougPoin;
+       function GetPoin1 :TDougPoin;
+       function GetEdge :TSingle2D;
+       function GetNorv :TSingle2D;
+     public
+       Face :TDougFace;
+       Vert :Byte;
+       ///// プロパティ
+       property Poin0 :TDougPoin read GetPoin0;
+       property Poin1 :TDougPoin read GetPoin1;
+       property Edge  :TSingle2D read GetEdge ;
+       property Norv  :TSingle2D read GetNorv ;
+       ///// 演算子
+       class operator Equal( const A_,B_:TDougEdge ) :Boolean;
+       class operator NotEqual( const A_,B_:TDougEdge ) :Boolean;
+     end;
+
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDougPoin  //格子点のクラス
@@ -94,15 +126,56 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【変数】
 
-    _ThreadPool :TThreadPool;
+    _ThreadPool_ :TThreadPool;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
 implementation //############################################################### ■
 
-uses System.SysUtils, System.RTLConsts;
+uses System.SysUtils, System.RTLConsts,
+     LUX.Brep.Face.TriFlip;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDougEdge
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+function TDougEdge.GetPoin0 :TDougPoin;
+begin
+     Result := Face.Poin[ _Inc_[ Vert ] ];
+end;
+
+function TDougEdge.GetPoin1 :TDougPoin;
+begin
+     Result := Face.Poin[ _Dec_[ Vert ] ];
+end;
+
+function TDougEdge.GetEdge :TSingle2D;
+begin
+     Result := Face.Edge[ Vert ];
+end;
+
+function TDougEdge.GetNorv :TSingle2D;
+begin
+     Result := Face.Norv[ Vert ];
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+///////////////////////////////////////////////////////////////////////// 演算子
+
+class operator TDougEdge.Equal( const A_,B_:TDougEdge ) :Boolean;
+begin
+     Result := ( A_.Face = B_.Face )
+           and ( A_.Vert = B_.Vert );
+end;
+
+class operator TDougEdge.NotEqual( const A_,B_:TDougEdge ) :Boolean;
+begin
+     Result := ( A_.Face <> B_.Face )
+            or ( A_.Vert <> B_.Vert );
+end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
@@ -251,7 +324,7 @@ begin
                begin
                     with _Model.Childs[ I ] do
                     begin
-                         for K := 1 to 3 do
+                         for K := 3 downto 1 do
                          begin
                               Indices[ J ] := Poin[ K ].Order;
 
@@ -291,10 +364,10 @@ end;
 
 initialization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 初期化
 
-     _ThreadPool := TThreadPool.Create;
+     _ThreadPool_ := TThreadPool.Create;
 
 finalization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 最終化
 
-     _ThreadPool.Free;
+     _ThreadPool_.Free;
 
 end. //######################################################################### ■
