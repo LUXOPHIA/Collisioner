@@ -58,6 +58,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function DistanTo( const P_:TSingle2D ) :Single;
        function RotL90 :TSingle2D;
        function RotR90 :TSingle2D;
+       function RotAngleTo( const V_:TSingle2D ) :Single;
        class function RandG :TSingle2D; static;
        class function RandBS1 :TSingle2D; static;
        class function RandBS2 :TSingle2D; static;
@@ -107,6 +108,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function DistanTo( const P_:TDouble2D ) :Double;
        function RotL90 :TDouble2D;
        function RotR90 :TDouble2D;
+       function RotAngleTo( const V_:TDouble2D ) :Double;
        class function RandG :TDouble2D; static;
        class function RandBS1 :TDouble2D; static;
        class function RandBS2 :TDouble2D; static;
@@ -480,6 +482,12 @@ function DotProduct( const A_,B_:TDoubleVec2D ) :Double; inline; overload;
 function DotProduct( const A_,B_:TdSingleVec2D ) :TdSingle; inline; overload;
 function DotProduct( const A_,B_:TdDoubleVec2D ) :TdDouble; inline; overload;
 
+function CrossProduct( const A_,B_:TSingle2D ) :Single; overload;
+function CrossProduct( const A_,B_:TDouble2D ) :Double; overload;
+
+function CrossProduct( const A_,B_:TdSingle2D ) :TdSingle; overload;
+function CrossProduct( const A_,B_:TdDouble2D ) :TdDouble; overload;
+
 function Distanc2( const A_,B_:TSinglePos2D ) :Single; inline; overload;
 function Distanc2( const A_,B_:TDoublePos2D ) :Double; inline; overload;
 
@@ -503,6 +511,12 @@ function Ave( const P1_,P2_,P3_:TDouble2D ) :TDouble2D; inline; overload;
 
 function Ave( const P1_,P2_,P3_:TdSingle2D ) :TdSingle2D; inline; overload;
 function Ave( const P1_,P2_,P3_:TdDouble2D ) :TdDouble2D; inline; overload;
+
+function DotAngle( const V0_,V1_:TSingle2D ) :Single; overload;
+function DotAngle( const V0_,V1_:TDouble2D ) :Double; overload;
+
+function RotAngle( const V0_,V1_:TSingle2D ) :Single; overload;
+function RotAngle( const V0_,V1_:TDouble2D ) :Double; overload;
 
 implementation //############################################################### ■
 
@@ -694,6 +708,14 @@ function TSingle2D.RotR90 :TSingle2D;
 begin
      Result.X := +Y;
      Result.Y := -X;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingle2D.RotAngleTo( const V_:TSingle2D ) :Single;
+begin
+     Result := ArcTan2( X * V_.Y - Y * V_.X,
+                        X * V_.X + Y * V_.Y );
 end;
 
 //------------------------------------------------------------------------------
@@ -914,6 +936,14 @@ function TDouble2D.RotR90 :TDouble2D;
 begin
      Result.X := +Y;
      Result.Y := -X;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDouble2D.RotAngleTo( const V_:TDouble2D ) :Double;
+begin
+     Result := ArcTan2( X * V_.Y - Y * V_.X,
+                        X * V_.X + Y * V_.Y );
 end;
 
 //------------------------------------------------------------------------------
@@ -2106,6 +2136,28 @@ end;
 
 //------------------------------------------------------------------------------
 
+function CrossProduct( const A_,B_:TSingle2D ) :Single;
+begin
+     Result := A_.X * B_.Y - A_.Y * B_.X;
+end;
+
+function CrossProduct( const A_,B_:TDouble2D ) :Double;
+begin
+     Result := A_.X * B_.Y - A_.Y * B_.X;
+end;
+
+function CrossProduct( const A_,B_:TdSingle2D ) :TdSingle;
+begin
+     Result := A_.X * B_.Y - A_.Y * B_.X;
+end;
+
+function CrossProduct( const A_,B_:TdDouble2D ) :TdDouble;
+begin
+     Result := A_.X * B_.Y - A_.Y * B_.X;
+end;
+
+//------------------------------------------------------------------------------
+
 function Distanc2( const A_,B_:TSinglePos2D ) :Single;
 begin
      Result := Pow2( B_.X - A_.X ) + Pow2( B_.Y - A_.Y );
@@ -2188,6 +2240,32 @@ end;
 function Ave( const P1_,P2_,P3_:TdDouble2D ) :TdDouble2D;
 begin
      Result := ( P1_ + P2_ + P3_ ) / 3;
+end;
+
+//------------------------------------------------------------------------------
+
+function DotAngle( const V0_,V1_:TSingle2D ) :Single;
+begin
+     Result := ArcCos( DotProduct( V0_, V1_ ) );
+end;
+
+function DotAngle( const V0_,V1_:TDouble2D ) :Double;
+begin
+     Result := ArcCos( DotProduct( V0_, V1_ ) );
+end;
+
+//------------------------------------------------------------------------------
+
+function RotAngle( const V0_,V1_:TSingle2D ) :Single;
+begin
+     Result := ArcTan2( V0_.X * V1_.Y - V0_.Y * V1_.X,
+                        V0_.X * V1_.X + V0_.Y * V1_.Y );
+end;
+
+function RotAngle( const V0_,V1_:TDouble2D ) :Double;
+begin
+     Result := ArcTan2( V0_.X * V1_.Y - V0_.Y * V1_.X,
+                        V0_.X * V1_.X + V0_.Y * V1_.Y );
 end;
 
 //############################################################################## □
