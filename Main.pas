@@ -198,8 +198,7 @@ begin
           V0 := E.Poin0.Pos - P_;
           V1 := E.Poin1.Pos - P_;
 
-          A := ArcTan2( V0.X * V1.Y - V0.Y * V1.X,
-                        V0.X * V1.X + V0.Y * V1.Y );
+          A := V0.RotAngleTo( V1 );
 
           Result := Result + A;
      end;
@@ -445,7 +444,7 @@ begin
                          V0[K] := P0[K] - G0;    //初期のベクトル
                          V1[K] := P1[K] - G1;    //現在のベクトル
 
-                         V0[K] := V0[K] * 2;     //理想とする形
+                         V0[K] := V0[K] * 2;     //理想とする形（２倍に拡大）
                     end;
 
                     M := ShapeMatch( V0, V1 );  //最適な回転行列

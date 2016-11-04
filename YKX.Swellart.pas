@@ -91,12 +91,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TDougModel = class( TTriGenModel<TDougPoin,TDougFace> )
      private
      protected
-       ///// アクセス
-       function GetChild( const I_:Integer ) :TDougFace; reintroduce;
-       procedure SetChild( const I_:Integer; const Child_:TDougFace ); reintroduce;
      public
-       ///// プロパティ
-       property Childs[ const I_:Integer ] :TDougFace read GetChild write SetChild;  //三角面
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDougShape  //ポリゴンのクラス
@@ -252,18 +247,6 @@ end;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-/////////////////////////////////////////////////////////////////////// アクセス
-
-function TDougModel.GetChild( const I_:Integer ) :TDougFace;
-begin
-     Result := TDougFace( inherited Childs[ I_ ] );
-end;
-
-procedure TDougModel.SetChild( const I_:Integer; const Child_:TDougFace );
-begin
-     inherited Childs[ I_ ] := Child_;
-end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
