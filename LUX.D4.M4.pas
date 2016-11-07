@@ -13,8 +13,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TSingle4DM4 = record
      private
        ///// アクセス
-       function GetM( const Y_,X_:Integer ) :TSingle4D;
-       procedure SetM( const Y_,X_:Integer; const M_:TSingle4D );
+       function GetM( const Y_,X_:Integer ) :TSingle4D; inline;
+       procedure SetM( const Y_,X_:Integer; const M_:TSingle4D ); inline;
      public
        ///// プロパティ
        property M[ const Y_,X_:Integer ] :TSingle4D read GetM write SetM; default;
@@ -31,8 +31,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TDouble4DM4 = record
      private
        ///// アクセス
-       function GetM( const Y_,X_:Integer ) :TDouble4D;
-       procedure SetM( const Y_,X_:Integer; const M_:TDouble4D );
+       function GetM( const Y_,X_:Integer ) :TDouble4D; inline;
+       procedure SetM( const Y_,X_:Integer; const M_:TDouble4D ); inline;
      public
        ///// プロパティ
        property M[ const Y_,X_:Integer ] :TDouble4D read GetM write SetM; default;
@@ -49,8 +49,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TdSingle4DM4 = record
      private
        ///// アクセス
-       function GetM( const Y_,X_:Integer ) :TdSingle4D;
-       procedure SetM( const Y_,X_:Integer; const M_:TdSingle4D );
+       function GetM( const Y_,X_:Integer ) :TdSingle4D; inline;
+       procedure SetM( const Y_,X_:Integer; const M_:TdSingle4D ); inline;
      public
        ///// プロパティ
        property M[ const Y_,X_:Integer ] :TdSingle4D read GetM write SetM; default;
@@ -70,8 +70,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TdDouble4DM4 = record
      private
        ///// アクセス
-       function GetM( const Y_,X_:Integer ) :TdDouble4D;
-       procedure SetM( const Y_,X_:Integer; const M_:TdDouble4D );
+       function GetM( const Y_,X_:Integer ) :TdDouble4D; inline;
+       procedure SetM( const Y_,X_:Integer; const M_:TdDouble4D ); inline;
      public
        ///// プロパティ
        property M[ const Y_,X_:Integer ] :TdDouble4D read GetM write SetM; default;
