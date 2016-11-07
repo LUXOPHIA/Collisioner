@@ -14,6 +14,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TSingle4D = record
      private
        ///// アクセス
+       function GetV( const I_:Integer ) :Single; inline;
+       procedure SetV( const I_:Integer; const V_:Single ); inline;
        function GetSiz2 :Single; inline;
        procedure SetSiz2( const Siz2_:Single ); inline;
        function GetSize :Single; inline;
@@ -24,9 +26,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const V_:Single ); overload;
        constructor Create( const X_,Y_,Z_,W_:Single ); overload;
        ///// プロパティ
-       property Siz2   :Single    read GetSiz2   write SetSiz2;
-       property Size   :Single    read GetSize   write SetSize;
-       property Unitor :TSingle4D read GetUnitor write SetUnitor;
+       property V[ const I_:Integer ] :Single    read GetV      write SetV     ; default;
+       property Siz2                  :Single    read GetSiz2   write SetSiz2  ;
+       property Size                  :Single    read GetSize   write SetSize  ;
+       property Unitor                :TSingle4D read GetUnitor write SetUnitor;
        ///// 演算子
        class operator Negative( const V_:TSingle4D ) :TSingle4D;
        class operator Positive( const V_:TSingle4D ) :TSingle4D;
@@ -56,15 +59,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RandBS2 :TSingle4D; static;
        class function RandBS4 :TSingle4D; static;
      case Integer of
-      0:(  X :Single;
+      0:( _  :array [ 1..4 ] of Single );
+      1:(  X :Single;
            Y :Single;
            Z :Single;
            W :Single;                  );
-      1:( _1 :Single;
+      2:( _1 :Single;
           _2 :Single;
           _3 :Single;
           _4 :Single;                  );
-      2:( _  :array [ 1..4 ] of Single );
      end;
 
      TSinglePos4D = TSingle4D;
@@ -75,6 +78,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TDouble4D = record
      private
        ///// アクセス
+       function GetV( const I_:Integer ) :Double; inline;
+       procedure SetV( const I_:Integer; const V_:Double ); inline;
        function GetSiz2 :Double; inline;
        procedure SetSiz2( const Siz2_:Double ); inline;
        function GetSize :Double; inline;
@@ -85,9 +90,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const V_:Double ); overload;
        constructor Create( const X_,Y_,Z_,W_:Double ); overload;
        ///// プロパティ
-       property Siz2   :Double    read GetSiz2   write SetSiz2;
-       property Size   :Double    read GetSize   write SetSize;
-       property Unitor :TDouble4D read GetUnitor write SetUnitor;
+       property V[ const I_:Integer ] :Double    read GetV      write SetV     ; default;
+       property Siz2                  :Double    read GetSiz2   write SetSiz2  ;
+       property Size                  :Double    read GetSize   write SetSize  ;
+       property Unitor                :TDouble4D read GetUnitor write SetUnitor;
        ///// 演算子
        class operator Negative( const V_:TDouble4D ) :TDouble4D;
        class operator Positive( const V_:TDouble4D ) :TDouble4D;
@@ -117,15 +123,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RandBS2 :TDouble4D; static;
        class function RandBS4 :TDouble4D; static;
      case Integer of
-      0:(  X :Double;
+      0:( _  :array [ 1..4 ] of Double );
+      1:(  X :Double;
            Y :Double;
            Z :Double;
            W :Double;                  );
-      1:( _1 :Double;
+      2:( _1 :Double;
           _2 :Double;
           _3 :Double;
           _4 :Double;                  );
-      2:( _  :array [ 1..4 ] of Double );
      end;
 
      TDoublePos4D = TDouble4D;
@@ -136,6 +142,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TdSingle4D = record
      private
        ///// アクセス
+       function GetV( const I_:Integer ) :TdSingle; inline;
+       procedure SetV( const I_:Integer; const V_:TdSingle ); inline;
        function Geto :TSingle4D; inline;
        procedure Seto( const o_:TSingle4D ); inline;
        function Getd :TSingle4D; inline;
@@ -149,11 +157,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        constructor Create( const X_,Y_,Z_,W_:TdSingle );
        ///// プロパティ
-       property o      :TSingle4D  read Geto      write Seto     ;
-       property d      :TSingle4D  read Getd      write Setd     ;
-       property Siz2   :TdSingle   read GetSiz2   write SetSiz2  ;
-       property Size   :TdSingle   read GetSize   write SetSize  ;
-       property Unitor :TdSingle4D read GetUnitor write SetUnitor;
+       property V[ const I_:Integer ] :TdSingle   read GetV      write SetV     ; default;
+       property o                     :TSingle4D  read Geto      write Seto     ;
+       property d                     :TSingle4D  read Getd      write Setd     ;
+       property Siz2                  :TdSingle   read GetSiz2   write SetSiz2  ;
+       property Size                  :TdSingle   read GetSize   write SetSize  ;
+       property Unitor                :TdSingle4D read GetUnitor write SetUnitor;
        ///// 演算子
        class operator Negative( const V_:TdSingle4D ) :TdSingle4D; inline;
        class operator Positive( const V_:TdSingle4D ) :TdSingle4D; inline;
@@ -166,15 +175,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Implicit( const V_:TSingle4D ) :TdSingle4D;
        class operator Implicit( const V_:TdSingle4D ) :TSingle4D;
      case Integer of
-      0:(  X :TdSingle;
+      0:( _  :array [ 1..4 ] of TdSingle );
+      1:(  X :TdSingle;
            Y :TdSingle;
            Z :TdSingle;
            W :TdSingle;                  );
-      1:( _1 :TdSingle;
+      2:( _1 :TdSingle;
           _2 :TdSingle;
           _3 :TdSingle;
           _4 :TdSingle;                  );
-      2:( _  :array [ 1..4 ] of TdSingle );
      end;
 
      TdSinglePos4D = TdSingle4D;
@@ -185,6 +194,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TdDouble4D = record
      private
        ///// アクセス
+       function GetV( const I_:Integer ) :TdDouble; inline;
+       procedure SetV( const I_:Integer; const V_:TdDouble ); inline;
        function Geto :TDouble4D; inline;
        procedure Seto( const o_:TDouble4D ); inline;
        function Getd :TDouble4D; inline;
@@ -198,11 +209,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        constructor Create( const X_,Y_,Z_,W_:TdDouble );
        ///// プロパティ
-       property o      :TDouble4D  read Geto      write Seto     ;
-       property d      :TDouble4D  read Getd      write Setd     ;
-       property Siz2   :TdDouble   read GetSiz2   write SetSiz2  ;
-       property Size   :TdDouble   read GetSize   write SetSize  ;
-       property Unitor :TdDouble4D read GetUnitor write SetUnitor;
+       property V[ const I_:Integer ] :TdDouble   read GetV      write SetV     ; default;
+       property o                     :TDouble4D  read Geto      write Seto     ;
+       property d                     :TDouble4D  read Getd      write Setd     ;
+       property Siz2                  :TdDouble   read GetSiz2   write SetSiz2  ;
+       property Size                  :TdDouble   read GetSize   write SetSize  ;
+       property Unitor                :TdDouble4D read GetUnitor write SetUnitor;
        ///// 演算子
        class operator Negative( const V_:TdDouble4D ) :TdDouble4D; inline;
        class operator Positive( const V_:TdDouble4D ) :TdDouble4D; inline;
@@ -215,15 +227,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Implicit( const V_:TDouble4D ) :TdDouble4D;
        class operator Implicit( const V_:TdDouble4D ) :TDouble4D;
      case Integer of
-      0:(  X :TdDouble;
+      0:( _  :array [ 1..4 ] of TdDouble );
+      1:(  X :TdDouble;
            Y :TdDouble;
            Z :TdDouble;
            W :TdDouble;                  );
-      1:( _1 :TdDouble;
+      2:( _1 :TdDouble;
           _2 :TdDouble;
           _3 :TdDouble;
           _4 :TdDouble;                  );
-      2:( _  :array [ 1..4 ] of TdDouble );
      end;
 
      TdDoublePos4D = TdDouble4D;
@@ -283,6 +295,18 @@ uses System.SysUtils, System.Math;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 /////////////////////////////////////////////////////////////////////// アクセス
+
+function TSingle4D.GetV( const I_:Integer ) :Single;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TSingle4D.SetV( const I_:Integer; const V_:Single );
+begin
+     _[ I_ ] := V_;
+end;
+
+//------------------------------------------------------------------------------
 
 function TSingle4D.GetSiz2 :Single;
 begin
@@ -594,6 +618,18 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
+function TDouble4D.GetV( const I_:Integer ) :Double;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TDouble4D.SetV( const I_:Integer; const V_:Double );
+begin
+     _[ I_ ] := V_;
+end;
+
+//------------------------------------------------------------------------------
+
 function TDouble4D.GetSiz2 :Double;
 begin
      Result := Pow2( X ) + Pow2( Y ) + Pow2( Z ) + Pow2( W );
@@ -904,6 +940,18 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
+function TdSingle4D.GetV( const I_:Integer ) :TdSingle;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TdSingle4D.SetV( const I_:Integer; const V_:TdSingle );
+begin
+     _[ I_ ] := V_;
+end;
+
+//------------------------------------------------------------------------------
+
 function TdSingle4D.Geto :TSingle4D;
 begin
      Result.X := X.o;
@@ -1078,6 +1126,18 @@ end;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 /////////////////////////////////////////////////////////////////////// アクセス
+
+function TdDouble4D.GetV( const I_:Integer ) :TdDouble;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TdDouble4D.SetV( const I_:Integer; const V_:TdDouble );
+begin
+     _[ I_ ] := V_;
+end;
+
+//------------------------------------------------------------------------------
 
 function TdDouble4D.Geto :TDouble4D;
 begin
