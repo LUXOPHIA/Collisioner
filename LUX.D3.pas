@@ -14,6 +14,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TSingle3D = record
      private
        ///// アクセス
+       function GetV( const I_:Integer ) :Single; inline;
+       procedure SetV( const I_:Integer; const V_:Single ); inline;
        function GetSiz2 :Single; inline;
        procedure SetSiz2( const Siz2_:Single ); inline;
        function GetSize :Single; inline;
@@ -24,9 +26,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const V_:Single ); overload;
        constructor Create( const X_,Y_,Z_:Single ); overload;
        ///// プロパティ
-       property Siz2   :Single    read GetSiz2   write SetSiz2;
-       property Size   :Single    read GetSize   write SetSize;
-       property Unitor :TSingle3D read GetUnitor write SetUnitor;
+       property V[ const I_:Integer ] :Single    read GetV      write SetV     ; default;
+       property Siz2                  :Single    read GetSiz2   write SetSiz2  ;
+       property Size                  :Single    read GetSize   write SetSize  ;
+       property Unitor                :TSingle3D read GetUnitor write SetUnitor;
        ///// 演算子
        class operator Negative( const V_:TSingle3D ) :TSingle3D; inline;
        class operator Positive( const V_:TSingle3D ) :TSingle3D; inline;
@@ -72,6 +75,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TDouble3D = record
      private
        ///// アクセス
+       function GetV( const I_:Integer ) :Double; inline;
+       procedure SetV( const I_:Integer; const V_:Double ); inline;
        function GetSiz2 :Double; inline;
        procedure SetSiz2( const Siz2_:Double ); inline;
        function GetSize :Double; inline;
@@ -82,9 +87,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const V_:Double ); overload;
        constructor Create( const X_,Y_,Z_:Double ); overload;
        ///// プロパティ
-       property Siz2   :Double    read GetSiz2   write SetSiz2;
-       property Size   :Double    read GetSize   write SetSize;
-       property Unitor :TDouble3D read GetUnitor write SetUnitor;
+       property V[ const I_:Integer ] :Double    read GetV      write SetV     ; default;
+       property Siz2                  :Double    read GetSiz2   write SetSiz2  ;
+       property Size                  :Double    read GetSize   write SetSize  ;
+       property Unitor                :TDouble3D read GetUnitor write SetUnitor;
        ///// 演算子
        class operator Negative( const V_:TDouble3D ) :TDouble3D; inline;
        class operator Positive( const V_:TDouble3D ) :TDouble3D; inline;
@@ -130,6 +136,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TdSingle3D = record
      private
        ///// アクセス
+       function GetV( const I_:Integer ) :TdSingle; inline;
+       procedure SetV( const I_:Integer; const V_:TdSingle ); inline;
        function Geto :TSingle3D; inline;
        procedure Seto( const o_:TSingle3D ); inline;
        function Getd :TSingle3D; inline;
@@ -143,11 +151,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        constructor Create( const X_,Y_,Z_:TdSingle );
        ///// プロパティ
-       property o      :TSingle3D  read Geto      write Seto     ;
-       property d      :TSingle3D  read Getd      write Setd     ;
-       property Siz2   :TdSingle   read GetSiz2   write SetSiz2  ;
-       property Size   :TdSingle   read GetSize   write SetSize  ;
-       property Unitor :TdSingle3D read GetUnitor write SetUnitor;
+       property V[ const I_:Integer ] :TdSingle   read GetV      write SetV     ; default;
+       property o                     :TSingle3D  read Geto      write Seto     ;
+       property d                     :TSingle3D  read Getd      write Setd     ;
+       property Siz2                  :TdSingle   read GetSiz2   write SetSiz2  ;
+       property Size                  :TdSingle   read GetSize   write SetSize  ;
+       property Unitor                :TdSingle3D read GetUnitor write SetUnitor;
        ///// 演算子
        class operator Negative( const V_:TdSingle3D ) :TdSingle3D; inline;
        class operator Positive( const V_:TdSingle3D ) :TdSingle3D; inline;
@@ -177,6 +186,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TdDouble3D = record
      private
        ///// アクセス
+       function GetV( const I_:Integer ) :TdDouble; inline;
+       procedure SetV( const I_:Integer; const V_:TdDouble ); inline;
        function Geto :TDouble3D; inline;
        procedure Seto( const o_:TDouble3D ); inline;
        function Getd :TDouble3D; inline;
@@ -190,11 +201,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        constructor Create( const X_,Y_,Z_:TdDouble );
        ///// プロパティ
-       property o      :TDouble3D  read Geto      write Seto     ;
-       property d      :TDouble3D  read Getd      write Setd     ;
-       property Siz2   :TdDouble   read GetSiz2   write SetSiz2  ;
-       property Size   :TdDouble   read GetSize   write SetSize  ;
-       property Unitor :TdDouble3D read GetUnitor write SetUnitor;
+       property V[ const I_:Integer ] :TdDouble   read GetV      write SetV     ; default;
+       property o                     :TDouble3D  read Geto      write Seto     ;
+       property d                     :TDouble3D  read Getd      write Setd     ;
+       property Siz2                  :TdDouble   read GetSiz2   write SetSiz2  ;
+       property Size                  :TdDouble   read GetSize   write SetSize  ;
+       property Unitor                :TdDouble3D read GetUnitor write SetUnitor;
        ///// 演算子
        class operator Negative( const V_:TdDouble3D ) :TdDouble3D; inline;
        class operator Positive( const V_:TdDouble3D ) :TdDouble3D; inline;
@@ -425,6 +437,18 @@ uses System.SysUtils, System.Math;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 /////////////////////////////////////////////////////////////////////// アクセス
+
+function TSingle3D.GetV( const I_:Integer ) :Single;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TSingle3D.SetV( const I_:Integer; const V_:Single );
+begin
+     _[ I_ ] := V_;
+end;
+
+//------------------------------------------------------------------------------
 
 function TSingle3D.GetSiz2 :Single;
 begin
@@ -694,6 +718,18 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
+function TDouble3D.GetV( const I_:Integer ) :Double;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TDouble3D.SetV( const I_:Integer; const V_:Double );
+begin
+     _[ I_ ] := V_;
+end;
+
+//------------------------------------------------------------------------------
+
 function TDouble3D.GetSiz2 :Double;
 begin
      Result := Pow2( X ) + Pow2( Y ) + Pow2( Z );
@@ -962,6 +998,18 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
+function TdSingle3D.GetV( const I_:Integer ) :TdSingle;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TdSingle3D.SetV( const I_:Integer; const V_:TdSingle );
+begin
+     _[ I_ ] := V_;
+end;
+
+//------------------------------------------------------------------------------
+
 function TdSingle3D.Geto :TSingle3D;
 begin
      Result.X := X.o;
@@ -1124,6 +1172,18 @@ end;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 /////////////////////////////////////////////////////////////////////// アクセス
+
+function TdDouble3D.GetV( const I_:Integer ) :TdDouble;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TdDouble3D.SetV( const I_:Integer; const V_:TdDouble );
+begin
+     _[ I_ ] := V_;
+end;
+
+//------------------------------------------------------------------------------
 
 function TdDouble3D.Geto :TDouble3D;
 begin
