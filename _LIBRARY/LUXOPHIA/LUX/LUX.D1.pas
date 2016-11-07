@@ -86,6 +86,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Implicit( const V_:Integer ) :TdDouble;
        class operator Implicit( const V_:Int64 ) :TdDouble;
        class operator Implicit( const V_:Double ) :TdDouble;
+       class operator Implicit( const V_:TdSingle ) :TdDouble;
+       class operator Implicit( const V_:TdDouble ) :TdSingle;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleArea
@@ -272,6 +274,9 @@ function Sin( const X_:TdDouble ) :TdDouble; overload;
 
 function Cos( const X_:TdSingle ) :TdSingle; overload;
 function Cos( const X_:TdDouble ) :TdDouble; overload;
+
+procedure SinCos( const X_:TdSingle; out S_,C_:TdSingle ); overload;
+procedure SinCos( const X_:TdDouble; out S_,C_:TdDouble ); overload;
 
 function Tan( const X_:TdSingle ) :TdSingle; overload;
 function Tan( const X_:TdDouble ) :TdDouble; overload;
@@ -627,6 +632,24 @@ begin
      begin
           o := V_;
           d := 0;
+     end;
+end;
+
+class operator TdDouble.Implicit( const V_:TdSingle ) :TdDouble;
+begin
+     with Result do
+     begin
+          o := V_.o;
+          d := V_.d;
+     end;
+end;
+
+class operator TdDouble.Implicit( const V_:TdDouble ) :TdSingle;
+begin
+     with Result do
+     begin
+          o := V_.o;
+          d := V_.d;
      end;
 end;
 
@@ -1122,6 +1145,40 @@ begin
      begin
           Result.o :=      Cos( o );
           Result.d := d * -Sin( o );
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure SinCos( const X_:TdSingle; out S_,C_:TdSingle );
+var
+   S, C :Single;
+begin
+     with X_ do
+     begin
+          SinCos( o, S, C );
+
+          S_.o :=      S;
+          S_.d := d * +C;
+
+          C_.o :=      C;
+          C_.d := d * -S;
+     end;
+end;
+
+procedure SinCos( const X_:TdDouble; out S_,C_:TdDouble );
+var
+   S, C :Double;
+begin
+     with X_ do
+     begin
+          SinCos( o, S, C );
+
+          S_.o :=      S;
+          S_.d := d * +C;
+
+          C_.o :=      C;
+          C_.d := d * -S;
      end;
 end;
 
