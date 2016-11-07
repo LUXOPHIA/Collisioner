@@ -558,8 +558,7 @@ begin
           V0 := P0 - P_;
           V1 := P1 - P_;
 
-          A := ArcTan2( V0.X * V1.Y - V0.Y * V1.X,
-                        V0.X * V1.X + V0.Y * V1.Y );
+          A := V0.RotAngleTo( V1 );
 
           Result := Result + A;
      end;
@@ -567,8 +566,7 @@ begin
      V0 := P1 - P_;
      V1 := P2 - P_;
 
-     A := ArcTan2( V0.X * V1.Y - V0.Y * V1.X,
-                   V0.X * V1.X + V0.Y * V1.Y );
+     A := V0.RotAngleTo( V1 );
 
      Result := Result + A;
 
@@ -592,8 +590,7 @@ begin
           V0 := P0 - P_;
           V1 := P1 - P_;
 
-          A := ArcTan2( V0.X * V1.Y - V0.Y * V1.X,
-                        V0.X * V1.X + V0.Y * V1.Y );
+          A := V0.RotAngleTo( V1 );
 
           Result := Result + A;
      end;
@@ -601,8 +598,7 @@ begin
      V0 := P1 - P_;
      V1 := P2 - P_;
 
-     A := ArcTan2( V0.X * V1.Y - V0.Y * V1.X,
-                   V0.X * V1.X + V0.Y * V1.Y );
+     A := V0.RotAngleTo( V1 );
 
      Result := Result + A;
 
