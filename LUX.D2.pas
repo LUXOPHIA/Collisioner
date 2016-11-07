@@ -30,9 +30,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetUnitor :TSingle2D; inline;
        procedure SetUnitor( const Unitor_:TSingle2D ); inline;
      public
-       X :Single;
-       Y :Single;
-       /////
        constructor Create( const X_,Y_:Single );
        ///// プロパティ
        property Siz2   :Single    read GetSiz2   write SetSiz2  ;
@@ -63,6 +60,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RandBS1 :TSingle2D; static;
        class function RandBS2 :TSingle2D; static;
        class function RandBS4 :TSingle2D; static;
+     case Integer of
+      0:( _ :array [ 1..1 ] of Single; );
+      1:(  X :Single;
+           Y :Single;                  );
+      2:( _1 :Single;
+          _2 :Single;                  );
      end;
 
      TSinglePos2D = TSingle2D;
@@ -80,9 +83,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetUnitor :TDouble2D; inline;
        procedure SetUnitor( const Unitor_:TDouble2D ); inline;
      public
-       X :Double;
-       Y :Double;
-       /////
        constructor Create( const X_,Y_:Double );
        ///// プロパティ
        property Siz2   :Double    read GetSiz2   write SetSiz2  ;
@@ -113,6 +113,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RandBS1 :TDouble2D; static;
        class function RandBS2 :TDouble2D; static;
        class function RandBS4 :TDouble2D; static;
+     case Integer of
+      0:( _ :array [ 1..1 ] of Double; );
+      1:(  X :Double;
+           Y :Double;                  );
+      2:( _1 :Double;
+          _2 :Double;                  );
      end;
 
      TDoublePos2D = TDouble2D;
@@ -134,9 +140,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetUnitor :TdSingle2D; inline;
        procedure SetUnitor( const Unitor_:TdSingle2D ); inline;
      public
-       X :TdSingle;
-       Y :TdSingle;
-       /////
        constructor Create( const X_,Y_:TdSingle );
        ///// プロパティ
        property o      :TSingle2D  read Geto      write Seto     ;
@@ -152,6 +155,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_:TdSingle2D; const B_:TdSingle ) :TdSingle2D; inline;
        class operator Multiply( const A_:TdSingle; const B_:TdSingle2D ) :TdSingle2D; inline;
        class operator Divide( const A_:TdSingle2D; const B_:TdSingle ) :TdSingle2D; inline;
+       ///// 型変換
+       class operator Implicit( const P_:TPointF ) :TdSingle2D; inline;
+       class operator Explicit( const P_:TdSingle2D ) :TPointF; inline;
+       class operator Implicit( const P_:TSingle2D ) :TdSingle2D; inline;
+       class operator Explicit( const P_:TdSingle2D ) :TSingle2D; inline;
+     case Integer of
+      0:( _ :array [ 1..1 ] of TdSingle; );
+      1:(  X :TdSingle;
+           Y :TdSingle;                  );
+      2:( _1 :TdSingle;
+          _2 :TdSingle;                  );
      end;
 
      TdSinglePos2D = TdSingle2D;
@@ -173,9 +187,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetUnitor :TdDouble2D; inline;
        procedure SetUnitor( const Unitor_:TdDouble2D ); inline;
      public
-       X :TdDouble;
-       Y :TdDouble;
-       /////
        constructor Create( const X_,Y_:TdDouble );
        ///// プロパティ
        property o      :TDouble2D  read Geto      write Seto     ;
@@ -191,6 +202,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_:TdDouble2D; const B_:TdDouble ) :TdDouble2D; inline;
        class operator Multiply( const A_:TdDouble; const B_:TdDouble2D ) :TdDouble2D; inline;
        class operator Divide( const A_:TdDouble2D; const B_:TdDouble ) :TdDouble2D; inline;
+       ///// 型変換
+       class operator Implicit( const P_:TPointF ) :TdDouble2D; inline;
+       class operator Explicit( const P_:TdDouble2D ) :TPointF; inline;
+       class operator Implicit( const P_:TDouble2D ) :TdDouble2D; inline;
+       class operator Explicit( const P_:TdDouble2D ) :TDouble2D; inline;
+     case Integer of
+      0:( _ :array [ 1..1 ] of TdDouble; );
+      1:(  X :TdDouble;
+           Y :TdDouble;                  );
+      2:( _1 :TdDouble;
+          _2 :TdDouble;                  );
      end;
 
      TdDoublePos2D = TdDouble2D;
@@ -1119,6 +1141,44 @@ begin
      end;
 end;
 
+///////////////////////////////////////////////////////////////////////// 型変換
+
+class operator TdSingle2D.Implicit( const P_:TPointF ) :TdSingle2D;
+begin
+     with Result do
+     begin
+          X := +P_.X;
+          Y := -P_.Y;
+     end;
+end;
+
+class operator TdSingle2D.Explicit( const P_:TdSingle2D ) :TPointF;
+begin
+     with Result do
+     begin
+          X := +P_.X.o;
+          Y := -P_.Y.o;
+     end;
+end;
+
+class operator TdSingle2D.Implicit( const P_:TSingle2D ) :TdSingle2D;
+begin
+     with Result do
+     begin
+          X := P_.X;
+          Y := P_.Y;
+     end;
+end;
+
+class operator TdSingle2D.Explicit( const P_:TdSingle2D ) :TSingle2D;
+begin
+     with Result do
+     begin
+          X := P_.X.o;
+          Y := P_.Y.o;
+     end;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TdDouble2D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -1249,6 +1309,44 @@ begin
      begin
           X := A_.X / B_;
           Y := A_.Y / B_;
+     end;
+end;
+
+///////////////////////////////////////////////////////////////////////// 型変換
+
+class operator TdDouble2D.Implicit( const P_:TPointF ) :TdDouble2D;
+begin
+     with Result do
+     begin
+          X := +P_.X;
+          Y := -P_.Y;
+     end;
+end;
+
+class operator TdDouble2D.Explicit( const P_:TdDouble2D ) :TPointF;
+begin
+     with Result do
+     begin
+          X := +P_.X.o;
+          Y := -P_.Y.o;
+     end;
+end;
+
+class operator TdDouble2D.Implicit( const P_:TDouble2D ) :TdDouble2D;
+begin
+     with Result do
+     begin
+          X := P_.X;
+          Y := P_.Y;
+     end;
+end;
+
+class operator TdDouble2D.Explicit( const P_:TdDouble2D ) :TDouble2D;
+begin
+     with Result do
+     begin
+          X := P_.X.o;
+          Y := P_.Y.o;
      end;
 end;
 
