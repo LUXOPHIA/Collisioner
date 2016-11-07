@@ -28,20 +28,20 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Size   :Single    read GetSize   write SetSize;
        property Unitor :TSingle3D read GetUnitor write SetUnitor;
        ///// 演算子
-       class operator Negative( const V_:TSingle3D ) :TSingle3D;
-       class operator Positive( const V_:TSingle3D ) :TSingle3D;
-       class operator Add( const A_,B_:TSingle3D ) :TSingle3D;
-       class operator Subtract( const A_,B_:TSingle3D ) :TSingle3D;
-       class operator Multiply( const A_:TSingle3D; const B_:Single ) :TSingle3D;
-       class operator Multiply( const A_:Single; const B_:TSingle3D ) :TSingle3D;
-       class operator Divide( const A_:TSingle3D; const B_:Single ) :TSingle3D;
+       class operator Negative( const V_:TSingle3D ) :TSingle3D; inline;
+       class operator Positive( const V_:TSingle3D ) :TSingle3D; inline;
+       class operator Add( const A_,B_:TSingle3D ) :TSingle3D; inline;
+       class operator Subtract( const A_,B_:TSingle3D ) :TSingle3D; inline;
+       class operator Multiply( const A_:TSingle3D; const B_:Single ) :TSingle3D; inline;
+       class operator Multiply( const A_:Single; const B_:TSingle3D ) :TSingle3D; inline;
+       class operator Divide( const A_:TSingle3D; const B_:Single ) :TSingle3D; inline;
        ///// 型変換
-       class operator Implicit( const V_:TSingle2D ) :TSingle3D;
-       class operator Explicit( const V_:TSingle3D ) :TSingle2D;
-       class operator Implicit( const V_:TPoint3D ) :TSingle3D;
-       class operator Implicit( const V_:TSingle3D ) :TPoint3D;
-       class operator Implicit( const V_:TVector3D ) :TSingle3D;
-       class operator Implicit( const V_:TSingle3D ) :TVector3D;
+       class operator Implicit( const V_:TSingle2D ) :TSingle3D; inline;
+       class operator Explicit( const V_:TSingle3D ) :TSingle2D; inline;
+       class operator Implicit( const V_:TPoint3D ) :TSingle3D; inline;
+       class operator Implicit( const V_:TSingle3D ) :TPoint3D; inline;
+       class operator Implicit( const V_:TVector3D ) :TSingle3D; inline;
+       class operator Implicit( const V_:TSingle3D ) :TVector3D; inline;
        ///// 定数
        class function IdentityX :TSingle3D; inline; static;
        class function IdentityY :TSingle3D; inline; static;
@@ -54,7 +54,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RandBS1 :TSingle3D; static;
        class function RandBS2 :TSingle3D; static;
        class function RandBS4 :TSingle3D; static;
-
      case Integer of
       0:( _ :array [ 1..3 ] of Single; );
       1:(  X :Single;
@@ -87,20 +86,20 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Size   :Double    read GetSize   write SetSize;
        property Unitor :TDouble3D read GetUnitor write SetUnitor;
        ///// 演算子
-       class operator Negative( const V_:TDouble3D ) :TDouble3D;
-       class operator Positive( const V_:TDouble3D ) :TDouble3D;
-       class operator Add( const A_,B_:TDouble3D ) :TDouble3D;
-       class operator Subtract( const A_,B_:TDouble3D ) :TDouble3D;
-       class operator Multiply( const A_:TDouble3D; const B_:Double ) :TDouble3D;
-       class operator Multiply( const A_:Double; const B_:TDouble3D ) :TDouble3D;
-       class operator Divide( const A_:TDouble3D; const B_:Double ) :TDouble3D;
+       class operator Negative( const V_:TDouble3D ) :TDouble3D; inline;
+       class operator Positive( const V_:TDouble3D ) :TDouble3D; inline;
+       class operator Add( const A_,B_:TDouble3D ) :TDouble3D; inline;
+       class operator Subtract( const A_,B_:TDouble3D ) :TDouble3D; inline;
+       class operator Multiply( const A_:TDouble3D; const B_:Double ) :TDouble3D; inline;
+       class operator Multiply( const A_:Double; const B_:TDouble3D ) :TDouble3D; inline;
+       class operator Divide( const A_:TDouble3D; const B_:Double ) :TDouble3D; inline;
        ///// 型変換
-       class operator Implicit( const V_:TDouble2D ) :TDouble3D;
-       class operator Explicit( const V_:TDouble3D ) :TDouble2D;
-       class operator Implicit( const V_:TPoint3D ) :TDouble3D;
-       class operator Implicit( const V_:TDouble3D ) :TPoint3D;
-       class operator Implicit( const V_:TVector3D ) :TDouble3D;
-       class operator Implicit( const V_:TDouble3D ) :TVector3D;
+       class operator Implicit( const V_:TDouble2D ) :TDouble3D; inline;
+       class operator Explicit( const V_:TDouble3D ) :TDouble2D; inline;
+       class operator Implicit( const V_:TPoint3D ) :TDouble3D; inline;
+       class operator Implicit( const V_:TDouble3D ) :TPoint3D; inline;
+       class operator Implicit( const V_:TVector3D ) :TDouble3D; inline;
+       class operator Implicit( const V_:TDouble3D ) :TVector3D; inline;
        ///// 定数
        class function IdentityX :TDouble3D; inline; static;
        class function IdentityY :TDouble3D; inline; static;
@@ -113,7 +112,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RandBS1 :TDouble3D; static;
        class function RandBS2 :TDouble3D; static;
        class function RandBS4 :TDouble3D; static;
-
      case Integer of
       0:( _ :array [ 1..3 ] of Double; );
       1:(  X :Double;
@@ -160,8 +158,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Divide( const A_:TdSingle3D; const B_:TdSingle ) :TdSingle3D; inline;
        ///// 型変換
        class operator Implicit( const V_:TSingle3D ) :TdSingle3D;
-       class operator Implicit( const V_:TdSingle3D ) :TSingle3D;
-
+       class operator Implicit( const V_:TdSingle3D ) :TSingle3D; inline;
      case Integer of
       0:( _ :array [ 1..3 ] of TdSingle; );
       1:(  X :TdSingle;
@@ -208,8 +205,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Divide( const A_:TdDouble3D; const B_:TdDouble ) :TdDouble3D; inline;
        ///// 型変換
        class operator Implicit( const V_:TDouble3D ) :TdDouble3D;
-       class operator Implicit( const V_:TdDouble3D ) :TDouble3D;
-
+       class operator Implicit( const V_:TdDouble3D ) :TDouble3D; inline;
      case Integer of
       0:( _ :array [ 1..3 ] of TdDouble; );
       1:(  X :TdDouble;
@@ -242,20 +238,20 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        /////
        constructor Create( const X_,Y_,Z_:Single );
        ///// 演算子
-       class operator Negative( const V_:TSingleSiz3D ) :TSingleSiz3D;
-       class operator Positive( const V_:TSingleSiz3D ) :TSingleSiz3D;
-       class operator Add( const A_,B_:TSingleSiz3D ) :TSingleSiz3D;
-       class operator Subtract( const A_,B_:TSingleSiz3D ) :TSingleSiz3D;
-       class operator Multiply( const A_:TSingleSiz3D; const B_:Single ) :TSingleSiz3D;
-       class operator Multiply( const A_:Single; const B_:TSingleSiz3D ) :TSingleSiz3D;
-       class operator Divide( const A_:TSingleSiz3D; const B_:Single ) :TSingleSiz3D;
+       class operator Negative( const V_:TSingleSiz3D ) :TSingleSiz3D; inline;
+       class operator Positive( const V_:TSingleSiz3D ) :TSingleSiz3D; inline;
+       class operator Add( const A_,B_:TSingleSiz3D ) :TSingleSiz3D; inline;
+       class operator Subtract( const A_,B_:TSingleSiz3D ) :TSingleSiz3D; inline;
+       class operator Multiply( const A_:TSingleSiz3D; const B_:Single ) :TSingleSiz3D; inline;
+       class operator Multiply( const A_:Single; const B_:TSingleSiz3D ) :TSingleSiz3D; inline;
+       class operator Divide( const A_:TSingleSiz3D; const B_:Single ) :TSingleSiz3D; inline;
        ///// 型変換
-       class operator Implicit( const V_:TPoint3D ) :TSingleSiz3D;
-       class operator Implicit( const V_:TSingleSiz3D ) :TPoint3D;
-       class operator Implicit( const V_:TVector3D ) :TSingleSiz3D;
-       class operator Implicit( const V_:TSingleSiz3D ) :TVector3D;
-       class operator Implicit( const V_:TSingle3D ) :TSingleSiz3D;
-       class operator Implicit( const V_:TSingleSiz3D ) :TSingle3D;
+       class operator Implicit( const V_:TPoint3D ) :TSingleSiz3D; inline;
+       class operator Implicit( const V_:TSingleSiz3D ) :TPoint3D; inline;
+       class operator Implicit( const V_:TVector3D ) :TSingleSiz3D; inline;
+       class operator Implicit( const V_:TSingleSiz3D ) :TVector3D; inline;
+       class operator Implicit( const V_:TSingle3D ) :TSingleSiz3D; inline;
+       class operator Implicit( const V_:TSingleSiz3D ) :TSingle3D; inline;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleSiz3D
@@ -269,20 +265,20 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        /////
        constructor Create( const X_,Y_,Z_:Double );
        ///// 演算子
-       class operator Negative( const V_:TDoubleSiz3D ) :TDoubleSiz3D;
-       class operator Positive( const V_:TDoubleSiz3D ) :TDoubleSiz3D;
-       class operator Add( const A_,B_:TDoubleSiz3D ) :TDoubleSiz3D;
-       class operator Subtract( const A_,B_:TDoubleSiz3D ) :TDoubleSiz3D;
-       class operator Multiply( const A_:TDoubleSiz3D; const B_:Double ) :TDoubleSiz3D;
-       class operator Multiply( const A_:Double; const B_:TDoubleSiz3D ) :TDoubleSiz3D;
-       class operator Divide( const A_:TDoubleSiz3D; const B_:Double ) :TDoubleSiz3D;
+       class operator Negative( const V_:TDoubleSiz3D ) :TDoubleSiz3D; inline;
+       class operator Positive( const V_:TDoubleSiz3D ) :TDoubleSiz3D; inline;
+       class operator Add( const A_,B_:TDoubleSiz3D ) :TDoubleSiz3D; inline;
+       class operator Subtract( const A_,B_:TDoubleSiz3D ) :TDoubleSiz3D; inline;
+       class operator Multiply( const A_:TDoubleSiz3D; const B_:Double ) :TDoubleSiz3D; inline;
+       class operator Multiply( const A_:Double; const B_:TDoubleSiz3D ) :TDoubleSiz3D; inline;
+       class operator Divide( const A_:TDoubleSiz3D; const B_:Double ) :TDoubleSiz3D; inline;
        ///// 型変換
-       class operator Implicit( const V_:TPoint3D ) :TDoubleSiz3D;
-       class operator Implicit( const V_:TDoubleSiz3D ) :TPoint3D;
-       class operator Implicit( const V_:TVector3D ) :TDoubleSiz3D;
-       class operator Implicit( const V_:TDoubleSiz3D ) :TVector3D;
-       class operator Implicit( const V_:TDouble3D ) :TDoubleSiz3D;
-       class operator Implicit( const V_:TDoubleSiz3D ) :TDouble3D;
+       class operator Implicit( const V_:TPoint3D ) :TDoubleSiz3D; inline;
+       class operator Implicit( const V_:TDoubleSiz3D ) :TPoint3D; inline;
+       class operator Implicit( const V_:TVector3D ) :TDoubleSiz3D; inline;
+       class operator Implicit( const V_:TDoubleSiz3D ) :TVector3D; inline;
+       class operator Implicit( const V_:TDouble3D ) :TDoubleSiz3D; inline;
+       class operator Implicit( const V_:TDoubleSiz3D ) :TDouble3D; inline;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleArea3D
