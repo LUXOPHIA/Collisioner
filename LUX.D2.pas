@@ -13,9 +13,18 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TInteger2D = record
      private
+       ///// アクセス
+       function GetV( const I_:Integer ) :Integer; inline;
+       procedure SetV( const I_:Integer; const V_:Integer ); inline;
      public
-       X :Integer;
-       Y :Integer;
+       ///// プロパティ
+       property V[ const I_:Integer ] :Integer read GetV write SetV; default;
+     case Integer of
+      0:( _ :array [ 1..2 ] of Integer; );
+      1:(  X :Integer;
+           Y :Integer;                  );
+      2:( _1 :Integer;
+          _2 :Integer;                  );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingle2D
@@ -23,6 +32,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TSingle2D = record
      private
        ///// アクセス
+       function GetV( const I_:Integer ) :Single; inline;
+       procedure SetV( const I_:Integer; const V_:Single ); inline;
        function GetSiz2 :Single; inline;
        procedure SetSiz2( const Siz2_:Single ); inline;
        function GetSize :Single; inline;
@@ -32,9 +43,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        constructor Create( const X_,Y_:Single );
        ///// プロパティ
-       property Siz2   :Single    read GetSiz2   write SetSiz2  ;
-       property Size   :Single    read GetSize   write SetSize  ;
-       property Unitor :TSingle2D read GetUnitor write SetUnitor;
+       property V[ const I_:Integer ] :Single    read GetV      write SetV     ; default;
+       property Siz2                  :Single    read GetSiz2   write SetSiz2  ;
+       property Size                  :Single    read GetSize   write SetSize  ;
+       property Unitor                :TSingle2D read GetUnitor write SetUnitor;
        ///// 演算子
        class operator Negative( const V_:TSingle2D ) :TSingle2D; inline;
        class operator Positive( const V_:TSingle2D ) :TSingle2D; inline;
@@ -61,7 +73,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RandBS2 :TSingle2D; static;
        class function RandBS4 :TSingle2D; static;
      case Integer of
-      0:( _ :array [ 1..1 ] of Single; );
+      0:( _ :array [ 1..2 ] of Single; );
       1:(  X :Single;
            Y :Single;                  );
       2:( _1 :Single;
@@ -76,6 +88,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TDouble2D = record
      private
        ///// アクセス
+       function GetV( const I_:Integer ) :Double; inline;
+       procedure SetV( const I_:Integer; const V_:Double ); inline;
        function GetSiz2 :Double; inline;
        procedure SetSiz2( const Siz2_:Double ); inline;
        function GetSize :Double; inline;
@@ -85,9 +99,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        constructor Create( const X_,Y_:Double );
        ///// プロパティ
-       property Siz2   :Double    read GetSiz2   write SetSiz2  ;
-       property Size   :Double    read GetSize   write SetSize  ;
-       property Unitor :TDouble2D read GetUnitor write SetUnitor;
+       property V[ const I_:Integer ] :Double    read GetV      write SetV     ; default;
+       property Siz2                  :Double    read GetSiz2   write SetSiz2  ;
+       property Size                  :Double    read GetSize   write SetSize  ;
+       property Unitor                :TDouble2D read GetUnitor write SetUnitor;
        ///// 演算子
        class operator Negative( const V_:TDouble2D ) :TDouble2D; inline;
        class operator Positive( const V_:TDouble2D ) :TDouble2D; inline;
@@ -114,7 +129,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RandBS2 :TDouble2D; static;
        class function RandBS4 :TDouble2D; static;
      case Integer of
-      0:( _ :array [ 1..1 ] of Double; );
+      0:( _ :array [ 1..2 ] of Double; );
       1:(  X :Double;
            Y :Double;                  );
       2:( _1 :Double;
@@ -129,6 +144,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TdSingle2D = record
      private
        ///// アクセス
+       function GetV( const I_:Integer ) :TdSingle; inline;
+       procedure SetV( const I_:Integer; const V_:TdSingle ); inline;
        function Geto :TSingle2D; inline;
        procedure Seto( const o_:TSingle2D ); inline;
        function Getd :TSingle2D; inline;
@@ -142,11 +159,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        constructor Create( const X_,Y_:TdSingle );
        ///// プロパティ
-       property o      :TSingle2D  read Geto      write Seto     ;
-       property d      :TSingle2D  read Getd      write Setd     ;
-       property Siz2   :TdSingle   read GetSiz2   write SetSiz2  ;
-       property Size   :TdSingle   read GetSize   write SetSize  ;
-       property Unitor :TdSingle2D read GetUnitor write SetUnitor;
+       property V[ const I_:Integer ] :TdSingle   read GetV      write SetV     ; default;
+       property o                     :TSingle2D  read Geto      write Seto     ;
+       property d                     :TSingle2D  read Getd      write Setd     ;
+       property Siz2                  :TdSingle   read GetSiz2   write SetSiz2  ;
+       property Size                  :TdSingle   read GetSize   write SetSize  ;
+       property Unitor                :TdSingle2D read GetUnitor write SetUnitor;
        ///// 演算子
        class operator Negative( const V_:TdSingle2D ) :TdSingle2D; inline;
        class operator Positive( const V_:TdSingle2D ) :TdSingle2D; inline;
@@ -161,7 +179,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Implicit( const P_:TSingle2D ) :TdSingle2D; inline;
        class operator Explicit( const P_:TdSingle2D ) :TSingle2D; inline;
      case Integer of
-      0:( _ :array [ 1..1 ] of TdSingle; );
+      0:( _ :array [ 1..2 ] of TdSingle; );
       1:(  X :TdSingle;
            Y :TdSingle;                  );
       2:( _1 :TdSingle;
@@ -176,6 +194,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TdDouble2D = record
      private
        ///// アクセス
+       function GetV( const I_:Integer ) :TdDouble; inline;
+       procedure SetV( const I_:Integer; const V_:TdDouble ); inline;
        function Geto :TDouble2D; inline;
        procedure Seto( const o_:TDouble2D ); inline;
        function Getd :TDouble2D; inline;
@@ -189,11 +209,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        constructor Create( const X_,Y_:TdDouble );
        ///// プロパティ
-       property o      :TDouble2D  read Geto      write Seto     ;
-       property d      :TDouble2D  read Getd      write Setd     ;
-       property Siz2   :TdDouble   read GetSiz2   write SetSiz2  ;
-       property Size   :TdDouble   read GetSize   write SetSize  ;
-       property Unitor :TdDouble2D read GetUnitor write SetUnitor;
+       property V[ const I_:Integer ] :TdDouble   read GetV      write SetV     ; default;
+       property o                     :TDouble2D  read Geto      write Seto     ;
+       property d                     :TDouble2D  read Getd      write Setd     ;
+       property Siz2                  :TdDouble   read GetSiz2   write SetSiz2  ;
+       property Size                  :TdDouble   read GetSize   write SetSize  ;
+       property Unitor                :TdDouble2D read GetUnitor write SetUnitor;
        ///// 演算子
        class operator Negative( const V_:TdDouble2D ) :TdDouble2D; inline;
        class operator Positive( const V_:TdDouble2D ) :TdDouble2D; inline;
@@ -208,7 +229,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Implicit( const P_:TDouble2D ) :TdDouble2D; inline;
        class operator Explicit( const P_:TdDouble2D ) :TDouble2D; inline;
      case Integer of
-      0:( _ :array [ 1..1 ] of TdDouble; );
+      0:( _ :array [ 1..2 ] of TdDouble; );
       1:(  X :TdDouble;
            Y :TdDouble;                  );
       2:( _1 :TdDouble;
@@ -550,6 +571,18 @@ uses System.SysUtils, System.Math;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TInteger2D.GetV( const I_:Integer ) :Integer;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TInteger2D.SetV( const I_:Integer; const V_:Integer );
+begin
+     _[ I_ ] := V_;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingle2D
@@ -557,6 +590,18 @@ uses System.SysUtils, System.Math;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 /////////////////////////////////////////////////////////////////////// アクセス
+
+function TSingle2D.GetV( const I_:Integer ) :Single;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TSingle2D.SetV( const I_:Integer; const V_:Single );
+begin
+     _[ I_ ] := V_;
+end;
+
+//------------------------------------------------------------------------------
 
 function TSingle2D.GetSiz2 :Single;
 begin
@@ -786,6 +831,18 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
+function TDouble2D.GetV( const I_:Integer ) :Double;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TDouble2D.SetV( const I_:Integer; const V_:Double );
+begin
+     _[ I_ ] := V_;
+end;
+
+//------------------------------------------------------------------------------
+
 function TDouble2D.GetSiz2 :Double;
 begin
      Result := Pow2( X ) + Pow2( Y );
@@ -1014,6 +1071,18 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
+function TdSingle2D.GetV( const I_:Integer ) :TdSingle;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TdSingle2D.SetV( const I_:Integer; const V_:TdSingle );
+begin
+     _[ I_ ] := V_;
+end;
+
+//------------------------------------------------------------------------------
+
 function TdSingle2D.Geto :TSingle2D;
 begin
      Result.X := X.o;
@@ -1184,6 +1253,18 @@ end;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 /////////////////////////////////////////////////////////////////////// アクセス
+
+function TdDouble2D.GetV( const I_:Integer ) :TdDouble;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TdDouble2D.SetV( const I_:Integer; const V_:TdDouble );
+begin
+     _[ I_ ] := V_;
+end;
+
+//------------------------------------------------------------------------------
 
 function TdDouble2D.Geto :TDouble2D;
 begin
