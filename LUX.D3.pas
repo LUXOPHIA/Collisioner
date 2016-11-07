@@ -21,10 +21,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetUnitor :TSingle3D; inline;
        procedure SetUnitor( const Unitor_:TSingle3D ); inline;
      public
-       X :Single;
-       Y :Single;
-       Z :Single;
-       /////
        constructor Create( const V_:Single ); overload;
        constructor Create( const X_,Y_,Z_:Single ); overload;
        ///// プロパティ
@@ -58,6 +54,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RandBS1 :TSingle3D; static;
        class function RandBS2 :TSingle3D; static;
        class function RandBS4 :TSingle3D; static;
+
+     case Integer of
+      0:( _ :array [ 1..3 ] of Single; );
+      1:(  X :Single;
+           Y :Single;
+           Z :Single;                  );
+      2:( _1 :Single;
+          _2 :Single;
+          _3 :Single;                  );
      end;
 
      TSinglePos3D = TSingle3D;
@@ -75,10 +80,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetUnitor :TDouble3D; inline;
        procedure SetUnitor( const Unitor_:TDouble3D ); inline;
      public
-       X :Double;
-       Y :Double;
-       Z :Double;
-       /////
        constructor Create( const V_:Double ); overload;
        constructor Create( const X_,Y_,Z_:Double ); overload;
        ///// プロパティ
@@ -112,6 +113,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RandBS1 :TDouble3D; static;
        class function RandBS2 :TDouble3D; static;
        class function RandBS4 :TDouble3D; static;
+
+     case Integer of
+      0:( _ :array [ 1..3 ] of Double; );
+      1:(  X :Double;
+           Y :Double;
+           Z :Double;                  );
+      2:( _1 :Double;
+          _2 :Double;
+          _3 :Double;                  );
      end;
 
      TDoublePos3D = TDouble3D;
@@ -133,10 +143,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetUnitor :TdSingle3D; inline;
        procedure SetUnitor( const Unitor_:TdSingle3D ); inline;
      public
-       X :TdSingle;
-       Y :TdSingle;
-       Z :TdSingle;
-       /////
        constructor Create( const X_,Y_,Z_:TdSingle );
        ///// プロパティ
        property o      :TSingle3D  read Geto      write Seto     ;
@@ -155,6 +161,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// 型変換
        class operator Implicit( const V_:TSingle3D ) :TdSingle3D;
        class operator Implicit( const V_:TdSingle3D ) :TSingle3D;
+
+     case Integer of
+      0:( _ :array [ 1..3 ] of TdSingle; );
+      1:(  X :TdSingle;
+           Y :TdSingle;
+           Z :TdSingle;                  );
+      2:( _1 :TdSingle;
+          _2 :TdSingle;
+          _3 :TdSingle;                  );
      end;
 
      TdSinglePos3D = TdSingle3D;
@@ -176,10 +191,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetUnitor :TdDouble3D; inline;
        procedure SetUnitor( const Unitor_:TdDouble3D ); inline;
      public
-       X :TdDouble;
-       Y :TdDouble;
-       Z :TdDouble;
-       /////
        constructor Create( const X_,Y_,Z_:TdDouble );
        ///// プロパティ
        property o      :TDouble3D  read Geto      write Seto     ;
@@ -198,6 +209,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// 型変換
        class operator Implicit( const V_:TDouble3D ) :TdDouble3D;
        class operator Implicit( const V_:TdDouble3D ) :TDouble3D;
+
+     case Integer of
+      0:( _ :array [ 1..3 ] of TdDouble; );
+      1:(  X :TdDouble;
+           Y :TdDouble;
+           Z :TdDouble;                  );
+      2:( _1 :TdDouble;
+          _2 :TdDouble;
+          _3 :TdDouble;                  );
      end;
 
      TdDoublePos3D = TdDouble3D;

@@ -87,7 +87,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Implicit( const V_:Int64 ) :TdDouble;
        class operator Implicit( const V_:Double ) :TdDouble;
        class operator Implicit( const V_:TdSingle ) :TdDouble;
-       class operator Explicit( const V_:TdDouble ) :TdSingle;
+       class operator Implicit( const V_:TdDouble ) :TdSingle;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleArea
@@ -644,7 +644,7 @@ begin
      end;
 end;
 
-class operator TdDouble.Explicit( const V_:TdDouble ) :TdSingle;
+class operator TdDouble.Implicit( const V_:TdDouble ) :TdSingle;
 begin
      with Result do
      begin
