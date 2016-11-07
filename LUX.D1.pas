@@ -644,7 +644,7 @@ begin
      end;
 end;
 
-class operator TdDouble.Implicit( const V_:TdDouble ) :TdSingle;
+class operator TdDouble.Explicit( const V_:TdDouble ) :TdSingle;
 begin
      with Result do
      begin
