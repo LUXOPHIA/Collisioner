@@ -13,8 +13,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TSingle4DV4 = record
      private
        ///// アクセス
-       function GetV( const I_:Integer ) :TSingle4D;
-       procedure SetV( const I_:Integer; const V_:TSingle4D );
+       function GetV( const I_:Integer ) :TSingle4D; inline;
+       procedure SetV( const I_:Integer; const V_:TSingle4D ); inline;
      public
        ///// プロパティ
        property V[ const I_:Integer ] :TSingle4D read GetV write SetV; default;
@@ -28,8 +28,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TDouble4DV4 = record
      private
        ///// アクセス
-       function GetV( const I_:Integer ) :TDouble4D;
-       procedure SetV( const I_:Integer; const V_:TDouble4D );
+       function GetV( const I_:Integer ) :TDouble4D; inline;
+       procedure SetV( const I_:Integer; const V_:TDouble4D ); inline;
      public
        ///// プロパティ
        property V[ const I_:Integer ] :TDouble4D read GetV write SetV; default;
@@ -43,8 +43,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TdSingle4DV4 = record
      private
        ///// アクセス
-       function GetV( const I_:Integer ) :TdSingle4D;
-       procedure SetV( const I_:Integer; const V_:TdSingle4D );
+       function GetV( const I_:Integer ) :TdSingle4D; inline;
+       procedure SetV( const I_:Integer; const V_:TdSingle4D ); inline;
      public
        ///// プロパティ
        property V[ const I_:Integer ] :TdSingle4D read GetV write SetV; default;
@@ -58,8 +58,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TdDouble4DV4 = record
      private
        ///// アクセス
-       function GetV( const I_:Integer ) :TdDouble4D;
-       procedure SetV( const I_:Integer; const V_:TdDouble4D );
+       function GetV( const I_:Integer ) :TdDouble4D; inline;
+       procedure SetV( const I_:Integer; const V_:TdDouble4D ); inline;
      public
        ///// プロパティ
        property V[ const I_:Integer ] :TdDouble4D read GetV write SetV; default;
