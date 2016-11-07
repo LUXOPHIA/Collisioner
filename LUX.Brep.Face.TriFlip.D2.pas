@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses System.RegularExpressions,
-     LUX, LUX.D2, LUX.Matrix.L3, LUX.Geometry.D2, LUX.Brep.Face.TriFlip;
+     LUX, LUX.D2, LUX.D3, LUX.Geometry.D2, LUX.Brep.Face.TriFlip;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -42,7 +42,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property CircumCircle          :TSingleCircle read GetCircumCircle;
        property Barycenter            :TSingle2D     read GetBarycenter  ;
        ///// メソッド
-       function BaryPos( const P_:TSingle2D ) :TSingleV3;
+       function BaryPos( const P_:TSingle2D ) :TSingle3D;
        function IsInside( const P_:TSingle2D ) :Boolean;
      end;
 
@@ -60,7 +60,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        procedure JoinEdges;
        procedure LoadFromFile( const FileName_:String );
-       function FindHit( const P_:TSingle2D; out B_:TSingleV3 ) :_TFace_;
+       function FindHit( const P_:TSingle2D; out B_:TSingle3D ) :_TFace_;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -71,7 +71,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 implementation //############################################################### ■
 
-uses System.Classes, System.SysUtils;
+uses System.Classes, System.SysUtils,
+     LUX.Matrix.L3;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -117,7 +118,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function TTriFace2D.BaryPos( const P_:TSingle2D ) :TSingleV3;
+function TTriFace2D.BaryPos( const P_:TSingle2D ) :TSingle3D;
 var
    P1, P2, P3 :TSingle2D;
    M :TSingleM3;
@@ -133,7 +134,7 @@ begin
           _31 :=    1;  _32 :=    1;  _33 :=    1;
      end;
 
-     Result := M.Inverse * TSingleV3.Create( P_.X, P_.Y, 1 );
+     Result := M.Inverse * TSingle3D.Create( P_.X, P_.Y, 1 );
 end;
 
 function TTriFace2D.IsInside( const P_:TSingle2D ) :Boolean;
@@ -269,11 +270,11 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TTriFaceModel2D<_TPoin_,_TFace_>.FindHit( const P_:TSingle2D; out B_:TSingleV3 ) :_TFace_;
+function TTriFaceModel2D<_TPoin_,_TFace_>.FindHit( const P_:TSingle2D; out B_:TSingle3D ) :_TFace_;
 var
    I :Integer;
    F :_TFace_;
-   B :TSingleV3;
+   B :TSingle3D;
 begin
      for I := 0 to ChildsN-1 do
      begin
