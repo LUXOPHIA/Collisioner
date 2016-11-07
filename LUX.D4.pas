@@ -55,7 +55,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RandBS1 :TSingle4D; static;
        class function RandBS2 :TSingle4D; static;
        class function RandBS4 :TSingle4D; static;
-
      case Integer of
       0:(  X :Single;
            Y :Single;
@@ -117,7 +116,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RandBS1 :TDouble4D; static;
        class function RandBS2 :TDouble4D; static;
        class function RandBS4 :TDouble4D; static;
-
      case Integer of
       0:(  X :Double;
            Y :Double;
@@ -167,7 +165,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// 型変換
        class operator Implicit( const V_:TSingle4D ) :TdSingle4D;
        class operator Implicit( const V_:TdSingle4D ) :TSingle4D;
-
      case Integer of
       0:(  X :TdSingle;
            Y :TdSingle;
@@ -217,7 +214,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// 型変換
        class operator Implicit( const V_:TDouble4D ) :TdDouble4D;
        class operator Implicit( const V_:TdDouble4D ) :TDouble4D;
-
      case Integer of
       0:(  X :TdDouble;
            Y :TdDouble;

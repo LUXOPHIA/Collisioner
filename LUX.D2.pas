@@ -60,7 +60,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RandBS1 :TSingle2D; static;
        class function RandBS2 :TSingle2D; static;
        class function RandBS4 :TSingle2D; static;
-
      case Integer of
       0:( _ :array [ 1..1 ] of Single; );
       1:(  X :Single;
@@ -114,7 +113,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RandBS1 :TDouble2D; static;
        class function RandBS2 :TDouble2D; static;
        class function RandBS4 :TDouble2D; static;
-
      case Integer of
       0:( _ :array [ 1..1 ] of Double; );
       1:(  X :Double;
@@ -157,7 +155,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_:TdSingle2D; const B_:TdSingle ) :TdSingle2D; inline;
        class operator Multiply( const A_:TdSingle; const B_:TdSingle2D ) :TdSingle2D; inline;
        class operator Divide( const A_:TdSingle2D; const B_:TdSingle ) :TdSingle2D; inline;
-
+       ///// 型変換
+       class operator Implicit( const P_:TPointF ) :TdSingle2D; inline;
+       class operator Explicit( const P_:TdSingle2D ) :TPointF; inline;
+       class operator Implicit( const P_:TSingle2D ) :TdSingle2D; inline;
+       class operator Explicit( const P_:TdSingle2D ) :TSingle2D; inline;
      case Integer of
       0:( _ :array [ 1..1 ] of TdSingle; );
       1:(  X :TdSingle;
@@ -200,7 +202,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_:TdDouble2D; const B_:TdDouble ) :TdDouble2D; inline;
        class operator Multiply( const A_:TdDouble; const B_:TdDouble2D ) :TdDouble2D; inline;
        class operator Divide( const A_:TdDouble2D; const B_:TdDouble ) :TdDouble2D; inline;
-
+       ///// 型変換
+       class operator Implicit( const P_:TPointF ) :TdDouble2D; inline;
+       class operator Explicit( const P_:TdDouble2D ) :TPointF; inline;
+       class operator Implicit( const P_:TDouble2D ) :TdDouble2D; inline;
+       class operator Explicit( const P_:TdDouble2D ) :TDouble2D; inline;
      case Integer of
       0:( _ :array [ 1..1 ] of TdDouble; );
       1:(  X :TdDouble;
@@ -1135,6 +1141,44 @@ begin
      end;
 end;
 
+///////////////////////////////////////////////////////////////////////// 型変換
+
+class operator TdSingle2D.Implicit( const P_:TPointF ) :TdSingle2D;
+begin
+     with Result do
+     begin
+          X := +P_.X;
+          Y := -P_.Y;
+     end;
+end;
+
+class operator TdSingle2D.Explicit( const P_:TdSingle2D ) :TPointF;
+begin
+     with Result do
+     begin
+          X := +P_.X.o;
+          Y := -P_.Y.o;
+     end;
+end;
+
+class operator TdSingle2D.Implicit( const P_:TSingle2D ) :TdSingle2D;
+begin
+     with Result do
+     begin
+          X := P_.X;
+          Y := P_.Y;
+     end;
+end;
+
+class operator TdSingle2D.Explicit( const P_:TdSingle2D ) :TSingle2D;
+begin
+     with Result do
+     begin
+          X := P_.X.o;
+          Y := P_.Y.o;
+     end;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TdDouble2D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -1265,6 +1309,44 @@ begin
      begin
           X := A_.X / B_;
           Y := A_.Y / B_;
+     end;
+end;
+
+///////////////////////////////////////////////////////////////////////// 型変換
+
+class operator TdDouble2D.Implicit( const P_:TPointF ) :TdDouble2D;
+begin
+     with Result do
+     begin
+          X := +P_.X;
+          Y := -P_.Y;
+     end;
+end;
+
+class operator TdDouble2D.Explicit( const P_:TdDouble2D ) :TPointF;
+begin
+     with Result do
+     begin
+          X := +P_.X.o;
+          Y := -P_.Y.o;
+     end;
+end;
+
+class operator TdDouble2D.Implicit( const P_:TDouble2D ) :TdDouble2D;
+begin
+     with Result do
+     begin
+          X := P_.X;
+          Y := P_.Y;
+     end;
+end;
+
+class operator TdDouble2D.Explicit( const P_:TdDouble2D ) :TDouble2D;
+begin
+     with Result do
+     begin
+          X := P_.X.o;
+          Y := P_.Y.o;
      end;
 end;
 
