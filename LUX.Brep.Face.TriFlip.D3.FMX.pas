@@ -4,7 +4,7 @@ interface //####################################################################
 
 uses System.Types, System.Classes, System.Math.Vectors,
      FMX.Types3D, FMX.Controls3D, FMX.MaterialSources,
-     LUX, LUX.Brep.Face.TriFlip.D3;
+     LUX, LUX.D3, LUX.Brep.Face.TriFlip.D3;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
