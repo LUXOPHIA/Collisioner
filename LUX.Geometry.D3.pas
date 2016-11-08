@@ -137,7 +137,7 @@ function SolidAngle( const P1_,P2_,P3_:TDouble3D; const P_:TDouble3D ) :Double; 
 implementation //############################################################### ■
 
 uses System.Math,
-     LUX.Matrix.L3;
+     LUX.M3;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
