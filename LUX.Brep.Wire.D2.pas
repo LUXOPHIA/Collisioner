@@ -17,10 +17,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TWire2D<_TPoin_:TPoin<TSingle2D>> = class( TWire<TSingle2D,_TPoin_> )
      private
      protected
+       ///// アクセス
+       function GetLeng :Single;
+       function GetVector :TSingle2D;
+       function GetUnitor :TSingle2D;
      public
+       property Leng   :Single    read GetLeng  ;
+       property Vector :TSingle2D read GetVector;
+       property Unitor :TSingle2D read GetUnitor;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TWireModel2D<_TPos_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TWireModel2D<_TPoin_,_TWire_>
 
      TWireModel2D<_TPoin_:TPoin<TSingle2D>;
                   _TWire_:TWire2D<_TPoin_>> = class( TWireModel<TSingle2D,_TPoin_,_TWire_> )
@@ -48,6 +55,21 @@ implementation //###############################################################
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
 /////////////////////////////////////////////////////////////////////// アクセス
+
+function TWire2D<_TPoin_>.GetLeng :Single;
+begin
+     Result := Poin0.Pos.DistanTo( Poin1.Pos );
+end;
+
+function TWire2D<_TPoin_>.GetVector :TSingle2D;
+begin
+     Result := Poin0.Pos.VectorTo( Poin1.Pos );
+end;
+
+function TWire2D<_TPoin_>.GetUnitor :TSingle2D;
+begin
+     Result := Poin0.Pos.UnitorTo( Poin1.Pos );
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
