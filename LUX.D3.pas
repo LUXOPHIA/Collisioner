@@ -310,11 +310,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property Poin[ const I_:Integer ] :TSingle3D read GetPoin;
        ///// 定数
-       class function NeInf :TSingleArea3D; inline; static;
-       class function NeMax :TSingleArea3D; inline; static;
-       class function Zero  :TSingleArea3D; inline; static;
-       class function PoMax :TSingleArea3D; inline; static;
-       class function PoInf :TSingleArea3D; inline; static;
+       class function NeInf :TSingleArea3D; static;
+       class function NeMax :TSingleArea3D; static;
+       class function Zero  :TSingleArea3D; static;
+       class function PoMax :TSingleArea3D; static;
+       class function PoInf :TSingleArea3D; static;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea3D
@@ -334,11 +334,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property Poin[ const I_:Integer ] :TDouble3D read GetPoin;
        ///// 定数
-       class function NeInf :TDoubleArea3D; inline; static;
-       class function NeMax :TDoubleArea3D; inline; static;
-       class function Zero  :TDoubleArea3D; inline; static;
-       class function PoMax :TDoubleArea3D; inline; static;
-       class function PoInf :TDoubleArea3D; inline; static;
+       class function NeInf :TDoubleArea3D; static;
+       class function NeMax :TDoubleArea3D; static;
+       class function Zero  :TDoubleArea3D; static;
+       class function PoMax :TDoubleArea3D; static;
+       class function PoInf :TDoubleArea3D; static;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleRay3D
