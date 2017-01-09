@@ -30,6 +30,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        ///// プロパティ
        property Barycenter :TSingle3D read GetBarycenter;
+       ///// メソッド
+       function GetBoundingBox :TSingleArea3D;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -75,6 +77,29 @@ begin
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TPoinModel3D<_TPoin_>.GetBoundingBox :TSingleArea3D;
+var
+   I :Integer;
+begin
+     Result := TSingleArea3D.NeInf;
+
+     for I := 0 to ChildsN-1 do
+     begin
+          with Childs[ I ].Pos do
+          begin
+               if X < Result.Min.X then Result.Min.X := X;
+               if Y < Result.Min.Y then Result.Min.Y := Y;
+               if Z < Result.Min.Z then Result.Min.Z := Z;
+
+               if Result.Max.X < X then Result.Max.X := X;
+               if Result.Max.Y < Y then Result.Max.Y := Y;
+               if Result.Max.Z < Z then Result.Max.Z := Z;
+          end;
+     end;
+end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 

@@ -2,7 +2,7 @@
 
 interface //#################################################################### ■
 
-uses LUX, LUX.D2, LUX.Matrix.L2, LUX.Brep.Poin, LUX.Brep.Wire;
+uses LUX, LUX.D2, LUX.M2, LUX.Brep.Poin, LUX.Brep.Wire;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 

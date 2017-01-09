@@ -58,7 +58,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure JoinEdges;
        procedure MakeNormals;
        procedure LoadFromFile( const FileName_:String );
-       function IsInside( const P_:TSingle3D ) :Boolean;
+       function IsInside( const P_:TSingle3D ) :Single;
+       function GetBoundingBox :TSingleArea3D;
      end;
 
      TTriFaceModel3D = TTriFaceModel3D<TTriPoin3D,TTriFace3D>;
@@ -287,21 +288,44 @@ begin
      JoinEdges;
 end;
 
-function TTriFaceModel3D<_TPoin_,_TFace_>.IsInside( const P_:TSingle3D ) :Boolean;
+function TTriFaceModel3D<_TPoin_,_TFace_>.IsInside( const P_:TSingle3D ) :Single;
 var
-   A :Single;
    I :Integer;
 begin
-     A := 0;
+     Result := 0;
      for I := 0 to ChildsN-1 do
      begin
           with TTriFace3D( Childs[ I ] ) do
           begin
-               A := A + SolidAngle( Poin[ 1 ].Pos, Poin[ 2 ].Pos, Poin[ 3 ].Pos, P_ );
+               Result := Result + SolidAngle( Poin[ 1 ].Pos, Poin[ 2 ].Pos, Poin[ 3 ].Pos, P_ );
           end;
      end;
 
-     Result := A > Pi2;
+     Result := Result / Pi4;
+end;
+
+function TTriFaceModel3D<_TPoin_,_TFace_>.GetBoundingBox :TSingleArea3D;
+var
+   I :Integer;
+begin
+     Result := TSingleArea3D.NeInf;
+
+     with PoinModel do
+     begin
+          for I := 0 to ChildsN-1 do
+          begin
+               with Childs[ I ].Pos do
+               begin
+                    if X < Result.Min.X then Result.Min.X := X;
+                    if Y < Result.Min.Y then Result.Min.Y := Y;
+                    if Z < Result.Min.Z then Result.Min.Z := Z;
+
+                    if Result.Max.X < X then Result.Max.X := X;
+                    if Result.Max.Y < Y then Result.Max.Y := Y;
+                    if Result.Max.Z < Z then Result.Max.Z := Z;
+               end;
+          end;
+     end;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$yƒ‹[ƒ`ƒ“z
