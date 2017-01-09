@@ -12,6 +12,13 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TSingleM2 = record
      private
+       ///// アクセス
+       function GetM( const Y_,X_:Integer ) :Single;
+       procedure SetM( const Y_,X_:Integer; const M_:Single );
+       function GetAxisX :TSingle2D;
+       procedure SetAxisX( const AxisX_:TSingle2D );
+       function GetAxisY :TSingle2D;
+       procedure SetAxisY( const AxisY_:TSingle2D );
      public
        constructor Create( const _11_,_12_,
                                  _21_,_22_:Single );
@@ -26,6 +33,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_:TSingle2D; const B_:TSingleM2 ) :TSingle2D;
        class operator Multiply( const A_:TSingleM2; const B_:TSingle2D ) :TSingle2D;
        class operator Divide( const A_:TSingleM2; const B_:Single ) :TSingleM2;
+       ///// プロパティ
+       property M[ const Y_,X_:Integer ] :Single    read GetM     write SetM    ; default;
+       property AxisX                    :TSingle2D read GetAxisX write SetAxisX;
+       property AxisY                    :TSingle2D read GetAxisY write SetAxisY;
        ///// メソッド
        function Det :Single;
        function Adjugate :TSingleM2;
@@ -42,6 +53,13 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TDoubleM2 = record
      private
+       ///// アクセス
+       function GetM( const Y_,X_:Integer ) :Double;
+       procedure SetM( const Y_,X_:Integer; const M_:Double );
+       function GetAxisX :TDouble2D;
+       procedure SetAxisX( const AxisX_:TDouble2D );
+       function GetAxisY :TDouble2D;
+       procedure SetAxisY( const AxisY_:TDouble2D );
      public
        constructor Create( const _11_,_12_,
                                  _21_,_22_:Double );
@@ -56,6 +74,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_:TDouble2D; const B_:TDoubleM2 ) :TDouble2D;
        class operator Multiply( const A_:TDoubleM2; const B_:TDouble2D ) :TDouble2D;
        class operator Divide( const A_:TDoubleM2; const B_:Double ) :TDoubleM2;
+       ///// プロパティ
+       property M[ const Y_,X_:Integer ] :Double    read GetM     write SetM    ; default;
+       property AxisX                    :TDouble2D read GetAxisX write SetAxisX;
+       property AxisY                    :TDouble2D read GetAxisY write SetAxisY;
        ///// メソッド
        function Det :Double;
        function Adjugate :TDoubleM2;
@@ -72,6 +94,13 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TdSingleM2 = record
      private
+       ///// アクセス
+       function GetM( const Y_,X_:Integer ) :TdSingle;
+       procedure SetM( const Y_,X_:Integer; const M_:TdSingle );
+       function GetAxisX :TdSingle2D;
+       procedure SetAxisX( const AxisX_:TdSingle2D );
+       function GetAxisY :TdSingle2D;
+       procedure SetAxisY( const AxisY_:TdSingle2D );
      public
        constructor Create( const _11_,_12_,
                                  _21_,_22_:TdSingle );
@@ -86,8 +115,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_:TdSingle2D; const B_:TdSingleM2 ) :TdSingle2D;
        class operator Multiply( const A_:TdSingleM2; const B_:TdSingle2D ) :TdSingle2D;
        class operator Divide( const A_:TdSingleM2; const B_:TdSingle ) :TdSingleM2;
+       ///// プロパティ
+       property M[ const Y_,X_:Integer ] :TdSingle   read GetM     write SetM    ; default;
+       property AxisX                    :TdSingle2D read GetAxisX write SetAxisX;
+       property AxisY                    :TdSingle2D read GetAxisY write SetAxisY;
        ///// メソッド
        function Det :TdSingle;
+       function Adjugate :TdSingleM2;
+       function Inverse :TdSingleM2;
        class function Rotate( const Angle_:TdSingle ) :TdSingleM2; static;
 
      case Integer of
@@ -100,6 +135,13 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TdDoubleM2 = record
      private
+       ///// アクセス
+       function GetM( const Y_,X_:Integer ) :TdDouble;
+       procedure SetM( const Y_,X_:Integer; const M_:TdDouble );
+       function GetAxisX :TdDouble2D;
+       procedure SetAxisX( const AxisX_:TdDouble2D );
+       function GetAxisY :TdDouble2D;
+       procedure SetAxisY( const AxisY_:TdDouble2D );
      public
        constructor Create( const _11_,_12_,
                                  _21_,_22_:TdDouble );
@@ -114,8 +156,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_:TdDouble2D; const B_:TdDoubleM2 ) :TdDouble2D;
        class operator Multiply( const A_:TdDoubleM2; const B_:TdDouble2D ) :TdDouble2D;
        class operator Divide( const A_:TdDoubleM2; const B_:TdDouble ) :TdDoubleM2;
+       ///// プロパティ
+       property M[ const Y_,X_:Integer ] :TdDouble   read GetM     write SetM    ; default;
+       property AxisX                    :TdDouble2D read GetAxisX write SetAxisX;
+       property AxisY                    :TdDouble2D read GetAxisY write SetAxisY;
        ///// メソッド
        function Det :TdDouble;
+       function Adjugate :TdDoubleM2;
+       function Inverse :TdDoubleM2;
        class function Rotate( const Angle_:TdDouble ) :TdDoubleM2; static;
 
      case Integer of
@@ -141,6 +189,56 @@ uses System.Math;
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleM2
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TSingleM2.GetM( const Y_,X_:Integer ) :Single;
+begin
+     Result := _[ Y_, X_ ];
+end;
+
+procedure TSingleM2.SetM( const Y_,X_:Integer; const M_:Single );
+begin
+     _[ Y_, X_ ] := M_;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingleM2.GetAxisX :TSingle2D;
+begin
+     with Result do
+     begin
+          X := _11; {X := _12;}
+          Y := _21; {Y := _22;}
+     end;
+end;
+
+procedure TSingleM2.SetAxisX( const AxisX_:TSingle2D );
+begin
+     with AxisX_ do
+     begin
+          _11 := X; {_12 := X;}
+          _21 := Y; {_22 := Y;}
+     end;
+end;
+
+function TSingleM2.GetAxisY :TSingle2D;
+begin
+     with Result do
+     begin
+         {X := _11;} X := _12;
+         {Y := _21;} Y := _22;
+     end;
+end;
+
+procedure TSingleM2.SetAxisY( const AxisY_:TSingle2D );
+begin
+     with AxisY_ do
+     begin
+         {_11 := X;} _12 := X;
+         {_21 := Y;} _22 := Y;
+     end;
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
@@ -295,6 +393,56 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TDoubleM2.GetM( const Y_,X_:Integer ) :Double;
+begin
+     Result := _[ Y_, X_ ];
+end;
+
+procedure TDoubleM2.SetM( const Y_,X_:Integer; const M_:Double );
+begin
+     _[ Y_, X_ ] := M_;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleM2.GetAxisX :TDouble2D;
+begin
+     with Result do
+     begin
+          X := _11; {X := _12;}
+          Y := _21; {Y := _22;}
+     end;
+end;
+
+procedure TDoubleM2.SetAxisX( const AxisX_:TDouble2D );
+begin
+     with AxisX_ do
+     begin
+          _11 := X; {_12 := X;}
+          _21 := Y; {_22 := Y;}
+     end;
+end;
+
+function TDoubleM2.GetAxisY :TDouble2D;
+begin
+     with Result do
+     begin
+         {X := _11;} X := _12;
+         {Y := _21;} Y := _22;
+     end;
+end;
+
+procedure TDoubleM2.SetAxisY( const AxisY_:TDouble2D );
+begin
+     with AxisY_ do
+     begin
+         {_11 := X;} _12 := X;
+         {_21 := Y;} _22 := Y;
+     end;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TDoubleM2.Create( const _11_,_12_, _21_,_22_:Double );
@@ -448,6 +596,56 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TdSingleM2.GetM( const Y_,X_:Integer ) :TdSingle;
+begin
+     Result := _[ Y_, X_ ];
+end;
+
+procedure TdSingleM2.SetM( const Y_,X_:Integer; const M_:TdSingle );
+begin
+     _[ Y_, X_ ] := M_;
+end;
+
+//------------------------------------------------------------------------------
+
+function TdSingleM2.GetAxisX :TdSingle2D;
+begin
+     with Result do
+     begin
+          X := _11; {X := _12;}
+          Y := _21; {Y := _22;}
+     end;
+end;
+
+procedure TdSingleM2.SetAxisX( const AxisX_:TdSingle2D );
+begin
+     with AxisX_ do
+     begin
+          _11 := X; {_12 := X;}
+          _21 := Y; {_22 := Y;}
+     end;
+end;
+
+function TdSingleM2.GetAxisY :TdSingle2D;
+begin
+     with Result do
+     begin
+         {X := _11;} X := _12;
+         {Y := _21;} Y := _22;
+     end;
+end;
+
+procedure TdSingleM2.SetAxisY( const AxisY_:TdSingle2D );
+begin
+     with AxisY_ do
+     begin
+         {_11 := X;} _12 := X;
+         {_21 := Y;} _22 := Y;
+     end;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TdSingleM2.Create( const _11_,_12_, _21_,_22_:TdSingle );
@@ -571,6 +769,19 @@ begin
      Result := _11 * _22 - _21 * _12;
 end;
 
+function TdSingleM2.Adjugate :TdSingleM2;
+begin
+     Result._11 := +_22;  Result._12 := -_12;
+     Result._21 := -_21;  Result._22 := +_11;
+end;
+
+function TdSingleM2.Inverse :TdSingleM2;
+begin
+     Result := Adjugate / Det;
+end;
+
+//------------------------------------------------------------------------------
+
 class function TdSingleM2.Rotate( const Angle_:TdSingle ) :TdSingleM2;
 var
    S, C :TdSingle;
@@ -587,6 +798,56 @@ end;
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TdDoubleM2
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TdDoubleM2.GetM( const Y_,X_:Integer ) :TdDouble;
+begin
+     Result := _[ Y_, X_ ];
+end;
+
+procedure TdDoubleM2.SetM( const Y_,X_:Integer; const M_:TdDouble );
+begin
+     _[ Y_, X_ ] := M_;
+end;
+
+//------------------------------------------------------------------------------
+
+function TdDoubleM2.GetAxisX :TdDouble2D;
+begin
+     with Result do
+     begin
+          X := _11; {X := _12;}
+          Y := _21; {Y := _22;}
+     end;
+end;
+
+procedure TdDoubleM2.SetAxisX( const AxisX_:TdDouble2D );
+begin
+     with AxisX_ do
+     begin
+          _11 := X; {_12 := X;}
+          _21 := Y; {_22 := Y;}
+     end;
+end;
+
+function TdDoubleM2.GetAxisY :TdDouble2D;
+begin
+     with Result do
+     begin
+         {X := _11;} X := _12;
+         {Y := _21;} Y := _22;
+     end;
+end;
+
+procedure TdDoubleM2.SetAxisY( const AxisY_:TdDouble2D );
+begin
+     with AxisY_ do
+     begin
+         {_11 := X;} _12 := X;
+         {_21 := Y;} _22 := Y;
+     end;
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
@@ -710,6 +971,19 @@ function TdDoubleM2.Det :TdDouble;
 begin
      Result := _11 * _22 - _21 * _12;
 end;
+
+function TdDoubleM2.Adjugate :TdDoubleM2;
+begin
+     Result._11 := +_22;  Result._12 := -_12;
+     Result._21 := -_21;  Result._22 := +_11;
+end;
+
+function TdDoubleM2.Inverse :TdDoubleM2;
+begin
+     Result := Adjugate / Det;
+end;
+
+//------------------------------------------------------------------------------
 
 class function TdDoubleM2.Rotate( const Angle_:TdDouble ) :TdDoubleM2;
 var
