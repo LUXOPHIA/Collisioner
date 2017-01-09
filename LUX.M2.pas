@@ -28,6 +28,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Divide( const A_:TSingleM2; const B_:Single ) :TSingleM2;
        ///// メソッド
        function Det :Single;
+       function Adjugate :TSingleM2;
+       function Inverse :TSingleM2;
        class function Rotate( const Angle_:Single ) :TSingleM2; static;
 
      case Integer of
@@ -56,6 +58,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Divide( const A_:TDoubleM2; const B_:Double ) :TDoubleM2;
        ///// メソッド
        function Det :Double;
+       function Adjugate :TDoubleM2;
+       function Inverse :TDoubleM2;
        class function Rotate( const Angle_:Double ) :TDoubleM2; static;
 
      case Integer of
@@ -261,6 +265,19 @@ begin
      Result := _11 * _22 - _21 * _12;
 end;
 
+function TSingleM2.Adjugate :TSingleM2;
+begin
+     Result._11 := +_22;  Result._12 := -_12;
+     Result._21 := -_21;  Result._22 := +_11;
+end;
+
+function TSingleM2.Inverse :TSingleM2;
+begin
+     Result := Adjugate / Det;
+end;
+
+//------------------------------------------------------------------------------
+
 class function TSingleM2.Rotate( const Angle_:Single ) :TSingleM2;
 var
    S, C :Single;
@@ -400,6 +417,19 @@ function TDoubleM2.Det :Double;
 begin
      Result := _11 * _22 - _21 * _12;
 end;
+
+function TDoubleM2.Adjugate :TDoubleM2;
+begin
+     Result._11 := +_22;  Result._12 := -_12;
+     Result._21 := -_21;  Result._22 := +_11;
+end;
+
+function TDoubleM2.Inverse :TDoubleM2;
+begin
+     Result := Adjugate / Det;
+end;
+
+//------------------------------------------------------------------------------
 
 class function TDoubleM2.Rotate( const Angle_:Double ) :TDoubleM2;
 var
