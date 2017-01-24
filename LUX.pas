@@ -137,6 +137,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TSearchBM<_TYPE_> = class
      private
        __TableBC :TDictionary<_TYPE_,Integer>;
+       _PN0      :Integer;
+       _PN1      :Integer;
+       _PN2      :Integer;
        ///// アクセス
        function Get_TableBC( const Key_:_TYPE_ ) :Integer;
        procedure Set_TableBC( const Key_:_TYPE_; const Val_:Integer );
@@ -144,7 +147,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function Equal( const A_,B_:_TYPE_ ) :Boolean;
      protected
        _Pattern  :TArray<_TYPE_>;
-       _PatternN :Integer;
        _TableSF  :TArray<Integer>;
        _TableGS  :TArray<Integer>;
        ///// プロパティ
@@ -528,7 +530,7 @@ end;
 function TSearchBM<_TYPE_>.Get_TableBC( const Key_:_TYPE_ ) :Integer;
 begin
      if __TableBC.ContainsKey( Key_ ) then Result := __TableBC[ Key_ ]
-                                     else Result := _PatternN;
+                                      else Result := _PN0;
 
 end;
 
@@ -557,7 +559,9 @@ procedure TSearchBM<_TYPE_>.SetPattern( const Pattern_:TArray<_TYPE_> );
 begin
      _Pattern := Pattern_;
 
-     _PatternN := Length( _Pattern );
+     _PN0 := Length( _Pattern );
+     _PN1 := _PN0 - 1;
+     _PN2 := _PN1 - 1;
 
      MakeTableBC;
      MakeTableSF;
@@ -574,7 +578,7 @@ begin
      begin
           Clear;
 
-          for I := 0 to _PatternN-2 do AddOrSetValue( _Pattern[ I ], _PatternN-1 - I );
+          for I := 0 to _PN2 do AddOrSetValue( _Pattern[ I ], _PN1 - I );
      end;
 end;
 
@@ -582,17 +586,17 @@ procedure TSearchBM<_TYPE_>.MakeTableSF;
 var
    I, G, F :Integer;
 begin
-     SetLength( _TableSF, _PatternN );
+     SetLength( _TableSF, _PN0 );
 
-     _TableSF[ _PatternN-1 ] := _PatternN;
+     _TableSF[ _PN1 ] := _PN0;
 
-     F := _PatternN-1;
-     G := _PatternN-1;
-     for I := _PatternN-2 downto 0 do
+     F := _PN1;
+     G := _PN1;
+     for I := _PN2 downto 0 do
      begin
-          if ( I > G ) and ( _TableSF[ I + _PatternN-1 - F ] < I - G ) then
+          if ( I > G ) and ( _TableSF[ I + _PN1 - F ] < I - G ) then
           begin
-               _TableSF[ I ] := _TableSF[ I + _PatternN-1 - F ];
+               _TableSF[ I ] := _TableSF[ I + _PN1 - F ];
           end
           else
           begin
@@ -600,7 +604,7 @@ begin
 
                F := I;
 
-               while ( G >= 0 ) and Equal( _Pattern[ G ], _Pattern[ G + _PatternN-1 - F ] ) do Dec( G );
+               while ( G >= 0 ) and Equal( _Pattern[ G ], _Pattern[ G + _PN1 - F ] ) do Dec( G );
 
                _TableSF[ I ] := F - G;
           end;
@@ -611,13 +615,13 @@ procedure TSearchBM<_TYPE_>.MakeTableGS;
 var
    S, I, J :Integer;
 begin
-     SetLength( _TableGS, _PatternN );
+     SetLength( _TableGS, _PN0 );
 
-     for I := 0 to _PatternN-1 do _TableGS[ I ] := _PatternN;
+     for I := 0 to _PN1 do _TableGS[ I ] := _PN0;
 
      I := 0;
      S := 0;
-     for J := _PatternN-1 downto 0 do
+     for J := _PN1 downto 0 do
      begin
           if _TableSF[ J ] = J + 1 then
           begin
@@ -632,21 +636,21 @@ begin
           Inc( S );
      end;
 
-     for I := 0 to _PatternN-2 do _TableGS[ _PatternN-1 - _TableSF[ I ] ] := _PatternN-1 - I;
+     for I := 0 to _PN2 do _TableGS[ _PN1 - _TableSF[ I ] ] := _PN1 - I;
 end;
 }
 procedure TSearchBM<_TYPE_>.MakeTableGS;
 var
    S, I, J :Integer;
 begin
-     SetLength( _TableGS, _PatternN );
+     SetLength( _TableGS, _PN0 );
 
-     S := _PatternN;
+     S := _PN0;
 
-     _TableGS[ _PatternN-1 ] := S;
+     _TableGS[ _PN1 ] := S;
 
      J := 0;
-     for I := _PatternN-2 downto 0 do
+     for I := _PN2 downto 0 do
      begin
           if _TableSF[ J ] = J + 1 then S := I + 1;
 
@@ -655,7 +659,7 @@ begin
           Inc( J );
      end;
 
-     for I := 0 to _PatternN-2 do _TableGS[ _PatternN-1 - _TableSF[ I ] ] := _PatternN-1 - I;
+     for I := 0 to _PN2 do _TableGS[ _PN1 - _TableSF[ I ] ] := _PN1 - I;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -692,15 +696,15 @@ label
 begin
      J := StartI_;
 
-     while J <= StopI_ - _PatternN do
+     while J <= StopI_ - _PN0 do
      begin
-          for I := _PatternN-1 downto 0 do
+          for I := _PN1 downto 0 do
           begin
                A := Source_[ J + I ];
 
                if not Equal( _Pattern[ I ], A ) then
                begin
-                    Inc( J, Max( _TableGS[ I ], _TableBC[ A ] - (_PatternN-1) + I ) );
+                    Inc( J, Max( _TableGS[ I ], _TableBC[ A ] - _PN1 + I ) );
 
                     goto NOTMATCH;
                end;
@@ -727,15 +731,15 @@ begin
 
      J := StartI_;
 
-     while J <= StopI_ - _PatternN do
+     while J <= StopI_ - _PN0 do
      begin
-          for I := _PatternN-1 downto 0 do
+          for I := _PN1 downto 0 do
           begin
                A := Source_[ J + I ];
 
                if not Equal( _Pattern[ I ], A ) then
                begin
-                    Inc( J, Max( _TableGS[ I ], _TableBC[ A ] - (_PatternN-1) + I ) );
+                    Inc( J, Max( _TableGS[ I ], _TableBC[ A ] - _PN1 + I ) );
 
                     goto NOTMATCH;
                end;
@@ -772,15 +776,15 @@ label
 begin
      J := StartI_;
 
-     while J <= StopI_ - _PatternN do
+     while J <= StopI_ - _PN0 do
      begin
-          for I := _PatternN-1 downto 0 do
+          for I := _PN1 downto 0 do
           begin
                A := OnRead_( J + I );
 
                if not Equal( _Pattern[ I ], A ) then
                begin
-                    Inc( J, Max( _TableGS[ I ], _TableBC[ A ] - (_PatternN-1) + I ) );
+                    Inc( J, Max( _TableGS[ I ], _TableBC[ A ] - _PN1 + I ) );
 
                     goto NOTMATCH;
                end;
@@ -807,15 +811,15 @@ begin
 
      J := StartI_;
 
-     while J <= StopI_ - _PatternN do
+     while J <= StopI_ - _PN0 do
      begin
-          for I := _PatternN-1 downto 0 do
+          for I := _PN1 downto 0 do
           begin
                A := OnRead_( J + I );
 
                if not Equal( _Pattern[ I ], A ) then
                begin
-                    Inc( J, Max( _TableGS[ I ], _TableBC[ A ] - (_PatternN-1) + I ) );
+                    Inc( J, Max( _TableGS[ I ], _TableBC[ A ] - _PN1 + I ) );
 
                     goto NOTMATCH;
                end;
@@ -838,19 +842,19 @@ var
 label
      NOTMATCH;
 begin
-     SetLength( B, _PatternN );
+     SetLength( B, _PN0 );
 
      J := StartI_;
 
-     while J <= StopI_ - _PatternN do
+     while J <= StopI_ - _PN0 do
      begin
           OnReadBlock_( J, B );
 
-          for I := _PatternN-1 downto 0 do
+          for I := _PN1 downto 0 do
           begin
                if not Equal( _Pattern[ I ], B[ I ] ) then
                begin
-                    Inc( J, Max( _TableGS[ I ], _TableBC[ B[ I ] ] - (_PatternN-1) + I ) );
+                    Inc( J, Max( _TableGS[ I ], _TableBC[ B[ I ] ] - _PN1 + I ) );
 
                     goto NOTMATCH;
                end;
@@ -875,19 +879,19 @@ label
 begin
      Result := [];
 
-     SetLength( B, _PatternN );
+     SetLength( B, _PN0 );
 
      J := StartI_;
 
-     while J <= StopI_ - _PatternN do
+     while J <= StopI_ - _PN0 do
      begin
           OnReadBlock_( J, B );
 
-          for I := _PatternN-1 downto 0 do
+          for I := _PN1 downto 0 do
           begin
                if not Equal( _Pattern[ I ], B[ I ] ) then
                begin
-                    Inc( J, Max( _TableGS[ I ], _TableBC[ B[ I ] ] - (_PatternN-1) + I ) );
+                    Inc( J, Max( _TableGS[ I ], _TableBC[ B[ I ] ] - _PN1 + I ) );
 
                     goto NOTMATCH;
                end;
