@@ -284,6 +284,9 @@ function Ave( const P1_,P2_,P3_,P4_:TDouble4D ) :TDouble4D; inline; overload;
 function Ave( const P1_,P2_,P3_,P4_:TdSingle4D ) :TdSingle4D; inline; overload;
 function Ave( const P1_,P2_,P3_,P4_:TdDouble4D ) :TdDouble4D; inline; overload;
 
+function PolySolveReal( const Ks_:TSingle4D; out Xs_:TSingle3D ) :Byte; overload;
+function PolySolveReal( const Ks_:TDouble4D; out Xs_:TDouble3D ) :Byte; overload;
+
 implementation //############################################################### ■
 
 uses System.SysUtils, System.Math;
@@ -1554,6 +1557,152 @@ end;
 function Ave( const P1_,P2_,P3_,P4_:TdDouble4D ) :TdDouble4D;
 begin
      Result := ( P1_ + P2_ + P3_ + P4_ ) / 4;
+end;
+
+//------------------------------------------------------------------------------
+
+function PolySolveReal( const Ks_:TSingle4D; out Xs_:TSingle3D ) :Byte;
+var
+   Xs :TSingle2D;
+   A0, A1, A2, B2, P, Q, P3, Q2, D, D2, R, T, R3, T3, U, V, Y0, Y1, Y2 :Single;
+begin
+     if Ks_._4 = 0 then
+     begin
+          Result := PolySolveReal( TSingle3D( Ks_ ), Xs );
+
+          Xs_ := Xs;
+     end
+     else
+     begin
+          with Ks_ do
+          begin
+               A0 := _1 / _4;
+               A1 := _2 / _4;
+               A2 := _3 / _4;
+          end;
+
+          B2 := A2 / 3;
+
+          P := A1 - Pow2( A2 ) / 3;
+          Q := A0 + ( 2 * Pow2( B2 ) - A1 ) * B2;
+
+          P3 := P / 3;
+          Q2 := Q / 2;
+
+          D := Pow2( Q2 ) + Pow3( P3 );
+
+          case Sign( D ) of
+           -1: begin
+                    R := Roo2( Pow2( -Q2 ) - D );
+                    T := ArcTan2( Roo2( -D ), -Q2 );
+
+                    R3 := 2 * Roo3( R );
+                    T3 := T / 3;
+
+                    Y0 := R3 * Cos( T3 + P3i2 );
+                    Y1 := R3 * Cos( T3 - P3i2 );
+                    Y2 := R3 * Cos( T3        );
+
+                    Xs_[ 1 ] := Y0 - B2;
+                    Xs_[ 2 ] := Y1 - B2;
+                    Xs_[ 3 ] := Y2 - B2;
+
+                    Result := 3;
+               end;
+            0: begin
+                    Y0 := 2 * Roo3( -Q2 );
+
+                    Xs_[ 1 ] := Y0 - B2;
+
+                    Result := 1;
+               end;
+           +1: begin
+                    D2 := Roo2( D );
+
+                    U := Roo3( -Q2 + D2 );
+                    V := Roo3( -Q2 - D2 );
+
+                    Y0 := U + V;
+
+                    Xs_[ 1 ] := Y0 - B2;
+
+                    Result := 1;
+               end;
+          else Result := 0;
+          end;
+     end;
+end;
+
+function PolySolveReal( const Ks_:TDouble4D; out Xs_:TDouble3D ) :Byte;
+var
+   Xs :TDouble2D;
+   A0, A1, A2, B2, P, Q, P3, Q2, D, D2, R, T, R3, T3, U, V, Y0, Y1, Y2 :Double;
+begin
+     if Ks_._4 = 0 then
+     begin
+          Result := PolySolveReal( TDouble3D( Ks_ ), Xs );
+
+          Xs_ := Xs;
+     end
+     else
+     begin
+          with Ks_ do
+          begin
+               A0 := _1 / _4;
+               A1 := _2 / _4;
+               A2 := _3 / _4;
+          end;
+
+          B2 := A2 / 3;
+
+          P := A1 - Pow2( A2 ) / 3;
+          Q := A0 + ( 2 * Pow2( B2 ) - A1 ) * B2;
+
+          P3 := P / 3;
+          Q2 := Q / 2;
+
+          D := Pow2( Q2 ) + Pow3( P3 );
+
+          case Sign( D ) of
+           -1: begin
+                    R := Roo2( Pow2( -Q2 ) - D );
+                    T := ArcTan2( Roo2( -D ), -Q2 );
+
+                    R3 := 2 * Roo3( R );
+                    T3 := T / 3;
+
+                    Y0 := R3 * Cos( T3 + P3i2 );
+                    Y1 := R3 * Cos( T3 - P3i2 );
+                    Y2 := R3 * Cos( T3        );
+
+                    Xs_[ 1 ] := Y0 - B2;
+                    Xs_[ 2 ] := Y1 - B2;
+                    Xs_[ 3 ] := Y2 - B2;
+
+                    Result := 3;
+               end;
+            0: begin
+                    Y0 := 2 * Roo3( -Q2 );
+
+                    Xs_[ 1 ] := Y0 - B2;
+
+                    Result := 1;
+               end;
+           +1: begin
+                    D2 := Roo2( D );
+
+                    U := Roo3( -Q2 + D2 );
+                    V := Roo3( -Q2 - D2 );
+
+                    Y0 := U + V;
+
+                    Xs_[ 1 ] := Y0 - B2;
+
+                    Result := 1;
+               end;
+          else Result := 0;
+          end;
+     end;
 end;
 
 //############################################################################## □
