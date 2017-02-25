@@ -426,6 +426,9 @@ function Ave( const P1_,P2_,P3_,P4_:TdDouble3D ) :TdDouble3D; inline; overload;
 function Nabla( const Func_:TSingleImplicit3D; const P_:TSingle3D ) :TSingle3D; inline; overload;
 function Nabla( const Func_:TDoubleImplicit3D; const P_:TDouble3D ) :TDouble3D; inline; overload;
 
+function PolySolveReal( const Ks_:TSingle3D; out Xs_:TSingle2D ) :Byte; overload;
+function PolySolveReal( const Ks_:TDouble3D; out Xs_:TDouble2D ) :Byte; overload;
+
 implementation //############################################################### ■
 
 uses System.SysUtils, System.Math;
@@ -2060,6 +2063,68 @@ begin
      P.d := TDouble3D.Create( 0, 0, 1 );
 
      Result.Z := Func_( P ).d;
+end;
+
+//------------------------------------------------------------------------------
+
+function PolySolveReal( const Ks_:TSingle3D; out Xs_:TSingle2D ) :Byte;
+var
+   X1, D, A2, D2 :Single;
+begin
+     if Ks_[ 3 ] = 0 then
+     begin
+          Result := PolySolveReal( TSingle2D( Ks_ ), X1 );
+
+          Xs_[ 1 ] := X1;
+     end
+     else
+     begin
+          D := Pow2( Ks_[ 2 ] ) - 4 * Ks_[ 3 ] * Ks_[ 1 ];
+
+          Result := 1 + Sign( D );
+
+          A2 := 2 * Ks_[ 3 ];
+
+          case Result of
+            1: Xs_[ 1 ] := -Ks_[ 2 ] / A2;
+            2: begin
+                    D2 := Roo2( D );
+
+                    Xs_[ 1 ] := ( -Ks_[ 2 ] - D2 ) / A2;
+                    Xs_[ 2 ] := ( -Ks_[ 2 ] + D2 ) / A2;
+               end;
+          end;
+     end;
+end;
+
+function PolySolveReal( const Ks_:TDouble3D; out Xs_:TDouble2D ) :Byte;
+var
+   X1, D, A2, D2 :Double;
+begin
+     if Ks_[ 3 ] = 0 then
+     begin
+          Result := PolySolveReal( TDouble2D( Ks_ ), X1 );
+
+          Xs_[ 1 ] := X1;
+     end
+     else
+     begin
+          D := Pow2( Ks_[ 2 ] ) - 4 * Ks_[ 3 ] * Ks_[ 1 ];
+
+          Result := 1 + Sign( D );
+
+          A2 := 2 * Ks_[ 3 ];
+
+          case Result of
+            1: Xs_[ 1 ] := -Ks_[ 2 ] / A2;
+            2: begin
+                    D2 := Roo2( D );
+
+                    Xs_[ 1 ] := ( -Ks_[ 2 ] - D2 ) / A2;
+                    Xs_[ 2 ] := ( -Ks_[ 2 ] + D2 ) / A2;
+               end;
+          end;
+     end;
 end;
 
 //############################################################################## □
