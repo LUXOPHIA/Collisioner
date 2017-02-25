@@ -199,6 +199,8 @@ const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
       P3i = Pi / 3;
       P4i = Pi / 4;
 
+      P3i2 = Pi2 / 3;
+
       CRLF = #13#10;
 
 var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【変数】
@@ -229,6 +231,10 @@ function Pow2( const X_:Double ) :Double; inline; overload;
 function Pow3( const X_:Integer ) :Integer; inline; overload;
 function Pow3( const X_:Single ) :Single; inline; overload;
 function Pow3( const X_:Double ) :Double; inline; overload;
+
+function Pow4( const X_:Integer ) :Integer; inline; overload;
+function Pow4( const X_:Single ) :Single; inline; overload;
+function Pow4( const X_:Double ) :Double; inline; overload;
 
 function Roo2( const X_:Single ) :Single; inline; overload;
 function Roo2( const X_:Double ) :Double; inline; overload;
@@ -1031,6 +1037,23 @@ end;
 
 //------------------------------------------------------------------------------
 
+function Pow4( const X_:Integer ) :Integer;
+begin
+     Result := Pow2( Pow2( X_ ) );
+end;
+
+function Pow4( const X_:Single ) :Single;
+begin
+     Result := Pow2( Pow2( X_ ) );
+end;
+
+function Pow4( const X_:Double ) :Double;
+begin
+     Result := Pow2( Pow2( X_ ) );
+end;
+
+//------------------------------------------------------------------------------
+
 function Roo2( const X_:Single ) :Single;
 begin
      Result := Sqrt( X_ );
@@ -1045,12 +1068,12 @@ end;
 
 function Roo3( const X_:Single ) :Single;
 begin
-     Result := Power( X_, 1/3 );
+     Result := Sign( X_ ) * Power( Abs( X_ ), 1/3 );
 end;
 
 function Roo3( const X_:Double ) :Double;
 begin
-     Result := Power( X_, 1/3 );
+     Result := Sign( X_ ) * Power( Abs( X_ ), 1/3 );
 end;
 
 //------------------------------------------------------------------------------
