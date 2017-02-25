@@ -561,6 +561,9 @@ function DotAngle( const V0_,V1_:TDouble2D ) :Double; overload;
 function RotAngle( const V0_,V1_:TSingle2D ) :Single; overload;
 function RotAngle( const V0_,V1_:TDouble2D ) :Double; overload;
 
+function PolySolveReal( const Ks_:TSingle2D; out X1_:Single ) :Byte; overload;
+function PolySolveReal( const Ks_:TDouble2D; out X1_:Double ) :Byte; overload;
+
 implementation //############################################################### ■
 
 uses System.SysUtils, System.Math;
@@ -2445,6 +2448,36 @@ function RotAngle( const V0_,V1_:TDouble2D ) :Double;
 begin
      Result := ArcTan2( V0_.X * V1_.Y - V0_.Y * V1_.X,
                         V0_.X * V1_.X + V0_.Y * V1_.Y );
+end;
+
+//------------------------------------------------------------------------------
+
+function PolySolveReal( const Ks_:TSingle2D; out X1_:Single ) :Byte;
+begin
+     with Ks_ do
+     begin
+          if _2 = 0 then Result := 0
+          else
+          begin
+               X1_ := -_1 / _2;
+
+               Result := 1;
+          end;
+     end;
+end;
+
+function PolySolveReal( const Ks_:TDouble2D; out X1_:Double ) :Byte;
+begin
+     with Ks_ do
+     begin
+          if _2 = 0 then Result := 0
+          else
+          begin
+               X1_ := -_1 / _2;
+
+               Result := 1;
+          end;
+     end;
 end;
 
 //############################################################################## □
