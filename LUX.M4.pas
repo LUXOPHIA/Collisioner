@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses System.Math.Vectors,
-     LUX, LUX.D1, LUX.D2, LUX.D3, LUX.M2, LUX.M3;
+     LUX, LUX.D1, LUX.D2, LUX.D3, LUX.D4, LUX.M2, LUX.M3;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -59,6 +59,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_:Single; const B_:TSingleM4 ) :TSingleM4;
        class operator Multiply( const A_:TSingleM4; const B_:Single ) :TSingleM4;
        class operator Multiply( const A_:TSingleM4; const B_:TSingleRay3D ) :TSingleRay3D;
+       class operator Multiply( const A_:TSingleM4; const B_:TSingle4D ) :TSingle4D;
+       class operator Multiply( const A_:TSingle4D; const B_:TSingleM4 ) :TSingle4D;
        class operator Divide( const A_:TSingleM4; const B_:Single ) :TSingleM4;
        ///// 型変換
        class operator Implicit( const V_:Single ) :TSingleM4;
@@ -120,6 +122,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_:Double; const B_:TDoubleM4 ) :TDoubleM4;
        class operator Multiply( const A_:TDoubleM4; const B_:Double ) :TDoubleM4;
        class operator Multiply( const A_:TDoubleM4; const B_:TDoubleRay3D ) :TDoubleRay3D;
+       class operator Multiply( const A_:TDoubleM4; const B_:TDouble4D ) :TDouble4D;
+       class operator Multiply( const A_:TDouble4D; const B_:TDoubleM4 ) :TDouble4D;
        class operator Divide( const A_:TDoubleM4; const B_:Double ) :TDoubleM4;
        ///// 型変換
        class operator Implicit( const V_:Double ) :TDoubleM4;
@@ -182,6 +186,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_,B_:TdSingleM4 ) :TdSingleM4;
        class operator Multiply( const A_:TdSingle; const B_:TdSingleM4 ) :TdSingleM4;
        class operator Multiply( const A_:TdSingleM4; const B_:TdSingle ) :TdSingleM4;
+       class operator Multiply( const A_:TdSingleM4; const B_:TdSingle4D ) :TdSingle4D;
+       class operator Multiply( const A_:TdSingle4D; const B_:TdSingleM4 ) :TdSingle4D;
        class operator Divide( const A_:TdSingleM4; const B_:TdSingle ) :TdSingleM4;
        ///// 型変換
        class operator Implicit( const V_:TdSingle ) :TdSingleM4;
@@ -242,6 +248,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_,B_:TdDoubleM4 ) :TdDoubleM4;
        class operator Multiply( const A_:TdDouble; const B_:TdDoubleM4 ) :TdDoubleM4;
        class operator Multiply( const A_:TdDoubleM4; const B_:TdDouble ) :TdDoubleM4;
+       class operator Multiply( const A_:TdDoubleM4; const B_:TdDouble4D ) :TdDouble4D;
+       class operator Multiply( const A_:TdDouble4D; const B_:TdDoubleM4 ) :TdDouble4D;
        class operator Divide( const A_:TdDoubleM4; const B_:TdDouble ) :TdDoubleM4;
        ///// 型変換
        class operator Implicit( const V_:TdDouble ) :TdDoubleM4;
@@ -509,6 +517,30 @@ begin
           Vec := A_.MultVec( B_.Vec );
      end
 end;
+
+class operator TSingleM4.Multiply( const A_:TSingleM4; const B_:TSingle4D ) :TSingle4D;
+begin
+     with Result do
+     begin
+          _1 := A_._11 * B_._1 + A_._12 * B_._2 + A_._13 * B_._3 + A_._14 * B_._4;
+          _2 := A_._21 * B_._1 + A_._22 * B_._2 + A_._23 * B_._3 + A_._24 * B_._4;
+          _3 := A_._31 * B_._1 + A_._32 * B_._2 + A_._33 * B_._3 + A_._34 * B_._4;
+          _4 := A_._41 * B_._1 + A_._42 * B_._2 + A_._43 * B_._3 + A_._44 * B_._4;
+     end;
+end;
+
+class operator TSingleM4.Multiply( const A_:TSingle4D; const B_:TSingleM4 ) :TSingle4D;
+begin
+     with Result do
+     begin
+          _1 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31 + A_._4 * B_._41;
+          _2 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31 + A_._4 * B_._41;
+          _3 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31 + A_._4 * B_._41;
+          _4 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31 + A_._4 * B_._41;
+     end;
+end;
+
+//------------------------------------------------------------------------------
 
 class operator TSingleM4.Divide( const A_:TSingleM4; const B_:Single ) :TSingleM4;
 begin
@@ -953,6 +985,28 @@ begin
           Pos := A_.MultPos( B_.Pos );
           Vec := A_.MultVec( B_.Vec );
      end
+end;
+
+class operator TDoubleM4.Multiply( const A_:TDoubleM4; const B_:TDouble4D ) :TDouble4D;
+begin
+     with Result do
+     begin
+          _1 := A_._11 * B_._1 + A_._12 * B_._2 + A_._13 * B_._3 + A_._14 * B_._4;
+          _2 := A_._21 * B_._1 + A_._22 * B_._2 + A_._23 * B_._3 + A_._24 * B_._4;
+          _3 := A_._31 * B_._1 + A_._32 * B_._2 + A_._33 * B_._3 + A_._34 * B_._4;
+          _4 := A_._41 * B_._1 + A_._42 * B_._2 + A_._43 * B_._3 + A_._44 * B_._4;
+     end;
+end;
+
+class operator TDoubleM4.Multiply( const A_:TDouble4D; const B_:TDoubleM4 ) :TDouble4D;
+begin
+     with Result do
+     begin
+          _1 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31 + A_._4 * B_._41;
+          _2 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31 + A_._4 * B_._41;
+          _3 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31 + A_._4 * B_._41;
+          _4 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31 + A_._4 * B_._41;
+     end;
 end;
 
 class operator TDoubleM4.Divide( const A_:TDoubleM4; const B_:Double ) :TDoubleM4;
@@ -1415,6 +1469,28 @@ begin
      end
 end;
 
+class operator TdSingleM4.Multiply( const A_:TdSingleM4; const B_:TdSingle4D ) :TdSingle4D;
+begin
+     with Result do
+     begin
+          _1 := A_._11 * B_._1 + A_._12 * B_._2 + A_._13 * B_._3 + A_._14 * B_._4;
+          _2 := A_._21 * B_._1 + A_._22 * B_._2 + A_._23 * B_._3 + A_._24 * B_._4;
+          _3 := A_._31 * B_._1 + A_._32 * B_._2 + A_._33 * B_._3 + A_._34 * B_._4;
+          _4 := A_._41 * B_._1 + A_._42 * B_._2 + A_._43 * B_._3 + A_._44 * B_._4;
+     end;
+end;
+
+class operator TdSingleM4.Multiply( const A_:TdSingle4D; const B_:TdSingleM4 ) :TdSingle4D;
+begin
+     with Result do
+     begin
+          _1 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31 + A_._4 * B_._41;
+          _2 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31 + A_._4 * B_._41;
+          _3 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31 + A_._4 * B_._41;
+          _4 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31 + A_._4 * B_._41;
+     end;
+end;
+
 class operator TdSingleM4.Divide( const A_:TdSingleM4; const B_:TdSingle ) :TdSingleM4;
 begin
      with A_ do
@@ -1849,6 +1925,28 @@ begin
           _31 := A_._31 * B_;  _32 := A_._32 * B_;  _33 := A_._33 * B_;  _34 := A_._34 * B_;
           _41 := A_._41 * B_;  _42 := A_._42 * B_;  _43 := A_._43 * B_;  _44 := A_._44 * B_;
      end
+end;
+
+class operator TdDoubleM4.Multiply( const A_:TdDoubleM4; const B_:TdDouble4D ) :TdDouble4D;
+begin
+     with Result do
+     begin
+          _1 := A_._11 * B_._1 + A_._12 * B_._2 + A_._13 * B_._3 + A_._14 * B_._4;
+          _2 := A_._21 * B_._1 + A_._22 * B_._2 + A_._23 * B_._3 + A_._24 * B_._4;
+          _3 := A_._31 * B_._1 + A_._32 * B_._2 + A_._33 * B_._3 + A_._34 * B_._4;
+          _4 := A_._41 * B_._1 + A_._42 * B_._2 + A_._43 * B_._3 + A_._44 * B_._4;
+     end;
+end;
+
+class operator TdDoubleM4.Multiply( const A_:TdDouble4D; const B_:TdDoubleM4 ) :TdDouble4D;
+begin
+     with Result do
+     begin
+          _1 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31 + A_._4 * B_._41;
+          _2 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31 + A_._4 * B_._41;
+          _3 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31 + A_._4 * B_._41;
+          _4 := A_._1 * B_._11 + A_._2 * B_._21 + A_._3 * B_._31 + A_._4 * B_._41;
+     end;
 end;
 
 class operator TdDoubleM4.Divide( const A_:TdDoubleM4; const B_:TdDouble ) :TdDoubleM4;
