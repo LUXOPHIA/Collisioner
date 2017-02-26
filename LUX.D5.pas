@@ -1545,32 +1545,30 @@ begin
                Ks3[ 3 ] := +2 * P;
                Ks3[ 4 ] := +1;
 
-               PolySolveReal( Ks3, Us3 );  U := Us3[ 1 ];  Z := U + P;
+               case PolySolveReal( Ks3, Us3 ) of
+                 1: U := Us3[ 1 ];
+                 3: U := Us3[ 3 ];
+               end;
 
-               {
-               Ks3[ 1 ] := +4 * P * R - Pow2( Q );
-               Ks3[ 2 ] := -4 * R;
-               Ks3[ 3 ] := -P;
-               Ks3[ 4 ] := +1;
+               if U >= 0 then
+               begin
+                    Z  := U + P;
+                    Z2 := Z / 2;
+                    U2 := Roo2( U );
+                    QU := Q / ( 2 * U2 );
 
-               PolySolveReal( Ks3, Zs3 );  Z := Zs3[ 1 ];  U := Z - P;
-               }
+                    Ks2[ 1 ] := +Z2 + QU;
+                    Ks2[ 2 ] := -U2;
+                    Ks2[ 3 ] := +1;
 
-               Z2 := Z / 2;
-               U2 := Roo2( U );
-               QU := Q / ( 2 * U2 );
+                    for I := 1 to PolySolveReal( Ks2, Ys2 ) do AddX( Ys2[ I ] );
 
-               Ks2[ 1 ] := +Z2 + QU;
-               Ks2[ 2 ] := -U2;
-               Ks2[ 3 ] := +1;
+                    Ks2[ 1 ] := +Z2 - QU;
+                    Ks2[ 2 ] := +U2;
+                    Ks2[ 3 ] := +1;
 
-               for I := 1 to PolySolveReal( Ks2, Ys2 ) do AddX( Ys2[ I ] );
-
-               Ks2[ 1 ] := +Z2 - QU;
-               Ks2[ 2 ] := +U2;
-               Ks2[ 3 ] := +1;
-
-               for I := 1 to PolySolveReal( Ks2, Ys2 ) do AddX( Ys2[ I ] );
+                    for I := 1 to PolySolveReal( Ks2, Ys2 ) do AddX( Ys2[ I ] );
+               end;
           end;
      end;
 end;
@@ -1648,32 +1646,30 @@ begin
                Ks3[ 3 ] := +2 * P;
                Ks3[ 4 ] := +1;
 
-               PolySolveReal( Ks3, Us3 );  U := Us3[ 1 ];  Z := U + P;
+               case PolySolveReal( Ks3, Us3 ) of
+                 1: U := Us3[ 1 ];
+                 3: U := Us3[ 3 ];
+               end;
 
-               {
-               Ks3[ 1 ] := +4 * P * R - Pow2( Q );
-               Ks3[ 2 ] := -4 * R;
-               Ks3[ 3 ] := -P;
-               Ks3[ 4 ] := +1;
+               if U >= 0 then
+               begin
+                    Z  := U + P;
+                    Z2 := Z / 2;
+                    U2 := Roo2( U );
+                    QU := Q / ( 2 * U2 );
 
-               PolySolveReal( Ks3, Zs3 );  Z := Zs3[ 1 ];  U := Z - P;
-               }
+                    Ks2[ 1 ] := +Z2 + QU;
+                    Ks2[ 2 ] := -U2;
+                    Ks2[ 3 ] := +1;
 
-               Z2 := Z / 2;
-               U2 := Roo2( U );
-               QU := Q / ( 2 * U2 );
+                    for I := 1 to PolySolveReal( Ks2, Ys2 ) do AddX( Ys2[ I ] );
 
-               Ks2[ 1 ] := +Z2 + QU;
-               Ks2[ 2 ] := -U2;
-               Ks2[ 3 ] := +1;
+                    Ks2[ 1 ] := +Z2 - QU;
+                    Ks2[ 2 ] := +U2;
+                    Ks2[ 3 ] := +1;
 
-               for I := 1 to PolySolveReal( Ks2, Ys2 ) do AddX( Ys2[ I ] );
-
-               Ks2[ 1 ] := +Z2 - QU;
-               Ks2[ 2 ] := +U2;
-               Ks2[ 3 ] := +1;
-
-               for I := 1 to PolySolveReal( Ks2, Ys2 ) do AddX( Ys2[ I ] );
+                    for I := 1 to PolySolveReal( Ks2, Ys2 ) do AddX( Ys2[ I ] );
+               end;
           end;
      end;
 end;
