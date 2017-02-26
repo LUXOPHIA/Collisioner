@@ -1545,10 +1545,8 @@ begin
                Ks3[ 3 ] := +2 * P;
                Ks3[ 4 ] := +1;
 
-               case PolySolveReal( Ks3, Us3 ) of
-                 1: U := Us3[ 1 ];
-                 3: U := Us3[ 3 ];
-               end;
+               if PolySolveReal( Ks3, Us3 ) = 1 then U := Us3[ 1 ]
+                                                else U := Us3[ 3 ];
 
                if U >= 0 then
                begin
@@ -1646,10 +1644,8 @@ begin
                Ks3[ 3 ] := +2 * P;
                Ks3[ 4 ] := +1;
 
-               case PolySolveReal( Ks3, Us3 ) of
-                 1: U := Us3[ 1 ];
-                 3: U := Us3[ 3 ];
-               end;
+               if PolySolveReal( Ks3, Us3 ) = 1 then U := Us3[ 1 ]
+                                                else U := Us3[ 3 ];
 
                if U >= 0 then
                begin
