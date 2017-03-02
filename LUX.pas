@@ -236,6 +236,10 @@ function Pow4( const X_:Integer ) :Integer; inline; overload;
 function Pow4( const X_:Single ) :Single; inline; overload;
 function Pow4( const X_:Double ) :Double; inline; overload;
 
+function Pow5( const X_:Integer ) :Integer; inline; overload;
+function Pow5( const X_:Single ) :Single; inline; overload;
+function Pow5( const X_:Double ) :Double; inline; overload;
+
 function Roo2( const X_:Single ) :Single; inline; overload;
 function Roo2( const X_:Double ) :Double; inline; overload;
 
@@ -1050,6 +1054,23 @@ end;
 function Pow4( const X_:Double ) :Double;
 begin
      Result := Pow2( Pow2( X_ ) );
+end;
+
+//------------------------------------------------------------------------------
+
+function Pow5( const X_:Integer ) :Integer;
+begin
+     Result := Pow4( X_ ) * X_;
+end;
+
+function Pow5( const X_:Single ) :Single;
+begin
+     Result := Pow4( X_ ) * X_;
+end;
+
+function Pow5( const X_:Double ) :Double;
+begin
+     Result := Pow4( X_ ) * X_;
 end;
 
 //------------------------------------------------------------------------------
