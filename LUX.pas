@@ -203,9 +203,7 @@ const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
       CRLF = #13#10;
 
-var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【変数】
-
-    _ThreadPool_ :TThreadPool;
+//var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【変数】
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
@@ -285,6 +283,7 @@ function MaxI( const Vs_:array of Double ) :Integer; overload;
 function RealMod( const X_,Range_:Integer ) :Integer; overload;
 function RealMod( const X_,Range_:Int64 ) :Int64; overload;
 
+{$IF Defined( MACOS ) and Defined( MSWINDOWS ) }
 function RevBytes( const Value_:Word ) :Word; overload;
 function RevBytes( const Value_:Smallint ) :Smallint; overload;
 
@@ -295,8 +294,11 @@ function RevBytes( const Value_:Single ) :Single; overload;
 function RevBytes( const Value_:UInt64 ) :UInt64; overload;
 function RevBytes( const Value_:Int64 ) :Int64; overload;
 function RevBytes( const Value_:Double ) :Double; overload;
+{$ENDIF}
 
+{$IF Defined( MACOS ) and Defined( MSWINDOWS ) }
 function CharsToStr( const Cs_:TArray<AnsiChar> ) :AnsiString;
+{$ENDIF}
 
 function FileToBytes( const FileName_:string ) :TBytes;
 
@@ -1466,6 +1468,8 @@ end;
 
 //------------------------------------------------------------------------------
 
+{$IF Defined( MACOS ) and Defined( MSWINDOWS ) }
+
 function RevBytes( const Value_:Word ) :Word;
 asm
 {$IFDEF CPUX64 }
@@ -1550,7 +1554,11 @@ begin
      Result := PDouble( @V )^;
 end;
 
+{$ENDIF}
+
 //------------------------------------------------------------------------------
+
+{$IF Defined( MACOS ) and Defined( MSWINDOWS ) }
 
 function CharsToStr( const Cs_:TArray<AnsiChar> ) :AnsiString;
 var
@@ -1564,6 +1572,8 @@ begin
                                   else Result := Result + Cs_[ I ];
      end;
 end;
+
+{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -1590,10 +1600,6 @@ initialization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 初期
 
      Randomize;
 
-     _ThreadPool_ := TThreadPool.Create;
-
 finalization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 最終化
-
-     _ThreadPool_.Free;
 
 end. //######################################################################### ■
