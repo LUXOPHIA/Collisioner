@@ -106,7 +106,8 @@ procedure TGLView.Paint;
 begin
      BeginRender;
 
-       glViewport( 0, 0, _Form.ClientWidth, _Form.ClientHeight );
+       glViewport( 0, 0, Round( _Form.Width  * Scene.GetSceneScale ),
+                         Round( _Form.Height * Scene.GetSceneScale ) );
 
        _OnPaint;
 
