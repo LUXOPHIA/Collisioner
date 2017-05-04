@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.VCL.GLView;
+﻿unit LUX.GPU.OpenGL.GLView;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Winapi.OpenGL,
-  LUX, LUX.GPU.OpenGL.VCL;
+  LUX, LUX.GPU.OpenGL;
 
 type
   TGLView = class(TFrame)

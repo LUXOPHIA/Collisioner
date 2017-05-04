@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.VCL;
+﻿unit LUX.GPU.OpenGL;
 
 interface //#################################################################### ■
 
