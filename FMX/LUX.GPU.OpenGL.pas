@@ -107,6 +107,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        constructor Create;
        destructor Destroy; override;
+       ///// プロパティ
+       property ID :GLuint read _ID;
        ///// メソッド
        procedure Attach( const Shader_:TGLShader );
        procedure Detach( const Shader_:TGLShader );
@@ -430,8 +432,9 @@ var
    P :PAnsiChar;
    N :GLint;
    E :GLint;
-   Cs :array of PGLchar;
+   Cs :array of GLchar;
    CsN :GLsizei;
+   S :String;
 begin
      P := PAnsiChar( AnsiString( Source_ ) );
      N := Length( Source_ );
@@ -444,13 +447,15 @@ begin
 
      if E = GL_FALSE then
      begin
-          glGetShaderiv( _ID, GL_INFO_LOG_LENGTH , @N );
+          glGetShaderiv( _ID, GL_INFO_LOG_LENGTH, @N );
 
           SetLength( Cs, N );
 
-          glGetShaderInfoLog( _ID, N, @CsN, @Cs[0] );
+          glGetShaderInfoLog( _ID, N, @CsN, PAnsiChar( Cs ) );
 
-          Assert( False, AnsiString( Cs ) );
+          SetString( S, PAnsiChar( Cs ), CsN );
+
+          Assert( False, S );
      end;
 end;
 
@@ -551,8 +556,29 @@ end;
 //------------------------------------------------------------------------------
 
 procedure TGLProgram.Link;
+var
+   E :GLint;
+   N :GLint;
+   Cs :array of GLchar;
+   CsN :GLsizei;
+   S :String;
 begin
      glLinkProgram( _ID );
+
+     glGetProgramiv( _ID, GL_LINK_STATUS, @E );
+
+     if E = GL_FALSE then
+     begin
+          glGetProgramiv( _ID, GL_INFO_LOG_LENGTH, @N );
+
+          SetLength( Cs, N );
+
+          glGetProgramInfoLog( _ID, N, @CsN, PAnsiChar( Cs ) );
+
+          SetString( S, PAnsiChar( Cs ), CsN );
+
+          Assert( False, S );
+     end;
 end;
 
 //------------------------------------------------------------------------------
