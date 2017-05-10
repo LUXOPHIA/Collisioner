@@ -58,14 +58,26 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLShader = class
      private
      protected
-       _ID :GLuint;
+       _ID      :GLuint;
+       _Source  :String;
+       _Success :Boolean;
+       _Error   :String;
+       ///// アクセス
+       procedure SetSource( const Source_:String );
+       ///// メソッド
+       procedure Compile;
+       function GetState :Boolean;
+       function GetError :String;
      public
        constructor Create( const Kind_:GLenum );
        destructor Destroy; override;
        ///// プロパティ
-       property ID :GLuint read _ID;
+       property ID      :GLuint  read _ID                     ;
+       property Source  :String  read _Source  write SetSource;
+       property Success :Boolean read _Success                ;
+       property Error   :String  read _Error                  ;
        ///// メソッド
-       procedure SetSource( const Source_:String );
+       procedure LoadFromFile( const FileName_:String );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaderV
@@ -103,17 +115,25 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLProgram = class
      private
      protected
-       _ID :GLuint;
+       _ID      :GLuint;
+       _Success :Boolean;
+       _Error   :String;
+       ///// メソッド
+       function GetState :Boolean;
+       function GetError :String;
      public
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property ID :GLuint read _ID;
+       property ID      :GLuint  read _ID     ;
+       property Success :Boolean read _Success;
+       property Error   :String  read _Error  ;
        ///// メソッド
        procedure Attach( const Shader_:TGLShader );
        procedure Detach( const Shader_:TGLShader );
        procedure Link;
        procedure Use;
+       class procedure Unuse;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBuffer<_TYPE_>
@@ -190,8 +210,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property ID :GLuint read _ID;
        ///// メソッド
-       procedure BeginBind;
-       procedure EndBind;
+       procedure Bind;
+       procedure Unbind;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -204,7 +224,7 @@ var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 implementation //############################################################### ■
 
-uses System.SysUtils,
+uses System.Classes,
      FMX.Platform.Win;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
@@ -390,8 +410,8 @@ procedure TOepnGL.InitOpenGL;
 begin
      BeginGL;
 
-     glEnable( GL_DEPTH_TEST );
-     glEnable( GL_CULL_FACE  );
+       glEnable( GL_DEPTH_TEST );
+       glEnable( GL_CULL_FACE  );
 
      EndGL;
 end;
@@ -408,6 +428,57 @@ end;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+procedure TGLShader.SetSource( const Source_:String );
+begin
+     _Source := Source_;
+
+     Compile;
+
+     _Success := GetState;
+     _Error   := GetError;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLShader.Compile;
+var
+   P :PAnsiChar;
+   N :GLint;
+begin
+     P := PAnsiChar( AnsiString( _Source ) );
+     N := Length( _Source );
+
+     glShaderSource( _ID, 1, @P, @N );
+
+     glCompileShader( _ID );
+end;
+
+function TGLShader.GetState :Boolean;
+var
+   S :GLint;
+begin
+     glGetShaderiv( _ID, GL_COMPILE_STATUS, @S );
+
+     Result := ( S = GL_TRUE );
+end;
+
+function TGLShader.GetError :String;
+var
+   N :GLint;
+   Cs :array of GLchar;
+   CsN :GLsizei;
+begin
+     glGetShaderiv( _ID, GL_INFO_LOG_LENGTH, @N );
+
+     SetLength( Cs, N );
+
+     glGetShaderInfoLog( _ID, N, @CsN, PAnsiChar( Cs ) );
+
+     SetString( Result, PAnsiChar( Cs ), CsN );
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
@@ -427,35 +498,15 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLShader.SetSource( const Source_:String );
-var
-   P :PAnsiChar;
-   N :GLint;
-   E :GLint;
-   Cs :array of GLchar;
-   CsN :GLsizei;
-   S :String;
+procedure TGLShader.LoadFromFile( const FileName_:String );
 begin
-     P := PAnsiChar( AnsiString( Source_ ) );
-     N := Length( Source_ );
-
-     glShaderSource( _ID, 1, @P, @N );
-
-     glCompileShader( _ID );
-
-     glGetShaderiv( _ID, GL_COMPILE_STATUS, @E );
-
-     if E = GL_FALSE then
+     with TStringList.Create do
      begin
-          glGetShaderiv( _ID, GL_INFO_LOG_LENGTH, @N );
+          LoadFromFile( FileName_ );
 
-          SetLength( Cs, N );
+          Source := Text;
 
-          glGetShaderInfoLog( _ID, N, @CsN, PAnsiChar( Cs ) );
-
-          SetString( S, PAnsiChar( Cs ), CsN );
-
-          Assert( False, S );
+          DisposeOf;
      end;
 end;
 
@@ -525,6 +576,32 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TGLProgram.GetState :Boolean;
+var
+   S :GLint;
+begin
+     glGetProgramiv( _ID, GL_LINK_STATUS, @S );
+
+     Result := ( S = GL_TRUE );
+end;
+
+function TGLProgram.GetError :String;
+var
+   N :GLint;
+   Cs :array of GLchar;
+   CsN :GLsizei;
+begin
+     glGetProgramiv( _ID, GL_INFO_LOG_LENGTH, @N );
+
+     SetLength( Cs, N );
+
+     glGetProgramInfoLog( _ID, N, @CsN, PAnsiChar( Cs ) );
+
+     SetString( Result, PAnsiChar( Cs ), CsN );
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TGLProgram.Create;
@@ -556,29 +633,11 @@ end;
 //------------------------------------------------------------------------------
 
 procedure TGLProgram.Link;
-var
-   E :GLint;
-   N :GLint;
-   Cs :array of GLchar;
-   CsN :GLsizei;
-   S :String;
 begin
      glLinkProgram( _ID );
 
-     glGetProgramiv( _ID, GL_LINK_STATUS, @E );
-
-     if E = GL_FALSE then
-     begin
-          glGetProgramiv( _ID, GL_INFO_LOG_LENGTH, @N );
-
-          SetLength( Cs, N );
-
-          glGetProgramInfoLog( _ID, N, @CsN, PAnsiChar( Cs ) );
-
-          SetString( S, PAnsiChar( Cs ), CsN );
-
-          Assert( False, S );
-     end;
+     _Success := GetState;
+     _Error   := GetError;
 end;
 
 //------------------------------------------------------------------------------
@@ -586,6 +645,11 @@ end;
 procedure TGLProgram.Use;
 begin
      glUseProgram( _ID );
+end;
+
+class procedure TGLProgram.Unuse;
+begin
+     glUseProgram( 0 );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBuffer<_TYPE_>
@@ -737,12 +801,12 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLArray.BeginBind;
+procedure TGLArray.Bind;
 begin
      glBindVertexArray( _ID );
 end;
 
-procedure TGLArray.EndBind;
+procedure TGLArray.Unbind;
 begin
      glBindVertexArray( 0 );
 end;
