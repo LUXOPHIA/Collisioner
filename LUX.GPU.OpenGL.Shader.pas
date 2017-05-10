@@ -2,7 +2,8 @@
 
 interface //#################################################################### ■
 
-uses Winapi.OpenGL, Winapi.OpenGLext,
+uses System.Classes,
+     Winapi.OpenGL, Winapi.OpenGLext,
      LUX, LUX.GPU.OpenGL;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
@@ -19,25 +20,23 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        _ID      :GLuint;
-       _Source  :String;
+       _Source  :TStringList;
        _Success :Boolean;
-       _Error   :String;
+       _Error   :TStringList;
        ///// アクセス
-       procedure SetSource( const Source_:String );
+       procedure SetSource( Sender_:TObject );
        ///// メソッド
-       procedure Compile;
+       procedure Compile( const Source_:String );
        function GetState :Boolean;
        function GetError :String;
      public
        constructor Create( const Kind_:GLenum );
        destructor Destroy; override;
        ///// プロパティ
-       property ID      :GLuint  read _ID                     ;
-       property Source  :String  read _Source  write SetSource;
-       property Success :Boolean read _Success                ;
-       property Error   :String  read _Error                  ;
-       ///// メソッド
-       procedure LoadFromFile( const FileName_:String );
+       property ID      :GLuint      read _ID     ;
+       property Source  :TStringList read _Source ;
+       property Success :Boolean     read _Success;
+       property Error   :TStringList read _Error  ;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaderV
@@ -77,7 +76,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _ID      :GLuint;
        _Success :Boolean;
-       _Error   :String;
+       _Error   :TStringList;
        ///// メソッド
        function GetState :Boolean;
        function GetError :String;
@@ -85,9 +84,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property ID      :GLuint  read _ID     ;
-       property Success :Boolean read _Success;
-       property Error   :String  read _Error  ;
+       property ID      :GLuint      read _ID     ;
+       property Success :Boolean     read _Success;
+       property Error   :TStringList read _Error  ;
        ///// メソッド
        procedure Attach( const Shader_:TGLShader );
        procedure Detach( const Shader_:TGLShader );
@@ -182,8 +181,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 implementation //############################################################### ■
 
-uses System.Classes;
-
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% {RECORD}
@@ -202,25 +199,24 @@ uses System.Classes;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-procedure TGLShader.SetSource( const Source_:String );
+procedure TGLShader.SetSource( Sender_:TObject );
 begin
-     _Source := Source_;
-
-     Compile;
+     Compile( _Source.Text );
 
      _Success := GetState;
-     _Error   := GetError;
+
+     _Error.Text := GetError;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLShader.Compile;
+procedure TGLShader.Compile( const Source_:String );
 var
    P :PAnsiChar;
    N :GLint;
 begin
-     P := PAnsiChar( AnsiString( _Source ) );
-     N := Length( _Source );
+     P := PAnsiChar( AnsiString( Source_ ) );
+     N := Length( Source_ );
 
      glShaderSource( _ID, 1, @P, @N );
 
@@ -257,28 +253,22 @@ constructor TGLShader.Create( const Kind_:GLenum );
 begin
      inherited Create;
 
+     _Source := TStringList.Create;
+     _Error  := TStringList.Create;
+
      _ID := glCreateShader( Kind_ );
+
+     _Source.OnChange := SetSource;
 end;
 
 destructor TGLShader.Destroy;
 begin
      glDeleteShader( _ID );
 
+     _Source.DisposeOf;
+     _Error .DisposeOf;
+
      inherited;
-end;
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-procedure TGLShader.LoadFromFile( const FileName_:String );
-begin
-     with TStringList.Create do
-     begin
-          LoadFromFile( FileName_ );
-
-          Source := Text;
-
-          DisposeOf;
-     end;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaderV
@@ -379,12 +369,16 @@ constructor TGLProgram.Create;
 begin
      inherited;
 
+     _Error := TStringList.Create;
+
      _ID := glCreateProgram;
 end;
 
 destructor TGLProgram.Destroy;
 begin
      glDeleteProgram( _ID );
+
+     _Error.DisposeOf;
 
      inherited;
 end;
@@ -408,7 +402,8 @@ begin
      glLinkProgram( _ID );
 
      _Success := GetState;
-     _Error   := GetError;
+
+     _Error.Text := GetError;
 end;
 
 //------------------------------------------------------------------------------
