@@ -29,6 +29,7 @@ type
     procedure DoAbsoluteChanged; override;
     procedure Paint; override;
     procedure Resize; override;
+    procedure AncestorVisibleChanged( const Visible_: Boolean ); override;
     procedure FitWindow;
     procedure CreateWindow;
     procedure CreateDC;
@@ -119,6 +120,13 @@ begin
      inherited;
 
      if not ( csLoading in Self.ComponentState ) then FitWindow;
+end;
+
+procedure TGLView.AncestorVisibleChanged( const Visible_: Boolean );
+begin
+     inherited;
+
+     _Form.Visible := Visible_;
 end;
 
 //------------------------------------------------------------------------------
