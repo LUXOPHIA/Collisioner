@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Winapi.OpenGL,
-  LUX, LUX.GPU.OpenGL;
+  LUX, LUX.GPU.OpenGL.ENV;
 
 type
   TGLView = class(TFrame)

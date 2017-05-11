@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL;
+﻿unit LUX.GPU.OpenGL.ENV;
 
 interface //#################################################################### ■
 
