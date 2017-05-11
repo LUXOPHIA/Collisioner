@@ -87,22 +87,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLArray
-
-     TGLArray = class
-     private
-     protected
-       _ID :GLuint;
-     public
-       constructor Create;
-       destructor Destroy; override;
-       ///// プロパティ
-       property ID :GLuint read _ID;
-       ///// メソッド
-       procedure Bind;
-       procedure Unbind;
-     end;
-
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
 
 //var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【変数】
@@ -275,40 +259,6 @@ destructor TGLBufferU<_TYPE_>.Destroy;
 begin
 
      inherited;
-end;
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLArray
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TGLArray.Create;
-begin
-     inherited Create;
-
-     glGenVertexArrays( 1, @_ID );
-end;
-
-destructor TGLArray.Destroy;
-begin
-     glDeleteVertexArrays( 1, @_ID );
-
-     inherited;
-end;
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-procedure TGLArray.Bind;
-begin
-     glBindVertexArray( _ID );
-end;
-
-procedure TGLArray.Unbind;
-begin
-     glBindVertexArray( 0 );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
