@@ -144,9 +144,9 @@ begin
           OnMouseUp    := _OnMouseUp   ;
           OnMouseWheel := _OnMouseWheel;
 
-          Show;
+          HandleNeeded;
 
-          _WND := WindowHandleToPlatform( _Form.Handle ).Wnd;
+          _WND := WindowHandleToPlatform( Handle ).Wnd;
      end;
 
      Winapi.Windows.SetParent( _WND, GetRootWND );
