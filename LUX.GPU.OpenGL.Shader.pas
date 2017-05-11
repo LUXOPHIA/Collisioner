@@ -10,7 +10,20 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% {RECORD}
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferData<TValue>
+
+     TGLBufferData<TValue:record> = record
+     public
+       type PValue = ^TValue;
+     private
+       _Head :PValue;
+       ///// アクセス
+       function GetValue( const I_:Integer ) :TValue;
+       procedure SetValue( const I_:Integer; const Value_:TValue );
+     public
+       ///// プロパティ
+       property Values[ const I_:Integer ] :TValue read GetValue write SetValue;
+     end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
@@ -98,18 +111,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBuffer<_TYPE_>
 
      TGLBuffer<_TYPE_:record> = class
-     public
-       type _PValue_ = ^_TYPE_;
      private
      protected
        _ID    :GLuint;
        _Kind  :GLenum;
+       _Usage :GLenum;
        _Count :Integer;
-       _Head  :_PValue_;
        ///// アクセス
        procedure SetCount( const Count_:Integer );
      public
-       constructor Create( const Kind_:GLenum );
+       constructor Create( const Kind_:GLenum; const Usage_:GLenum = GL_STATIC_DRAW );
        destructor Destroy; override;
        ///// プロパティ
        property ID    :GLuint  read _ID;
@@ -117,8 +128,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        procedure Bind;
        procedure Unbind;
-       procedure Map;
+       function Map( const Access_:GLenum = GL_READ_WRITE ) :TGLBufferData<_TYPE_>;
        procedure Unmap;
+       procedure Import( const Array_:array of _TYPE_ );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferV<_TYPE_>
@@ -183,9 +195,23 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% {RECORD}
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferData<TValue>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+function TGLBufferData<TValue>.GetValue( const I_:Integer ) :TValue;
+var
+   P :PValue;
+begin
+     P := _Head;  Inc( P, I_ );   Result := P^;
+end;
+
+procedure TGLBufferData<TValue>.SetValue( const I_:Integer; const Value_:TValue );
+var
+   P :PValue;
+begin
+     P := _Head;  Inc( P, I_ );   P^ := Value_;
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
@@ -212,10 +238,10 @@ end;
 
 procedure TGLShader.Compile( const Source_:String );
 var
-   P :PAnsiChar;
+   P :PGLchar;
    N :GLint;
 begin
-     P := PAnsiChar( AnsiString( Source_ ) );
+     P := PGLchar( AnsiString( Source_ ) );
      N := Length( Source_ );
 
      glShaderSource( _ID, 1, @P, @N );
@@ -235,16 +261,16 @@ end;
 function TGLShader.GetError :String;
 var
    N :GLint;
-   Cs :array of GLchar;
+   Cs :TArray<GLchar>;
    CsN :GLsizei;
 begin
      glGetShaderiv( _ID, GL_INFO_LOG_LENGTH, @N );
 
      SetLength( Cs, N );
 
-     glGetShaderInfoLog( _ID, N, @CsN, PAnsiChar( Cs ) );
+     glGetShaderInfoLog( _ID, N, @CsN, PGLchar( Cs ) );
 
-     SetString( Result, PAnsiChar( Cs ), CsN );
+     SetString( Result, PGLchar( Cs ), CsN );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -351,16 +377,16 @@ end;
 function TGLProgram.GetError :String;
 var
    N :GLint;
-   Cs :array of GLchar;
+   Cs :TArray<GLchar>;
    CsN :GLsizei;
 begin
      glGetProgramiv( _ID, GL_INFO_LOG_LENGTH, @N );
 
      SetLength( Cs, N );
 
-     glGetProgramInfoLog( _ID, N, @CsN, PAnsiChar( Cs ) );
+     glGetProgramInfoLog( _ID, N, @CsN, PGLchar( Cs ) );
 
-     SetString( Result, PAnsiChar( Cs ), CsN );
+     SetString( Result, PGLchar( Cs ), CsN );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -430,22 +456,22 @@ begin
 
      Bind;
 
-     glBufferData( _Kind, SizeOf( _TYPE_ ) * _Count, nil, GL_DYNAMIC_DRAW );
+       glBufferData( _Kind, SizeOf( _TYPE_ ) * _Count, nil, _Usage );
 
      Unbind;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLBuffer<_TYPE_>.Create( const Kind_:GLenum );
+constructor TGLBuffer<_TYPE_>.Create( const Kind_:GLenum; const Usage_:GLenum = GL_STATIC_DRAW );
 begin
      inherited Create;
 
      glGenBuffers( 1, @_ID );
 
-     _Kind := Kind_;
-
-     Count := 0;
+     _Kind  := Kind_;
+     _Usage := Usage_;
+      Count := 0;
 end;
 
 destructor TGLBuffer<_TYPE_>.Destroy;
@@ -469,16 +495,33 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLBuffer<_TYPE_>.Map;
+function TGLBuffer<_TYPE_>.Map( const Access_:GLenum = GL_READ_WRITE ) :TGLBufferData<_TYPE_>;
 begin
      Bind;
 
-     _Head := glMapBuffer( _Kind, GL_READ_WRITE );
+       Result._Head := glMapBuffer( _Kind, Access_ );
+
+     Unbind;
 end;
 
 procedure TGLBuffer<_TYPE_>.Unmap;
 begin
-     glUnmapBuffer( _Kind );
+     Bind;
+
+       glUnmapBuffer( _Kind );
+
+     Unbind;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TGLBuffer<_TYPE_>.Import( const Array_:array of _TYPE_ );
+begin
+     _Count := Length( Array_ );
+
+     Bind;
+
+       glBufferData( _Kind, SizeOf( Array_ ), @Array_[ 0 ], _Usage );
 
      Unbind;
 end;
