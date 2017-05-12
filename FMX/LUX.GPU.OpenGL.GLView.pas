@@ -27,6 +27,7 @@ type
     function GetRootWND :HWND;
     ///// メソッド
     procedure DoAbsoluteChanged; override;
+    procedure ParentChanged; override;
     procedure Paint; override;
     procedure Resize; override;
     procedure AncestorVisibleChanged( const Visible_: Boolean ); override;
@@ -101,6 +102,13 @@ begin
      inherited;
 
      FitWindow;
+end;
+
+procedure TGLView.ParentChanged;
+begin
+     inherited;
+
+     _Form.Visible := Self.ParentedVisible;
 end;
 
 procedure TGLView.Paint;
