@@ -1,6 +1,17 @@
 # LUX.GPU.OpenGL
 OpenGL を扱うためのライブラリ。
 
+![](https://github.com/LUXOPHIA/OpenGL/raw/master/--------/_SCREENSHOT/OpenGL-View.png)
+
+FMX と VCL 向けに用意された `TGLView` コンポーネントを、フレーム機能を用いて貼ることで、OpenGL の描画領域を GUIパーツ として扱うことができます。
+
+* `FMX/LUX.GPU.OpenGL.GLView.pas|fmx`
+    * [OpenGL](https://github.com/LUXOPHIA/OpenGL)
+* `VCL/LUX.GPU.OpenGL.GLView.pas|fmx`
+    * [OpenGL_VCL](https://github.com/LUXOPHIA/OpenGL_VCL)
+
+初期化さえ済んでしまえば、OpenGL の API は両フレームワーク共に共通に利用できます。
+
 ----
 * [Khronos Combined OpenGL Registry](https://www.khronos.org/registry/OpenGL/)
     * [Khronos OpenGL® Registry](https://khronos.org/registry/OpenGL/index_gl.php)
