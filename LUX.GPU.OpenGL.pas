@@ -24,7 +24,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property ID :GLuint read _ID;
        ///// メソッド
        procedure Bind;
-       procedure Unbind;
+       class procedure Unbind;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -68,7 +68,7 @@ begin
      glBindVertexArray( _ID );
 end;
 
-procedure TGLArray.Unbind;
+class procedure TGLArray.Unbind;
 begin
      glBindVertexArray( 0 );
 end;
