@@ -12,7 +12,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferData<TValue>
 
      TGLBufferData<TValue:record> = record
-     public
+     private
        type PValue = ^TValue;
      private
        _Head :PValue;
@@ -44,8 +44,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property ID    :GLuint  read _ID;
        property Count :Integer read _Count write SetCount;
        ///// メソッド
-       procedure Bind;
-       procedure Unbind;
+       procedure Bind; virtual;
+       procedure Unbind; virtual;
        function Map( const Access_:GLenum = GL_READ_WRITE ) :TGLBufferData<_TYPE_>;
        procedure Unmap;
        procedure Import( const Array_:array of _TYPE_ );
@@ -57,7 +57,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
      public
-       constructor Create;
+       constructor Create( const Usage_:GLenum = GL_STATIC_DRAW );
        destructor Destroy; override;
        ///// プロパティ
        ///// メソッド
@@ -69,7 +69,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
      public
-       constructor Create;
+       constructor Create( const Usage_:GLenum = GL_STATIC_DRAW );
        destructor Destroy; override;
        ///// プロパティ
        ///// メソッド
@@ -80,11 +80,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLBufferU<_TYPE_:record> = class( TGLBuffer<_TYPE_> )
      private
      protected
+       _BindI :GLuint;
      public
-       constructor Create;
+       constructor Create( const Usage_:GLenum = GL_STATIC_DRAW ); overload;
+       constructor Create( const BindI_:GLuint; const Usage_:GLenum = GL_STATIC_DRAW ); overload;
        destructor Destroy; override;
        ///// プロパティ
+       property BindI :GLuint read _BindI;
        ///// メソッド
+       procedure Bind; override;
+       procedure Unbind; override;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -209,9 +214,9 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLBufferV<_TYPE_>.Create;
+constructor TGLBufferV<_TYPE_>.Create( const Usage_:GLenum = GL_STATIC_DRAW );
 begin
-     inherited Create( GL_ARRAY_BUFFER );
+     inherited Create( GL_ARRAY_BUFFER, Usage_ );
 
 end;
 
@@ -229,9 +234,9 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLBufferI<_TYPE_>.Create;
+constructor TGLBufferI<_TYPE_>.Create( const Usage_:GLenum = GL_STATIC_DRAW );
 begin
-     inherited Create( GL_ELEMENT_ARRAY_BUFFER );
+     inherited Create( GL_ELEMENT_ARRAY_BUFFER, Usage_ );
 
 end;
 
@@ -249,16 +254,34 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLBufferU<_TYPE_>.Create;
+constructor TGLBufferU<_TYPE_>.Create( const Usage_:GLenum = GL_STATIC_DRAW );
 begin
-     inherited Create( GL_UNIFORM_BUFFER );
+     Create( 0, Usage_ );
+end;
 
+constructor TGLBufferU<_TYPE_>.Create( const BindI_:GLuint; const Usage_:GLenum = GL_STATIC_DRAW );
+begin
+     inherited Create( GL_UNIFORM_BUFFER, Usage_ );
+
+     _BindI := BindI_;
 end;
 
 destructor TGLBufferU<_TYPE_>.Destroy;
 begin
 
      inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLBufferU<_TYPE_>.Bind;
+begin
+     glBindBufferBase( _Kind, _BindI, _ID );
+end;
+
+procedure TGLBufferU<_TYPE_>.Unbind;
+begin
+     glBindBufferBase( _Kind, _BindI, 0 );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
