@@ -81,6 +81,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RotateY( const T_:Single ) :TSingleM4; static;
        class function RotateZ( const T_:Single ) :TSingleM4; static;
        class function Identify :TSingleM4; static;
+       class function ProjOrth( const L_,R_,B_,T_,N_,F_:Single ) :TSingleM4; static;
+       class function ProjPers( const L_,R_,B_,T_,N_,F_:Single ) :TSingleM4; static;
 
      case Integer of
       0:( _ :array [ 1..4, 1..4 ] of Single; );
@@ -146,6 +148,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RotateY( const T_:Double ) :TDoubleM4; static;
        class function RotateZ( const T_:Double ) :TDoubleM4; static;
        class function Identify :TDoubleM4; static;
+       class function ProjOrth( const L_,R_,B_,T_,N_,F_:Double ) :TDoubleM4; static;
+       class function ProjPers( const L_,R_,B_,T_,N_,F_:Double ) :TDoubleM4; static;
 
      case Integer of
       0:( _ :array [ 1..4, 1..4 ] of Double; );
@@ -809,6 +813,42 @@ begin
      end
 end;
 
+//------------------------------------------------------------------------------
+
+class function TSingleM4.ProjOrth( const L_,R_,B_,T_,N_,F_:Single ) :TSingleM4;
+var
+   RL, TB, FN :Single;
+begin
+     RL := R_ - L_;
+     TB := T_ - B_;
+     FN := F_ - N_;
+
+     with Result do
+     begin
+          _11 := +2 / RL;  _12 :=  0     ;  _13 :=  0     ;  _14 := -( R_ + L_ ) / RL;
+          _21 :=  0     ;  _22 := +2 / TB;  _23 :=  0     ;  _24 := -( T_ + B_ ) / TB;
+          _31 :=  0     ;  _32 :=  0     ;  _33 := -2 / FN;  _34 := -( F_ + N_ ) / FN;
+          _41 :=  0     ;  _42 :=  0     ;  _43 :=  0     ;  _44 := +1               ;
+     end;
+end;
+
+class function TSingleM4.ProjPers( const L_,R_,B_,T_,N_,F_:Single ) :TSingleM4;
+var
+   RL, TB, FN :Single;
+begin
+     RL := R_ - L_;
+     TB := T_ - B_;
+     FN := F_ - N_;
+
+     with Result do
+     begin
+          _11 := +2 * N_ / RL;  _12 :=  0          ;  _13 :=  +( R_ + L_ ) / RL;  _14 :=  0               ;
+          _21 :=  0          ;  _22 := +2 * N_ / TB;  _23 :=  +( T_ + B_ ) / TB;  _24 :=  0               ;
+          _31 :=  0          ;  _32 :=  0          ;  _33 :=  -( F_ + N_ ) / FN;  _34 := -2 * F_ * N_ / FN;
+          _41 :=  0          ;  _42 :=  0          ;  _43 :=  -1               ;  _44 :=  0               ;
+     end;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleM4
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -1298,6 +1338,42 @@ begin
           _31 := 0;  _32 := 0;  _33 := 1;  _34 := 0;
           _41 := 0;  _42 := 0;  _43 := 0;  _44 := 1;
      end
+end;
+
+//------------------------------------------------------------------------------
+
+class function TDoubleM4.ProjOrth( const L_,R_,B_,T_,N_,F_:Double ) :TDoubleM4;
+var
+   RL, TB, FN :Double;
+begin
+     RL := R_ - L_;
+     TB := T_ - B_;
+     FN := F_ - N_;
+
+     with Result do
+     begin
+          _11 := +2 / RL;  _12 :=  0     ;  _13 :=  0     ;  _14 := -( R_ + L_ ) / RL;
+          _21 :=  0     ;  _22 := +2 / TB;  _23 :=  0     ;  _24 := -( T_ + B_ ) / TB;
+          _31 :=  0     ;  _32 :=  0     ;  _33 := -2 / FN;  _34 := -( F_ + N_ ) / FN;
+          _41 :=  0     ;  _42 :=  0     ;  _43 :=  0     ;  _44 := +1               ;
+     end;
+end;
+
+class function TDoubleM4.ProjPers( const L_,R_,B_,T_,N_,F_:Double ) :TDoubleM4;
+var
+   RL, TB, FN :Double;
+begin
+     RL := R_ - L_;
+     TB := T_ - B_;
+     FN := F_ - N_;
+
+     with Result do
+     begin
+          _11 := +2 * N_ / RL;  _12 :=  0          ;  _13 :=  +( R_ + L_ ) / RL;  _14 :=  0               ;
+          _21 :=  0          ;  _22 := +2 * N_ / TB;  _23 :=  +( T_ + B_ ) / TB;  _24 :=  0               ;
+          _31 :=  0          ;  _32 :=  0          ;  _33 :=  -( F_ + N_ ) / FN;  _34 := -2 * F_ * N_ / FN;
+          _41 :=  0          ;  _42 :=  0          ;  _43 :=  -1               ;  _44 :=  0               ;
+     end;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TdSingleM4
