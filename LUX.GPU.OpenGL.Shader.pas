@@ -2,9 +2,9 @@
 
 interface //#################################################################### ■
 
-uses System.Classes,
+uses System.SysUtils, System.Classes, System.Generics.Collections,
      Winapi.OpenGL, Winapi.OpenGLext,
-     LUX;
+     LUX, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Buffer;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -21,6 +21,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _Source  :TStringList;
        _Success :Boolean;
        _Error   :TStringList;
+       ///// イベント
+       _OnCompiled :TProc;
        ///// アクセス
        procedure SetSource( Sender_:TObject );
        ///// メソッド
@@ -30,6 +32,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        constructor Create( const Kind_:GLenum );
        destructor Destroy; override;
+       ///// イベント
+       property OnCompiled :TProc read _OnCompiled write _OnCompiled;
        ///// プロパティ
        property ID      :GLuint      read _ID     ;
        property Source  :TStringList read _Source ;
@@ -75,6 +79,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _ID      :GLuint;
        _Success :Boolean;
        _Error   :TStringList;
+       _Frags   :TDictionary<GLuint,String>;
+       ///// イベント
+       _OnLinked :TProc;
+       ///// アクセス
+       procedure SetFrags( Sender_:TObject; const Key_:GLuint; Action_:TCollectionNotification );
        ///// メソッド
        function GetState :Boolean;
        function GetError :String;
@@ -82,15 +91,20 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property ID      :GLuint      read _ID     ;
-       property Success :Boolean     read _Success;
-       property Error   :TStringList read _Error  ;
+       property ID      :GLuint                     read _ID     ;
+       property Success :Boolean                    read _Success;
+       property Error   :TStringList                read _Error  ;
+       property Frags   :TDictionary<GLuint,String> read _Frags  ;
+       ///// イベント
+       property OnLinked :TProc read _OnLinked write _OnLinked;
        ///// メソッド
-       procedure Attach( const Shader_:TGLShader );
+       procedure Attach( const Shader_:TGLShader ); overload;
        procedure Detach( const Shader_:TGLShader );
        procedure Link;
        procedure Use;
        class procedure Unuse;
+       procedure Attach( const BufV_:IGLBufferV ); overload;
+       procedure Attach( const BufU_:IGLBufferU ); overload;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -120,6 +134,8 @@ begin
      _Success := GetState;
 
      _Error.Text := GetError;
+
+     _OnCompiled;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
@@ -170,9 +186,11 @@ begin
      _Source := TStringList.Create;
      _Error  := TStringList.Create;
 
+     _Source.OnChange := SetSource;
+
      _ID := glCreateShader( Kind_ );
 
-     _Source.OnChange := SetSource;
+     _OnCompiled := procedure begin end;
 end;
 
 destructor TGLShader.Destroy;
@@ -251,6 +269,16 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
+/////////////////////////////////////////////////////////////////////// アクセス
+
+procedure TGLProgram.SetFrags( Sender_:TObject; const Key_:GLuint; Action_:TCollectionNotification );
+begin
+     if Action_ = TCollectionNotification.cnAdded then
+     begin
+          glBindFragDataLocation( _ID, Key_, PGLchar( AnsiString( _Frags.Items[ Key_ ] ) ) );
+     end;
+end;
+
 /////////////////////////////////////////////////////////////////////// メソッド
 
 function TGLProgram.GetState :Boolean;
@@ -281,11 +309,17 @@ end;
 
 constructor TGLProgram.Create;
 begin
-     inherited;
+     inherited Create;
 
      _Error := TStringList.Create;
+     _Frags := TDictionary<GLuint,String>.Create;
 
-     _ID := glCreateProgram;
+     _Frags.OnKeyNotify := SetFrags;
+
+     _ID      := glCreateProgram;
+     _Success := False;
+
+     _OnLinked := procedure begin end;
 end;
 
 destructor TGLProgram.Destroy;
@@ -293,6 +327,7 @@ begin
      glDeleteProgram( _ID );
 
      _Error.DisposeOf;
+     _Frags.DisposeOf;
 
      inherited;
 end;
@@ -318,6 +353,8 @@ begin
      _Success := GetState;
 
      _Error.Text := GetError;
+
+     _OnLinked;
 end;
 
 //------------------------------------------------------------------------------
@@ -325,11 +362,26 @@ end;
 procedure TGLProgram.Use;
 begin
      glUseProgram( _ID );
+
 end;
 
 class procedure TGLProgram.Unuse;
 begin
      glUseProgram( 0 );
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TGLProgram.Attach( const BufV_:IGLBufferV );
+begin
+     BufV_.BindL := glGetAttribLocation( _ID, PAnsiChar( AnsiString( BufV_.Name ) ) );
+end;
+
+procedure TGLProgram.Attach( const BufU_:IGLBufferU );
+begin
+     BufU_.BindL := glGetUniformBlockIndex( _ID, PAnsiChar( AnsiString( BufU_.Name ) ) );
+
+     glUniformBlockBinding( _ID, BufU_.BindL, BufU_.BindI );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
