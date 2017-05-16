@@ -35,11 +35,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// アクセス
        function GetName :String;
        procedure SetName( Name_:String );
-       function GetBindL :GLuint;
-       procedure SetBindL( BindL_:GLuint );
        ///// プロパティ
-       property Name  :String read GetName  write SetName ;
-       property BindL :GLuint read GetBindL write SetBindL;
+       property Name :String read GetName write SetName;
      end;
 
      TGLBuffer<_TYPE_:record> = class( TInterfacedObject, IGLBuffer )
@@ -54,8 +51,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// アクセス
        function GetName :String;
        procedure SetName( Name_:String );
-       function GetBindL :GLuint;
-       procedure SetBindL( BindL_:GLuint );
        function GetStride :GLint; virtual;
        procedure SetCount( const Count_:Integer );
        function GetItems( const I_:Integer ) :_TYPE_;
@@ -83,7 +78,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      IGLBufferV = interface( IGLBuffer )
        ['{1DDD600E-0FA5-4D07-A280-72B96722D0C7}']
-
+       ///// アクセス
+       function GetBindL :GLuint;
+       procedure SetBindL( BindL_:GLuint );
+       ///// プロパティ
+       property BindL :GLuint read GetBindL write SetBindL;
      end;
 
      TGLBufferV<_TYPE_:record> = class( TGLBuffer<_TYPE_>, IGLBufferV )
@@ -92,6 +91,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// アクセス
        class function GetElemT :GLenum; virtual; abstract;
        class function GetElemN :GLint; virtual; abstract;
+       function GetBindL :GLuint;
+       procedure SetBindL( BindL_:GLuint );
      public
        constructor Create( const Usage_:GLenum );
        ///// プロパティ
@@ -223,16 +224,6 @@ begin
      _Name := Name_;
 end;
 
-function TGLBuffer<_TYPE_>.GetBindL :GLuint;
-begin
-     Result := _BindL;
-end;
-
-procedure TGLBuffer<_TYPE_>.SetBindL( BindL_:GLuint );
-begin
-     _BindL := BindL_;
-end;
-
 function TGLBuffer<_TYPE_>.GetStride :GLint;
 begin
      Result := SizeOf( _TYPE_ );
@@ -337,6 +328,18 @@ end;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLBufferV<_TYPE_>.GetBindL :GLuint;
+begin
+     Result := _BindL;
+end;
+
+procedure TGLBufferV<_TYPE_>.SetBindL( BindL_:GLuint );
+begin
+     _BindL := BindL_;
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
