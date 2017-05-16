@@ -13,7 +13,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLArray
 
-     TGLArray = class
+     TGLBinder = class
      private
      protected
        _ID :GLuint;
@@ -23,8 +23,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property ID :GLuint read _ID;
        ///// メソッド
-       procedure Bind;
-       class procedure Unbind;
+       procedure Use;
+       class procedure Unuse;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -47,14 +47,14 @@ implementation //###############################################################
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLArray.Create;
+constructor TGLBinder.Create;
 begin
      inherited Create;
 
      glGenVertexArrays( 1, @_ID );
 end;
 
-destructor TGLArray.Destroy;
+destructor TGLBinder.Destroy;
 begin
      glDeleteVertexArrays( 1, @_ID );
 
@@ -63,12 +63,12 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLArray.Bind;
+procedure TGLBinder.Use;
 begin
      glBindVertexArray( _ID );
 end;
 
-class procedure TGLArray.Unbind;
+class procedure TGLBinder.Unuse;
 begin
      glBindVertexArray( 0 );
 end;
