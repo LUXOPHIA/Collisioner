@@ -175,10 +175,12 @@ begin
 end;
 
 procedure TGLProgra.Attach( const BufU_:IGLBufferU );
+var
+   I :GLuint;
 begin
-     BufU_.BindL := glGetUniformBlockIndex( _ID, PAnsiChar( AnsiString( BufU_.Name ) ) );
+     I := glGetUniformBlockIndex( _ID, PAnsiChar( AnsiString( BufU_.Name ) ) );
 
-     glUniformBlockBinding( _ID, BufU_.BindL, BufU_.BindI );
+     glUniformBlockBinding( _ID, I, BufU_.BindI );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
