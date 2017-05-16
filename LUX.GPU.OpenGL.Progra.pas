@@ -12,9 +12,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLProgram
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLProgra
 
-     TGLProgram = class
+     TGLProgra = class
      private
      protected
        _ID      :GLuint;
@@ -60,7 +60,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLProgram
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLProgra
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -68,7 +68,7 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-procedure TGLProgram.SetFrags( Sender_:TObject; const Key_:GLuint; Action_:TCollectionNotification );
+procedure TGLProgra.SetFrags( Sender_:TObject; const Key_:GLuint; Action_:TCollectionNotification );
 begin
      if Action_ = TCollectionNotification.cnAdded then
      begin
@@ -78,7 +78,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function TGLProgram.GetState :Boolean;
+function TGLProgra.GetState :Boolean;
 var
    S :GLint;
 begin
@@ -87,7 +87,7 @@ begin
      Result := ( S = GL_TRUE );
 end;
 
-function TGLProgram.GetError :String;
+function TGLProgra.GetError :String;
 var
    N :GLint;
    Cs :TArray<GLchar>;
@@ -104,7 +104,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLProgram.Create;
+constructor TGLProgra.Create;
 begin
      inherited Create;
 
@@ -119,7 +119,7 @@ begin
      _OnLinked := procedure begin end;
 end;
 
-destructor TGLProgram.Destroy;
+destructor TGLProgra.Destroy;
 begin
      glDeleteProgram( _ID );
 
@@ -131,19 +131,19 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLProgram.Attach( const Shader_:TGLShader );
+procedure TGLProgra.Attach( const Shader_:TGLShader );
 begin
      glAttachShader( _ID, Shader_.ID );
 end;
 
-procedure TGLProgram.Detach( const Shader_:TGLShader );
+procedure TGLProgra.Detach( const Shader_:TGLShader );
 begin
      glDetachShader( _ID, Shader_.ID );
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLProgram.Link;
+procedure TGLProgra.Link;
 begin
      glLinkProgram( _ID );
 
@@ -156,25 +156,25 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLProgram.Use;
+procedure TGLProgra.Use;
 begin
      glUseProgram( _ID );
 
 end;
 
-class procedure TGLProgram.Unuse;
+class procedure TGLProgra.Unuse;
 begin
      glUseProgram( 0 );
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLProgram.Attach( const BufV_:IGLBufferV );
+procedure TGLProgra.Attach( const BufV_:IGLBufferV );
 begin
      BufV_.BindL := glGetAttribLocation( _ID, PAnsiChar( AnsiString( BufV_.Name ) ) );
 end;
 
-procedure TGLProgram.Attach( const BufU_:IGLBufferU );
+procedure TGLProgra.Attach( const BufU_:IGLBufferU );
 begin
      BufU_.BindL := glGetUniformBlockIndex( _ID, PAnsiChar( AnsiString( BufU_.Name ) ) );
 
