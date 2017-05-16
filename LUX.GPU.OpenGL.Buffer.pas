@@ -45,10 +45,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _Name  :String;
        _BindL :GLuint;
        _ID    :GLuint;
-       _Kind  :GLenum;
        _Usage :GLenum;
        _Count :Integer;
        ///// アクセス
+       function GetKind :GLenum; virtual; abstract;
        function GetName :String;
        procedure SetName( Name_:String );
        function GetStride :GLint; virtual;
@@ -56,12 +56,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetItems( const I_:Integer ) :_TYPE_;
        procedure SetItems( const I_:Integer; const Item_:_TYPE_ );
      public
-       constructor Create( const Kind_:GLenum; const Usage_:GLenum );
+       constructor Create( const Usage_:GLenum );
        destructor Destroy; override;
        ///// プロパティ
+       property Kind                      :GLenum  read GetKind                 ;
        property Name                      :String  read GetName   write SetName ;
        property ID                        :GLuint  read   _ID                   ;
-       property Kind                      :GLenum  read   _Kind                 ;
        property Usage                     :GLenum  read   _Usage                ;
        property Stride                    :GLint   read GetStride               ;
        property Count                     :Integer read   _Count  write SetCount;
@@ -89,12 +89,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        ///// アクセス
+       function GetKind :GLenum; override;
        class function GetElemT :GLenum; virtual; abstract;
        class function GetElemN :GLint; virtual; abstract;
        function GetBindL :GLuint;
        procedure SetBindL( BindL_:GLuint );
      public
-       constructor Create( const Usage_:GLenum );
        ///// プロパティ
        property ElemT :GLenum read GetElemT;
        property ElemN :GLint  read GetElemN;
@@ -125,9 +125,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        ///// アクセス
+       function GetKind :GLenum; override;
        class function GetElemT :GLenum;
      public
-       constructor Create( const Usage_:GLenum );
        ///// プロパティ
        property ElemT :GLenum read GetElemT;
        ///// メソッド
@@ -152,13 +152,13 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _BindI :GLuint;
        ///// アクセス
+       function GetKind :GLenum; override;
        function GetBindI :GLuint;
        procedure SetBindI( BindI_:GLuint );
        function GetStride :GLint; override;
      public
        class constructor Create;
-       constructor Create( const Usage_:GLenum ); overload;
-       constructor Create( const BindI_:GLuint; const Usage_:GLenum ); overload;
+       constructor Create( const Usage_:GLenum );
        ///// プロパティ
        class property Align :GLint read _Align;
        property BindI :GLuint read _BindI write _BindI;
@@ -235,7 +235,7 @@ begin
 
      Bind;
 
-       glBufferData( _Kind, GetStride * _Count, nil, _Usage );
+       glBufferData( GetKind, GetStride * _Count, nil, _Usage );
 
      Unbind;
 end;
@@ -256,13 +256,12 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLBuffer<_TYPE_>.Create( const Kind_:GLenum; const Usage_:GLenum );
+constructor TGLBuffer<_TYPE_>.Create( const Usage_:GLenum );
 begin
      inherited Create;
 
      glGenBuffers( 1, @_ID );
 
-     _Kind  := Kind_;
      _Usage := Usage_;
       Count := 0;
 end;
@@ -278,12 +277,12 @@ end;
 
 procedure TGLBuffer<_TYPE_>.Bind;
 begin
-     glBindBuffer( _Kind, _ID );
+     glBindBuffer( GetKind, _ID );
 end;
 
 procedure TGLBuffer<_TYPE_>.Unbind;
 begin
-     glBindBuffer( _Kind, 0 );
+     glBindBuffer( GetKind, 0 );
 end;
 
 //------------------------------------------------------------------------------
@@ -294,7 +293,7 @@ begin
 
        with Result do
        begin
-            _Head   := glMapBuffer( _Kind, Access_ );
+            _Head   := glMapBuffer( GetKind, Access_ );
             _Stride := GetStride;
        end;
 
@@ -305,7 +304,7 @@ procedure TGLBuffer<_TYPE_>.Unmap;
 begin
      Bind;
 
-       glUnmapBuffer( _Kind );
+       glUnmapBuffer( GetKind );
 
      Unbind;
 end;
@@ -318,7 +317,7 @@ begin
 
      Bind;
 
-       glBufferData( _Kind, SizeOf( Array_ ), @Array_[ 0 ], _Usage );
+       glBufferData( GetKind, SizeOf( Array_ ), @Array_[ 0 ], _Usage );
 
      Unbind;
 end;
@@ -331,6 +330,11 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
+function TGLBufferV<_TYPE_>.GetKind :GLenum;
+begin
+     Result := GL_ARRAY_BUFFER;
+end;
+
 function TGLBufferV<_TYPE_>.GetBindL :GLuint;
 begin
      Result := _BindL;
@@ -342,12 +346,6 @@ begin
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TGLBufferV<_TYPE_>.Create( const Usage_:GLenum );
-begin
-     inherited Create( GL_ARRAY_BUFFER, Usage_ );
-
-end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
@@ -395,6 +393,11 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
+function TGLBufferI<_TYPE_>.GetKind :GLenum;
+begin
+     Result := GL_ELEMENT_ARRAY_BUFFER;
+end;
+
 class function TGLBufferI<_TYPE_>.GetElemT :GLenum;
 begin
      case  SizeOf( _TYPE_ ) of
@@ -406,12 +409,6 @@ begin
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TGLBufferI<_TYPE_>.Create( const Usage_:GLenum );
-begin
-     inherited Create( GL_ELEMENT_ARRAY_BUFFER, Usage_ );
-
-end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
@@ -427,6 +424,11 @@ end;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
 /////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLBufferU<_TYPE_>.GetKind :GLenum;
+begin
+     Result := GL_UNIFORM_BUFFER;
+end;
 
 function TGLBufferU<_TYPE_>.GetBindI :GLuint;
 begin
@@ -462,31 +464,26 @@ end;
 
 constructor TGLBufferU<_TYPE_>.Create( const Usage_:GLenum );
 begin
-     Create( 0, Usage_ );
-end;
+     inherited Create( Usage_ );
 
-constructor TGLBufferU<_TYPE_>.Create( const BindI_:GLuint; const Usage_:GLenum );
-begin
-     inherited Create( GL_UNIFORM_BUFFER, Usage_ );
-
-     _BindI := BindI_;
+     _BindI := 0;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
 procedure TGLBufferU<_TYPE_>.Use;
 begin
-     glBindBufferBase( _Kind, _BindI, _ID );
+     glBindBufferBase( GetKind, _BindI, _ID );
 end;
 
 procedure TGLBufferU<_TYPE_>.Use( const I_:Integer; const N_:Integer = 1 );
 begin
-     glBindBufferRange( _Kind, _BindI, _ID, GetStride * I_, GetStride * N_ );
+     glBindBufferRange( GetKind, _BindI, _ID, GetStride * I_, GetStride * N_ );
 end;
 
 procedure TGLBufferU<_TYPE_>.Unuse;
 begin
-     glBindBufferBase( _Kind, _BindI, 0 );
+     glBindBufferBase( GetKind, _BindI, 0 );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
