@@ -12,8 +12,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferData<TValue>
 
      TGLBufferData<TItem:record> = record
-     private
-       type PItem = ^TItem;
+     private type
+       PItem = ^TItem;
      private
        _Head   :Pointer;
        _Stride :GLint;
@@ -38,6 +38,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property Name :String read GetName write SetName;
      end;
+
+     //-------------------------------------------------------------------------
 
      TGLBuffer<_TYPE_:record> = class( TInterfacedObject, IGLBuffer )
      private
@@ -72,100 +74,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function Map( const Access_:GLenum = GL_READ_WRITE ) :TGLBufferData<_TYPE_>;
        procedure Unmap;
        procedure Import( const Array_:array of _TYPE_ );
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferV<_TYPE_>
-
-     IGLBufferV = interface( IGLBuffer )
-       ['{1DDD600E-0FA5-4D07-A280-72B96722D0C7}']
-       ///// アクセス
-       function GetBindL :GLuint;
-       procedure SetBindL( BindL_:GLuint );
-       ///// プロパティ
-       property BindL :GLuint read GetBindL write SetBindL;
-     end;
-
-     TGLBufferV<_TYPE_:record> = class( TGLBuffer<_TYPE_>, IGLBufferV )
-     private
-     protected
-       ///// アクセス
-       function GetKind :GLenum; override;
-       class function GetElemT :GLenum; virtual; abstract;
-       class function GetElemN :GLint; virtual; abstract;
-       function GetBindL :GLuint;
-       procedure SetBindL( BindL_:GLuint );
-     public
-       ///// プロパティ
-       property ElemT :GLenum read GetElemT;
-       property ElemN :GLint  read GetElemN;
-       ///// メソッド
-       procedure Use;
-       procedure Unuse;
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferVS<_TYPE_>
-
-     TGLBufferVS<_TYPE_:record> = class( TGLBufferV<_TYPE_> )
-     private
-     protected
-       ///// アクセス
-       class function GetElemT :GLenum; override;
-       class function GetElemN :GLint; override;
-     public
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferI<_TYPE_>
-
-     IGLBufferI = interface( IGLBuffer )
-       ['{BCD91AB4-D6E5-49E1-8670-D4C4ED39AFD3}']
-
-     end;
-
-     TGLBufferI<_TYPE_:record> = class( TGLBuffer<_TYPE_>, IGLBufferI )
-     private
-     protected
-       ///// アクセス
-       function GetKind :GLenum; override;
-       class function GetElemT :GLenum;
-     public
-       ///// プロパティ
-       property ElemT :GLenum read GetElemT;
-       ///// メソッド
-       procedure Draw;
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferU<_TYPE_>
-
-     IGLBufferU = interface( IGLBuffer )
-       ['{923ECB97-7686-4B53-A9FC-AB4365C7CC4B}']
-       ///// アクセス
-       function GetBindI :GLuint;
-       procedure SetBindI( BindI_:GLuint );
-       ///// プロパティ
-       property BindI :GLuint read GetBindI write SetBindI;
-     end;
-
-     TGLBufferU<_TYPE_:record> = class( TGLBuffer<_TYPE_>, IGLBufferU )
-     private
-     protected class var
-       _Align :GLint;
-     protected
-       _BindI :GLuint;
-       ///// アクセス
-       function GetKind :GLenum; override;
-       function GetBindI :GLuint;
-       procedure SetBindI( BindI_:GLuint );
-       function GetStride :GLint; override;
-     public
-       class constructor Create;
-       constructor Create( const Usage_:GLenum );
-       ///// プロパティ
-       class property Align :GLint read _Align;
-       property BindI :GLuint read _BindI write _BindI;
-       ///// メソッド
-       procedure Use; overload;
-       procedure Use( const I_:Integer; const N_:Integer = 1 ); overload;
-       procedure Unuse;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -320,170 +228,6 @@ begin
        glBufferData( GetKind, SizeOf( Array_ ), @Array_[ 0 ], _Usage );
 
      Unbind;
-end;
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferV<_TYPE_>
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-/////////////////////////////////////////////////////////////////////// アクセス
-
-function TGLBufferV<_TYPE_>.GetKind :GLenum;
-begin
-     Result := GL_ARRAY_BUFFER;
-end;
-
-function TGLBufferV<_TYPE_>.GetBindL :GLuint;
-begin
-     Result := _BindL;
-end;
-
-procedure TGLBufferV<_TYPE_>.SetBindL( BindL_:GLuint );
-begin
-     _BindL := BindL_;
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-procedure TGLBufferV<_TYPE_>.Use;
-begin
-     glEnableVertexAttribArray( _BindL );
-
-     Bind;
-
-       glVertexAttribPointer( _BindL, GetElemN, GetElemT, GL_FALSE, 0, nil );
-
-     Unbind;
-end;
-
-procedure TGLBufferV<_TYPE_>.Unuse;
-begin
-     glDisableVertexAttribArray( _BindL );
-end;
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferVS<_TYPE_>
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-/////////////////////////////////////////////////////////////////////// アクセス
-
-class function TGLBufferVS<_TYPE_>.GetElemT :GLenum;
-begin
-     Result := GL_FLOAT;
-end;
-
-class function TGLBufferVS<_TYPE_>.GetElemN :GLint;
-begin
-     Result := SizeOf( _TYPE_ ) div SizeOf( Single );
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferI<_TYPE_>
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-/////////////////////////////////////////////////////////////////////// アクセス
-
-function TGLBufferI<_TYPE_>.GetKind :GLenum;
-begin
-     Result := GL_ELEMENT_ARRAY_BUFFER;
-end;
-
-class function TGLBufferI<_TYPE_>.GetElemT :GLenum;
-begin
-     case  SizeOf( _TYPE_ ) of
-       3: Result := GL_UNSIGNED_BYTE;
-       6: Result := GL_UNSIGNED_SHORT;
-      12: Result := GL_UNSIGNED_INT;
-     else Assert( False, 'Unkown Type!' );
-     end;
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-procedure TGLBufferI<_TYPE_>.Draw;
-begin
-     glDrawElements( GL_TRIANGLES, 3{Poin} * _Count, GetElemT, nil );
-end;
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferU<_TYPE_>
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-/////////////////////////////////////////////////////////////////////// アクセス
-
-function TGLBufferU<_TYPE_>.GetKind :GLenum;
-begin
-     Result := GL_UNIFORM_BUFFER;
-end;
-
-function TGLBufferU<_TYPE_>.GetBindI :GLuint;
-begin
-     Result := _BindI;
-end;
-
-procedure TGLBufferU<_TYPE_>.SetBindI( BindI_:GLuint );
-begin
-     _BindI := BindI_;
-end;
-
-//------------------------------------------------------------------------------
-
-function  TGLBufferU<_TYPE_>.GetStride :GLint;
-var
-   M :Integer;
-begin
-     Result := SizeOf( _TYPE_ );
-
-     M := Result mod _Align;
-
-     if M > 0 then Inc( Result, _Align - M );
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-class constructor TGLBufferU<_TYPE_>.Create;
-begin
-     glGetIntegerv( GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, @_Align );
-end;
-
-//------------------------------------------------------------------------------
-
-constructor TGLBufferU<_TYPE_>.Create( const Usage_:GLenum );
-begin
-     inherited Create( Usage_ );
-
-     _BindI := 0;
-end;
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-procedure TGLBufferU<_TYPE_>.Use;
-begin
-     glBindBufferBase( GetKind, _BindI, _ID );
-end;
-
-procedure TGLBufferU<_TYPE_>.Use( const I_:Integer; const N_:Integer = 1 );
-begin
-     glBindBufferRange( GetKind, _BindI, _ID, GetStride * I_, GetStride * N_ );
-end;
-
-procedure TGLBufferU<_TYPE_>.Unuse;
-begin
-     glBindBufferBase( GetKind, _BindI, 0 );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
