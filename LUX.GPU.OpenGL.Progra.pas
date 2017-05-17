@@ -159,7 +159,6 @@ end;
 procedure TGLProgra.Use;
 begin
      glUseProgram( _ID );
-
 end;
 
 class procedure TGLProgra.Unuse;
