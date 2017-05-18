@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Binder;
+﻿unit LUX.GPU.OpenGL.Pluger;
 
 interface //#################################################################### ■
 
