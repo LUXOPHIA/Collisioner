@@ -14,6 +14,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TByte3D = record
      private
      public
+       constructor Create( const V_:Byte ); overload;
+       constructor Create( const X_,Y_,Z_:Byte ); overload;
      case Byte of
       0:( _ :array [ 1..3 ] of Byte; );
       1:(  X :Byte;
@@ -32,6 +34,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TShortint3D = record
      private
      public
+       constructor Create( const V_:Shortint ); overload;
+       constructor Create( const X_,Y_,Z_:Shortint ); overload;
      case Byte of
       0:( _ :array [ 1..3 ] of Shortint; );
       1:(  X :Shortint;
@@ -50,6 +54,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TWord3D = record
      private
      public
+       constructor Create( const V_:Word ); overload;
+       constructor Create( const X_,Y_,Z_:Word ); overload;
      case Byte of
       0:( _ :array [ 1..3 ] of Word; );
       1:(  X :Word;
@@ -68,6 +74,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TSmallint3D = record
      private
      public
+       constructor Create( const V_:Smallint ); overload;
+       constructor Create( const X_,Y_,Z_:Smallint ); overload;
      case Byte of
       0:( _ :array [ 1..3 ] of Smallint; );
       1:(  X :Smallint;
@@ -86,6 +94,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TCardinal3D = record
      private
      public
+       constructor Create( const V_:Cardinal ); overload;
+       constructor Create( const X_,Y_,Z_:Cardinal ); overload;
      case Byte of
       0:( _ :array [ 1..3 ] of Cardinal; );
       1:(  X :Cardinal;
@@ -104,6 +114,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TInteger3D = record
      private
      public
+       constructor Create( const V_:Integer ); overload;
+       constructor Create( const X_,Y_,Z_:Integer ); overload;
      case Byte of
       0:( _ :array [ 1..3 ] of Integer; );
       1:(  X :Integer;
@@ -561,11 +573,39 @@ uses System.SysUtils, System.Math;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
+constructor TByte3D.Create( const V_:Byte );
+begin
+     X := V_;
+     Y := V_;
+     Z := V_;
+end;
+
+constructor TByte3D.Create( const X_,Y_,Z_:Byte );
+begin
+     X := X_;
+     Y := Y_;
+     Z := Z_;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShortint3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TShortint3D.Create( const V_:Shortint );
+begin
+     X := V_;
+     Y := V_;
+     Z := V_;
+end;
+
+constructor TShortint3D.Create( const X_,Y_,Z_:Shortint );
+begin
+     X := X_;
+     Y := Y_;
+     Z := Z_;
+end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TWord3D
 
@@ -573,11 +613,39 @@ uses System.SysUtils, System.Math;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
+constructor TWord3D.Create( const V_:Word );
+begin
+     X := V_;
+     Y := V_;
+     Z := V_;
+end;
+
+constructor TWord3D.Create( const X_,Y_,Z_:Word );
+begin
+     X := X_;
+     Y := Y_;
+     Z := Z_;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSmallint3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TSmallint3D.Create( const V_:Smallint );
+begin
+     X := V_;
+     Y := V_;
+     Z := V_;
+end;
+
+constructor TSmallint3D.Create( const X_,Y_,Z_:Smallint );
+begin
+     X := X_;
+     Y := Y_;
+     Z := Z_;
+end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCardinal3D
 
@@ -585,11 +653,39 @@ uses System.SysUtils, System.Math;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
+constructor TCardinal3D.Create( const V_:Cardinal );
+begin
+     X := V_;
+     Y := V_;
+     Z := V_;
+end;
+
+constructor TCardinal3D.Create( const X_,Y_,Z_:Cardinal );
+begin
+     X := X_;
+     Y := Y_;
+     Z := Z_;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TInteger3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TInteger3D.Create( const V_:Integer );
+begin
+     X := V_;
+     Y := V_;
+     Z := V_;
+end;
+
+constructor TInteger3D.Create( const X_,Y_,Z_:Integer );
+begin
+     X := X_;
+     Y := Y_;
+     Z := Z_;
+end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingle3D
 
