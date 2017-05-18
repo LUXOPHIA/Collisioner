@@ -15,8 +15,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private type
        PItem = ^TItem;
      private
-       _Start :Pointer;
-       _Strid :GLint;
+       Start :Pointer;
+       Strid :GLint;
        ///// アクセス
        function GetItemP( const I_:Integer ) :PItem;
        function GetItems( const I_:Integer ) :TItem;
@@ -60,7 +60,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _Align :GLint;
        _Strid :GLint;
-       _BindL :GLuint;
        _Usage :GLenum;
        _Count :Integer;
        ///// アクセス
@@ -102,8 +101,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create;
        destructor Destroy; override;
        ///// メソッド
-       procedure Use;
-       procedure Unuse;
+       procedure Bind;
+       procedure Unbind;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -126,7 +125,7 @@ function TGLBufferData<TItem>.GetItemP( const I_:Integer ) :PItem;
 var
    P :PByte;
 begin
-     P := _Start;  Inc( P, _Strid * I_ );  Result := PItem( P );
+     P := Start;  Inc( P, Strid * I_ );  Result := PItem( P );
 end;
 
 //------------------------------------------------------------------------------
@@ -145,8 +144,8 @@ end;
 
 constructor TGLBufferData<TItem>.Create( const Start_:Pointer; const Strid_:GLint );
 begin
-     _Start := Start_;
-     _Strid := Strid_;
+     Start := Start_;
+     Strid := Strid_;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -158,8 +157,6 @@ end;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
 /////////////////////////////////////////////////////////////////////// アクセス
-
-//------------------------------------------------------------------------------
 
 function TGLBuffer<_TYPE_>.GetAlign :GLint;
 begin
@@ -264,7 +261,11 @@ function TGLBuffer<_TYPE_>.Map( const Access_:GLenum = GL_READ_WRITE ) :TGLBuffe
 begin
      Bind;
 
-       Result := TGLBufferData<_TYPE_>.Create( glMapBuffer( GetKind, Access_ ), _Strid );
+       with Result do
+       begin
+            Start := glMapBuffer( GetKind, Access_ );
+            Strid := _Strid;
+       end;
 
      Unbind;
 end;
@@ -315,12 +316,12 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLVarray.Use;
+procedure TGLVarray.Bind;
 begin
      glBindVertexArray( _ID );
 end;
 
-procedure TGLVarray.Unuse;
+procedure TGLVarray.Unbind;
 begin
      glBindVertexArray( 0 );
 end;
