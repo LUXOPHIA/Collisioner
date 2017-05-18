@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   Winapi.Windows, Winapi.OpenGL, FMX.Platform.Win,
-  LUX, LUX.GPU.OpenGL.ENV;
+  LUX, LUX.GPU.OpenGL;
 
 type
   TGLView = class(TFrame)
