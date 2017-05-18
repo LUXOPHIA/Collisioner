@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.GPU.OpenGL.Buffer;
+     LUX, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Buffer;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -15,7 +15,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      IGLBufferI = interface( IGLBuffer )
      ['{BCD91AB4-D6E5-49E1-8670-D4C4ED39AFD3}']
-
+       ///// アクセス
+       function GetElemT :GLenum;
+       ///// プロパティ
+       property ElemT :GLenum read GetElemT;
+       ///// メソッド
+       procedure Draw;
      end;
 
      //-------------------------------------------------------------------------
@@ -25,7 +30,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        ///// アクセス
        function GetKind :GLenum; override;
-       class function GetElemT :GLenum;
+       function GetElemT :GLenum;
      public
        ///// プロパティ
        property ElemT :GLenum read GetElemT;
@@ -58,12 +63,12 @@ begin
      Result := GL_ELEMENT_ARRAY_BUFFER;
 end;
 
-class function TGLBufferI<_TYPE_>.GetElemT :GLenum;
+function TGLBufferI<_TYPE_>.GetElemT :GLenum;
 begin
-     case  SizeOf( _TYPE_ ) of
-       3: Result := GL_UNSIGNED_BYTE;
-       6: Result := GL_UNSIGNED_SHORT;
-      12: Result := GL_UNSIGNED_INT;
+     case  SizeOf( _TYPE_ ) div 3 of
+       1: Result := GL_UNSIGNED_BYTE;
+       2: Result := GL_UNSIGNED_SHORT;
+       4: Result := GL_UNSIGNED_INT;
      else Assert( False, 'Unkown Type!' );
      end;
 end;
