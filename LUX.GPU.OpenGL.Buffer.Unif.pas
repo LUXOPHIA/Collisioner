@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.GPU.OpenGL.Buffer;
+     LUX, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Buffer;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -15,36 +15,26 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      IGLBufferU = interface( IGLBuffer )
      ['{923ECB97-7686-4B53-A9FC-AB4365C7CC4B}']
-       ///// アクセス
-       function GetBindI :GLuint;
-       procedure SetBindI( BindI_:GLuint );
-       ///// プロパティ
-       property BindI :GLuint read GetBindI write SetBindI;
+       ///// メソッド
+       procedure Use( const BindP_:GLuint ); overload;
+       procedure Use( const BindP_:GLuint; const I_:Integer; const N_:Integer = 1 ); overload;
+       procedure Unuse( const BindP_:GLuint ); overload;
      end;
 
      //-------------------------------------------------------------------------
 
      TGLBufferU<_TYPE_:record> = class( TGLBuffer<_TYPE_>, IGLBufferU )
      private
-     protected class var
-       _Align :GLint;
      protected
-       _BindI :GLuint;
        ///// アクセス
        function GetKind :GLenum; override;
-       function GetBindI :GLuint;
-       procedure SetBindI( BindI_:GLuint );
-       function GetStride :GLint; override;
-     public
-       class constructor Create;
-       constructor Create( const Usage_:GLenum );
-       ///// プロパティ
-       class property Align :GLint read _Align;
-       property BindI :GLuint read _BindI write _BindI;
        ///// メソッド
-       procedure Use; overload;
-       procedure Use( const I_:Integer; const N_:Integer = 1 ); overload;
-       procedure Unuse;
+       function InitAlign :GLint; override;
+     public
+       ///// メソッド
+       procedure Use( const BindP_:GLuint ); overload;
+       procedure Use( const BindP_:GLuint; const I_:Integer; const N_:Integer = 1 ); overload;
+       procedure Unuse( const BindP_:GLuint ); overload;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -72,60 +62,30 @@ begin
      Result := GL_UNIFORM_BUFFER;
 end;
 
-function TGLBufferU<_TYPE_>.GetBindI :GLuint;
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TGLBufferU<_TYPE_>.InitAlign :GLint;
 begin
-     Result := _BindI;
-end;
-
-procedure TGLBufferU<_TYPE_>.SetBindI( BindI_:GLuint );
-begin
-     _BindI := BindI_;
-end;
-
-//------------------------------------------------------------------------------
-
-function  TGLBufferU<_TYPE_>.GetStride :GLint;
-var
-   M :Integer;
-begin
-     Result := SizeOf( _TYPE_ );
-
-     M := Result mod _Align;
-
-     if M > 0 then Inc( Result, _Align - M );
+     glGetIntegerv( GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, @Result );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-class constructor TGLBufferU<_TYPE_>.Create;
-begin
-     glGetIntegerv( GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, @_Align );
-end;
-
-//------------------------------------------------------------------------------
-
-constructor TGLBufferU<_TYPE_>.Create( const Usage_:GLenum );
-begin
-     inherited Create( Usage_ );
-
-     _BindI := 0;
-end;
-
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLBufferU<_TYPE_>.Use;
+procedure TGLBufferU<_TYPE_>.Use( const BindP_:GLuint );
 begin
-     glBindBufferBase( GetKind, _BindI, _ID );
+     glBindBufferBase( GetKind, BindP_, _ID );
 end;
 
-procedure TGLBufferU<_TYPE_>.Use( const I_:Integer; const N_:Integer = 1 );
+procedure TGLBufferU<_TYPE_>.Use( const BindP_:GLuint; const I_:Integer; const N_:Integer = 1 );
 begin
-     glBindBufferRange( GetKind, _BindI, _ID, GetStride * I_, GetStride * N_ );
+     glBindBufferRange( GetKind, BindP_, _ID, _Strid * I_, _Strid * N_ );
 end;
 
-procedure TGLBufferU<_TYPE_>.Unuse;
+procedure TGLBufferU<_TYPE_>.Unuse( const BindP_:GLuint );
 begin
-     glBindBufferBase( GetKind, _BindI, 0 );
+     glBindBufferBase( GetKind, BindP_, 0 );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
