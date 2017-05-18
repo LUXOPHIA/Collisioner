@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.GPU.OpenGL.Buffer;
+     LUX, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Buffer;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -16,10 +16,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      IGLBufferV = interface( IGLBuffer )
      ['{1DDD600E-0FA5-4D07-A280-72B96722D0C7}']
        ///// アクセス
-       function GetBindL :GLuint;
-       procedure SetBindL( BindL_:GLuint );
+       function GetElemT :GLenum;
+       function GetElemS :Integer;
+       function GetElemN :GLint;
        ///// プロパティ
-       property BindL :GLuint read GetBindL write SetBindL;
+       property ElemT :GLenum read GetElemT;
+       property ElemS :GLint  read GetElemS;
+       property ElemN :GLint  read GetElemN;
+       ///// メソッド
+       procedure Use( const BindI_:GLuint );
+       procedure Unuse( const BindI_:GLuint );
      end;
 
      //-------------------------------------------------------------------------
@@ -29,17 +35,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        ///// アクセス
        function GetKind :GLenum; override;
-       class function GetElemT :GLenum; virtual; abstract;
-       class function GetElemN :GLint; virtual; abstract;
-       function GetBindL :GLuint;
-       procedure SetBindL( BindL_:GLuint );
+       function GetElemT :GLenum; virtual; abstract;
+       function GetElemS :Integer; virtual; abstract;
+       function GetElemN :GLint; virtual; abstract;
      public
        ///// プロパティ
        property ElemT :GLenum read GetElemT;
+       property ElemS :GLint  read GetElemS;
        property ElemN :GLint  read GetElemN;
        ///// メソッド
-       procedure Use;
-       procedure Unuse;
+       procedure Use( const BindI_:GLuint );
+       procedure Unuse( const BindI_:GLuint );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferVS<_TYPE_>
@@ -48,8 +54,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        ///// アクセス
-       class function GetElemT :GLenum; override;
-       class function GetElemN :GLint; override;
+       function GetElemT :GLenum; override;
+       function GetElemS :Integer; override;
+       function GetElemN :GLint; override;
      public
      end;
 
@@ -78,34 +85,18 @@ begin
      Result := GL_ARRAY_BUFFER;
 end;
 
-function TGLBufferV<_TYPE_>.GetBindL :GLuint;
-begin
-     Result := _BindL;
-end;
-
-procedure TGLBufferV<_TYPE_>.SetBindL( BindL_:GLuint );
-begin
-     _BindL := BindL_;
-end;
-
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLBufferV<_TYPE_>.Use;
+procedure TGLBufferV<_TYPE_>.Use( const BindI_:GLuint );
 begin
-     glEnableVertexAttribArray( _BindL );
-
-     Bind;
-
-       glVertexAttribPointer( _BindL, GetElemN, GetElemT, GL_FALSE, 0, nil );
-
-     Unbind;
+     glBindVertexBuffer( BindI_, _ID, 0, GetElemS * GetElemN );
 end;
 
-procedure TGLBufferV<_TYPE_>.Unuse;
+procedure TGLBufferV<_TYPE_>.Unuse( const BindI_:GLuint );
 begin
-     glDisableVertexAttribArray( _BindL );
+     glBindVertexBuffer( BindI_, 0, 0, 0 );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferVS<_TYPE_>
@@ -116,14 +107,19 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-class function TGLBufferVS<_TYPE_>.GetElemT :GLenum;
+function TGLBufferVS<_TYPE_>.GetElemT :GLenum;
 begin
      Result := GL_FLOAT;
 end;
 
-class function TGLBufferVS<_TYPE_>.GetElemN :GLint;
+function TGLBufferVS<_TYPE_>.GetElemS :Integer;
 begin
-     Result := SizeOf( _TYPE_ ) div SizeOf( Single );
+     Result := SizeOf( Single );
+end;
+
+function TGLBufferVS<_TYPE_>.GetElemN :GLint;
+begin
+     Result := SizeOf( _TYPE_ ) div GetElemS;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
