@@ -21,26 +21,26 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLShader = class( TGLObject, IGLShader )
      private
      protected
-       _Source  :TStringList;
-       _Success :Boolean;
-       _Error   :TStringList;
+       _Source :TStringList;
+       _Status :Boolean;
+       _Errors :TStringList;
        ///// イベント
        _OnCompiled :TProc;
        ///// アクセス
        procedure SetSource( Sender_:TObject );
        ///// メソッド
        procedure Compile( const Source_:String );
-       function GetState :Boolean;
-       function GetError :String;
+       function GetStatus :Boolean;
+       function GetErrors :String;
      public
        constructor Create( const Kind_:GLenum );
        destructor Destroy; override;
        ///// イベント
        property OnCompiled :TProc read _OnCompiled write _OnCompiled;
        ///// プロパティ
-       property Source  :TStringList read _Source ;
-       property Success :Boolean     read _Success;
-       property Error   :TStringList read _Error  ;
+       property Source :TStringList read _Source;
+       property Status :Boolean     read _Status;
+       property Errors :TStringList read _Errors;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaderV
@@ -94,9 +94,8 @@ procedure TGLShader.SetSource( Sender_:TObject );
 begin
      Compile( _Source.Text );
 
-     _Success := GetState;
-
-     _Error.Text := GetError;
+     _Status      := GetStatus;
+     _Errors.Text := GetErrors;
 
      _OnCompiled;
 end;
@@ -116,7 +115,7 @@ begin
      glCompileShader( _ID );
 end;
 
-function TGLShader.GetState :Boolean;
+function TGLShader.GetStatus :Boolean;
 var
    S :GLint;
 begin
@@ -125,7 +124,7 @@ begin
      Result := ( S = GL_TRUE );
 end;
 
-function TGLShader.GetError :String;
+function TGLShader.GetErrors :String;
 var
    N :GLint;
    Cs :TArray<GLchar>;
@@ -147,7 +146,7 @@ begin
      inherited Create;
 
      _Source := TStringList.Create;
-     _Error  := TStringList.Create;
+     _Errors := TStringList.Create;
 
      _Source.OnChange := SetSource;
 
@@ -161,7 +160,7 @@ begin
      glDeleteShader( _ID );
 
      _Source.DisposeOf;
-     _Error .DisposeOf;
+     _Errors.DisposeOf;
 
      inherited;
 end;
