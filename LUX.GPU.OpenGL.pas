@@ -55,15 +55,21 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      IGLObject = interface
      ['{7F595632-258C-41E9-B9FA-E71B18A2335A}']
+       ///// アクセス
+       function GetID :GLuint;
+       ///// プロパティ
+       property ID :GLuint read GetID;
      end;
 
      TGLObject = class( TInterfacedObject, IGLObject )
      private
      protected
        _ID :GLuint;
+       ///// アクセス
+       function GetID :GLuint;
      public
        ///// プロパティ
-       property ID :GLuint read _ID;
+       property ID :GLuint read GetID;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -277,6 +283,13 @@ end;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLObject.GetID :GLuint;
+begin
+     Result := _ID;
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
