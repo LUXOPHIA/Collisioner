@@ -32,13 +32,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBuffer<_TYPE_>
 
-     IGLBuffer = interface
+     IGLBuffer = interface( IGLObject )
      ['{196C0785-DF74-480C-B1DB-76E689F19E32}']
        ///// アクセス
        function GetKind :GLenum;
        function GetAlign :GLint;
        function GetStrid :GLint;
-       function GetID :GLuint;
        function GetUsage :GLenum;
        function GetCount :Integer;
        procedure SetCount( const Count_:Integer );
@@ -62,14 +61,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _Align :GLint;
        _Strid :GLint;
        _BindL :GLuint;
-       _ID    :GLuint;
        _Usage :GLenum;
        _Count :Integer;
        ///// アクセス
        function GetKind :GLenum; virtual; abstract;
        function GetAlign :GLint;
        function GetStrid :GLint;
-       function GetID :GLuint;
        function GetUsage :GLenum;
        function GetCount :Integer;
        procedure SetCount( const Count_:Integer );
@@ -85,7 +82,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Kind                      :GLenum  read GetKind                ;
        property Align                     :GLint   read GetAlign               ;
        property Strid                     :GLint   read GetStrid               ;
-       property ID                        :GLuint  read GetID                  ;
        property Usage                     :GLenum  read GetUsage               ;
        property Count                     :Integer read GetCount write SetCount;
        property Items[ const I_:Integer ] :_TYPE_  read GetItems write SetItems;
@@ -95,6 +91,19 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function Map( const Access_:GLenum = GL_READ_WRITE ) :TGLBufferData<_TYPE_>;
        procedure Unmap;
        procedure Import( const Array_:array of _TYPE_ );
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVarray
+
+     TGLVarray = class( TGLObject )
+     private
+     protected
+     public
+       constructor Create;
+       destructor Destroy; override;
+       ///// メソッド
+       procedure Use;
+       procedure Unuse;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -160,11 +169,6 @@ end;
 function TGLBuffer<_TYPE_>.GetStrid :GLint;
 begin
      Result := _Strid;
-end;
-
-function TGLBuffer<_TYPE_>.GetID :GLuint;
-begin
-     Result := _ID;
 end;
 
 function TGLBuffer<_TYPE_>.GetUsage :GLenum;
@@ -285,6 +289,40 @@ begin
        glBufferData( GetKind, SizeOf( Array_ ), @Array_[ 0 ], _Usage );
 
      Unbind;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVarray
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLVarray.Create;
+begin
+     inherited;
+
+     glGenVertexArrays( 1, @_ID );
+end;
+
+destructor TGLVarray.Destroy;
+begin
+     glDeleteVertexArrays( 1, @_ID );
+
+     inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLVarray.Use;
+begin
+     glBindVertexArray( _ID );
+end;
+
+procedure TGLVarray.Unuse;
+begin
+     glBindVertexArray( 0 );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
