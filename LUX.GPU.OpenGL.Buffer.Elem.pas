@@ -79,7 +79,11 @@ end;
 
 procedure TGLBufferI<_TYPE_>.Draw;
 begin
-     glDrawElements( GL_TRIANGLES, 3{Poin} * _Count, GetElemT, nil );
+     Bind;
+
+       glDrawElements( GL_TRIANGLES, 3{Poin} * _Count, GetElemT, nil );
+
+     Unbind;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
