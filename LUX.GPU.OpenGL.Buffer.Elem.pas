@@ -65,10 +65,10 @@ end;
 
 function TGLBufferI<_TYPE_>.GetElemT :GLenum;
 begin
-     case  SizeOf( _TYPE_ ) div 3 of
-       1: Result := GL_UNSIGNED_BYTE;
-       2: Result := GL_UNSIGNED_SHORT;
-       4: Result := GL_UNSIGNED_INT;
+     case  SizeOf( _TYPE_ ) of
+       3: Result := GL_UNSIGNED_BYTE;
+       6: Result := GL_UNSIGNED_SHORT;
+      12: Result := GL_UNSIGNED_INT;
      else Assert( False, 'Unkown Type!' );
      end;
 end;
