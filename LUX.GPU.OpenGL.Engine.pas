@@ -55,30 +55,44 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLEngine
 
-     TGLEngine = class( TGLProgra )
+     IGLEngine = interface( IGLProgra )
+     ['{0B2FDEDE-30D3-439B-AC76-E61F9E028CD0}']
+       ///// アクセス
+       function GetVerPorts :TGLVerPorts;
+       function GetUniPorts :TGLUniPorts;
+       ///// プロパティ
+       property VerPorts :TGLVerPorts read GetVerPorts;
+       property UniPorts :TGLUniPorts read GetUniPorts;
+     end;
+
+     TGLEngine = class( TGLProgra, IGLEngine )
      private
      protected
        _Varray   :TGLVarray;
        _VerPorts :TGLVerPorts;
        _UniPorts :TGLUniPorts;
        ///// アクセス
-       procedure SetVerPorts( Sender_:TObject; const BindI_:GLuint; Action_:TCollectionNotification );
-       procedure SetUniPorts( Sender_:TObject; const BindI_:GLuint; Action_:TCollectionNotification );
+       function GetVerPorts :TGLVerPorts;
+       procedure AddVerPorts( Sender_:TObject; const BindI_:GLuint; Action_:TCollectionNotification );
+       procedure DelVerPorts( Sender_:TObject; const Port_:TGLVerPort; Action_:TCollectionNotification );
+       function GetUniPorts :TGLUniPorts;
+       procedure AddUniPorts( Sender_:TObject; const BindI_:GLuint; Action_:TCollectionNotification );
+       procedure DelUniPorts( Sender_:TObject; const Port_:TGLUniPort; Action_:TCollectionNotification );
        ///// イベント
        procedure DoOnLinked; override;
        ///// メソッド
        procedure VerAdd( const BindI_:GLuint; const Port_:TGLVerPort );
-       procedure VerDel( const BindI_:GLuint; const Port_:TGLVerPort );
+       procedure VerDel( const Port_:TGLVerPort );
        procedure UniAdd( const BindI_:GLuint; const Port_:TGLUniPort );
-       procedure UniDel( const BindI_:GLuint; const Port_:TGLUniPort );
+       procedure UniDel( const Port_:TGLUniPort );
        procedure VerAdds;
        procedure UniAdds;
      public
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property VerPorts :TGLVerPorts read _VerPorts;
-       property UniPorts :TGLUniPorts read _UniPorts;
+       property VerPorts :TGLVerPorts read GetVerPorts;
+       property UniPorts :TGLUniPorts read GetUniPorts;
        ///// メソッド
        procedure Use; override;
        procedure Unuse; override;
@@ -162,41 +176,49 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-procedure TGLEngine.SetVerPorts( Sender_:TObject; const BindI_:GLuint; Action_:TCollectionNotification );
-var
-   T :TGLVerPort;
+function TGLEngine.GetVerPorts :TGLVerPorts;
 begin
-     T := VerPorts.Items[ BindI_ ];
+     Result := _VerPorts;
+end;
 
-     case Action_ of
-       TCollectionNotification.cnAdded:
-          begin
-               VerAdd( BindI_, T );
-          end;
-       TCollectionNotification.cnRemoved  ,
-       TCollectionNotification.cnExtracted:
-          begin
-               VerDel( BindI_, T );
-          end;
+procedure TGLEngine.AddVerPorts( Sender_:TObject; const BindI_:GLuint; Action_:TCollectionNotification );
+begin
+     if Action_ = TCollectionNotification.cnAdded then
+     begin
+          VerAdd( BindI_, _VerPorts.Items[ BindI_ ] );
      end;
 end;
 
-procedure TGLEngine.SetUniPorts( Sender_:TObject; const BindI_:GLuint; Action_:TCollectionNotification );
-var
-   T :TGLUniPort;
+procedure TGLEngine.DelVerPorts( Sender_:TObject; const Port_:TGLVerPort; Action_:TCollectionNotification );
 begin
-     T := UniPorts.Items[ BindI_ ];
+     if ( Action_ = TCollectionNotification.cnRemoved   )
+     or ( Action_ = TCollectionNotification.cnExtracted ) then
+     begin
+          VerDel( Port_ );
+     end;
+end;
 
-     case Action_ of
-       TCollectionNotification.cnAdded:
-          begin
-               UniAdd( BindI_, T );
-          end;
-       TCollectionNotification.cnRemoved  ,
-       TCollectionNotification.cnExtracted:
-          begin
-               UniDel( BindI_, T );
-          end;
+//------------------------------------------------------------------------------
+
+function TGLEngine.GetUniPorts :TGLUniPorts;
+begin
+     Result := _UniPorts;
+end;
+
+procedure TGLEngine.AddUniPorts( Sender_:TObject; const BindI_:GLuint; Action_:TCollectionNotification );
+begin
+     if Action_ = TCollectionNotification.cnAdded then
+     begin
+          UniAdd( BindI_, _UniPorts.Items[ BindI_ ] );
+     end;
+end;
+
+procedure TGLEngine.DelUniPorts( Sender_:TObject; const Port_:TGLUniPort; Action_:TCollectionNotification );
+begin
+     if ( Action_ = TCollectionNotification.cnRemoved   )
+     or ( Action_ = TCollectionNotification.cnExtracted ) then
+     begin
+          UniDel( Port_ );
      end;
 end;
 
@@ -232,7 +254,7 @@ begin
      end;
 end;
 
-procedure TGLEngine.VerDel( const BindI_:GLuint; const Port_:TGLVerPort );
+procedure TGLEngine.VerDel( const Port_:TGLVerPort );
 var
    L :GLuint;
 begin
@@ -259,7 +281,7 @@ begin
      glUniformBlockBinding( _ID, L, BindI_ );
 end;
 
-procedure TGLEngine.UniDel( const BindI_:GLuint; const Port_:TGLUniPort );
+procedure TGLEngine.UniDel( const Port_:TGLUniPort );
 begin
 
 end;
@@ -297,8 +319,17 @@ begin
      _VerPorts := TGLVerPorts.Create;
      _UniPorts := TGLUniPorts.Create;
 
-     _VerPorts.OnKeyNotify := SetVerPorts;
-     _UniPorts.OnKeyNotify := SetUniPorts;
+     with _VerPorts do
+     begin
+          OnKeyNotify   := AddVerPorts;
+          OnValueNotify := DelVerPorts;
+     end;
+
+     with _UniPorts do
+     begin
+          OnKeyNotify   := AddUniPorts;
+          OnValueNotify := DelUniPorts;
+     end;
 end;
 
 destructor TGLEngine.Destroy;
