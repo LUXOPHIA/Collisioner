@@ -46,9 +46,32 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPluger
+
+     IGLPluger = interface( IGLObject )
+     ['{0120D979-2D88-4231-AB53-2B1B6F27C61D}']
+       ///// メソッド
+       procedure Use;
+       procedure Unuse;
+     end;
+
+     TGLPluger = class( TGLObject, IGLPluger )
+     private
+     protected
+     public
+       procedure Use; virtual; abstract;
+       procedure Unuse; virtual; abstract;
+     end;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPlugerV
 
-     TGLPlugerV = class( TGLObject )
+     IGLPlugerV = interface( IGLPluger )
+     ['{27306665-D8A0-4295-8C7A-1047BC00A9DE}']
+       ///// メソッド
+       procedure Add( const BindP_:GLuint; const BuffV_:IGLBufferV );
+     end;
+
+     TGLPlugerV = class( TGLPluger, IGLPlugerV )
      private
      protected
        _Plugs :TGLVerPlugs;
@@ -59,13 +82,22 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Plugs :TGLVerPlugs read _Plugs;
        ///// メソッド
        procedure Add( const BindP_:GLuint; const BuffV_:IGLBufferV );
-       procedure Use;
-       procedure Unuse;
+       procedure Use; override;
+       procedure Unuse; override;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPlugerU
 
-     TGLPlugerU = class( TGLObject )
+     IGLPlugerU = interface( IGLPluger )
+     ['{03EDB394-C255-42BC-8E48-D3DB76DAB3C9}']
+       ///// メソッド
+       procedure Add( const BindP_:GLuint;
+                      const BuffU_:IGLBufferU;
+                      const Start_:Integer = -1;
+                      const Count_:Integer = 1 );
+     end;
+
+     TGLPlugerU = class( TGLPluger, IGLPlugerU )
      private
      protected
        _Plugs :TGLUniPlugs;
@@ -79,8 +111,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                       const BuffU_:IGLBufferU;
                       const Start_:Integer = -1;
                       const Count_:Integer = 1 );
-       procedure Use;
-       procedure Unuse;
+       procedure Use; override;
+       procedure Unuse; override;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
