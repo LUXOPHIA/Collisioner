@@ -113,12 +113,23 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TInterfacedBase
+
+     TInterfacedBase = class( TObject, IInterface )
+     private
+     protected
+       function QueryInterface( const IID_:TGUID; out Obj_ ) :HResult; stdcall;
+       function _AddRef :Integer; stdcall;
+       function _Release :Integer; stdcall;
+     public
+     end;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TIdleTask
 
      TIdleTask = class
      private
-     protected
-       class var _Task :ITask;
+     protected class var
+       _Task :ITask;
      public
        ///// メソッド
        class procedure Run( const Proc_:TThreadProcedure; const Delay_:Integer = 500 );
@@ -505,6 +516,32 @@ begin
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TInterfacedBase
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TInterfacedBase.QueryInterface( const IID_:TGUID; out Obj_ ) :HResult;
+begin
+     if GetInterface( IID_, Obj_ ) then Result := 0
+                                   else Result := E_NOINTERFACE;
+end;
+
+function TInterfacedBase._AddRef :Integer;
+begin
+     Result := 0;
+end;
+
+function TInterfacedBase._Release :Integer;
+begin
+     Result := 0;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TIdleTask
 
