@@ -76,9 +76,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _OnLinked :TProc;
        ///// アクセス
        function GetShaders :TGLShaders;
+       procedure AddShaders( Sender_:TObject; const Shader_:IGLShader; Action_:TCollectionNotification );
+       procedure DelShaders( Sender_:TObject; const Shader_:IGLShader; Action_:TCollectionNotification );
        function GetFraPorts :TGLFraPorts;
-       procedure SetShaders( Sender_:TObject; const Shader_:IGLShader; Action_:TCollectionNotification );
-       procedure SetFraPorts( Sender_:TObject; const BindI_:GLuint; Action_:TCollectionNotification );
+       procedure AddFraPorts( Sender_:TObject; const BindI_:GLuint; Action_:TCollectionNotification );
+       procedure DelFraPorts( Sender_:TObject; const Port_:TGLFraPort; Action_:TCollectionNotification );
        function GetStatus :Boolean;
        function GetErrors :TStringList;
        ///// イベント
@@ -174,18 +176,20 @@ begin
      Result := _Shaders;
 end;
 
-procedure TGLProgra.SetShaders( Sender_:TObject; const Shader_:IGLShader; Action_:TCollectionNotification );
+procedure TGLProgra.AddShaders( Sender_:TObject; const Shader_:IGLShader; Action_:TCollectionNotification );
 begin
-     case Action_ of
-       TCollectionNotification.cnAdded:
-          begin
-               Attach( Shader_ );
-          end;
-       TCollectionNotification.cnRemoved  ,
-       TCollectionNotification.cnExtracted:
-          begin
-               Detach( Shader_ );
-          end;
+     if Action_ = TCollectionNotification.cnAdded then
+     begin
+          Attach( Shader_ );
+     end;
+end;
+
+procedure TGLProgra.DelShaders( Sender_:TObject; const Shader_:IGLShader; Action_:TCollectionNotification );
+begin
+     if ( Action_ = TCollectionNotification.cnRemoved   )
+     or ( Action_ = TCollectionNotification.cnExtracted ) then
+     begin
+          Detach( Shader_ );
      end;
 end;
 
@@ -196,22 +200,23 @@ begin
      Result := _FraPorts;
 end;
 
-procedure TGLProgra.SetFraPorts( Sender_:TObject; const BindI_:GLuint; Action_:TCollectionNotification );
-var
-   P :TGLFraPort;
+procedure TGLProgra.AddFraPorts( Sender_:TObject; const BindI_:GLuint; Action_:TCollectionNotification );
 begin
-     P := _FraPorts.Items[ BindI_ ];
-
-     case Action_ of
-       TCollectionNotification.cnAdded:
+     if Action_ = TCollectionNotification.cnAdded then
+     begin
+          with _FraPorts.Items[ BindI_ ] do
           begin
-               glBindFragDataLocation( _ID, BindI_, PGLchar( AnsiString( P.Name ) ) );
+               glBindFragDataLocation( _ID, BindI_, PGLchar( AnsiString( Name ) ) );
           end;
-       TCollectionNotification.cnRemoved  ,
-       TCollectionNotification.cnExtracted:
-          begin
+     end;
+end;
 
-          end;
+procedure TGLProgra.DelFraPorts( Sender_:TObject; const Port_:TGLFraPort; Action_:TCollectionNotification );
+begin
+     if ( Action_ = TCollectionNotification.cnRemoved   )
+     or ( Action_ = TCollectionNotification.cnExtracted ) then
+     begin
+
      end;
 end;
 
@@ -280,8 +285,17 @@ begin
      _FraPorts := TGLFraPorts.Create;
      _Errors   := TStringList.Create;
 
-     _Shaders .OnKeyNotify := SetShaders ;
-     _FraPorts.OnKeyNotify := SetFraPorts;
+     with _Shaders do
+     begin
+          OnKeyNotify   := AddShaders;
+          OnValueNotify := DelShaders;
+     end;
+
+     with _FraPorts do
+     begin
+          OnKeyNotify   := AddFraPorts;
+          OnValueNotify := DelFraPorts;
+     end;
 
      _ID     := glCreateProgram;
      _Status := False;
