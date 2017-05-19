@@ -61,7 +61,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property ID :GLuint read GetID;
      end;
 
-     TGLObject = class( TInterfacedObject, IGLObject )
+     TGLObject = class( TInterfacedBase, IGLObject )
      private
      protected
        _ID :GLuint;
