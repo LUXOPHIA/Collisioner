@@ -3,12 +3,14 @@ OpenGL を扱うためのライブラリ。
 
 ![](https://github.com/LUXOPHIA/OpenGL/raw/master/--------/_SCREENSHOT/OpenGL-View.png)
 
-FMX と VCL 向けに用意された `TGLView` コンポーネントを、フレーム機能を用いて貼ることで、OpenGL の描画領域を GUIパーツ として扱うことができます。
+FMX と VCL 向けに用意された `TGLView` コンポーネントを、フレーム機能を用いて貼ることで、OpenGL の描画領域を GUIパーツ として扱うことができます。OpenGL の初期化のために、それぞれの環境別の `LUX.GPU.OpenGL.FMX|VCL.pas` も合わせてプロジェクトへ追加下さい。
 
-* `FMX/LUX.GPU.OpenGL.GLView.pas|fmx`
-    * [OpenGL](https://github.com/LUXOPHIA/OpenGL)
-* `VCL/LUX.GPU.OpenGL.GLView.pas|fmx`
-    * [OpenGL_VCL](https://github.com/LUXOPHIA/OpenGL_VCL)
+* **`FMX/LUX.GPU.OpenGL.GLView.pas|fmx`**  
+**`FMX/LUX.GPU.OpenGL.FMX.pas`**
+    * デモ：[OpenGL](https://github.com/LUXOPHIA/OpenGL)
+* **`VCL/LUX.GPU.OpenGL.GLView.pas|fmx`**  
+**`VCL/LUX.GPU.OpenGL.VCL.pas`**
+    * デモ：[OpenGL_VCL](https://github.com/LUXOPHIA/OpenGL_VCL)
 
 初期化さえ済んでしまえば、OpenGL の API は両フレームワーク共に共通に利用できます。
 
@@ -20,7 +22,7 @@ FMX と VCL 向けに用意された `TGLView` コンポーネントを、フレ
 * [The Khronos Group - GitHub](https://github.com/KhronosGroup)
     * [OpenGL-Registry](https://github.com/KhronosGroup/OpenGL-Registry)
         * [api](https://github.com/KhronosGroup/OpenGL-Registry/tree/master/api)
-            * [GL]()
+            * [GL](https://github.com/KhronosGroup/OpenGL-Registry/tree/master/api/GL)
                 * [glcorearb.h](https://github.com/KhronosGroup/OpenGL-Registry/blob/master/api/GL/glcorearb.h)
                 * [wgl.h](https://github.com/KhronosGroup/OpenGL-Registry/blob/master/api/GL/wgl.h)
 * [Delphiによる最低限のOpenGL制御](https://tokoik.github.io/opengl/delphi.html)
