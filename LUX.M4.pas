@@ -2,7 +2,7 @@
 
 interface //#################################################################### ■
 
-uses System.Math.Vectors,
+uses System.SysUtils, System.Math.Vectors,
      LUX, LUX.D1, LUX.D2, LUX.D3, LUX.D4, LUX.M2, LUX.M3;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
@@ -319,6 +319,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 //var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【変数】
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
+
+function Tensor( const T_:TSingle2D; const Func_:TConstFunc<TdSingle2D,TdSingle3D> ) :TSingleM4; overload;
+function Tensor( const T_:TDouble2D; const Func_:TConstFunc<TdDouble2D,TdDouble3D> ) :TDoubleM4; overload;
 
 implementation //############################################################### ■
 
@@ -2433,6 +2436,54 @@ end;
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
+
+function Tensor( const T_:TSingle2D; const Func_:TConstFunc<TdSingle2D,TdSingle3D> ) :TSingleM4;
+var
+   T :TdSingle2D;
+   FP, FX, FY :TdSingle3D;
+begin
+     with T do
+     begin
+          U.o := T_.U;
+          V.o := T_.V;
+
+          U.d :=  0;  V.d :=  0;  FP := Func_( T );
+          U.d := +1;  V.d :=  0;  FX := Func_( T );
+          U.d :=  0;  V.d := -1;  FY := Func_( T );
+     end;
+
+     with Result do
+     begin
+          AxisP := FP.o;
+          AxisX := FX.d;
+          AxisY := FY.d;
+          AxisZ := CrossProduct( FX.d, FY.d );
+     end;
+end;
+
+function Tensor( const T_:TDouble2D; const Func_:TConstFunc<TdDouble2D,TdDouble3D> ) :TDoubleM4;
+var
+   T :TdDouble2D;
+   FP, FX, FY :TdDouble3D;
+begin
+     with T do
+     begin
+          U.o := T_.U;
+          V.o := T_.V;
+
+          U.d :=  0;  V.d :=  0;  FP := Func_( T );
+          U.d := +1;  V.d :=  0;  FX := Func_( T );
+          U.d :=  0;  V.d := -1;  FY := Func_( T );
+     end;
+
+     with Result do
+     begin
+          AxisP := FP.o;
+          AxisX := FX.d;
+          AxisY := FY.d;
+          AxisZ := CrossProduct( FX.d, FY.d );
+     end;
+end;
 
 //############################################################################## □
 
