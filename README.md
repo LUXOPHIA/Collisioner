@@ -1,18 +1,17 @@
 # LUX.GPU.OpenGL
-OpenGL を扱うためのライブラリ。
+[Delphi](https://www.embarcadero.com/jp/products/delphi) で [OpenGL](https://www.wikiwand.com/ja/OpenGL) を扱うためのライブラリ。
 
 ![](https://github.com/LUXOPHIA/OpenGL/raw/master/--------/_SCREENSHOT/OpenGL-View.png)
 
-FMX と VCL 向けに用意された `TGLView` コンポーネントを、フレーム機能を用いて貼ることで、OpenGL の描画領域を GUIパーツ として扱うことができます。OpenGL の初期化のために、それぞれの環境別の `LUX.GPU.OpenGL.FMX|VCL.pas` も合わせてプロジェクトへ追加下さい。
+`TGLView` コンポーネントをフレーム機能を用いて貼ることで、OpenGL の描画領域を GUIパーツ として扱うことができます。OpenGL 実行環境を整えるための `LUX.GPU.OpenGL.FMX|VCL` ユニットと合わせて、[FMX](https://www.wikiwand.com/en/FireMonkey) と [VCL](https://www.wikiwand.com/ja/Visual_Component_Library) 向けにぞれぞれ用意されていますが、その他のユニットは両フレームワーク共に共通です。
 
-* **`FMX/LUX.GPU.OpenGL.GLView.pas|fmx`**  
-**`FMX/LUX.GPU.OpenGL.FMX.pas`**
+* **`FMX/ LUX.GPU.OpenGL.GLView.pas|fmx`**  
+**`FMX/ LUX.GPU.OpenGL.FMX.pas`**
     * デモ：[OpenGL](https://github.com/LUXOPHIA/OpenGL)
-* **`VCL/LUX.GPU.OpenGL.GLView.pas|fmx`**  
-**`VCL/LUX.GPU.OpenGL.VCL.pas`**
+* **`VCL/ LUX.GPU.OpenGL.GLView.pas|fmx`**  
+**`VCL/ LUX.GPU.OpenGL.VCL.pas`**
     * デモ：[OpenGL_VCL](https://github.com/LUXOPHIA/OpenGL_VCL)
 
-初期化さえ済んでしまえば、OpenGL の API は両フレームワーク共に共通に利用できます。
 
 ----
 * [Khronos Combined OpenGL Registry](https://www.khronos.org/registry/OpenGL/)
