@@ -8,18 +8,39 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      PPByte = ^PByte;
 
-     PInt8   = ^Int8;
-     PUInt8  = ^UInt8;
-     PInt16  = ^Int16;
-     PUInt16 = ^UInt16;
-     PInt32  = ^Int32;
-     PUInt32 = ^UInt32;
+     //-------------------------------------------------------------------------
 
-     PIntPtr  = ^IntPtr;
-     PUIntPtr = ^UIntPtr;
+     PUInt8   = ^UInt8  ;  PInt8   = ^Int8  ;
+     PUInt16  = ^UInt16 ;  PInt16  = ^Int16 ;
+     PUInt32  = ^UInt32 ;  PInt32  = ^Int32 ;
+     PUIntPtr = ^UIntPtr;  PIntPtr = ^IntPtr;
 
-     TArray2<TValue_> = array of TArray <TValue_>;
-     TArray3<TValue_> = array of TArray2<TValue_>;
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TArray2/3<>
+
+     TArray2<T> = array of TArray <T>;
+     TArray3<T> = array of TArray2<T>;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TConstProc/Func<>
+
+     TConstProc<TA         > = reference to procedure( const A:TA                                     );
+     TConstProc<TA,TB      > = reference to procedure( const A:TA; const B:TB                         );
+     TConstProc<TA,TB,TC   > = reference to procedure( const A:TA; const B:TB; const C:TC             );
+     TConstProc<TA,TB,TC,TD> = reference to procedure( const A:TA; const B:TB; const C:TC; const D:TD );
+
+     TConstFunc<TA,         TResult> = reference to function( const A:TA                                     ) :TResult;
+     TConstFunc<TA,TB,      TResult> = reference to function( const A:TA; const B:TB                         ) :TResult;
+     TConstFunc<TA,TB,TC,   TResult> = reference to function( const A:TA; const B:TB; const C:TC             ) :TResult;
+     TConstFunc<TA,TB,TC,TD,TResult> = reference to function( const A:TA; const B:TB; const C:TC; const D:TD ) :TResult;
+
+     TConstProc1<T>         = reference to procedure( const A:T       );
+     TConstProc2<T,TResult> = reference to procedure( const A,B:T     );
+     TConstProc3<T,TResult> = reference to procedure( const A,B,C:T   );
+     TConstProc4<T,TResult> = reference to procedure( const A,B,C,D:T );
+
+     TConstFunc1<T,TResult> = reference to function( const A:T       ) :TResult;
+     TConstFunc2<T,TResult> = reference to function( const A,B:T     ) :TResult;
+     TConstFunc3<T,TResult> = reference to function( const A,B,C:T   ) :TResult;
+     TConstFunc4<T,TResult> = reference to function( const A,B,C,D:T ) :TResult;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
