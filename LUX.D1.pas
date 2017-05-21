@@ -275,6 +275,9 @@ function Sin( const X_:TdDouble ) :TdDouble; overload;
 function Cos( const X_:TdSingle ) :TdSingle; overload;
 function Cos( const X_:TdDouble ) :TdDouble; overload;
 
+procedure CosSin( const X_:TdSingle; out C_,S_:TdSingle ); overload;
+procedure CosSin( const X_:TdDouble; out C_,S_:TdDouble ); overload;
+
 procedure SinCos( const X_:TdSingle; out S_,C_:TdSingle ); overload;
 procedure SinCos( const X_:TdDouble; out S_,C_:TdDouble ); overload;
 
@@ -1145,6 +1148,40 @@ begin
      begin
           Result.o :=      Cos( o );
           Result.d := d * -Sin( o );
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure CosSin( const X_:TdSingle; out C_,S_:TdSingle );
+var
+   S, C :Single;
+begin
+     with X_ do
+     begin
+          SinCos( o, S, C );
+
+          S_.o :=      S;
+          S_.d := d * +C;
+
+          C_.o :=      C;
+          C_.d := d * -S;
+     end;
+end;
+
+procedure CosSin( const X_:TdDouble; out C_,S_:TdDouble );
+var
+   S, C :Double;
+begin
+     with X_ do
+     begin
+          SinCos( o, S, C );
+
+          S_.o :=      S;
+          S_.d := d * +C;
+
+          C_.o :=      C;
+          C_.d := d * -S;
      end;
 end;
 
