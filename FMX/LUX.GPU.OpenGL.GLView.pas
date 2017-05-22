@@ -46,6 +46,7 @@ type
     ///// イベント
     property OnPaint :TProc read _OnPaint write _OnPaint;
     ///// メソッド
+    procedure Repaint;
     procedure RecreateDC;
     procedure BeginGL;
     procedure EndGL;
@@ -204,6 +205,13 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLView.Repaint;
+begin
+     Paint;
+end;
+
+//------------------------------------------------------------------------------
 
 procedure TGLView.RecreateDC;
 begin
