@@ -15,7 +15,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOepnGL
 
-     TOepnGL = class( LUX.GPU.OpenGL.TOepnGL )
+     TOepnGL_FMX = class( TOpenGL )
      private
        _Form :TCommonCustomForm;
      protected
@@ -47,14 +47,14 @@ uses FMX.Platform.Win,
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TOepnGL.CreateWindow;
+procedure TOepnGL_FMX.CreateWindow;
 begin
      _Form := TCommonCustomForm.Create( nil );
 
      _WND := WindowHandleToPlatform( _Form.Handle ).Wnd;
 end;
 
-procedure TOepnGL.DestroyWindow;
+procedure TOepnGL_FMX.DestroyWindow;
 begin
      _Form.DisposeOf;
 end;
@@ -67,12 +67,10 @@ end;
 
 initialization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 初期化
 
-     _OpenGL_ := TOepnGL.Create;
+     _OpenGL_ := TOepnGL_FMX.Create;
 
      InitOpenGLext;
 
 finalization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 最終化
-
-     _OpenGL_.DisposeOf;
 
 end. //######################################################################### ■
