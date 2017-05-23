@@ -25,7 +25,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const Start_:Pointer; const Strid_:GLint );
        ///// プロパティ
        property ItemP[ const I_:Integer ] :PItem read GetItemP               ;
-       property Items[ const I_:Integer ] :TItem read GetItems write SetItems;
+       property Items[ const I_:Integer ] :TItem read GetItems write SetItems; default;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -83,7 +83,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Strid                     :GLint   read GetStrid               ;
        property Usage                     :GLenum  read GetUsage               ;
        property Count                     :Integer read GetCount write SetCount;
-       property Items[ const I_:Integer ] :_TYPE_  read GetItems write SetItems;
+       property Items[ const I_:Integer ] :_TYPE_  read GetItems write SetItems; default;
        ///// メソッド
        procedure Bind;
        procedure Unbind;
