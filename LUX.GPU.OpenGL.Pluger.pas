@@ -4,7 +4,8 @@ interface //####################################################################
 
 uses System.Generics.Collections,
      Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Buffer.Vert, LUX.GPU.OpenGL.Buffer.Unif;
+     LUX, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Buffer.Vert, LUX.GPU.OpenGL.Buffer.Unif,
+     LUX.GPU.OpenGL.Imager;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -28,6 +29,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        Count :Integer;
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexPlug
+
+     TGLTexPlug = record
+     private
+     public
+       Sample :IGLSample;
+       Imager :IGLImager;
+     end;
+
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVerPlugs
@@ -41,6 +51,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLUniPlugs
 
      TGLUniPlugs = class( TDictionary<GLuint,TGLUniPlug> )
+     private
+     protected
+     public
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexPlugs
+
+     TGLTexPlugs = class( TDictionary<GLuint,TGLTexPlug> )
      private
      protected
      public
@@ -115,6 +133,29 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Unuse; override;
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPlugerT
+
+     IGLPlugerT = interface( IGLPluger )
+     ['{03EDB394-C255-42BC-8E48-D3DB76DAB3C9}']
+       ///// メソッド
+       procedure Add( const BindP_:GLuint; const Sample_:IGLSample; const Image_:IGLImager );
+     end;
+
+     TGLPlugerT = class( TGLPluger, IGLPlugerT )
+     private
+     protected
+       _Plugs :TGLTexPlugs;
+     public
+       constructor Create;
+       destructor Destroy; override;
+       ///// プロパティ
+       property Plugs :TGLTexPlugs read _Plugs;
+       ///// メソッド
+       procedure Add( const BindP_:GLuint; const Sample_:IGLSample; const Image_:IGLImager );
+       procedure Use; override;
+       procedure Unuse; override;
+     end;
+
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
 
 //var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【変数】
@@ -137,6 +178,12 @@ implementation //###############################################################
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexPlug
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVerPlugs
@@ -148,6 +195,14 @@ implementation //###############################################################
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLUniPlugs
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexPlugs
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -277,6 +332,79 @@ begin
      for P in _Plugs do
      begin
           with P do Value.BuffU.Unuse( Key );
+     end;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPlugerT
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLPlugerT.Create;
+begin
+     inherited;
+
+     _Plugs := TGLTexPlugs.Create;
+end;
+
+destructor TGLPlugerT.Destroy;
+begin
+     _Plugs.DisposeOf;
+
+     inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLPlugerT.Add( const BindP_:GLuint; const Sample_:IGLSample; const Image_:IGLImager );
+var
+   B :TGLTexPlug;
+begin
+     with B do
+     begin
+          Sample := Sample_;
+          Imager := Image_;
+     end;
+
+     _Plugs.AddOrSetValue( BindP_, B );
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TGLPlugerT.Use;
+var
+   P :TPair<GLuint,TGLTexPlug>;
+begin
+     for P in _Plugs do
+     begin
+          with P do
+          begin
+               with Value do
+               begin
+                    Sample.Use( Key );
+                    Imager.Use( Key );
+               end;
+          end;
+     end;
+end;
+
+procedure TGLPlugerT.Unuse;
+var
+   P :TPair<GLuint,TGLTexPlug>;
+begin
+     for P in _Plugs do
+     begin
+          with P do
+          begin
+               with Value do
+               begin
+                    Sample.Unuse( Key );
+                    Imager.Unuse( Key );
+               end;
+          end;
      end;
 end;
 
