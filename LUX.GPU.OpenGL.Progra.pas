@@ -106,6 +106,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Link;
        procedure Use; virtual;
        procedure Unuse; virtual;
+       function GetVertLocI( const Name_:String ) :GLuint;
+       function GetBlocLocI( const Name_:String ) :GLuint;
+       function GetUnifLocI( const Name_:String ) :GLuint;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -315,6 +318,23 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
+
+function TGLProgra.GetVertLocI( const Name_:String ) :GLuint;
+begin
+     Result := glGetAttribLocation( _ID, PAnsiChar( AnsiString( Name_ ) ) );
+end;
+
+function TGLProgra.GetBlocLocI( const Name_:String ) :GLuint;
+begin
+     Result := glGetUniformBlockIndex( _ID, PAnsiChar( AnsiString( Name_ ) ) );
+end;
+
+function TGLProgra.GetUnifLocI( const Name_:String ) :GLuint;
+begin
+     Result := glGetUniformLocation( _ID, PAnsiChar( AnsiString( Name_ ) ) );
+end;
+
+//------------------------------------------------------------------------------
 
 procedure TGLProgra.Attach( const Shader_:IGLShader );
 begin
