@@ -16,9 +16,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      IGLBufferU = interface( IGLBuffer )
      ['{923ECB97-7686-4B53-A9FC-AB4365C7CC4B}']
        ///// メソッド
-       procedure Use( const BindP_:GLuint ); overload;
-       procedure Use( const BindP_:GLuint; const I_:Integer; const N_:Integer = 1 ); overload;
-       procedure Unuse( const BindP_:GLuint ); overload;
+       procedure Use( const BinP_:GLuint ); overload;
+       procedure Use( const BinP_:GLuint; const Offs_:Integer; const Size_:Integer = 1 ); overload;
+       procedure Unuse( const BinP_:GLuint ); overload;
      end;
 
      //-------------------------------------------------------------------------
@@ -32,9 +32,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function InitAlign :GLint; override;
      public
        ///// メソッド
-       procedure Use( const BindP_:GLuint ); overload;
-       procedure Use( const BindP_:GLuint; const I_:Integer; const N_:Integer = 1 ); overload;
-       procedure Unuse( const BindP_:GLuint ); overload;
+       procedure Use( const BinP_:GLuint ); overload;
+       procedure Use( const BinP_:GLuint; const Offs_:Integer; const Size_:Integer = 1 ); overload;
+       procedure Unuse( const BinP_:GLuint ); overload;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -73,19 +73,19 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLBufferU<_TYPE_>.Use( const BindP_:GLuint );
+procedure TGLBufferU<_TYPE_>.Use( const BinP_:GLuint );
 begin
-     glBindBufferBase( GetKind, BindP_, _ID );
+     glBindBufferBase( GetKind, BinP_, _ID );
 end;
 
-procedure TGLBufferU<_TYPE_>.Use( const BindP_:GLuint; const I_:Integer; const N_:Integer = 1 );
+procedure TGLBufferU<_TYPE_>.Use( const BinP_:GLuint; const Offs_:Integer; const Size_:Integer = 1 );
 begin
-     glBindBufferRange( GetKind, BindP_, _ID, _Strid * I_, _Strid * N_ );
+     glBindBufferRange( GetKind, BinP_, _ID, _Strid * Offs_, _Strid * Size_ );
 end;
 
-procedure TGLBufferU<_TYPE_>.Unuse( const BindP_:GLuint );
+procedure TGLBufferU<_TYPE_>.Unuse( const BinP_:GLuint );
 begin
-     glBindBufferBase( GetKind, BindP_, 0 );
+     glBindBufferBase( GetKind, BinP_, 0 );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
