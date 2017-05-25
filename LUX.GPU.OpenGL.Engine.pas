@@ -154,9 +154,9 @@ implementation //###############################################################
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TGLPortV.Create( const Name_:String;
-                               const EleN_:GLint;
-                               const EleT_:GLenum;
-                               const Offs_:GLuint );
+                             const EleN_:GLint;
+                             const EleT_:GLenum;
+                             const Offs_:GLuint );
 begin
      Name := Name_;
      EleN := EleN_;
@@ -263,9 +263,9 @@ end;
 //------------------------------------------------------------------------------
 
 procedure TGLPortsV.Add( const BinP_:GLuint; const Name_:String;
-                                                const EleN_:GLint;
-                                                const EleT_:GLenum;
-                                                const Offs_:GLuint = 0 );
+                                             const EleN_:GLint;
+                                             const EleT_:GLenum;
+                                             const Offs_:GLuint = 0 );
 var
    P :TGLPortV;
 begin
