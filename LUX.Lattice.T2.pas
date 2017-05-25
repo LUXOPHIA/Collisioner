@@ -2,6 +2,8 @@
 
 interface //#################################################################### ■
 
+uses LUX;
+
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
@@ -10,39 +12,65 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TArray2D<_TItem_>
 
-     TArray2D<_TItem_> = class
+     IArray2D = interface
+     ['{E4ECF85C-317F-4179-BDAE-C4495D2B2CC7}']
+       ///// アクセス
+       function GetItemsX :Integer;
+       procedure SetItemsX( const ItemsX_:Integer );
+       function GetItemsY :Integer;
+       procedure SetItemsY( const ItemsY_:Integer );
+       function GetMargsX :Integer;
+       procedure SetMargsX( const MargsX_:Integer );
+       function GetMargsY :Integer;
+       procedure SetMargsY( const MargsY_:Integer );
+       ///// プロパティ
+       property ItemsX :Integer read GetItemsX write SetItemsX;
+       property ItemsY :Integer read GetItemsY write SetItemsY;
+       property MargsX :Integer read GetMargsX write SetMargsX;
+       property MargsY :Integer read GetMargsY write SetMargsY;
+     end;
+
+     TArray2D<_TItem_> = class( TInterfacedBase, IArray2D )
+     public type
+       _PItem_ = ^_TItem_;
      private
-       _AllX :Integer;
-       _AllY :Integer;
+       _TotalX :Integer;
+       _TotalY :Integer;
        ///// メソッド
        procedure MakeArray;
        function XYtoI( const X_,Y_:Integer ) :Integer; inline;
      protected
-       _CountX  :Integer;
-       _CountY  :Integer;
-       _MarginX :Integer;
-       _MarginY :Integer;
-       _Item    :array of _TItem_;
+       _Items  :array of _TItem_;
+       _ItemsX :Integer;
+       _ItemsY :Integer;
+       _MargsX :Integer;
+       _MargsY :Integer;
        ///// アクセス
-       procedure SetCountX( const CountX_:Integer );
-       procedure SetCountY( const CountY_:Integer );
-       procedure SetMarginX( const MarginX_:Integer );
-       procedure SetMarginY( const MarginY_:Integer );
-       function GetItem( const X_,Y_:Integer ) :_TItem_;
-       procedure SetItem( const X_,Y_:Integer; const Item_:_TItem_ );
+       function GetItems( const X_,Y_:Integer ) :_TItem_;
+       procedure SetItems( const X_,Y_:Integer; const Item_:_TItem_ );
+       function GetItemP( const X_,Y_:Integer ) :_PItem_;
+       function GetItemsX :Integer;
+       procedure SetItemsX( const ItemsX_:Integer );
+       function GetItemsY :Integer;
+       procedure SetItemsY( const ItemsY_:Integer );
+       function GetMargsX :Integer;
+       procedure SetMargsX( const MargsX_:Integer );
+       function GetMargsY :Integer;
+       procedure SetMargsY( const MargsY_:Integer );
      public
        constructor Create; overload;
-       constructor Create( const CountX_,CountY_:Integer ); overload;
-       constructor Create( const CountX_,CountY_,Margin_:Integer ); overload;
-       constructor Create( const CountX_,CountY_,MarginX_,MarginY_:Integer ); overload;
+       constructor Create( const ItemsX_,ItemsY_:Integer ); overload;
+       constructor Create( const ItemsX_,ItemsY_,Margs_:Integer ); overload;
+       constructor Create( const ItemsX_,ItemsY_,MargsX_,MargsY_:Integer ); overload; virtual;
        procedure AfterConstruction; override;
        destructor Destroy; override;
        ///// プロパティ
-       property CountX                      :Integer read   _CountX  write SetCountX ;
-       property CountY                      :Integer read   _CountY  write SetCountY ;
-       property MarginX                     :Integer read   _MarginX write SetMarginX;
-       property MarginY                     :Integer read   _MarginY write SetMarginY;
-       property Item[ const X_,Y_:Integer ] :_TItem_ read GetItem    write SetItem   ; default;
+       property Items[ const X_,Y_:Integer ] :_TItem_ read GetItems  write SetItems ; default;
+       property ItemP[ const X_,Y_:Integer ] :_PItem_ read GetItemP                 ;
+       property ItemsX                       :Integer read GetItemsX write SetItemsX;
+       property ItemsY                       :Integer read GetItemsY write SetItemsY;
+       property MargsX                       :Integer read GetMargsX write SetMargsX;
+       property MargsY                       :Integer read GetMargsY write SetMargsY;
        ///// メソッド
        class procedure Swap( var Array0_,Array1_:TArray2D<_TItem_> ); static;
        procedure MakeEdgeLoop;
@@ -50,44 +78,70 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TBricArray2D<_TItem_>
 
-     TBricArray2D<_TItem_> = class( TArray2D<_TItem_> )
+     IBricArray2D = interface( IArray2D )
+     ['{F942004C-5B06-4744-9E7C-7E5FCB6258A5}']
+       ///// アクセス
+       function GetGridsX :Integer;
+       procedure SetGridsX( const GridX_:Integer );
+       function GetGridsY :Integer;
+       procedure SetGridsY( const GridY_:Integer );
+       ///// プロパティ
+       property BricsX :Integer read GetItemsX write SetItemsX;
+       property BricsY :Integer read GetItemsY write SetItemsY;
+       property GridsX :Integer read GetGridsX write SetGridsX;
+       property GridsY :Integer read GetGridsY write SetGridsY;
+     end;
+
+     TBricArray2D<_TItem_> = class( TArray2D<_TItem_>, IBricArray2D )
      private
      protected
        ///// アクセス
-       function GetGridX :Integer;
-       procedure SetGridX( const GridX_:Integer );
-       function GetGridY :Integer;
-       procedure SetGridY( const GridY_:Integer );
+       function GetGridsX :Integer;
+       procedure SetGridsX( const GridsX_:Integer );
+       function GetGridsY :Integer;
+       procedure SetGridsY( const GridsY_:Integer );
      public
        ///// プロパティ
-       property Bric[ const X_,Y_:Integer ] :_TItem_ read GetItem   write SetItem  ; default;
-       property BricX                       :Integer read   _CountX write SetCountX;
-       property BricY                       :Integer read   _CountY write SetCountY;
-       property GridX                       :Integer read GetGridX  write SetGridX ;
-       property GridY                       :Integer read GetGridY  write SetGridY ;
+       property Brics[ const X_,Y_:Integer ] :_TItem_ read GetItems  write SetItems ; default;
+       property BricsX                       :Integer read GetItemsX write SetItemsX;
+       property BricsY                       :Integer read GetItemsY write SetItemsY;
+       property GridsX                       :Integer read GetGridsX write SetGridsX;
+       property GridsY                       :Integer read GetGridsY write SetGridsY;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGridArray2D<_TItem_>
 
-     TGridArray2D<_TItem_> = class( TArray2D<_TItem_> )
+     IGridArray2D = interface( IArray2D )
+     ['{7E34AB1F-480A-4CCF-9719-7938AA1015A9}']
+       ///// アクセス
+       function GetBricsX :Integer;
+       procedure SetBricsX( const BricsX_:Integer );
+       function GetBricsY :Integer;
+       procedure SetBricsY( const BricsY_:Integer );
+       ///// プロパティ
+       property GridsX :Integer read GetItemsX write SetItemsX;
+       property GridsY :Integer read GetItemsY write SetItemsY;
+       property BricsX :Integer read GetBricsX write SetBricsX;
+       property BricsY :Integer read GetBricsY write SetBricsY;
+     end;
+
+     TGridArray2D<_TItem_> = class( TArray2D<_TItem_>, IGridArray2D )
      private
      protected
        ///// アクセス
-       function GetBricX :Integer;
-       procedure SetBricX( const BricX_:Integer );
-       function GetBricY :Integer;
-       procedure SetBricY( const BricY_:Integer );
+       function GetBricsX :Integer;
+       procedure SetBricsX( const BricsX_:Integer );
+       function GetBricsY :Integer;
+       procedure SetBricsY( const BricsY_:Integer );
      public
-       constructor Create; overload;
-       constructor Create( const BricX_,BricY_:Integer ); overload;
-       constructor Create( const BricX_,BricY_,MarginX_,MarginY_:Integer ); overload;
+       constructor Create( const BricsX_,BricsY_,MargsX_,MargsY_:Integer ); override;
        destructor Destroy; override;
        ///// プロパティ
-       property Grid[ const X_,Y_:Integer ] :_TItem_ read GetItem   write SetItem  ; default;
-       property GridX                       :Integer read   _CountX write SetCountX;
-       property GridY                       :Integer read   _CountY write SetCountY;
-       property BricX                       :Integer read GetBricX  write SetBricX ;
-       property BricY                       :Integer read GetBricY  write SetBricY ;
+       property Grids[ const X_,Y_:Integer ] :_TItem_ read GetItems  write SetItems ; default;
+       property GridsX                       :Integer read GetItemsX write SetItemsX;
+       property GridsY                       :Integer read GetItemsY write SetItemsY;
+       property BricsX                       :Integer read GetBricsX write SetBricsX;
+       property BricsY                       :Integer read GetBricsY write SetBricsY;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -110,49 +164,76 @@ implementation //###############################################################
 
 procedure TArray2D<_TItem_>.MakeArray;
 begin
-     _AllX := _MarginX + _CountX + _MarginX;
-     _AllY := _MarginY + _CountY + _MarginY;
+     _TotalX := _MargsX + _ItemsX + _MargsX;
+     _TotalY := _MargsY + _ItemsY + _MargsY;
 
-     SetLength( _Item, _AllX * _AllY );
+     SetLength( _Items, _TotalX * _TotalY );
 end;
 
 function TArray2D<_TItem_>.XYtoI( const X_,Y_:Integer ) :Integer;
 begin
-     Result := ( _MarginX + X_ ) + _AllX * ( _MarginY + Y_ );
+     Result := _TotalX * ( _MargsY + Y_ ) + ( _MargsX + X_ );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-procedure TArray2D<_TItem_>.SetCountX( const CountX_:Integer );
+function TArray2D<_TItem_>.GetItems( const X_,Y_:Integer ) :_TItem_;
 begin
-     _CountX := CountX_;  MakeArray;
+     Result := _Items[ XYtoI( X_, Y_ ) ];
 end;
 
-procedure TArray2D<_TItem_>.SetCountY( const CountY_:Integer );
+procedure TArray2D<_TItem_>.SetItems( const X_,Y_:Integer; const Item_:_TItem_ );
 begin
-     _CountY := CountY_;  MakeArray;
+     _Items[ XYtoI( X_, Y_ ) ] := Item_;
 end;
 
-procedure TArray2D<_TItem_>.SetMarginX( const MarginX_:Integer );
+function TArray2D<_TItem_>.GetItemP( const X_,Y_:Integer ) :_PItem_;
 begin
-     _MarginX := MarginX_;  MakeArray;
+     Result := @_Items[ XYtoI( X_, Y_ ) ];
 end;
 
-procedure TArray2D<_TItem_>.SetMarginY( const MarginY_:Integer );
+//------------------------------------------------------------------------------
+
+function TArray2D<_TItem_>.GetItemsX :Integer;
 begin
-     _MarginY := MarginY_;  MakeArray;
+     Result := _ItemsX;
 end;
 
-function TArray2D<_TItem_>.GetItem( const X_,Y_:Integer ) :_TItem_;
+procedure TArray2D<_TItem_>.SetItemsX( const ItemsX_:Integer );
 begin
-     Result := _Item[ XYtoI( X_, Y_ ) ];
+     _ItemsX := ItemsX_;  MakeArray;
 end;
 
-procedure TArray2D<_TItem_>.SetItem( const X_,Y_:Integer; const Item_:_TItem_ );
+function TArray2D<_TItem_>.GetItemsY :Integer;
 begin
-     _Item[ XYtoI( X_, Y_ ) ] := Item_;
+     Result := _ItemsY;
+end;
+
+procedure TArray2D<_TItem_>.SetItemsY( const ItemsY_:Integer );
+begin
+     _ItemsY := ItemsY_;  MakeArray;
+end;
+
+function TArray2D<_TItem_>.GetMargsX :Integer;
+begin
+     Result := _MargsX;
+end;
+
+procedure TArray2D<_TItem_>.SetMargsX( const MargsX_:Integer );
+begin
+     _MargsX := MargsX_;  MakeArray;
+end;
+
+function TArray2D<_TItem_>.GetMargsY :Integer;
+begin
+     Result := _MargsY;
+end;
+
+procedure TArray2D<_TItem_>.SetMargsY( const MargsY_:Integer );
+begin
+     _MargsY := MargsY_;  MakeArray;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -162,24 +243,24 @@ begin
      Create( 0, 0 );
 end;
 
-constructor TArray2D<_TItem_>.Create( const CountX_,CountY_:Integer );
+constructor TArray2D<_TItem_>.Create( const ItemsX_,ItemsY_:Integer );
 begin
-     Create( CountX_, CountY_, 0 );
+     Create( ItemsX_, ItemsY_, 0 );
 end;
 
-constructor TArray2D<_TItem_>.Create( const CountX_,CountY_,Margin_:Integer );
+constructor TArray2D<_TItem_>.Create( const ItemsX_,ItemsY_,Margs_:Integer );
 begin
-     Create( CountX_, CountY_, Margin_, Margin_ );
+     Create( ItemsX_, ItemsY_, Margs_, Margs_ );
 end;
 
-constructor TArray2D<_TItem_>.Create( const CountX_,CountY_,MarginX_,MarginY_:Integer );
+constructor TArray2D<_TItem_>.Create( const ItemsX_,ItemsY_,MargsX_,MargsY_:Integer );
 begin
      inherited Create;
 
-     _CountX  := CountX_;
-     _CountY  := CountY_;
-     _MarginX := MarginX_;
-     _MarginY := MarginY_;
+     _ItemsX := ItemsX_;
+     _ItemsY := ItemsY_;
+     _MargsX := MargsX_;
+     _MargsY := MargsY_;
 end;
 
 procedure TArray2D<_TItem_>.AfterConstruction;
@@ -206,29 +287,29 @@ procedure TArray2D<_TItem_>.MakeEdgeLoop;
 var
    EX, EY, MX, MY :Integer;
 begin
-     for EY := -_MarginY to -1 do
+     for EY := -_MargsY to -1 do
      begin
-          MY := EY + _CountY;
+          MY := EY + _ItemsY;
 
-          for EX := -_MarginX to                 -1 do Item[ EX, EY ] := Item[ EX + _CountX, MY ];
-          for EX :=  0        to _CountX         -1 do Item[ EX, EY ] := Item[ EX          , MY ];
-          for EX :=  _CountX  to _CountX+_MarginX-1 do Item[ EX, EY ] := Item[ EX - _CountX, MY ];
+          for EX := -_MargsX to                -1 do Items[ EX, EY ] := Items[ EX + _ItemsX, MY ];
+          for EX :=  0       to _ItemsX        -1 do Items[ EX, EY ] := Items[ EX          , MY ];
+          for EX :=  _ItemsX to _ItemsX+_MargsX-1 do Items[ EX, EY ] := Items[ EX - _ItemsX, MY ];
      end;
 
-     for EY := 0 to _CountY-1 do
+     for EY := 0 to _ItemsY-1 do
      begin
-          for EX := -_MarginX to                 -1 do Item[ EX, EY ] := Item[ EX + _CountX, EY ];
+          for EX := -_MargsX to                -1 do Items[ EX, EY ] := Items[ EX + _ItemsX, EY ];
 
-          for EX :=  _CountX  to _CountX+_MarginX-1 do Item[ EX, EY ] := Item[ EX - _CountX, EY ];
+          for EX :=  _ItemsX to _ItemsX+_MargsX-1 do Items[ EX, EY ] := Items[ EX - _ItemsX, EY ];
      end;
 
-     for EY := _CountY to _CountY+_MarginY-1 do
+     for EY := _ItemsY to _ItemsY+_MargsY-1 do
      begin
-          MY := EY - _CountY;
+          MY := EY - _ItemsY;
 
-          for EX := -_MarginX to                 -1 do Item[ EX, EY ] := Item[ EX + _CountX, MY ];
-          for EX :=  0        to _CountX         -1 do Item[ EX, EY ] := Item[ EX          , MY ];
-          for EX :=  _CountX  to _CountX+_MarginX-1 do Item[ EX, EY ] := Item[ EX - _CountX, MY ];
+          for EX := -_MargsX to                -1 do Items[ EX, EY ] := Items[ EX + _ItemsX, MY ];
+          for EX :=  0       to _ItemsX        -1 do Items[ EX, EY ] := Items[ EX          , MY ];
+          for EX :=  _ItemsX to _ItemsX+_MargsX-1 do Items[ EX, EY ] := Items[ EX - _ItemsX, MY ];
      end;
 end;
 
@@ -240,24 +321,24 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TBricArray2D<_TItem_>.GetGridX :Integer;
+function TBricArray2D<_TItem_>.GetGridsX :Integer;
 begin
-     Result := BricX + 1;
+     Result := BricsX + 1;
 end;
 
-procedure TBricArray2D<_TItem_>.SetGridX( const GridX_:Integer );
+procedure TBricArray2D<_TItem_>.SetGridsX( const GridsX_:Integer );
 begin
-     BricX := GridX_ - 1;
+     BricsX := GridsX_ - 1;
 end;
 
-function TBricArray2D<_TItem_>.GetGridY :Integer;
+function TBricArray2D<_TItem_>.GetGridsY :Integer;
 begin
-     Result := BricY + 1;
+     Result := BricsY + 1;
 end;
 
-procedure TBricArray2D<_TItem_>.SetGridY( const GridY_:Integer );
+procedure TBricArray2D<_TItem_>.SetGridsY( const GridsY_:Integer );
 begin
-     BricY := GridY_ - 1;
+     BricsY := GridsY_ - 1;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -270,44 +351,33 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGridArray2D<_TItem_>.GetBricX :Integer;
+function TGridArray2D<_TItem_>.GetBricsX :Integer;
 begin
-     Result := _CountX - 1;
+     Result := _ItemsX - 1;
 end;
 
-procedure TGridArray2D<_TItem_>.SetBricX( const BricX_:Integer );
+procedure TGridArray2D<_TItem_>.SetBricsX( const BricsX_:Integer );
 begin
-     _CountX  := BricX_ + 1;  MakeArray;
+     _ItemsX := BricsX_ + 1;  MakeArray;
 end;
 
-function TGridArray2D<_TItem_>.GetBricY :Integer;
+function TGridArray2D<_TItem_>.GetBricsY :Integer;
 begin
-     Result := _CountY - 1;
+     Result := _ItemsY - 1;
 end;
 
-procedure TGridArray2D<_TItem_>.SetBricY( const BricY_:Integer );
+procedure TGridArray2D<_TItem_>.SetBricsY( const BricsY_:Integer );
 begin
-     _CountY  := BricY_ + 1;  MakeArray;
+     _ItemsY := BricsY_ + 1;  MakeArray;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGridArray2D<_TItem_>.Create;
+constructor TGridArray2D<_TItem_>.Create( const BricsX_,BricsY_,MargsX_,MargsY_:Integer );
 begin
-     Create( 0, 0 );
-end;
+     inherited Create( BricsX_+1, BricsY_+1,
+                       MargsX_  , MargsY_   );
 
-constructor TGridArray2D<_TItem_>.Create( const BricX_,BricY_:Integer );
-begin
-     Create( BricX_, BricY_, 0, 0 );
-end;
-
-constructor TGridArray2D<_TItem_>.Create( const BricX_,BricY_,MarginX_,MarginY_:Integer );
-begin
-     inherited;
-
-     _CountX  := BricX_ + 1;
-     _CountY  := BricY_ + 1;
 end;
 
 destructor TGridArray2D<_TItem_>.Destroy;

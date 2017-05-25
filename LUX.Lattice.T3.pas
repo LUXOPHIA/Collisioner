@@ -2,11 +2,11 @@
 
 interface //#################################################################### ■
 
-uses System.SysUtils;
+uses System.SysUtils,
+     LUX;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
-     TArray3D              = class;
      TArray3D<_TItem_>     = class;
      TBricArray3D<_TItem_> = class;
      TGridArray3D<_TItem_> = class;
@@ -15,81 +15,121 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TArray3D
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TArray3D<_TItem_>
 
-     TArray3D = class
-     private
-     protected
-       _WholeX  :Integer;
-       _WholeY  :Integer;
-       _WholeZ  :Integer;
-       _CountX  :Integer;
-       _CountY  :Integer;
-       _CountZ  :Integer;
-       _MarginX :Integer;
-       _MarginY :Integer;
-       _MarginZ :Integer;
+     IArray3D = interface
+     ['{2ED01C38-BB77-4958-83DE-E4F723A74774}']
        ///// アクセス
-       function GetLines( const Y_,Z_:Integer ) :PByteArray; virtual; abstract;
-       function GetItemSize :Integer; virtual; abstract;
+       function GetItemsX :Integer;
+       procedure SetItemsX( const ItemsX_:Integer );
+       function GetItemsY :Integer;
+       procedure SetItemsY( const ItemsY_:Integer );
+       function GetItemsZ :Integer;
+       procedure SetItemsZ( const ItemsZ_:Integer );
+       function GetMargsX :Integer;
+       procedure SetMargsX( const MargsX_:Integer );
+       function GetMargsY :Integer;
+       procedure SetMargsY( const MargsY_:Integer );
+       function GetMargsZ :Integer;
+       procedure SetMargsZ( const MargsZ_:Integer );
+       ///// プロパティ
+       property ItemsX :Integer read GetItemsX write SetItemsX;
+       property ItemsY :Integer read GetItemsY write SetItemsY;
+       property ItemsZ :Integer read GetItemsZ write SetItemsZ;
+       property MargsX :Integer read GetMargsX write SetMargsX;
+       property MargsY :Integer read GetMargsY write SetMargsY;
+       property MargsZ :Integer read GetMargsZ write SetMargsZ;
+     end;
+
+     TArray3D<_TItem_> = class( TInterfacedBase, IArray3D )
+     public type
+       _PItem_ = ^_TItem_;
+     private
+       _TotalX :Integer;
+       _TotalY :Integer;
+       _TotalZ :Integer;
+       ///// メソッド
+       procedure MakeArray; virtual;
+       function XYZtoI( const X_,Y_,Z_:Integer ) :Integer; inline;
+     protected
+       _Items  :TArray<_TItem_>;
+       _ItemsX :Integer;
+       _ItemsY :Integer;
+       _ItemsZ :Integer;
+       _MargsX :Integer;
+       _MargsY :Integer;
+       _MargsZ :Integer;
+       ///// アクセス
+       function GetItems( const X_,Y_,Z_:Integer ) :_TItem_;
+       procedure SetItems( const X_,Y_,Z_:Integer; const Item_:_TItem_ );
+       function GetItemP( const X_,Y_,Z_:Integer ) :_PItem_;
+       function GetItemsX :Integer;
+       procedure SetItemsX( const ItemsX_:Integer );
+       function GetItemsY :Integer;
+       procedure SetItemsY( const ItemsY_:Integer );
+       function GetItemsZ :Integer;
+       procedure SetItemsZ( const ItemsZ_:Integer );
+       function GetMargsX :Integer;
+       procedure SetMargsX( const MargsX_:Integer );
+       function GetMargsY :Integer;
+       procedure SetMargsY( const MargsY_:Integer );
+       function GetMargsZ :Integer;
+       procedure SetMargsZ( const MargsZ_:Integer );
+
+       function GetLines( const Y_,Z_:Integer ) :PByteArray;
+       function GetItemSize :Integer;
        function GetLineSize :Integer;
        function GetStepX :Integer;
        function GetStepY :Integer;
        function GetStepZ :Integer;
-       procedure SetCountX( const CountX_:Integer );
-       procedure SetCountY( const CountY_:Integer );
-       procedure SetCountZ( const CountZ_:Integer );
-       procedure SetMarginX( const MarginX_:Integer );
-       procedure SetMarginY( const MarginY_:Integer );
-       procedure SetMarginZ( const MarginZ_:Integer );
-       ///// メソッド
-       procedure MakeArray; virtual;
-       function XYZtoI( const X_,Y_,Z_:Integer ) :Integer; inline;
      public
        constructor Create; overload;
-       constructor Create( const CountX_,CountY_,CountZ_:Integer ); overload;
-       constructor Create( const CountX_,CountY_,CountZ_,Margin_:Integer ); overload;
-       constructor Create( const CountX_,CountY_,CountZ_,MarginX_,MarginY_,MarginZ_:Integer ); overload;
+       constructor Create( const ItemsX_,ItemsY_,ItemsZ_:Integer ); overload;
+       constructor Create( const ItemsX_,ItemsY_,ItemsZ_,Margs_:Integer ); overload;
+       constructor Create( const ItemsX_,ItemsY_,ItemsZ_,MargsX_,MargsY_,MargsZ_:Integer ); overload; virtual;
        procedure AfterConstruction; override;
        destructor Destroy; override;
        ///// プロパティ
-       property Lines[ const Y_,Z_:Integer ]    :PByteArray read GetLines                    ;
-       property ItemSize                        :Integer    read GetItemSize                 ;
-       property LineSize                        :Integer    read GetLineSize                 ;
-       property StepX                           :Integer    read GetStepX                    ;
-       property StepY                           :Integer    read GetStepY                    ;
-       property StepZ                           :Integer    read GetStepZ                    ;
-       property CountX                          :Integer    read   _CountX   write SetCountX ;
-       property CountY                          :Integer    read   _CountY   write SetCountY ;
-       property CountZ                          :Integer    read   _CountZ   write SetCountZ ;
-       property MarginX                         :Integer    read   _MarginX  write SetMarginX;
-       property MarginY                         :Integer    read   _MarginY  write SetMarginY;
-       property MarginZ                         :Integer    read   _MarginZ  write SetMarginZ;
-       ///// メソッド
-       class procedure Swap( var Array0_,Array1_:TArray3D ); static;
-     end;
+       property Items[ const X_,Y_,Z_:Integer ] :_TItem_    read GetItems    write SetItems ; default;
+       property ItemP[ const X_,Y_,Z_:Integer ] :_PItem_    read GetItemP                   ;
+       property ItemsX                          :Integer    read GetItemsX   write SetItemsX;
+       property ItemsY                          :Integer    read GetItemsY   write SetItemsY;
+       property ItemsZ                          :Integer    read GetItemsZ   write SetItemsZ;
+       property MargsX                          :Integer    read GetMargsX   write SetMargsX;
+       property MargsY                          :Integer    read GetMargsY   write SetMargsY;
+       property MargsZ                          :Integer    read GetMargsZ   write SetMargsZ;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TArray3D<_TItem_>
-
-     TArray3D<_TItem_> = class( TArray3D )
-     private
-     protected
-       _Items :TArray<_TItem_>;
-       ///// アクセス
-       function GetLines( const Y_,Z_:Integer ) :PByteArray; override;
-       function GetItemSize :Integer; override;
-       function GetItems( const X_,Y_,Z_:Integer ) :_TItem_;
-       procedure SetItems( const X_,Y_,Z_:Integer; const Item_:_TItem_ );
+       property Lines[ const Y_,Z_:Integer ]    :PByteArray read GetLines                   ;
+       property ItemSize                        :Integer    read GetItemSize                ;
+       property LineSize                        :Integer    read GetLineSize                ;
+       property StepX                           :Integer    read GetStepX                   ;
+       property StepY                           :Integer    read GetStepY                   ;
+       property StepZ                           :Integer    read GetStepZ                   ;
        ///// メソッド
-       procedure MakeArray; override;
-     public
-       ///// プロパティ
-       property Items[ const X_,Y_,Z_:Integer ] :_TItem_ read GetItems write SetItems; default;
+       class procedure Swap( var Array0_,Array1_:TArray3D<_TItem_> ); static;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TBricArray3D<_TItem_>
 
-     TBricArray3D<_TItem_> = class( TArray3D<_TItem_> )
+     IBricArray3D = interface( IArray3D )
+     ['{40BD11E7-4BF9-43F3-BE98-846C78B22EFD}']
+       ///// アクセス
+       function GetGridsX :Integer;
+       procedure SetGridsX( const GridX_:Integer );
+       function GetGridsY :Integer;
+       procedure SetGridsY( const GridY_:Integer );
+       function GetGridsZ :Integer;
+       procedure SetGridsZ( const GridZ_:Integer );
+       ///// プロパティ
+       property BricsX :Integer read GetItemsX write SetItemsX;
+       property BricsY :Integer read GetItemsY write SetItemsY;
+       property BricsZ :Integer read GetItemsZ write SetItemsZ;
+       property GridsX :Integer read GetGridsX write SetGridsX;
+       property GridsY :Integer read GetGridsY write SetGridsY;
+       property GridsZ :Integer read GetGridsZ write SetGridsZ;
+     end;
+
+     TBricArray3D<_TItem_> = class( TArray3D<_TItem_>, IBricArray3D )
      private
      protected
        ///// アクセス
@@ -102,9 +142,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        ///// プロパティ
        property Brics[ const X_,Y_,Z_:Integer ] :_TItem_ read GetItems  write SetItems ; default;
-       property BricsX                          :Integer read   _CountX write SetCountX;
-       property BricsY                          :Integer read   _CountY write SetCountY;
-       property BricsZ                          :Integer read   _CountZ write SetCountZ;
+       property BricsX                          :Integer read GetItemsX write SetItemsX;
+       property BricsY                          :Integer read GetItemsY write SetItemsY;
+       property BricsZ                          :Integer read GetItemsZ write SetItemsZ;
        property GridsX                          :Integer read GetGridsX write SetGridsX;
        property GridsY                          :Integer read GetGridsY write SetGridsY;
        property GridsZ                          :Integer read GetGridsZ write SetGridsZ;
@@ -112,30 +152,45 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGridArray3D<_TItem_>
 
-     TGridArray3D<_TItem_> = class( TArray3D<_TItem_> )
+     IGridArray3D = interface( IArray3D )
+     ['{60135172-47A4-4183-8CE9-B590E8F21835}']
+       ///// アクセス
+       function GetBricsX :Integer;
+       procedure SetBricsX( const BricsX_:Integer );
+       function GetBricsY :Integer;
+       procedure SetBricsY( const BricsY_:Integer );
+       function GetBricsZ :Integer;
+       procedure SetBricsZ( const BricsZ_:Integer );
+       ///// プロパティ
+       property GridsX :Integer read GetItemsX write SetItemsX;
+       property GridsY :Integer read GetItemsY write SetItemsY;
+       property GridsZ :Integer read GetItemsZ write SetItemsZ;
+       property BricsX :Integer read GetBricsX write SetBricsX;
+       property BricsY :Integer read GetBricsY write SetBricsY;
+       property BricsZ :Integer read GetBricsZ write SetBricsZ;
+     end;
+
+     TGridArray3D<_TItem_> = class( TArray3D<_TItem_>, IGridArray3D )
      private
      protected
        ///// アクセス
        function GetBricsX :Integer;
-       procedure SetBricsX( const DivX_:Integer );
+       procedure SetBricsX( const BricsX_:Integer );
        function GetBricsY :Integer;
-       procedure SetBricsY( const DivY_:Integer );
+       procedure SetBricsY( const BricsY_:Integer );
        function GetBricsZ :Integer;
-       procedure SetBricsZ( const DivZ_:Integer );
+       procedure SetBricsZ( const BricsZ_:Integer );
      public
-       constructor Create; overload;
-       constructor Create( const DivX_,DivY_,DivZ_:Integer ); overload;
-       constructor Create( const DivX_,DivY_,DivZ_,Margin_:Integer ); overload;
-       constructor Create( const DivX_,DivY_,DivZ_,MarginX_,MarginY_,MarginZ_:Integer ); overload;
+       constructor Create( const BricsX_,BricsY_,BricsZ_,MargsX_,MargsY_,MargsZ_:Integer ); override;
        destructor Destroy; override;
        ///// プロパティ
        property Grids[ const X_,Y_,Z_:Integer ] :_TItem_ read GetItems  write SetItems ; default;
-       property GridsX :Integer read   _CountX write SetCountX;
-       property GridsY :Integer read   _CountY write SetCountY;
-       property GridsZ :Integer read   _CountZ write SetCountZ;
-       property BricsX :Integer read GetBricsX write SetBricsX;
-       property BricsY :Integer read GetBricsY write SetBricsY;
-       property BricsZ :Integer read GetBricsZ write SetBricsZ;
+       property GridsX                          :Integer read GetItemsX write SetItemsX;
+       property GridsY                          :Integer read GetItemsY write SetItemsY;
+       property GridsZ                          :Integer read GetItemsZ write SetItemsZ;
+       property BricsX                          :Integer read GetBricsX write SetBricsX;
+       property BricsY                          :Integer read GetBricsY write SetBricsY;
+       property BricsZ                          :Integer read GetBricsZ write SetBricsZ;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -150,133 +205,6 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TArray3D
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-procedure TArray3D.MakeArray;
-begin
-     _WholeX := _MarginX + _CountX + _MarginX;
-     _WholeY := _MarginY + _CountY + _MarginY;
-     _WholeZ := _MarginZ + _CountZ + _MarginZ;
-end;
-
-function TArray3D.XYZtoI( const X_,Y_,Z_:Integer ) :Integer;
-begin
-     Result := ( _MarginX + X_ ) + _WholeX * ( ( _MarginY + Y_ ) + _WholeY * ( _MarginZ + Z_ ) );
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-/////////////////////////////////////////////////////////////////////// アクセス
-
-function TArray3D.GetLineSize :Integer;
-begin
-     Result := GetItemSize * _CountX;
-end;
-
-//------------------------------------------------------------------------------
-
-function TArray3D.GetStepX :Integer;
-begin
-     Result := GetItemSize;
-end;
-
-function TArray3D.GetStepY :Integer;
-begin
-     Result := GetStepX * _WholeX;
-end;
-
-function TArray3D.GetStepZ :Integer;
-begin
-     Result := GetStepY * _WholeY;
-end;
-
-//------------------------------------------------------------------------------
-
-procedure TArray3D.SetCountX( const CountX_:Integer );
-begin
-     _CountX := CountX_;  MakeArray;
-end;
-
-procedure TArray3D.SetCountY( const CountY_:Integer );
-begin
-     _CountY := CountY_;  MakeArray;
-end;
-
-procedure TArray3D.SetCountZ( const CountZ_:Integer );
-begin
-     _CountZ := CountZ_;  MakeArray;
-end;
-
-//------------------------------------------------------------------------------
-
-procedure TArray3D.SetMarginX( const MarginX_:Integer );
-begin
-     _MarginX := MarginX_;  MakeArray;
-end;
-
-procedure TArray3D.SetMarginY( const MarginY_:Integer );
-begin
-     _MarginY := MarginY_;  MakeArray;
-end;
-
-procedure TArray3D.SetMarginZ( const MarginZ_:Integer );
-begin
-     _MarginZ := MarginZ_;  MakeArray;
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TArray3D.Create;
-begin
-     Create( 0, 0, 0 );
-end;
-
-constructor TArray3D.Create( const CountX_,CountY_,CountZ_:Integer );
-begin
-     Create( CountX_, CountY_, CountZ_, 0 );
-end;
-
-constructor TArray3D.Create( const CountX_,CountY_,CountZ_,Margin_:Integer );
-begin
-     Create( CountX_, CountY_, CountZ_, Margin_, Margin_, Margin_ );
-end;
-
-constructor TArray3D.Create( const CountX_,CountY_,CountZ_,MarginX_,MarginY_,MarginZ_:Integer );
-begin
-     inherited Create;
-
-     _CountX  := CountX_;
-     _CountY  := CountY_;
-     _CountZ  := CountZ_;
-     _MarginX := MarginX_;
-     _MarginY := MarginY_;
-     _MarginZ := MarginZ_;
-end;
-
-procedure TArray3D.AfterConstruction;
-begin
-     MakeArray;
-end;
-
-destructor TArray3D.Destroy;
-begin
-
-     inherited;
-end;
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-class procedure TArray3D.Swap( var Array0_,Array1_:TArray3D );
-var
-   A :TArray3D;
-begin
-     A := Array0_;  Array0_ := Array1_;  Array1_ := A;
-end;
-
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TArray3D<_TItem_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -285,26 +213,21 @@ end;
 
 procedure TArray3D<_TItem_>.MakeArray;
 begin
-     inherited;
+     _TotalX := _MargsX + _ItemsX + _MargsX;
+     _TotalY := _MargsY + _ItemsY + _MargsY;
+     _TotalZ := _MargsZ + _ItemsZ + _MargsZ;
 
-     SetLength( _Items, _WholeX * _WholeY * _WholeZ );
+     SetLength( _Items, _TotalZ * _TotalY * _TotalX );
+end;
+
+function TArray3D<_TItem_>.XYZtoI( const X_,Y_,Z_:Integer ) :Integer;
+begin
+     Result := ( ( _MargsZ + Z_ ) * _TotalY + ( _MargsY + Y_ ) ) * _TotalX + ( _MargsX + X_ );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
 /////////////////////////////////////////////////////////////////////// アクセス
-
-function TArray3D<_TItem_>.GetLines( const Y_,Z_:Integer ) :PByteArray;
-begin
-     Result := @_Items[ XYZtoI( 0, Y_, Z_ ) ];
-end;
-
-function TArray3D<_TItem_>.GetItemSize :Integer;
-begin
-     Result := SizeOf( _TItem_ );
-end;
-
-//------------------------------------------------------------------------------
 
 function TArray3D<_TItem_>.GetItems( const X_,Y_,Z_:Integer ) :_TItem_;
 begin
@@ -316,7 +239,157 @@ begin
      _Items[ XYZtoI( X_, Y_, Z_ ) ] := Item_;
 end;
 
+function TArray3D<_TItem_>.GetItemP( const X_,Y_,Z_:Integer ) :_PItem_;
+begin
+     Result := @_Items[ XYZtoI( X_, Y_, Z_ ) ];
+end;
+
+//------------------------------------------------------------------------------
+
+function TArray3D<_TItem_>.GetItemsX :Integer;
+begin
+     Result := _ItemsX;
+end;
+
+procedure TArray3D<_TItem_>.SetItemsX( const ItemsX_:Integer );
+begin
+     _ItemsX := ItemsX_;  MakeArray;
+end;
+
+function TArray3D<_TItem_>.GetItemsY :Integer;
+begin
+     Result := _ItemsY;
+end;
+
+procedure TArray3D<_TItem_>.SetItemsY( const ItemsY_:Integer );
+begin
+     _ItemsY := ItemsY_;  MakeArray;
+end;
+
+function TArray3D<_TItem_>.GetItemsZ :Integer;
+begin
+     Result := _ItemsZ;
+end;
+
+procedure TArray3D<_TItem_>.SetItemsZ( const ItemsZ_:Integer );
+begin
+     _ItemsZ := ItemsZ_;  MakeArray;
+end;
+
+//------------------------------------------------------------------------------
+
+function TArray3D<_TItem_>.GetMargsX :Integer;
+begin
+     Result := _MargsX;
+end;
+
+procedure TArray3D<_TItem_>.SetMargsX( const MargsX_:Integer );
+begin
+     _MargsX := MargsX_;  MakeArray;
+end;
+
+function TArray3D<_TItem_>.GetMargsY :Integer;
+begin
+     Result := _MargsY;
+end;
+
+procedure TArray3D<_TItem_>.SetMargsY( const MargsY_:Integer );
+begin
+     _MargsY := MargsY_;  MakeArray;
+end;
+
+function TArray3D<_TItem_>.GetMargsZ :Integer;
+begin
+     Result := _MargsZ;
+end;
+
+procedure TArray3D<_TItem_>.SetMargsZ( const MargsZ_:Integer );
+begin
+     _MargsZ := MargsZ_;  MakeArray;
+end;
+
+//------------------------------------------------------------------------------
+
+function TArray3D<_TItem_>.GetLines( const Y_,Z_:Integer ) :PByteArray;
+begin
+     Result := @_Items[ XYZtoI( 0, Y_, Z_ ) ];
+end;
+
+function TArray3D<_TItem_>.GetItemSize :Integer;
+begin
+     Result := SizeOf( _TItem_ );
+end;
+
+function TArray3D<_TItem_>.GetLineSize :Integer;
+begin
+     Result := GetItemSize * _ItemsX;
+end;
+
+//------------------------------------------------------------------------------
+
+function TArray3D<_TItem_>.GetStepX :Integer;
+begin
+     Result := GetItemSize;
+end;
+
+function TArray3D<_TItem_>.GetStepY :Integer;
+begin
+     Result := GetStepX * _TotalX;
+end;
+
+function TArray3D<_TItem_>.GetStepZ :Integer;
+begin
+     Result := GetStepY * _TotalY;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TArray3D<_TItem_>.Create;
+begin
+     Create( 0, 0, 0 );
+end;
+
+constructor TArray3D<_TItem_>.Create( const ItemsX_,ItemsY_,ItemsZ_:Integer );
+begin
+     Create( ItemsX_, ItemsY_, ItemsZ_, 0 );
+end;
+
+constructor TArray3D<_TItem_>.Create( const ItemsX_,ItemsY_,ItemsZ_,Margs_:Integer );
+begin
+     Create( ItemsX_, ItemsY_, ItemsZ_, Margs_, Margs_, Margs_ );
+end;
+
+constructor TArray3D<_TItem_>.Create( const ItemsX_,ItemsY_,ItemsZ_,MargsX_,MargsY_,MargsZ_:Integer );
+begin
+     inherited Create;
+
+     _ItemsX := ItemsX_;
+     _ItemsY := ItemsY_;
+     _ItemsZ := ItemsZ_;
+     _MargsX := MargsX_;
+     _MargsY := MargsY_;
+     _MargsZ := MargsZ_;
+end;
+
+procedure TArray3D<_TItem_>.AfterConstruction;
+begin
+     MakeArray;
+end;
+
+destructor TArray3D<_TItem_>.Destroy;
+begin
+
+     inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+class procedure TArray3D<_TItem_>.Swap( var Array0_,Array1_:TArray3D<_TItem_> );
+var
+   A :TArray3D<_TItem_>;
+begin
+     A := Array0_;  Array0_ := Array1_;  Array1_ := A;
+end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TBricArray3D<_TItem_>
 
@@ -368,58 +441,41 @@ end;
 
 function TGridArray3D<_TItem_>.GetBricsX :Integer;
 begin
-     Result := _CountX - 1;
+     Result := _ItemsX - 1;
 end;
 
-procedure TGridArray3D<_TItem_>.SetBricsX( const DivX_:Integer );
+procedure TGridArray3D<_TItem_>.SetBricsX( const BricsX_:Integer );
 begin
-     _CountX  := DivX_ + 1;  MakeArray;
+     _ItemsX  := BricsX_ + 1;  MakeArray;
 end;
 
 function TGridArray3D<_TItem_>.GetBricsY :Integer;
 begin
-     Result := _CountY - 1;
+     Result := _ItemsY - 1;
 end;
 
-procedure TGridArray3D<_TItem_>.SetBricsY( const DivY_:Integer );
+procedure TGridArray3D<_TItem_>.SetBricsY( const BricsY_:Integer );
 begin
-     _CountY  := DivY_ + 1;  MakeArray;
+     _ItemsY  := BricsY_ + 1;  MakeArray;
 end;
 
 function TGridArray3D<_TItem_>.GetBricsZ :Integer;
 begin
-     Result := _CountZ - 1;
+     Result := _ItemsZ - 1;
 end;
 
-procedure TGridArray3D<_TItem_>.SetBricsZ( const DivZ_:Integer );
+procedure TGridArray3D<_TItem_>.SetBricsZ( const BricsZ_:Integer );
 begin
-     _CountZ  := DivZ_ + 1;  MakeArray;
+     _ItemsZ  := BricsZ_ + 1;  MakeArray;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGridArray3D<_TItem_>.Create;
+constructor TGridArray3D<_TItem_>.Create( const BricsX_,BricsY_,BricsZ_,MargsX_,MargsY_,MargsZ_:Integer );
 begin
-     Create( 0, 0, 0 );
-end;
+     inherited Create( BricsX_+1, BricsY_+1, BricsZ_+1,
+                       MargsX_  , MargsY_  , MargsZ_   );
 
-constructor TGridArray3D<_TItem_>.Create( const DivX_,DivY_,DivZ_:Integer );
-begin
-     Create( DivX_, DivY_, DivZ_, 0 );
-end;
-
-constructor TGridArray3D<_TItem_>.Create( const DivX_,DivY_,DivZ_,Margin_:Integer );
-begin
-     Create( DivX_, DivY_, DivZ_, Margin_, Margin_, Margin_ );
-end;
-
-constructor TGridArray3D<_TItem_>.Create( const DivX_,DivY_,DivZ_,MarginX_,MarginY_,MarginZ_:Integer );
-begin
-     inherited;
-
-     _CountX  := DivX_ + 1;
-     _CountY  := DivY_ + 1;
-     _CountZ  := DivZ_ + 1;
 end;
 
 destructor TGridArray3D<_TItem_>.Destroy;
