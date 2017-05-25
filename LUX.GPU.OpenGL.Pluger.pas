@@ -11,72 +11,64 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVerPlug
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVertPlug
 
-     TGLVerPlug = record
+     TGLVertPlug = record
      private
      public
-       BuffV :IGLBufferV;
+       Buff :IGLBufferV;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLUniPlug
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLUnifPlug
 
-     TGLUniPlug = record
+     TGLUnifPlug = record
      private
      public
-       BuffU :IGLBufferU;
-       Start :Integer;
-       Count :Integer;
+       Buff :IGLBufferU;
+       Offs :Integer;
+       Size :Integer;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexPlug
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLImagPlug
 
-     TGLTexPlug = record
+     TGLImagPlug = record
      private
      public
-       Sample :IGLSample;
-       Imager :IGLImager;
+       Samp :IGLSample;
+       Imag :IGLImager;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVerPlugs
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPlugs<_TPlug_>
 
-     TGLVerPlugs = class( TDictionary<GLuint,TGLVerPlug> )
+     TGLPlugs<_TPlug_:record> = class( TDictionary<GLuint,_TPlug_> )
      private
      protected
      public
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLUniPlugs
-
-     TGLUniPlugs = class( TDictionary<GLuint,TGLUniPlug> )
-     private
-     protected
-     public
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexPlugs
-
-     TGLTexPlugs = class( TDictionary<GLuint,TGLTexPlug> )
-     private
-     protected
-     public
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPluger
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPluger<_TPorts_>
 
      IGLPluger = interface( IGLObject )
-     ['{0120D979-2D88-4231-AB53-2B1B6F27C61D}']
+     ['{94CC0F36-95D2-41BE-8B64-0FD5FF78F18C}']
        ///// メソッド
        procedure Use;
        procedure Unuse;
      end;
 
-     TGLPluger = class( TGLObject, IGLPluger )
+     //-------------------------------------------------------------------------
+
+     TGLPluger<_TPlug_:record> = class( TGLObject, IGLPluger )
      private
      protected
+       _Plugs :TGLPlugs<_TPlug_>;
      public
+       constructor Create;
+       destructor Destroy; override;
+       ///// プロパティ
+       property Plugs :TGLPlugs<_TPlug_> read _Plugs;
+       ///// メソッド
        procedure Use; virtual; abstract;
        procedure Unuse; virtual; abstract;
      end;
@@ -84,22 +76,19 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPlugerV
 
      IGLPlugerV = interface( IGLPluger )
-     ['{27306665-D8A0-4295-8C7A-1047BC00A9DE}']
+     ['{45DC202F-2E99-4BC6-AEAD-784FE81271D2}']
        ///// メソッド
-       procedure Add( const BindP_:GLuint; const BuffV_:IGLBufferV );
+       procedure Add( const BinP_:GLuint; const Buff_:IGLBufferV );
      end;
 
-     TGLPlugerV = class( TGLPluger, IGLPlugerV )
+     //-------------------------------------------------------------------------
+
+     TGLPlugerV = class( TGLPluger<TGLVertPlug>, IGLPlugerV )
      private
      protected
-       _Plugs :TGLVerPlugs;
      public
-       constructor Create;
-       destructor Destroy; override;
-       ///// プロパティ
-       property Plugs :TGLVerPlugs read _Plugs;
        ///// メソッド
-       procedure Add( const BindP_:GLuint; const BuffV_:IGLBufferV );
+       procedure Add( const BinP_:GLuint; const Buff_:IGLBufferV );
        procedure Use; override;
        procedure Unuse; override;
      end;
@@ -107,51 +96,45 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPlugerU
 
      IGLPlugerU = interface( IGLPluger )
-     ['{03EDB394-C255-42BC-8E48-D3DB76DAB3C9}']
+     ['{39DBA43A-6F44-4456-A96D-1A8A73459F61}']
        ///// メソッド
-       procedure Add( const BindP_:GLuint;
-                      const BuffU_:IGLBufferU;
-                      const Start_:Integer = -1;
-                      const Count_:Integer = 1 );
+       procedure Add( const BinP_:GLuint; const Buff_:IGLBufferU;
+                                          const Offs_:Integer = -1;
+                                          const Size_:Integer = 1 );
      end;
 
-     TGLPlugerU = class( TGLPluger, IGLPlugerU )
+     //-------------------------------------------------------------------------
+
+     TGLPlugerU = class( TGLPluger<TGLUnifPlug>, IGLPlugerU )
      private
      protected
-       _Plugs :TGLUniPlugs;
      public
-       constructor Create;
-       destructor Destroy; override;
-       ///// プロパティ
-       property Plugs :TGLUniPlugs read _Plugs;
        ///// メソッド
-       procedure Add( const BindP_:GLuint;
-                      const BuffU_:IGLBufferU;
-                      const Start_:Integer = -1;
-                      const Count_:Integer = 1 );
+       procedure Add( const BinP_:GLuint; const Buff_:IGLBufferU;
+                                          const Offs_:Integer = -1;
+                                          const Size_:Integer = 1 );
        procedure Use; override;
        procedure Unuse; override;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPlugerT
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPlugerI
 
-     IGLPlugerT = interface( IGLPluger )
-     ['{03EDB394-C255-42BC-8E48-D3DB76DAB3C9}']
+     IGLPlugerI = interface( IGLPluger )
+     ['{A2CC92D0-EE47-4D1C-B868-850353966C6D}']
        ///// メソッド
-       procedure Add( const BindP_:GLuint; const Sample_:IGLSample; const Image_:IGLImager );
+       procedure Add( const BinP_:GLuint; const Samp_:IGLSample;
+                                          const Imag_:IGLImager );
      end;
 
-     TGLPlugerT = class( TGLPluger, IGLPlugerT )
+     //-------------------------------------------------------------------------
+
+     TGLPlugerI = class( TGLPluger<TGLImagPlug>, IGLPlugerI )
      private
      protected
-       _Plugs :TGLTexPlugs;
      public
-       constructor Create;
-       destructor Destroy; override;
-       ///// プロパティ
-       property Plugs :TGLTexPlugs read _Plugs;
        ///// メソッド
-       procedure Add( const BindP_:GLuint; const Sample_:IGLSample; const Image_:IGLImager );
+       procedure Add( const BinP_:GLuint; const Samp_:IGLSample;
+                                          const Imag_:IGLImager );
        procedure Use; override;
        procedure Unuse; override;
      end;
@@ -166,19 +149,19 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVerPlug
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVertPlug
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLUniPlug
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLUnifPlug
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexPlug
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLImagPlug
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -186,7 +169,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVerPlugs
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPlugs<_TPlug_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -194,7 +177,7 @@ implementation //###############################################################
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLUniPlugs
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPluger<_TPorts_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -202,13 +185,19 @@ implementation //###############################################################
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexPlugs
+constructor TGLPluger<_TPlug_>.Create;
+begin
+     inherited;
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+     _Plugs := TGLPlugs<_TPlug_>.Create;
+end;
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+destructor TGLPluger<_TPlug_>.Destroy;
+begin
+     _Plugs.DisposeOf;
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+     inherited;
+end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPlugerV
 
@@ -218,53 +207,39 @@ implementation //###############################################################
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLPlugerV.Create;
-begin
-     inherited;
-
-     _Plugs := TGLVerPlugs.Create;
-end;
-
-destructor TGLPlugerV.Destroy;
-begin
-     _Plugs.DisposeOf;
-
-     inherited;
-end;
-
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLPlugerV.Add( const BindP_:GLuint; const BuffV_:IGLBufferV );
+procedure TGLPlugerV.Add( const BinP_:GLuint; const Buff_:IGLBufferV );
 var
-   B :TGLVerPlug;
+   P :TGLVertPlug;
 begin
-     with B do
+     with P do
      begin
-          BuffV := BuffV_;
+          Buff := Buff_;
      end;
 
-     _Plugs.AddOrSetValue( BindP_, B );
+     _Plugs.AddOrSetValue( BinP_, P );
 end;
 
 //------------------------------------------------------------------------------
 
 procedure TGLPlugerV.Use;
 var
-   P :TPair<GLuint,TGLVerPlug>;
+   P :TPair<GLuint,TGLVertPlug>;
 begin
      for P in _Plugs do
      begin
-          with P do Value.BuffV.Use( Key );
+          with P do Value.Buff.Use( Key );
      end;
 end;
 
 procedure TGLPlugerV.Unuse;
 var
-   P :TPair<GLuint,TGLVerPlug>;
+   P :TPair<GLuint,TGLVertPlug>;
 begin
      for P in _Plugs do
      begin
-          with P do Value.BuffV.Unuse( Key );
+          with P do Value.Buff.Unuse( Key );
      end;
 end;
 
@@ -276,66 +251,52 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLPlugerU.Create;
-begin
-     inherited;
-
-     _Plugs := TGLUniPlugs.Create;
-end;
-
-destructor TGLPlugerU.Destroy;
-begin
-     _Plugs.DisposeOf;
-
-     inherited;
-end;
-
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLPlugerU.Add( const BindP_:GLuint;
-                          const BuffU_:IGLBufferU;
-                          const Start_:Integer = -1;
-                          const Count_:Integer = 1 );
+procedure TGLPlugerU.Add( const BinP_:GLuint;
+                          const Buff_:IGLBufferU;
+                          const Offs_:Integer = -1;
+                          const Size_:Integer = 1 );
 var
-   B :TGLUniPlug;
+   P :TGLUnifPlug;
 begin
-     with B do
+     with P do
      begin
-          BuffU := BuffU_;
-          Start := Start_;
-          Count := Count_;
+          Buff := Buff_;
+          Offs := Offs_;
+          Size := Size_;
      end;
 
-     _Plugs.AddOrSetValue( BindP_, B );
+     _Plugs.AddOrSetValue( BinP_, P );
 end;
 
 //------------------------------------------------------------------------------
 
 procedure TGLPlugerU.Use;
 var
-   P :TPair<GLuint,TGLUniPlug>;
+   P :TPair<GLuint,TGLUnifPlug>;
 begin
      for P in _Plugs do
      begin
           with P, Value do
           begin
-               if Start = -1 then BuffU.Use( Key )
-                             else BuffU.Use( Key, Start, Count );
+               if Offs = -1 then Buff.Use( Key             )
+                            else Buff.Use( Key, Offs, Size );
           end;
      end;
 end;
 
 procedure TGLPlugerU.Unuse;
 var
-   P :TPair<GLuint,TGLUniPlug>;
+   P :TPair<GLuint,TGLUnifPlug>;
 begin
      for P in _Plugs do
      begin
-          with P do Value.BuffU.Unuse( Key );
+          with P do Value.Buff.Unuse( Key );
      end;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPlugerT
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPlugerI
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -343,40 +304,26 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLPlugerT.Create;
-begin
-     inherited;
-
-     _Plugs := TGLTexPlugs.Create;
-end;
-
-destructor TGLPlugerT.Destroy;
-begin
-     _Plugs.DisposeOf;
-
-     inherited;
-end;
-
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLPlugerT.Add( const BindP_:GLuint; const Sample_:IGLSample; const Image_:IGLImager );
+procedure TGLPlugerI.Add( const BinP_:GLuint; const Samp_:IGLSample; const Imag_:IGLImager );
 var
-   B :TGLTexPlug;
+   P :TGLImagPlug;
 begin
-     with B do
+     with P do
      begin
-          Sample := Sample_;
-          Imager := Image_;
+          Samp := Samp_;
+          Imag := Imag_;
      end;
 
-     _Plugs.AddOrSetValue( BindP_, B );
+     _Plugs.AddOrSetValue( BinP_, P );
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLPlugerT.Use;
+procedure TGLPlugerI.Use;
 var
-   P :TPair<GLuint,TGLTexPlug>;
+   P :TPair<GLuint,TGLImagPlug>;
 begin
      for P in _Plugs do
      begin
@@ -384,16 +331,16 @@ begin
           begin
                with Value do
                begin
-                    Sample.Use( Key );
-                    Imager.Use( Key );
+                    Samp.Use( Key );
+                    Imag.Use( Key );
                end;
           end;
      end;
 end;
 
-procedure TGLPlugerT.Unuse;
+procedure TGLPlugerI.Unuse;
 var
-   P :TPair<GLuint,TGLTexPlug>;
+   P :TPair<GLuint,TGLImagPlug>;
 begin
      for P in _Plugs do
      begin
@@ -401,8 +348,8 @@ begin
           begin
                with Value do
                begin
-                    Sample.Unuse( Key );
-                    Imager.Unuse( Key );
+                    Samp.Unuse( Key );
+                    Imag.Unuse( Key );
                end;
           end;
      end;
