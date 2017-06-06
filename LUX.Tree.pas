@@ -113,6 +113,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetChilds( const I_:Integer ) :ITreeNode;
        procedure SetChilds( const I_:Integer; const Child_:ITreeNode );
        function GetChildsN :Integer;
+       function GetRootNode :TTreeNode;
        ///// プロパティ
        property Zero      :TTreeNode read GetZero      write SetZero;
        property IsOrdered :Boolean   read GetIsOrdered              ;
@@ -137,6 +138,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Tail                       :ITreeNode read GetTail                   ;
        property Childs[ const I_:Integer ] :ITreeNode read GetChilds  write SetChilds; default;
        property ChildsN                    :Integer   read GetChildsN                ;
+       property RootNode                   :TTreeNode read GetRootNode               ;
        ///// メソッド
        procedure Remove;
        class procedure RemoveChild( const Child_:TTreeNode );
@@ -380,6 +382,13 @@ end;
 function TTreeNode.GetChildsN :Integer;
 begin
      Result := _ChildsN;
+end;
+
+function TTreeNode.GetRootNode :TTreeNode;
+begin
+     Result := Self;
+
+     while Assigned( Result.Paren ) do Result := Result.Paren as TTreeNode;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
