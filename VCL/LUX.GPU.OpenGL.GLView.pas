@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Winapi.OpenGL,
-  LUX, LUX.GPU.OpenGL;
+  LUX, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Geometry;
 
 type
   TGLView = class(TFrame)
@@ -16,7 +16,8 @@ type
     procedure WMPaint( var Message_:TWMPaint ); message WM_PAINT;
     procedure WMEraseBkgnd( var Message_:TWmEraseBkgnd ); message WM_ERASEBKGND;
   protected
-    _DC :HDC;
+    _DC     :HDC;
+    _Camera :TGLCamera;
     ///// イベント
     _OnPaint :TProc;
     ///// メソッド
@@ -30,7 +31,8 @@ type
     constructor Create( AOwner_:TComponent ); override;
     destructor Destroy; override;
     ///// プロパティ
-    property DC :HDC read _DC;
+    property DC     :HDC       read _DC                  ;
+    property Camera :TGLCamera read _Camera write _Camera;
     ///// イベント
     property OnPaint :TProc read _OnPaint write _OnPaint;
     ///// メソッド
@@ -61,6 +63,8 @@ begin
      BeginRender;
 
        glViewport( 0, 0, ClientWidth, ClientHeight );
+
+       if Assigned( _Camera ) then _Camera.Render;
 
        _OnPaint;
 
