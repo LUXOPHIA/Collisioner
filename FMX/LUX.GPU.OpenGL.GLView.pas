@@ -66,6 +66,8 @@ implementation //###############################################################
 
 procedure TGLView._OnMouseDown( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single );
 begin
+     _Form.MouseCapture;
+
      MouseDown( Button_, Shift_, X_, Y_ );
 end;
 
@@ -77,6 +79,8 @@ end;
 procedure TGLView._OnMouseUp( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single );
 begin
      MouseUp( Button_, Shift_, X_, Y_ );
+
+     _Form.ReleaseCapture;
 end;
 
 procedure TGLView._OnMouseWheel( Sender_:TObject; Shift_:TShiftState; WheelDelta_:Integer; var Handled_:Boolean );
@@ -195,6 +199,8 @@ end;
 constructor TGLView.Create( AOwner_:TComponent );
 begin
      inherited;
+
+     HitTest := False;
 
      _OnPaint := procedure begin end;
 
