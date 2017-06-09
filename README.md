@@ -1,7 +1,7 @@
 # LUX.GPU.OpenGL
 [Delphi](https://www.embarcadero.com/jp/products/delphi) で [OpenGL](https://www.wikiwand.com/ja/OpenGL) を扱うためのライブラリ。
 
-![](https://github.com/LUXOPHIA/OpenGL/raw/master/--------/_SCREENSHOT/OpenGL-View.png)
+![](https://github.com/LUXOPHIA/OpenGL/raw/master/--------/_SCREENSHOT/OpenGL.png)
 
 `TGLView` コンポーネントをフレーム機能を用いて貼ることで、OpenGL の描画領域を GUIパーツ として扱うことができます。OpenGL 実行環境を整えるための `LUX.GPU.OpenGL.FMX|VCL` ユニットと合わせて、[FMX](https://www.wikiwand.com/en/FireMonkey) と [VCL](https://www.wikiwand.com/ja/Visual_Component_Library) 向けにぞれぞれ用意されていますが、その他のユニットは両フレームワーク共に共通です。
 
