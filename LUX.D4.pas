@@ -9,6 +9,30 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TByte4D
+
+     TByte4D = record
+     private
+       ///// アクセス
+       function GetV( const I_:Integer ) :Byte; inline;
+       procedure SetV( const I_:Integer; const V_:Byte ); inline;
+     public
+       constructor Create( const V_:Byte ); overload;
+       constructor Create( const X_,Y_,Z_,W_:Byte ); overload;
+       ///// プロパティ
+       property _s[ const I_:Integer ] :Byte read GetV write SetV; default;
+     case Byte of
+      0:( _ :array [ 1..4 ] of Byte; );
+      1:(  X :Byte;
+           Y :Byte;
+           Z :Byte;
+           W :Byte;                  );
+      2:( _1 :Byte;
+          _2 :Byte;
+          _3 :Byte;
+          _4 :Byte;                  );
+     end;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingle4D
 
      TSingle4D = record
@@ -292,6 +316,40 @@ implementation //###############################################################
 uses System.SysUtils, System.Math;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TByte4D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TByte4D.GetV( const I_:Integer ) :Byte;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TByte4D.SetV( const I_:Integer; const V_:Byte );
+begin
+     _[ I_ ] := V_;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TByte4D.Create( const V_:Byte );
+begin
+     X := V_;
+     Y := V_;
+     Z := V_;
+     W := V_;
+end;
+
+constructor TByte4D.Create( const X_,Y_,Z_,W_:Byte );
+begin
+     X := X_;
+     Y := Y_;
+     Z := Z_;
+     W := W_;
+end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingle4D
 
