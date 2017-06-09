@@ -9,6 +9,26 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TByte2D
+
+     TByte2D = record
+     private
+       ///// アクセス
+       function GetV( const I_:Integer ) :Byte; inline;
+       procedure SetV( const I_:Integer; const V_:Byte ); inline;
+     public
+       constructor Create( const V_:Byte ); overload;
+       constructor Create( const X_,Y_:Byte ); overload;
+       ///// プロパティ
+       property _s[ const I_:Integer ] :Byte read GetV write SetV; default;
+     case Byte of
+      0:( _ :array [ 1..2 ] of Byte; );
+      1:(  X :Byte;
+           Y :Byte;                  );
+      2:( _1 :Byte;
+          _2 :Byte;                  );
+     end;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TInteger2D
 
      TInteger2D = record
@@ -579,6 +599,36 @@ implementation //###############################################################
 uses System.SysUtils, System.Math;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TByte2D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TByte2D.GetV( const I_:Integer ) :Byte;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TByte2D.SetV( const I_:Integer; const V_:Byte );
+begin
+     _[ I_ ] := V_;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TByte2D.Create( const V_:Byte );
+begin
+     X := V_;
+     Y := V_;
+end;
+
+constructor TByte2D.Create( const X_,Y_:Byte );
+begin
+     X := X_;
+     Y := Y_;
+end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TInteger2D
 
