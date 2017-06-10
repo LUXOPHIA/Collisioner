@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses Winapi.OpenGL, Winapi.OpenGLext,
-     LUX;
+     LUX, LUX.GPU.OpenGL;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -11,38 +11,79 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferData<TValue>
 
-     TGLBufferData<TValue:record> = record
-     public
-       type PValue = ^TValue;
+     TGLBufferData<TItem:record> = record
+     private type
+       PItem = ^TItem;
      private
-       _Head :PValue;
+       Start :Pointer;
+       Strid :GLint;
        ///// アクセス
-       function GetValue( const I_:Integer ) :TValue;
-       procedure SetValue( const I_:Integer; const Value_:TValue );
+       function GetItemP( const I_:Integer ) :PItem;
+       function GetItems( const I_:Integer ) :TItem;
+       procedure SetItems( const I_:Integer; const Item_:TItem );
      public
+       constructor Create( const Start_:Pointer; const Strid_:GLint );
        ///// プロパティ
-       property Values[ const I_:Integer ] :TValue read GetValue write SetValue;
+       property ItemP[ const I_:Integer ] :PItem read GetItemP               ;
+       property Items[ const I_:Integer ] :TItem read GetItems write SetItems;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBuffer<_TYPE_>
 
-     TGLBuffer<_TYPE_:record> = class
+     IGLBuffer = interface( IGLObject )
+     ['{196C0785-DF74-480C-B1DB-76E689F19E32}']
+       ///// アクセス
+       function GetKind :GLenum;
+       function GetAlign :GLint;
+       function GetStrid :GLint;
+       function GetUsage :GLenum;
+       function GetCount :Integer;
+       procedure SetCount( const Count_:Integer );
+       ///// プロパティ
+       property Kind  :GLenum  read GetKind                ;
+       property Align :GLint   read GetAlign               ;
+       property Strid :GLint   read GetStrid               ;
+       property ID    :GLuint  read GetID                  ;
+       property Usage :GLenum  read GetUsage               ;
+       property Count :Integer read GetCount write SetCount;
+       ///// メソッド
+       procedure Bind;
+       procedure Unbind;
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLBuffer<_TYPE_:record> = class( TGLObject, IGLBuffer )
      private
      protected
-       _ID    :GLuint;
-       _Kind  :GLenum;
+       _Align :GLint;
+       _Strid :GLint;
        _Usage :GLenum;
        _Count :Integer;
        ///// アクセス
+       function GetKind :GLenum; virtual; abstract;
+       function GetAlign :GLint;
+       function GetStrid :GLint;
+       function GetUsage :GLenum;
+       function GetCount :Integer;
        procedure SetCount( const Count_:Integer );
+       function GetItems( const I_:Integer ) :_TYPE_;
+       procedure SetItems( const I_:Integer; const Item_:_TYPE_ );
+       ///// メソッド
+       function InitAlign :GLint; virtual;
+       function InitStrid :GLint;
      public
-       constructor Create( const Kind_:GLenum; const Usage_:GLenum = GL_STATIC_DRAW );
+       constructor Create( const Usage_:GLenum );
        destructor Destroy; override;
        ///// プロパティ
-       property ID    :GLuint  read _ID;
-       property Count :Integer read _Count write SetCount;
+       property Kind                      :GLenum  read GetKind                ;
+       property Align                     :GLint   read GetAlign               ;
+       property Strid                     :GLint   read GetStrid               ;
+       property Usage                     :GLenum  read GetUsage               ;
+       property Count                     :Integer read GetCount write SetCount;
+       property Items[ const I_:Integer ] :_TYPE_  read GetItems write SetItems;
        ///// メソッド
        procedure Bind;
        procedure Unbind;
@@ -51,40 +92,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Import( const Array_:array of _TYPE_ );
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferV<_TYPE_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVarray
 
-     TGLBufferV<_TYPE_:record> = class( TGLBuffer<_TYPE_> )
+     TGLVarray = class( TGLObject )
      private
      protected
      public
        constructor Create;
        destructor Destroy; override;
-       ///// プロパティ
        ///// メソッド
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferI<_TYPE_>
-
-     TGLBufferI<_TYPE_:record> = class( TGLBuffer<_TYPE_> )
-     private
-     protected
-     public
-       constructor Create;
-       destructor Destroy; override;
-       ///// プロパティ
-       ///// メソッド
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferU<_TYPE_>
-
-     TGLBufferU<_TYPE_:record> = class( TGLBuffer<_TYPE_> )
-     private
-     protected
-     public
-       constructor Create;
-       destructor Destroy; override;
-       ///// プロパティ
-       ///// メソッド
+       procedure Bind;
+       procedure Unbind;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -101,21 +119,34 @@ implementation //###############################################################
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
-function TGLBufferData<TValue>.GetValue( const I_:Integer ) :TValue;
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLBufferData<TItem>.GetItemP( const I_:Integer ) :PItem;
 var
-   P :PValue;
+   P :PByte;
 begin
-     P := _Head;  Inc( P, I_ );   Result := P^;
+     P := Start;  Inc( P, Strid * I_ );  Result := PItem( P );
 end;
 
-procedure TGLBufferData<TValue>.SetValue( const I_:Integer; const Value_:TValue );
-var
-   P :PValue;
+//------------------------------------------------------------------------------
+
+function TGLBufferData<TItem>.GetItems( const I_:Integer ) :TItem;
 begin
-     P := _Head;  Inc( P, I_ );   P^ := Value_;
+     Result := GetItemP( I_ )^;
+end;
+
+procedure TGLBufferData<TItem>.SetItems( const I_:Integer; const Item_:TItem );
+begin
+     GetItemP( I_ )^ := Item_;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLBufferData<TItem>.Create( const Start_:Pointer; const Strid_:GLint );
+begin
+     Start := Start_;
+     Strid := Strid_;
+end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
@@ -125,26 +156,82 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLBuffer<_TYPE_>.GetAlign :GLint;
+begin
+     Result := _Align;
+end;
+
+function TGLBuffer<_TYPE_>.GetStrid :GLint;
+begin
+     Result := _Strid;
+end;
+
+function TGLBuffer<_TYPE_>.GetUsage :GLenum;
+begin
+     Result := _Usage;
+end;
+
+function TGLBuffer<_TYPE_>.GetCount :Integer;
+begin
+     Result := _Count;
+end;
+
 procedure TGLBuffer<_TYPE_>.SetCount( const Count_:Integer );
 begin
      _Count := Count_;
 
      Bind;
 
-       glBufferData( _Kind, SizeOf( _TYPE_ ) * _Count, nil, _Usage );
+       glBufferData( GetKind, _Strid * _Count, nil, _Usage );
 
      Unbind;
 end;
 
+function TGLBuffer<_TYPE_>.GetItems( const I_:Integer ) :_TYPE_;
+begin
+     with Map( GL_READ_ONLY ) do Result := GetItems( I_ );
+
+     Unmap;
+end;
+
+procedure TGLBuffer<_TYPE_>.SetItems( const I_:Integer; const Item_:_TYPE_ );
+begin
+     with Map( GL_WRITE_ONLY ) do SetItems( I_, Item_ );
+
+     Unmap;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TGLBuffer<_TYPE_>.InitAlign :GLint;
+begin
+     Result := 1;
+end;
+
+function TGLBuffer<_TYPE_>.InitStrid :GLint;
+var
+   M :Integer;
+begin
+     Result := SizeOf( _TYPE_ );
+
+     M := Result mod _Align;
+
+     if M > 0 then Inc( Result, _Align - M );
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLBuffer<_TYPE_>.Create( const Kind_:GLenum; const Usage_:GLenum = GL_STATIC_DRAW );
+constructor TGLBuffer<_TYPE_>.Create( const Usage_:GLenum );
 begin
      inherited Create;
 
+     _Align := InitAlign;
+     _Strid := InitStrid;
+
      glGenBuffers( 1, @_ID );
 
-     _Kind  := Kind_;
      _Usage := Usage_;
       Count := 0;
 end;
@@ -160,12 +247,12 @@ end;
 
 procedure TGLBuffer<_TYPE_>.Bind;
 begin
-     glBindBuffer( _Kind, _ID );
+     glBindBuffer( GetKind, _ID );
 end;
 
 procedure TGLBuffer<_TYPE_>.Unbind;
 begin
-     glBindBuffer( _Kind, 0 );
+     glBindBuffer( GetKind, 0 );
 end;
 
 //------------------------------------------------------------------------------
@@ -174,7 +261,11 @@ function TGLBuffer<_TYPE_>.Map( const Access_:GLenum = GL_READ_WRITE ) :TGLBuffe
 begin
      Bind;
 
-       Result._Head := glMapBuffer( _Kind, Access_ );
+       with Result do
+       begin
+            Start := glMapBuffer( GetKind, Access_ );
+            Strid := _Strid;
+       end;
 
      Unbind;
 end;
@@ -183,7 +274,7 @@ procedure TGLBuffer<_TYPE_>.Unmap;
 begin
      Bind;
 
-       glUnmapBuffer( _Kind );
+       glUnmapBuffer( GetKind );
 
      Unbind;
 end;
@@ -196,12 +287,12 @@ begin
 
      Bind;
 
-       glBufferData( _Kind, SizeOf( Array_ ), @Array_[ 0 ], _Usage );
+       glBufferData( GetKind, SizeOf( Array_ ), @Array_[ 0 ], _Usage );
 
      Unbind;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferV<_TYPE_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVarray
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -209,56 +300,30 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLBufferV<_TYPE_>.Create;
+constructor TGLVarray.Create;
 begin
-     inherited Create( GL_ARRAY_BUFFER );
+     inherited;
 
+     glGenVertexArrays( 1, @_ID );
 end;
 
-destructor TGLBufferV<_TYPE_>.Destroy;
+destructor TGLVarray.Destroy;
 begin
+     glDeleteVertexArrays( 1, @_ID );
 
      inherited;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferI<_TYPE_>
+/////////////////////////////////////////////////////////////////////// メソッド
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TGLBufferI<_TYPE_>.Create;
+procedure TGLVarray.Bind;
 begin
-     inherited Create( GL_ELEMENT_ARRAY_BUFFER );
-
+     glBindVertexArray( _ID );
 end;
 
-destructor TGLBufferI<_TYPE_>.Destroy;
+procedure TGLVarray.Unbind;
 begin
-
-     inherited;
-end;
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferU<_TYPE_>
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TGLBufferU<_TYPE_>.Create;
-begin
-     inherited Create( GL_UNIFORM_BUFFER );
-
-end;
-
-destructor TGLBufferU<_TYPE_>.Destroy;
-begin
-
-     inherited;
+     glBindVertexArray( 0 );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
