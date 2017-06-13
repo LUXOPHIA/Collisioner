@@ -20,7 +20,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaper
 
-     TGLShaper = class( TGLNode )
+     TGLShaper = class( TGLNode, IGLShaper )
      private
      protected
        _PosBuf :TGLBufferVS<TSingle3D>;
@@ -78,10 +78,12 @@ end;
 
 destructor TGLShaper.Destroy;
 begin
-     _PosBuf.Free;
-     _NorBuf.Free;
-     _TexBuf.Free;
-     _EleBuf.Free;
+     if Assigned( _Matery ) then _Matery.DisposeOf;
+
+     _PosBuf.DisposeOf;
+     _NorBuf.DisposeOf;
+     _TexBuf.DisposeOf;
+     _EleBuf.DisposeOf;
 
      inherited;
 end;
@@ -90,7 +92,7 @@ end;
 
 procedure TGLShaper.Draw;
 begin
-     Scener.GeometUs.Use( 1{BinP}, Order{Offs} );
+     Scener.ShaperUs.Use( 1{BinP}, NodI{Offs} );
 
      _Matery.Use;
 
@@ -106,7 +108,7 @@ begin
 
      _Matery.Unuse;
 
-     Scener.GeometUs.Unuse( 1{BinP} );
+     Scener.ShaperUs.Unuse( 1{BinP} );
 end;
 
 //------------------------------------------------------------------------------
