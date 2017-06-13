@@ -2,7 +2,8 @@
 
 interface //#################################################################### ■
 
-uses Winapi.OpenGL, Winapi.OpenGLext,
+uses System.SysUtils,
+     Winapi.OpenGL, Winapi.OpenGLext,
      LUX,
      LUX.GPU.OpenGL,
      LUX.GPU.OpenGL.Shader,
@@ -14,7 +15,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMaterial
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMatery
 
      TGLMatery = class
      private
@@ -22,13 +23,20 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _ShaderV :TGLShaderV;
        _ShaderF :TGLShaderF;
        _Engine  :TGLEngine;
+       ///// イベント
+       _OnBuilded :TProc;
+       ///// アクセス
+       function GetOnBuilded :TProc;
+       procedure SetOnBuilded( const OnBuilded_:TProc );
      public
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property ShaderV :TGLShaderV       read _ShaderV;
-       property ShaderF :TGLShaderF       read _ShaderF;
-       property Engine  :TGLEngine        read _Engine ;
+       property ShaderV :TGLShaderV read _ShaderV;
+       property ShaderF :TGLShaderF read _ShaderF;
+       property Engine  :TGLEngine  read _Engine ;
+       ///// プロパティ
+       property OnBuilded :TProc read GetOnBuilded write SetOnBuilded;
        ///// メソッド
        procedure Use; virtual;
        procedure Unuse; virtual;
@@ -46,17 +54,31 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMaterial
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMatery
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLMatery.GetOnBuilded :TProc;
+begin
+     Result := _OnBuilded;
+end;
+
+procedure TGLMatery.SetOnBuilded( const OnBuilded_:TProc );
+begin
+     _OnBuilded := OnBuilded_;
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TGLMatery.Create;
 begin
      inherited;
+
+     _OnBuilded := procedure begin end;
 
      _ShaderV := TGLShaderV.Create;
      _ShaderF := TGLShaderF.Create;
@@ -95,6 +117,7 @@ begin
 
           with UniBufs do
           begin
+               Add( 2{BinP}, 'TViewerDat'{Name} );
                Add( 0{BinP}, 'TCameraDat'{Name} );
                Add( 1{BinP}, 'TShaperDat'{Name} );
           end;
@@ -107,6 +130,11 @@ begin
           with Framers do
           begin
                Add( 0{BinP}, '_Frag_Col'{Name} );
+          end;
+
+          Onlinked := procedure
+          begin
+               _OnBuilded;
           end;
      end;
 end;
