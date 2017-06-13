@@ -126,6 +126,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure _InsertTail( const Child_:TTreeNode );
        procedure _InsertPrev( const Sibli_:TTreeNode );
        procedure _InsertNext( const Sibli_:TTreeNode );
+       procedure OnInsertChild( const Child_:TTreeNode ); virtual;
+       procedure OnRemoveChild( const Child_:TTreeNode ); virtual;
      public
        constructor Create; overload; virtual;
        constructor Create( const Paren_:ITreeNode ); overload; virtual;
@@ -439,6 +441,8 @@ begin
      Bind( C0_, C1_, C2_ );
 
      Inc( _ChildsN );
+
+     OnInsertChild( C1_ );
 end;
 
 procedure TTreeNode._Remove;
@@ -452,6 +456,8 @@ begin
           Dec( _ChildsN );
 
           if _ChildsN * 2 < _Childs.Count then _Childs.Count := _ChildsN;
+
+          OnRemoveChild( Self );
      end;
 
      _Paren := nil;  _Order := -1;
@@ -485,6 +491,18 @@ begin
      _Paren._Insert( Self, Sibli_, _Next );
 
      if IsOrdered then _Paren._MaxOrder := _Order;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TTreeNode.OnInsertChild( const Child_:TTreeNode );
+begin
+     if Assigned( _Paren ) then _Paren.OnInsertChild( Child_ );
+end;
+
+procedure TTreeNode.OnRemoveChild( const Child_:TTreeNode );
+begin
+     if Assigned( _Paren ) then _Paren.OnRemoveChild( Child_ );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
