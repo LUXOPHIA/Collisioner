@@ -80,12 +80,15 @@ procedure TGLView.Resize;
 begin
      inherited;
 
-     if Height < Width then _Viewer[ 0 ] := TSingleM4.Scale( Height / Width, 1, 1 )
-                       else
-     if Width < Height then _Viewer[ 0 ] := TSingleM4.Scale( 1, Width / Height, 1 )
-                       else _Viewer[ 0 ] := TSingleM4.Identify;
+     if not( csDestroying in ComponentState ) then
+     begin
+          if Height < Width then _Viewer[ 0 ] := TSingleM4.Scale( Height / Width, 1, 1 )
+                            else
+          if Width < Height then _Viewer[ 0 ] := TSingleM4.Scale( 1, Width / Height, 1 )
+                            else _Viewer[ 0 ] := TSingleM4.Identify;
 
-     Self.Repaint;
+          Self.Repaint;
+     end;
 end;
 
 //------------------------------------------------------------------------------
