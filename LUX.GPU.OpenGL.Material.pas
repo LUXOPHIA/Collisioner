@@ -95,8 +95,8 @@ begin
 
           with UniBufs do
           begin
-               Add( 0{BinP}, 'TCamera'{Name} );
-               Add( 1{BinP}, 'TGeomet'{Name} );
+               Add( 0{BinP}, 'TCameraDat'{Name} );
+               Add( 1{BinP}, 'TShaperDat'{Name} );
           end;
 
           with Imagers do
