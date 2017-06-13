@@ -13,7 +13,7 @@ uses Winapi.OpenGL, Winapi.OpenGLext,
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
-     TGLWorld = class;
+     TGLScener = class;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -51,7 +51,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLWorld
 
-     TGLWorld = class( TGLNode )
+     TGLScener = class( TGLNode )
      private
      protected
        _CameraUs :TGLBufferU<TCameraDat>;
@@ -142,7 +142,7 @@ begin
 
      D.Move := _Move;
 
-     ( RootNode as TGLWorld )._GeometUs[ Order ] := D;
+     ( RootNode as TGLScener )._GeometUs[ Order ] := D;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -174,7 +174,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLWorld.Create;
+constructor TGLScener.Create;
 begin
      inherited;
 
@@ -182,7 +182,7 @@ begin
      _GeometUs := TGLBufferU<TShaperDat>.Create( GL_DYNAMIC_DRAW );
 end;
 
-destructor TGLWorld.Destroy;
+destructor TGLScener.Destroy;
 begin
      _CameraUs.Free;
      _GeometUs.Free;
@@ -192,12 +192,12 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLWorld.Compile;
+procedure TGLScener.Compile;
 begin
 
 end;
 
-procedure TGLWorld.Render;
+procedure TGLScener.Render;
 var
    I :Integer;
 begin
@@ -217,7 +217,7 @@ begin
      C.Proj := _Proj;
      C.Move := _Move;
 
-     ( RootNode as TGLWorld ).CameraUs[ _No ] := C;
+     ( RootNode as TGLScener ).CameraUs[ _No ] := C;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
@@ -254,7 +254,7 @@ end;
 
 procedure TGLCamera.Render;
 begin
-     with ( RootNode as TGLWorld ) do
+     with ( RootNode as TGLScener ) do
      begin
           CameraUs.Use( 0{BinP}, _No{Offs} );
 
@@ -298,7 +298,7 @@ end;
 
 procedure TGLShaper.Draw;
 begin
-     ( RootNode as TGLWorld ).GeometUs.Use( 1{BinP}, Order{Offs} );
+     ( RootNode as TGLScener ).GeometUs.Use( 1{BinP}, Order{Offs} );
 
      _Material.Use;
 
@@ -314,7 +314,7 @@ begin
 
      _Material.Unuse;
 
-     ( RootNode as TGLWorld ).GeometUs.Unuse( 1{BinP} );
+     ( RootNode as TGLScener ).GeometUs.Unuse( 1{BinP} );
 end;
 
 //------------------------------------------------------------------------------
