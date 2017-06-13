@@ -17,14 +17,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
-     TCamera = record
+     TCameraDat = record
      private
      public
        Proj :TSingleM4;
        Move :TSingleM4;
      end;
 
-     TGeomet = record
+     TShaperDat = record
      private
      public
        Move :TSingleM4;
@@ -54,14 +54,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLWorld = class( TGLNode )
      private
      protected
-       _CameraUs :TGLBufferU<TCamera>;
-       _GeometUs :TGLBufferU<TSingleM4>;
+       _CameraUs :TGLBufferU<TCameraDat>;
+       _GeometUs :TGLBufferU<TShaperDat>;
      public
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
-       property CameraUs :TGLBufferU<TCamera>   read _CameraUs;
-       property GeometUs :TGLBufferU<TSingleM4> read _GeometUs;
+       property CameraUs :TGLBufferU<TCameraDat> read _CameraUs;
+       property GeometUs :TGLBufferU<TShaperDat> read _GeometUs;
        ///// メソッド
        procedure Compile;
        procedure Render;
@@ -90,7 +90,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShape
 
-     TGLShape = class( TGLNode )
+     TGLShaper = class( TGLNode )
      private
      protected
        _PosBuf   :TGLBufferVS<TSingle3D>;
@@ -99,7 +99,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _EleBuf   :TGLBufferE32;
        _Material :TGLMaterial;
      public
-       constructor Create; override;
+       constructor Create( const Paren_:ITreeNode ); override;
        destructor Destroy; override;
        ///// プロパティ
        property PosBuf   :TGLBufferVS<TSingle3D> read _PosBuf;
@@ -135,10 +135,14 @@ uses System.SysUtils, System.Classes;
 /////////////////////////////////////////////////////////////////////// アクセス
 
 procedure TGLNode.SetMove( const Move_:TSingleM4 );
+var
+   D :TShaperDat;
 begin
      _Move := Move_;
 
-     ( RootNode as TGLWorld )._GeometUs[ Order ] := _Move;
+     D.Move := _Move;
+
+     ( RootNode as TGLWorld )._GeometUs[ Order ] := D;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -174,8 +178,8 @@ constructor TGLWorld.Create;
 begin
      inherited;
 
-     _CameraUs := TGLBufferU<TCamera>  .Create( GL_DYNAMIC_DRAW );
-     _GeometUs := TGLBufferU<TSingleM4>.Create( GL_DYNAMIC_DRAW );
+     _CameraUs := TGLBufferU<TCameraDat>.Create( GL_DYNAMIC_DRAW );
+     _GeometUs := TGLBufferU<TShaperDat>.Create( GL_DYNAMIC_DRAW );
 end;
 
 destructor TGLWorld.Destroy;
@@ -208,7 +212,7 @@ end;
 
 procedure TGLCamera.RegBuf;
 var
-   C :TCamera;
+   C :TCameraDat;
 begin
      C.Proj := _Proj;
      C.Move := _Move;
@@ -224,7 +228,7 @@ procedure TGLCamera.SetMove( const Move_:TSingleM4 );
 begin
      inherited;
 
-     RegBuf;
+     _Move := Move_;  RegBuf;
 end;
 
 procedure TGLCamera.SetProj( const Proj_:TSingleM4 );
@@ -268,7 +272,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLShape.Create;
+constructor TGLShaper.Create( const Paren_:ITreeNode );
 begin
      inherited;
 
@@ -276,9 +280,11 @@ begin
      _NorBuf := TGLBufferVS<TSingle3D>.Create( GL_STATIC_DRAW );
      _TexBuf := TGLBufferVS<TSingle2D>.Create( GL_STATIC_DRAW );
      _EleBuf := TGLBufferE32          .Create( GL_STATIC_DRAW );
+
+     Move := TSingleM4.Identify;
 end;
 
-destructor TGLShape.Destroy;
+destructor TGLShaper.Destroy;
 begin
      _PosBuf.Free;
      _NorBuf.Free;
@@ -290,7 +296,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLShape.Draw;
+procedure TGLShaper.Draw;
 begin
      ( RootNode as TGLWorld ).GeometUs.Use( 1{BinP}, Order{Offs} );
 
@@ -313,7 +319,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLShape.LoadFromFileSTL( const FileName_:String );
+procedure TGLShaper.LoadFromFileSTL( const FileName_:String );
 var
    F :TFileStream;
    Hs :array [ 0..80-1 ] of AnsiChar;
@@ -379,7 +385,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLShape.LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>; const DivU_,DivV_:Integer );
+procedure TGLShaper.LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>; const DivU_,DivV_:Integer );
 //·····························
      function XYtoI( const X_,Y_:Integer ) :Integer;
      begin
