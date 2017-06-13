@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Material.FMX;
+﻿unit LUX.GPU.OpenGL.Matery.FMX;
 
 interface //#################################################################### ■
 
@@ -7,7 +7,7 @@ uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX.GPU.OpenGL,
      LUX.GPU.OpenGL.Imager,
      LUX.GPU.OpenGL.Imager.FMX,
-     LUX.GPU.OpenGL.Material;
+     LUX.GPU.OpenGL.Matery;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 

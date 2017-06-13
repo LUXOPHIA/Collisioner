@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Material;
+﻿unit LUX.GPU.OpenGL.Matery;
 
 interface //#################################################################### ■
 

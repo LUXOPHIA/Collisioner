@@ -7,7 +7,7 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Platform.Win,
   Winapi.Windows, Winapi.OpenGL,
-  LUX, LUX.GPU.OpenGL, LUX.GPU.OpenGL.FMX, LUX.GPU.OpenGL.Geometry;
+  LUX, LUX.GPU.OpenGL, LUX.GPU.OpenGL.FMX, LUX.GPU.OpenGL.Shaper;
 
 type
   TGLView = class(TFrame)

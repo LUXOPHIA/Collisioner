@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Geometry;
+﻿unit LUX.GPU.OpenGL.Shaper;
 
 interface //#################################################################### ■
 
@@ -9,7 +9,7 @@ uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX.GPU.OpenGL.Buffer.Unif,
      LUX.GPU.OpenGL.Buffer.Vert,
      LUX.GPU.OpenGL.Buffer.Elem,
-     LUX.GPU.OpenGL.Material;
+     LUX.GPU.OpenGL.Matery;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
