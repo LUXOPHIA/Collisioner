@@ -22,6 +22,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TGLCamera = class( TGLNode, IGLCamera )
      private
+       const _N :Single = 0.1;
+       const _F :Single = 1000;
      protected
        _Proj :TSingleM4;
        ///// アクセス
@@ -30,7 +32,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetProj :TSingleM4; virtual;
        procedure SetProj( const Proj_:TSingleM4 ); virtual;
      public
-       constructor Create; override;
+       constructor Create( const Paren_:ITreeNode ); override;
        destructor Destroy; override;
        ///// プロパティ
        property CamI :Integer   read GetCamI              ;
@@ -38,6 +40,38 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        procedure RegBuf; override;
        procedure Render;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCameraOrth
+
+     TGLCameraOrth = class( TGLCamera )
+     private
+     protected
+       _Size :Single;
+       ///// アクセス
+       function GetSize :Single; virtual;
+       procedure SetSize( const Size_:Single ); virtual;
+     public
+       constructor Create( const Paren_:ITreeNode ); override;
+       destructor Destroy; override;
+       ///// プロパティ
+       property Size :Single read GetSize write SetSize;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCameraPers
+
+     TGLCameraPers = class( TGLCamera )
+     private
+     protected
+       _Angl :Single;
+       ///// アクセス
+       function GetAngl :Single; virtual;
+       procedure SetAngl( const Angl_:Single ); virtual;
+     public
+       constructor Create( const Paren_:ITreeNode ); override;
+       destructor Destroy; override;
+       ///// プロパティ
+       property Angl :Single read GetAngl write SetAngl;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -48,7 +82,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 implementation //############################################################### ■
 
-uses System.SysUtils, System.Classes;
+uses System.SysUtils, System.Classes, System.Math;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -88,7 +122,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLCamera.Create;
+constructor TGLCamera.Create( const Paren_:ITreeNode );
 begin
      inherited;
 
@@ -124,6 +158,84 @@ begin
 
           CameraUs.Unuse( 0{BinP} );
      end;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCameraOrth
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLCameraOrth.GetSize :Single;
+begin
+     Result := _Size;
+end;
+
+procedure TGLCameraOrth.SetSize( const Size_:Single );
+var
+   S :Single;
+begin
+     _Size := Size_;
+
+     S := _Size / 2;
+
+     Proj := TSingleM4.ProjOrth( -S, +S, -S, +S, _N, _F );
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLCameraOrth.Create( const Paren_:ITreeNode );
+begin
+     inherited;
+
+     Size := 10;
+end;
+
+destructor TGLCameraOrth.Destroy;
+begin
+
+     inherited;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCameraPers
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLCameraPers.GetAngl :Single;
+begin
+     Result := _Angl;
+end;
+
+procedure TGLCameraPers.SetAngl( const Angl_:Single );
+var
+   S :Single;
+begin
+     _Angl := Angl_;
+
+     S := _N * Tan( _Angl / 2 );
+
+     Proj := TSingleM4.ProjPers( -S, +S, -S, +S, _N, _F );
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLCameraPers.Create( const Paren_:ITreeNode );
+begin
+     inherited;
+
+     Angl := 90{°};
+end;
+
+destructor TGLCameraPers.Destroy;
+begin
+
+     inherited;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
