@@ -17,7 +17,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexMateri
 
-     TGLMatery = class( TGLMaterial )
+     TGLMateryI = class( TGLMatery )
      private
      protected
        _Sample :TGLSample;
@@ -53,7 +53,7 @@ implementation //###############################################################
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLMatery.Create;
+constructor TGLMateryI.Create;
 begin
      inherited;
 
@@ -61,7 +61,7 @@ begin
      _Imager  := TGLImager2D_RGBA.Create;
 end;
 
-destructor TGLMatery.Destroy;
+destructor TGLMateryI.Destroy;
 begin
      _Sample.DisposeOf;
      _Imager.DisposeOf;
@@ -71,7 +71,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLMatery.Use;
+procedure TGLMateryI.Use;
 begin
      inherited;
 
@@ -79,7 +79,7 @@ begin
      _Imager.Use( 0 );
 end;
 
-procedure TGLMatery.Unuse;
+procedure TGLMateryI.Unuse;
 begin
      _Sample.Unuse( 0 );
      _Imager.Unuse( 0 );

@@ -18,24 +18,24 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShape
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaper
 
      TGLShaper = class( TGLNode )
      private
      protected
-       _PosBuf   :TGLBufferVS<TSingle3D>;
-       _NorBuf   :TGLBufferVS<TSingle3D>;
-       _TexBuf   :TGLBufferVS<TSingle2D>;
-       _EleBuf   :TGLBufferE32;
-       _Material :TGLMaterial;
+       _PosBuf :TGLBufferVS<TSingle3D>;
+       _NorBuf :TGLBufferVS<TSingle3D>;
+       _TexBuf :TGLBufferVS<TSingle2D>;
+       _EleBuf :TGLBufferE32;
+       _Matery :TGLMatery;
      public
        constructor Create( const Paren_:ITreeNode ); override;
        destructor Destroy; override;
        ///// プロパティ
-       property PosBuf   :TGLBufferVS<TSingle3D> read _PosBuf;
-       property NorBuf   :TGLBufferVS<TSingle3D> read _NorBuf;
-       property EleBuf   :TGLBufferE32           read _EleBuf;
-       property Material :TGLMaterial            read _Material write _Material;
+       property PosBuf :TGLBufferVS<TSingle3D> read _PosBuf;
+       property NorBuf :TGLBufferVS<TSingle3D> read _NorBuf;
+       property EleBuf :TGLBufferE32           read _EleBuf;
+       property Matery :TGLMatery              read _Matery write _Matery;
        ///// メソッド
        procedure Draw; override;
        procedure LoadFromFileSTL( const FileName_:String );
@@ -56,7 +56,7 @@ uses System.SysUtils, System.Classes;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShape
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaper
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -92,7 +92,7 @@ procedure TGLShaper.Draw;
 begin
      Scener.GeometUs.Use( 1{BinP}, Order{Offs} );
 
-     _Material.Use;
+     _Matery.Use;
 
        _PosBuf.Use( 0 );
        _NorBuf.Use( 1 );
@@ -104,7 +104,7 @@ begin
        _NorBuf.Unuse( 1 );
        _TexBuf.Unuse( 2 );
 
-     _Material.Unuse;
+     _Matery.Unuse;
 
      Scener.GeometUs.Unuse( 1{BinP} );
 end;

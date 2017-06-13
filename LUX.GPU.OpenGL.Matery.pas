@@ -16,7 +16,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMaterial
 
-     TGLMaterial = class
+     TGLMatery = class
      private
      protected
        _ShaderV :TGLShaderV;
@@ -54,7 +54,7 @@ implementation //###############################################################
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLMaterial.Create;
+constructor TGLMatery.Create;
 begin
      inherited;
 
@@ -111,7 +111,7 @@ begin
      end;
 end;
 
-destructor TGLMaterial.Destroy;
+destructor TGLMatery.Destroy;
 begin
      _ShaderV.DisposeOf;
      _ShaderF.DisposeOf;
@@ -122,12 +122,12 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLMaterial.Use;
+procedure TGLMatery.Use;
 begin
      _Engine.Use;
 end;
 
-procedure TGLMaterial.Unuse;
+procedure TGLMatery.Unuse;
 begin
      _Engine.Unuse;
 end;
