@@ -92,23 +92,23 @@ end;
 
 procedure TGLShaper.Draw;
 begin
-     Scener.ShaperUs.Use( 1{BinP}, NodI{Offs} );
+     Scener.NodeUs.Use( 1{BinP}, NodI{Offs} );
 
      _Matery.Use;
 
-       _PosBuf.Use( 0 );
-       _NorBuf.Use( 1 );
-       _TexBuf.Use( 2 );
+       _PosBuf.Use( 0{BinP} );
+       _NorBuf.Use( 1{BinP} );
+       _TexBuf.Use( 2{BinP} );
 
          _EleBuf.Draw;
 
-       _PosBuf.Unuse( 0 );
-       _NorBuf.Unuse( 1 );
-       _TexBuf.Unuse( 2 );
+       _PosBuf.Unuse( 0{BinP} );
+       _NorBuf.Unuse( 1{BinP} );
+       _TexBuf.Unuse( 2{BinP} );
 
      _Matery.Unuse;
 
-     Scener.ShaperUs.Unuse( 1{BinP} );
+     Scener.NodeUs.Unuse( 1{BinP} );
 end;
 
 //------------------------------------------------------------------------------

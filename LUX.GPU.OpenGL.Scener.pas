@@ -113,7 +113,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Cameras  :TDictionary<IGLCamera,Integer> read _Cameras ;
        property Nodes    :TDictionary<IGLNode,Integer>   read _Nodes   ;
        property CameraUs :TGLBufferU<TCameraDat>         read _CameraUs;
-       property NodesUs  :TGLBufferU<TNodeDat>           read _NodeUs  ;
+       property NodeUs   :TGLBufferU<TNodeDat>           read _NodeUs  ;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
