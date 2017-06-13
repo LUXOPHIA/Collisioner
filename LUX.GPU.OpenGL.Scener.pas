@@ -39,12 +39,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _Move :TSingleM4;
        ///// アクセス
+       function GetScener :TGLScener;
        procedure SetMove( const Move_:TSingleM4 ); virtual;
      public
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
-       property Move :TSingleM4 read _Move write SetMove;
+       property Scener :TGLScener read GetScener              ;
+       property Move   :TSingleM4 read   _Move   write SetMove;
        ///// メソッド
        procedure Draw; virtual;
      end;
@@ -55,13 +57,13 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        _CameraUs :TGLBufferU<TCameraDat>;
-       _GeometUs :TGLBufferU<TShaperDat>;
+       _ShaperUs :TGLBufferU<TShaperDat>;
      public
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
        property CameraUs :TGLBufferU<TCameraDat> read _CameraUs;
-       property GeometUs :TGLBufferU<TShaperDat> read _GeometUs;
+       property GeometUs :TGLBufferU<TShaperDat> read _ShaperUs;
        ///// メソッド
        procedure Compile;
        procedure Render;
@@ -89,6 +91,11 @@ uses System.SysUtils, System.Classes;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
+function TGLNode.GetScener :TGLScener;
+begin
+     Result := RootNode as TGLScener;
+end;
+
 procedure TGLNode.SetMove( const Move_:TSingleM4 );
 var
    D :TShaperDat;
@@ -97,7 +104,7 @@ begin
 
      D.Move := _Move;
 
-     ( RootNode as TGLScener )._GeometUs[ Order ] := D;
+     Scener._ShaperUs[ Order ] := D;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -134,13 +141,13 @@ begin
      inherited;
 
      _CameraUs := TGLBufferU<TCameraDat>.Create( GL_DYNAMIC_DRAW );
-     _GeometUs := TGLBufferU<TShaperDat>.Create( GL_DYNAMIC_DRAW );
+     _ShaperUs := TGLBufferU<TShaperDat>.Create( GL_DYNAMIC_DRAW );
 end;
 
 destructor TGLScener.Destroy;
 begin
      _CameraUs.Free;
-     _GeometUs.Free;
+     _ShaperUs.Free;
 
      inherited;
 end;

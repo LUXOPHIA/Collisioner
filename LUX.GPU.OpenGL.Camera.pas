@@ -66,7 +66,7 @@ begin
      C.Proj := _Proj;
      C.Move := _Move;
 
-     ( RootNode as TGLScener ).CameraUs[ _No ] := C;
+     Scener.CameraUs[ _No ] := C;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
@@ -103,7 +103,7 @@ end;
 
 procedure TGLCamera.Render;
 begin
-     with ( RootNode as TGLScener ) do
+     with Scener do
      begin
           CameraUs.Use( 0{BinP}, _No{Offs} );
 

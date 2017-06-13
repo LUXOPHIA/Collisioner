@@ -90,7 +90,7 @@ end;
 
 procedure TGLShaper.Draw;
 begin
-     ( RootNode as TGLScener ).GeometUs.Use( 1{BinP}, Order{Offs} );
+     Scener.GeometUs.Use( 1{BinP}, Order{Offs} );
 
      _Material.Use;
 
@@ -106,7 +106,7 @@ begin
 
      _Material.Unuse;
 
-     ( RootNode as TGLScener ).GeometUs.Unuse( 1{BinP} );
+     Scener.GeometUs.Unuse( 1{BinP} );
 end;
 
 //------------------------------------------------------------------------------
