@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Material.VCL;
+﻿unit LUX.GPU.OpenGL.Matery.VCL;
 
 interface //#################################################################### ■
 
@@ -7,7 +7,7 @@ uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX.GPU.OpenGL,
      LUX.GPU.OpenGL.Imager,
      LUX.GPU.OpenGL.Imager.VCL,
-     LUX.GPU.OpenGL.Material;
+     LUX.GPU.OpenGL.Matery;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -15,9 +15,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexMateri
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryI
 
-     TGLTexMateri = class( TGLMaterial )
+     TGLMateryI = class( TGLMatery )
      private
      protected
        _Sample :TGLSample;
@@ -45,7 +45,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexMatria
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryI
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -53,7 +53,7 @@ implementation //###############################################################
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLTexMateri.Create;
+constructor TGLMateryI.Create;
 begin
      inherited;
 
@@ -61,7 +61,7 @@ begin
      _Imager  := TGLImager2D_RGBA.Create;
 end;
 
-destructor TGLTexMateri.Destroy;
+destructor TGLMateryI.Destroy;
 begin
      _Sample.DisposeOf;
      _Imager.DisposeOf;
@@ -71,7 +71,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLTexMateri.Use;
+procedure TGLMateryI.Use;
 begin
      inherited;
 
@@ -79,7 +79,7 @@ begin
      _Imager.Use( 0 );
 end;
 
-procedure TGLTexMateri.Unuse;
+procedure TGLMateryI.Unuse;
 begin
      _Sample.Unuse( 0 );
      _Imager.Unuse( 0 );
