@@ -20,22 +20,23 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCamera
 
-     TGLCamera = class( TGLNode )
+     TGLCamera = class( TGLNode, IGLCamera )
      private
-       ///// メソッド
-       procedure RegBuf;
      protected
        _Proj :TSingleM4;
        ///// アクセス
+       function GetCamI :Integer;
        procedure SetMove( const Move_:TSingleM4 ); override;
+       function GetProj :TSingleM4; virtual;
        procedure SetProj( const Proj_:TSingleM4 ); virtual;
      public
-       _No :Integer;
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
-       property Proj :TSingleM4 read _Proj write SetProj;
+       property CamI :Integer   read GetCamI              ;
+       property Proj :TSingleM4 read GetProj write SetProj;
        ///// メソッド
+       procedure RegBuf; override;
        procedure Render;
      end;
 
@@ -57,27 +58,27 @@ uses System.SysUtils, System.Classes;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
-/////////////////////////////////////////////////////////////////////// メソッド
-
-procedure TGLCamera.RegBuf;
-var
-   C :TCameraDat;
-begin
-     C.Proj := _Proj;
-     C.Move := _Move;
-
-     Scener.CameraUs[ _No ] := C;
-end;
-
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
 /////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLCamera.GetCamI :Integer;
+begin
+     Result := Scener.Cameras[ Self ];
+end;
 
 procedure TGLCamera.SetMove( const Move_:TSingleM4 );
 begin
      inherited;
 
      _Move := Move_;  RegBuf;
+end;
+
+//------------------------------------------------------------------------------
+
+function TGLCamera.GetProj :TSingleM4;
+begin
+     Result := _Proj;
 end;
 
 procedure TGLCamera.SetProj( const Proj_:TSingleM4 );
@@ -101,13 +102,25 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
+procedure TGLCamera.RegBuf;
+var
+   C :TCameraDat;
+begin
+     C.Proj := _Proj;
+     C.Move := _Move;
+
+     Scener.CameraUs[ CamI ] := C;
+end;
+
+//------------------------------------------------------------------------------
+
 procedure TGLCamera.Render;
 begin
      with Scener do
      begin
-          CameraUs.Use( 0{BinP}, _No{Offs} );
+          CameraUs.Use( 0{BinP}, CamI{Offs} );
 
-          Render;
+          Draw;
 
           CameraUs.Unuse( 0{BinP} );
      end;
