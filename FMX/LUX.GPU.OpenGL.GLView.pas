@@ -6,8 +6,8 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Platform.Win,
-  Winapi.Windows, Winapi.OpenGL,
-  LUX, LUX.GPU.OpenGL, LUX.GPU.OpenGL.FMX, LUX.GPU.OpenGL.Camera;
+  Winapi.Windows, Winapi.OpenGL, Winapi.OpenGLext,
+  LUX, LUX.M4, LUX.GPU.OpenGL, LUX.GPU.OpenGL.FMX, LUX.GPU.OpenGL.Buffer.Unif, LUX.GPU.OpenGL.Camera;
 
 type
   TGLView = class(TFrame)
@@ -21,6 +21,7 @@ type
     _Form   :TCommonCustomForm;
     _WND    :HWND;
     _DC     :HDC;
+    _Viewer :TGLBufferU<TSingleM4>;
     _Camera :TGLCamera;
     ///// イベント
     _OnPaint :TProc;
@@ -179,6 +180,12 @@ begin
      R := TRectF.Create( LocalToAbsolute( TPointF.Zero ) * Scene.GetSceneScale, Width, Height );
 
      _Form.Bounds := R.Round;
+
+     if Height < Width then _Viewer[ 0 ] := TSingleM4.Scale( Height / Width, 1, 1 )
+                       else
+     if Width < Height then _Viewer[ 0 ] := TSingleM4.Scale( 1, Width / Height, 1 )
+                       else _Viewer[ 0 ] := TSingleM4.Identify;
+
 end;
 
 //------------------------------------------------------------------------------
@@ -208,10 +215,15 @@ begin
      CreateWindow;
 
      CreateDC;
+
+     _Viewer := TGLBufferU<TSingleM4>.Create( GL_DYNAMIC_DRAW );
+     _Viewer.Count := 1;
 end;
 
 destructor TGLView.Destroy;
 begin
+     _Viewer.DisposeOf;
+
      DestroyDC;
 
      inherited;
@@ -260,10 +272,14 @@ begin
        glClearColor( 0, 0, 0, 0 );
 
        glClear( GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT );
+
+       _Viewer.Use( 2{BinP} );
 end;
 
 procedure TGLView.EndRender;
 begin
+       _Viewer.Unuse( 2{BinP} );
+
        glFlush;
 
        SwapBuffers( _DC );
