@@ -25,20 +25,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        const _N :Single = 0.1;
        const _F :Single = 1000;
      protected
-       _Proj :TSingleM4;
+       _Proj :TGLBufferU<TSingleM4>;
        ///// アクセス
-       function GetCamI :Integer;
-       procedure SetMove( const Move_:TSingleM4 ); override;
        function GetProj :TSingleM4; virtual;
        procedure SetProj( const Proj_:TSingleM4 ); virtual;
      public
        constructor Create( const Paren_:ITreeNode ); override;
        destructor Destroy; override;
        ///// プロパティ
-       property CamI :Integer   read GetCamI              ;
        property Proj :TSingleM4 read GetProj write SetProj;
        ///// メソッド
-       procedure RegBuf;
        procedure Render;
      end;
 
@@ -96,28 +92,14 @@ uses System.SysUtils, System.Classes, System.Math;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLCamera.GetCamI :Integer;
-begin
-     Result := Scener.Cameras[ Self ];
-end;
-
-procedure TGLCamera.SetMove( const Move_:TSingleM4 );
-begin
-     inherited;
-
-     RegBuf;
-end;
-
-//------------------------------------------------------------------------------
-
 function TGLCamera.GetProj :TSingleM4;
 begin
-     Result := _Proj;
+     Result := _Proj[ 0 ];
 end;
 
 procedure TGLCamera.SetProj( const Proj_:TSingleM4 );
 begin
-     _Proj := Proj_;  RegBuf;
+     _Proj[ 0 ] := Proj_;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -126,38 +108,25 @@ constructor TGLCamera.Create( const Paren_:ITreeNode );
 begin
      inherited;
 
+     _Proj := TGLBufferU<TSingleM4>.Create( GL_DYNAMIC_DRAW );
+     _Proj.Count := 1;
 end;
 
 destructor TGLCamera.Destroy;
 begin
+     _Proj.DisposeOf;
 
      inherited;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLCamera.RegBuf;
-var
-   C :TCameraDat;
-begin
-     C.Proj := _Proj;
-     C.Move :=  Move;
-
-     Scener.CameraUs[ CamI ] := C;
-end;
-
-//------------------------------------------------------------------------------
-
 procedure TGLCamera.Render;
 begin
+     _Proj.Use( 0{BinP} );
      _Move.Use( 3{BinP} );
 
-     with Scener do
-     begin
-          CameraUs.Use( 0{BinP}, CamI{Offs} );
-
-          Draw;
-     end;
+     Scener.Draw;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCameraOrth
