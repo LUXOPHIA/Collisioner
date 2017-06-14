@@ -156,8 +156,6 @@ begin
 
      with _Form do
      begin
-          AutoCapture := True;
-
           BorderStyle := TFmxFormBorderStyle.None;
 
           OnMouseDown  := _OnMouseDown ;
