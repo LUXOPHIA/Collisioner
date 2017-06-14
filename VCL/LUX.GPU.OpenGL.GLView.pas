@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Winapi.OpenGL, Winapi.OpenGLext,
-  LUX, LUX.M4, LUX.GPU.OpenGL, LUX.GPU.OpenGL.VCL, LUX.GPU.OpenGL.Buffer.Unif, LUX.GPU.OpenGL.Camera;
+  LUX, LUX.M4, LUX.GPU.OpenGL, LUX.GPU.OpenGL.VCL, LUX.GPU.OpenGL.Buffer.Unifor, LUX.GPU.OpenGL.Camera;
 
 type
   TGLView = class(TFrame)
@@ -17,7 +17,7 @@ type
     procedure WMEraseBkgnd( var Message_:TWmEraseBkgnd ); message WM_ERASEBKGND;
   protected
     _DC     :HDC;
-    _Viewer :TGLBufferU<TSingleM4>;
+    _Viewer :TGLUnifor<TSingleM4>;
     _Camera :TGLCamera;
     ///// イベント
     _OnPaint :TProc;
@@ -131,7 +131,7 @@ begin
 
      CreateDC;
 
-     _Viewer := TGLBufferU<TSingleM4>.Create( GL_DYNAMIC_DRAW );
+     _Viewer := TGLUnifor<TSingleM4>.Create( GL_DYNAMIC_DRAW );
      _Viewer.Count := 1;
 end;
 
@@ -177,12 +177,12 @@ begin
 
        glClear( GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT );
 
-       _Viewer.Use( 2{BinP} );
+       _Viewer.Use( 0{BinP} );
 end;
 
 procedure TGLView.EndRender;
 begin
-       _Viewer.Unuse( 2{BinP} );
+       _Viewer.Unuse( 0{BinP} );
 
        glFlush;
 
