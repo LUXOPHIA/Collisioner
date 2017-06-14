@@ -164,6 +164,7 @@ begin
           begin
                Add( 2{BinP}, 'TViewerDat'{Name} );
                Add( 0{BinP}, 'TCameraDat'{Name} );
+               Add( 3{BinP}, 'TCameraPose'{Name} );
                Add( 1{BinP}, 'TShaperDat'{Name} );
           end;
 
