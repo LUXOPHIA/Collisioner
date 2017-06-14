@@ -123,8 +123,8 @@ end;
 
 procedure TGLCamera.Render;
 begin
-     _Proj.Use( 0{BinP} );
-     _Move.Use( 3{BinP} );
+     _Proj.Use( 1{BinP} );
+     _Move.Use( 2{BinP} );
 
      Scener.Draw;
 end;

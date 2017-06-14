@@ -271,12 +271,12 @@ begin
 
        glClear( GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT );
 
-       _Viewer.Use( 2{BinP} );
+       _Viewer.Use( 0{BinP} );
 end;
 
 procedure TGLView.EndRender;
 begin
-       _Viewer.Unuse( 2{BinP} );
+       _Viewer.Unuse( 0{BinP} );
 
        glFlush;
 

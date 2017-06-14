@@ -162,10 +162,10 @@ begin
 
           with UniBufs do
           begin
-               Add( 2{BinP}, 'TViewerScal'{Name} );
-               Add( 0{BinP}, 'TCameraProj'{Name} );
-               Add( 3{BinP}, 'TCameraPose'{Name} );
-               Add( 1{BinP}, 'TShaperPose'{Name} );
+               Add( 0{BinP}, 'TViewerScal'{Name} );
+               Add( 1{BinP}, 'TCameraProj'{Name} );
+               Add( 2{BinP}, 'TCameraPose'{Name} );
+               Add( 3{BinP}, 'TShaperPose'{Name} );
           end;
 
           with Imagers do

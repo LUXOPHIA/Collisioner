@@ -151,7 +151,7 @@ var
 begin
      for I := 0 to ChildsN-1 do Childs[ I ].Draw;
 
-     _Move.Use( 1{BinP} );
+     _Move.Use( 3{BinP} );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLScener
