@@ -49,8 +49,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property EleBuf :TGLElemer32           read _EleBuf;
        ///// メソッド
        procedure Draw; override;
-       procedure LoadFromFileSTL( const FileName_:String );
        procedure LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>; const DivU_,DivV_:Integer );
+       procedure LoadFromFileSTL( const FileName_:String );
+       procedure LoadFromFileOBJ( const FileName_:String );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaper
@@ -76,7 +77,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 implementation //############################################################### ■
 
-uses System.SysUtils, System.Classes;
+uses System.SysUtils, System.Classes, System.RegularExpressions;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -143,73 +144,6 @@ begin
      _TexBuf.Use( 2{BinP} );
 
      _EleBuf.Draw;
-end;
-
-//------------------------------------------------------------------------------
-
-procedure TGLShaperPoly.LoadFromFileSTL( const FileName_:String );
-var
-   F :TFileStream;
-   Hs :array [ 0..80-1 ] of AnsiChar;
-   FsN, I :Cardinal;
-   Fs :array of packed record
-                  Nor  :TSingle3D;
-                  Pos1 :TSingle3D;
-                  Pos2 :TSingle3D;
-                  Pos3 :TSingle3D;
-                  _    :Word;
-                end;
-   E :TCardinal3D;
-   Ps, Ns :TGLBufferData<TSingle3D>;
-   Es :TGLBufferData<TCardinal3D>;
-begin
-     F := TFileStream.Create( FileName_, fmOpenRead );
-     try
-        F.Read( Hs, SizeOf( Hs ) );
-
-        F.Read( FsN, SizeOf( FsN ) );
-
-        SetLength( Fs, FsN );
-
-        F.Read( Fs[0], 50 * FsN );
-     finally
-            F.DisposeOf;
-     end;
-
-     _PosBuf.Count := 3 * FsN;
-     _NorBuf.Count := 3 * FsN;
-     _EleBuf.Count :=     FsN;
-
-     Ps := _PosBuf.Map( GL_WRITE_ONLY );
-     Ns := _NorBuf.Map( GL_WRITE_ONLY );
-     Es := _EleBuf.Map( GL_WRITE_ONLY );
-
-     E.X := 0;
-     E.Y := 1;
-     E.Z := 2;
-     for I := 0 to FsN-1 do
-     begin
-          with Fs[ I ] do
-          begin
-               Ns.Items[ E.X ] := Nor;
-               Ns.Items[ E.Y ] := Nor;
-               Ns.Items[ E.Z ] := Nor;
-
-               Ps.Items[ E.X ] := Pos1;
-               Ps.Items[ E.Y ] := Pos2;
-               Ps.Items[ E.Z ] := Pos3;
-          end;
-
-          Es.Items[ I ] := E;
-
-          Inc( E.X, 3 );
-          Inc( E.Y, 3 );
-          Inc( E.Z, 3 );
-     end;
-
-     _PosBuf.Unmap;
-     _NorBuf.Unmap;
-     _EleBuf.Unmap;
 end;
 
 //------------------------------------------------------------------------------
@@ -299,6 +233,190 @@ procedure TGLShaperPoly.LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle
 begin
      MakeVerts;
      MakeElems;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TGLShaperPoly.LoadFromFileSTL( const FileName_:String );
+var
+   F :TFileStream;
+   Hs :array [ 0..80-1 ] of AnsiChar;
+   FsN, I :Cardinal;
+   Fs :array of packed record
+                  Nor  :TSingle3D;
+                  Pos1 :TSingle3D;
+                  Pos2 :TSingle3D;
+                  Pos3 :TSingle3D;
+                  _    :Word;
+                end;
+   E :TCardinal3D;
+   Ps, Ns :TGLBufferData<TSingle3D>;
+   Es :TGLBufferData<TCardinal3D>;
+begin
+     F := TFileStream.Create( FileName_, fmOpenRead );
+     try
+        F.Read( Hs, SizeOf( Hs ) );
+
+        F.Read( FsN, SizeOf( FsN ) );
+
+        SetLength( Fs, FsN );
+
+        F.Read( Fs[0], 50 * FsN );
+     finally
+            F.DisposeOf;
+     end;
+
+     _PosBuf.Count := 3 * FsN;
+     _NorBuf.Count := 3 * FsN;
+     _EleBuf.Count :=     FsN;
+
+     Ps := _PosBuf.Map( GL_WRITE_ONLY );
+     Ns := _NorBuf.Map( GL_WRITE_ONLY );
+     Es := _EleBuf.Map( GL_WRITE_ONLY );
+
+     E.X := 0;
+     E.Y := 1;
+     E.Z := 2;
+     for I := 0 to FsN-1 do
+     begin
+          with Fs[ I ] do
+          begin
+               Ns.Items[ E.X ] := Nor;
+               Ns.Items[ E.Y ] := Nor;
+               Ns.Items[ E.Z ] := Nor;
+
+               Ps.Items[ E.X ] := Pos1;
+               Ps.Items[ E.Y ] := Pos2;
+               Ps.Items[ E.Z ] := Pos3;
+          end;
+
+          Es.Items[ I ] := E;
+
+          Inc( E.X, 3 );
+          Inc( E.Y, 3 );
+          Inc( E.Z, 3 );
+     end;
+
+     _PosBuf.Unmap;
+     _NorBuf.Unmap;
+     _EleBuf.Unmap;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TGLShaperPoly.LoadFromFileOBJ( const FileName_:String );
+var
+   S :TStreamReader;
+   L :String;
+   RP, RN, RT, RF, RI :TRegEx;
+   MP, MN, MT :TMatch;
+   MIs :TMatchCollection;
+   P, N :TSingle3D;
+   Ps, Ns, Ps2 :TArray<TSingle3D>;
+   FP, FN :TCardinal3D;
+   FPs, FNs :TArray<TCardinal3D>;
+   I :Integer;
+begin
+     S := TStreamReader.Create( FileName_, TEncoding.Default );
+
+     RP := TRegEx.Create( 'v +([^ ]+) +([^ ]+) +([^ ]+)', [ roIgnoreCase, roCompiled ] );
+     RN := TRegEx.Create( 'vn +([^ ]+) +([^ ]+) +([^ ]+)', [ roIgnoreCase, roCompiled ] );
+     RT := TRegEx.Create( 'vt +([^ ]+) +([^ ]+)', [ roIgnoreCase, roCompiled ] );
+
+     RF := TRegEx.Create( '^f +', [ roIgnoreCase, roCompiled ] );
+     RI := TRegEx.Create( '(\d+)/?(\d*)/?(\d*)', [ roIgnoreCase, roCompiled ] );
+
+     Ps := [];  FPs := [];
+     Ns := [];  FNs := [];
+
+     while not S.EndOfStream do
+     begin
+          L := S.ReadLine;
+
+          MP := RP.Match( L );
+          MN := RN.Match( L );
+          MT := RT.Match( L );
+
+          if MP.Success then
+          begin
+               Assert( MP.Groups.Count = 4 );
+
+               P.X := MP.Groups[ 1 ].Value.ToSingle;
+               P.Y := MP.Groups[ 2 ].Value.ToSingle;
+               P.Z := MP.Groups[ 3 ].Value.ToSingle;
+
+               N := TSingle3D.Create( 0, 0, 1 );
+
+               Ps := Ps + [ P ];
+          end
+          else
+          if MN.Success then
+          begin
+               Assert( MN.Groups.Count = 4 );
+
+               N.X := MN.Groups[ 1 ].Value.ToSingle;
+               N.Y := MN.Groups[ 2 ].Value.ToSingle;
+               N.Z := MN.Groups[ 3 ].Value.ToSingle;
+
+               Ns := Ns + [ N ];
+          end
+          else
+          if MT.Success then
+          begin
+               Assert( MT.Groups.Count = 3 );
+
+          end
+          else
+          if RF.IsMatch( L ) then
+          begin
+               MIs := RI.Matches( L );
+
+               Assert( MIs.Count >= 3 );
+
+               FP.X := MIs[ 0 ].Groups[ 1 ].Value.ToInteger - 1;
+               FP.Y := MIs[ 1 ].Groups[ 1 ].Value.ToInteger - 1;
+               FP.Z := MIs[ 2 ].Groups[ 1 ].Value.ToInteger - 1;
+
+               FN.X := MIs[ 0 ].Groups[ 3 ].Value.ToInteger - 1;
+               FN.Y := MIs[ 1 ].Groups[ 3 ].Value.ToInteger - 1;
+               FN.Z := MIs[ 2 ].Groups[ 3 ].Value.ToInteger - 1;
+
+               FPs := FPs + [ FP ];
+               FNs := FNs + [ FN ];
+
+               if MIs.Count = 4 then
+               begin
+                    FP.X := MIs[ 2 ].Groups[ 1 ].Value.ToInteger - 1;
+                    FP.Y := MIs[ 3 ].Groups[ 1 ].Value.ToInteger - 1;
+                    FP.Z := MIs[ 0 ].Groups[ 1 ].Value.ToInteger - 1;
+
+                    FN.X := MIs[ 2 ].Groups[ 3 ].Value.ToInteger - 1;
+                    FN.Y := MIs[ 3 ].Groups[ 3 ].Value.ToInteger - 1;
+                    FN.Z := MIs[ 0 ].Groups[ 3 ].Value.ToInteger - 1;
+
+                    FPs := FPs + [ FP ];
+                    FNs := FNs + [ FN ];
+               end;
+          end;
+     end;
+
+     S.DisposeOf;
+
+     SetLength( Ps2, Length( FNs ) );
+
+     for I := 0 to High( FNs ) do
+     begin
+          with FNs[ I ] do
+          begin
+               Ps2[ X ] := Ps[ FPs[ I ].X ];
+               Ps2[ Y ] := Ps[ FPs[ I ].Y ];
+               Ps2[ Z ] := Ps[ FPs[ I ].Z ];
+          end;
+     end;
+
+     _PosBuf.Import( Ps2 );
+     _NorBuf.Import( Ns  );
+     _EleBuf.Import( FNs );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaper
