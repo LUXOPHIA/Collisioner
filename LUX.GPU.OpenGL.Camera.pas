@@ -104,7 +104,7 @@ constructor TGLCamera.Create( const Paren_:ITreeNode );
 begin
      inherited;
 
-     _Proj := TGLUnifor<TSingleM4>.Create( GL_DYNAMIC_DRAW );
+     _Proj := TGLUnifor<TSingleM4>.Create( GL_STATIC_DRAW );
      _Proj.Count := 1;
 end;
 
