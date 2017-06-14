@@ -6,7 +6,7 @@ uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX, LUX.D2, LUX.D3, LUX.M4, LUX.Tree,
      LUX.GPU.OpenGL,
      LUX.GPU.OpenGL.Buffer,
-     LUX.GPU.OpenGL.Buffer.Vert,
+     LUX.GPU.OpenGL.Buffer.Verter,
      LUX.GPU.OpenGL.Buffer.Elemer,
      LUX.GPU.OpenGL.Scener,
      LUX.GPU.OpenGL.Matery;
@@ -35,17 +35,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLShaperPoly = class( TGLShaper )
      private
      protected
-       _PosBuf :TGLBufferVS<TSingle3D>;
-       _NorBuf :TGLBufferVS<TSingle3D>;
-       _TexBuf :TGLBufferVS<TSingle2D>;
+       _PosBuf :TGLVerterS<TSingle3D>;
+       _NorBuf :TGLVerterS<TSingle3D>;
+       _TexBuf :TGLVerterS<TSingle2D>;
        _EleBuf :TGLElemer32;
      public
        constructor Create( const Paren_:ITreeNode ); override;
        destructor Destroy; override;
        ///// プロパティ
-       property PosBuf :TGLBufferVS<TSingle3D> read _PosBuf;
-       property NorBuf :TGLBufferVS<TSingle3D> read _NorBuf;
-       property TexBuf :TGLBufferVS<TSingle2D> read _TexBuf;
+       property PosBuf :TGLVerterS<TSingle3D> read _PosBuf;
+       property NorBuf :TGLVerterS<TSingle3D> read _NorBuf;
+       property TexBuf :TGLVerterS<TSingle2D> read _TexBuf;
        property EleBuf :TGLElemer32           read _EleBuf;
        ///// メソッド
        procedure Draw; override;
@@ -115,9 +115,9 @@ constructor TGLShaperPoly.Create( const Paren_:ITreeNode );
 begin
      inherited;
 
-     _PosBuf := TGLBufferVS<TSingle3D>.Create( GL_STATIC_DRAW );
-     _NorBuf := TGLBufferVS<TSingle3D>.Create( GL_STATIC_DRAW );
-     _TexBuf := TGLBufferVS<TSingle2D>.Create( GL_STATIC_DRAW );
+     _PosBuf := TGLVerterS<TSingle3D>.Create( GL_STATIC_DRAW );
+     _NorBuf := TGLVerterS<TSingle3D>.Create( GL_STATIC_DRAW );
+     _TexBuf := TGLVerterS<TSingle2D>.Create( GL_STATIC_DRAW );
      _EleBuf := TGLElemer32          .Create( GL_STATIC_DRAW );
 end;
 

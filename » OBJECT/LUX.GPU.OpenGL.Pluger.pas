@@ -4,7 +4,7 @@ interface //####################################################################
 
 uses System.Generics.Collections,
      Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Buffer.Vert, LUX.GPU.OpenGL.Buffer.Unifor,
+     LUX, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Buffer.Verter, LUX.GPU.OpenGL.Buffer.Unifor,
      LUX.GPU.OpenGL.Imager;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
@@ -16,7 +16,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLPlugV = record
      private
      public
-       Buff :IGLBufferV;
+       Buff :IGLVerter;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPlugU
@@ -81,7 +81,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      IGLPlugerV = interface( IGLPluger )
      ['{45DC202F-2E99-4BC6-AEAD-784FE81271D2}']
        ///// メソッド
-       procedure Add( const BinP_:GLuint; const Buff_:IGLBufferV );
+       procedure Add( const BinP_:GLuint; const Buff_:IGLVerter );
      end;
 
      //-------------------------------------------------------------------------
@@ -94,7 +94,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure DisPlug( const BinP_:GLuint; const Plug_:TGLPlugV ); override;
      public
        ///// メソッド
-       procedure Add( const BinP_:GLuint; const Buff_:IGLBufferV );
+       procedure Add( const BinP_:GLuint; const Buff_:IGLVerter );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPlugerU
@@ -249,7 +249,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLPlugerV.Add( const BinP_:GLuint; const Buff_:IGLBufferV );
+procedure TGLPlugerV.Add( const BinP_:GLuint; const Buff_:IGLVerter );
 var
    P :TGLPlugV;
 begin
