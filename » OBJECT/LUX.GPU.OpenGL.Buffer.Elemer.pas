@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Buffer.Elem;
+﻿unit LUX.GPU.OpenGL.Buffer.Elemer;
 
 interface //#################################################################### ■
 
@@ -11,9 +11,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferE<_TYPE_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLElemer<_TYPE_>
 
-     IGLBufferE = interface( IGLBuffer )
+     IGLElemer = interface( IGLBuffer )
      ['{BCD91AB4-D6E5-49E1-8670-D4C4ED39AFD3}']
        ///// アクセス
        function GetElemT :GLenum;
@@ -25,7 +25,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLBufferE<_TYPE_:record> = class( TGLBuffer<_TYPE_>, IGLBufferE )
+     TGLElemer<_TYPE_:record> = class( TGLBuffer<_TYPE_>, IGLElemer )
      private
      protected
        ///// アクセス
@@ -38,9 +38,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Draw;
      end;
 
-     TGLBufferE8  = TGLBufferE<TByte3D>;
-     TGLBufferE16 = TGLBufferE<TWord3D>;
-     TGLBufferE32 = TGLBufferE<TCardinal3D>;
+     TGLElemer8  = TGLElemer<TByte3D>;
+     TGLElemer16 = TGLElemer<TWord3D>;
+     TGLElemer32 = TGLElemer<TCardinal3D>;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
 
@@ -54,7 +54,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferE<_TYPE_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLElemer<_TYPE_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -62,12 +62,12 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLBufferE<_TYPE_>.GetKind :GLenum;
+function TGLElemer<_TYPE_>.GetKind :GLenum;
 begin
      Result := GL_ELEMENT_ARRAY_BUFFER;
 end;
 
-function TGLBufferE<_TYPE_>.GetElemT :GLenum;
+function TGLElemer<_TYPE_>.GetElemT :GLenum;
 begin
      case  SizeOf( _TYPE_ ) of
        3: Result := GL_UNSIGNED_BYTE;
@@ -81,7 +81,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLBufferE<_TYPE_>.Draw;
+procedure TGLElemer<_TYPE_>.Draw;
 begin
      Bind;
 

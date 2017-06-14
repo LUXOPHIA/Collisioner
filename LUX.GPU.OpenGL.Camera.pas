@@ -3,14 +3,10 @@
 interface //#################################################################### ■
 
 uses Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.D2, LUX.D3, LUX.M4, LUX.Tree,
+     LUX, LUX.M4, LUX.Tree,
      LUX.GPU.OpenGL,
-     LUX.GPU.OpenGL.Buffer,
      LUX.GPU.OpenGL.Buffer.Unif,
-     LUX.GPU.OpenGL.Buffer.Vert,
-     LUX.GPU.OpenGL.Buffer.Elem,
-     LUX.GPU.OpenGL.Scener,
-     LUX.GPU.OpenGL.Matery;
+     LUX.GPU.OpenGL.Scener;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
