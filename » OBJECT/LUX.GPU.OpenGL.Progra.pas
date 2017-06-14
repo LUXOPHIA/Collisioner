@@ -84,19 +84,21 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      IGLProgra = interface( IGLObject )
      ['{0B2FDEDE-30D3-439B-AC76-E61F9E028CD0}']
+     {protected}
        ///// アクセス
        function GetStatus :Boolean;
        function GetErrors :TStringList;
-       function GetPortsS :TGLPortsS;
-       function GetPortsF :TGLPortsF;
+       function GetShaders :TGLPortsS;
+       function GetFramers :TGLPortsF;
        ///// イベント
        function GetOnLinked :TProc;
        procedure SetOnLinked( const OnLinked_:TProc );
+     {public}
        ///// プロパティ
-       property Status  :Boolean     read GetStatus;
-       property Errors  :TStringList read GetErrors;
-       property Shaders :TGLPortsS   read GetPortsS;
-       property Framers :TGLPortsF   read GetPortsF;
+       property Status  :Boolean     read GetStatus ;
+       property Errors  :TStringList read GetErrors ;
+       property Shaders :TGLPortsS   read GetShaders;
+       property Framers :TGLPortsF   read GetFramers;
        ///// イベント
        property OnLinked :TProc read GetOnLinked write SetOnLinked;
        ///// メソッド
@@ -112,17 +114,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLProgra = class( TGLObject, IGLProgra )
      private
      protected
-       _Status :Boolean;
-       _Errors :TStringList;
-       _PortsS :TGLPortsS;
-       _PortsF :TGLPortsF;
+       _Status  :Boolean;
+       _Errors  :TStringList;
+       _Shaders :TGLPortsS;
+       _Framers :TGLPortsF;
        ///// イベント
        _OnLinked :TProc;
        ///// アクセス
        function GetStatus :Boolean;
        function GetErrors :TStringList;
-       function GetPortsS :TGLPortsS;
-       function GetPortsF :TGLPortsF;
+       function GetShaders :TGLPortsS;
+       function GetFramers :TGLPortsF;
        ///// イベント
        function GetOnLinked :TProc;
        procedure SetOnLinked( const OnLinked_:TProc );
@@ -134,10 +136,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property Status  :Boolean     read _Status;
-       property Errors  :TStringList read _Errors;
-       property Shaders :TGLPortsS   read _PortsS;
-       property Framers :TGLPortsF   read _PortsF;
+       property Status  :Boolean     read GetStatus ;
+       property Errors  :TStringList read GetErrors ;
+       property Shaders :TGLPortsS   read GetShaders;
+       property Framers :TGLPortsF   read GetFramers;
        ///// イベント
        property OnLinked :TProc read GetOnLinked write SetOnLinked;
        ///// メソッド
@@ -338,14 +340,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TGLProgra.GetPortsS :TGLPortsS;
+function TGLProgra.GetShaders :TGLPortsS;
 begin
-     Result := _PortsS;
+     Result := _Shaders;
 end;
 
-function TGLProgra.GetPortsF :TGLPortsF;
+function TGLProgra.GetFramers :TGLPortsF;
 begin
-     Result := _PortsF;
+     Result := _Framers;
 end;
 
 /////////////////////////////////////////////////////////////////////// イベント
@@ -399,8 +401,8 @@ begin
 
      _Errors := TStringList.Create;
 
-     _PortsS := TGLPortsS.Create( Self );
-     _PortsF := TGLPortsF.Create( Self );
+     _Shaders := TGLPortsS.Create( Self );
+     _Framers := TGLPortsF.Create( Self );
 
      _ID     := glCreateProgram;
      _Status := False;
@@ -412,8 +414,8 @@ destructor TGLProgra.Destroy;
 begin
      glDeleteProgram( _ID );
 
-     _PortsS.DisposeOf;
-     _PortsF.DisposeOf;
+     _Shaders.DisposeOf;
+     _Framers.DisposeOf;
 
      _Errors.DisposeOf;
 

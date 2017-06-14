@@ -100,14 +100,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      IGLEngine = interface( IGLProgra )
      ['{0B2FDEDE-30D3-439B-AC76-E61F9E028CD0}']
+     {protected}
        ///// アクセス
-       function GetPortsV :TGLPortsV;
-       function GetPortsU :TGLPortsU;
-       function GetPortsI :TGLPortsI;
+       function GetVerters :TGLPortsV;
+       function GetUnifors :TGLPortsU;
+       function GetImagers :TGLPortsI;
+     {public}
        ///// プロパティ
-       property VerBufs :TGLPortsV read GetPortsV;
-       property UniBufs :TGLPortsU read GetPortsU;
-       property Imagers :TGLPortsI read GetPortsI;
+       property Verters :TGLPortsV read GetVerters;
+       property Unifors :TGLPortsU read GetUnifors;
+       property Imagers :TGLPortsI read GetImagers;
        ///// メソッド
        procedure Use;
        procedure Unuse;
@@ -116,22 +118,22 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLEngine = class( TGLProgra, IGLEngine )
      private
      protected
-       _PortsV :TGLPortsV;
-       _PortsU :TGLPortsU;
-       _PortsI :TGLPortsI;
+       _Verters :TGLPortsV;
+       _Unifors :TGLPortsU;
+       _Imagers :TGLPortsI;
        ///// アクセス
-       function GetPortsV :TGLPortsV;
-       function GetPortsU :TGLPortsU;
-       function GetPortsI :TGLPortsI;
+       function GetVerters :TGLPortsV;
+       function GetUnifors :TGLPortsU;
+       function GetImagers :TGLPortsI;
        ///// イベント
        procedure DoOnLinked; override;
      public
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property Verters :TGLPortsV read GetPortsV;
-       property Unifors :TGLPortsU read GetPortsU;
-       property Imagers :TGLPortsI read GetPortsI;
+       property Verters :TGLPortsV read GetVerters;
+       property Unifors :TGLPortsU read GetUnifors;
+       property Imagers :TGLPortsI read GetImagers;
        ///// メソッド
        procedure Use; override;
        procedure Unuse; override;
@@ -371,28 +373,28 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLEngine.GetPortsV :TGLPortsV;
+function TGLEngine.GetVerters :TGLPortsV;
 begin
-     Result := _PortsV;
+     Result := _Verters;
 end;
 
-function TGLEngine.GetPortsU :TGLPortsU;
+function TGLEngine.GetUnifors :TGLPortsU;
 begin
-     Result := _PortsU;
+     Result := _Unifors;
 end;
 
-function TGLEngine.GetPortsI :TGLPortsI;
+function TGLEngine.GetImagers :TGLPortsI;
 begin
-     Result := _PortsI;
+     Result := _Imagers;
 end;
 
 /////////////////////////////////////////////////////////////////////// イベント
 
 procedure TGLEngine.DoOnLinked;
 begin
-     _PortsV.AddPorts;
-     _PortsU.AddPorts;
-     _PortsI.AddPorts;
+     _Verters.AddPorts;
+     _Unifors.AddPorts;
+     _Imagers.AddPorts;
 
      inherited;
 end;
@@ -405,16 +407,16 @@ constructor TGLEngine.Create;
 begin
      inherited Create;
 
-     _PortsV := TGLPortsV.Create( Self );
-     _PortsU := TGLPortsU.Create( Self );
-     _PortsI := TGLPortsI.Create( Self );
+     _Verters := TGLPortsV.Create( Self );
+     _Unifors := TGLPortsU.Create( Self );
+     _Imagers := TGLPortsI.Create( Self );
 end;
 
 destructor TGLEngine.Destroy;
 begin
-     _PortsV.DisposeOf;
-     _PortsU.DisposeOf;
-     _PortsI.DisposeOf;
+     _Verters.DisposeOf;
+     _Unifors.DisposeOf;
+     _Imagers.DisposeOf;
 
      inherited;
 end;
@@ -425,16 +427,16 @@ procedure TGLEngine.Use;
 begin
      inherited;
 
-     _PortsV.Use;
-     _PortsU.Use;
-     _PortsI.Use;
+     _Verters.Use;
+     _Unifors.Use;
+     _Imagers.Use;
 end;
 
 procedure TGLEngine.Unuse;
 begin
-     _PortsV.Unuse;
-     _PortsU.Unuse;
-     _PortsI.Unuse;
+     _Verters.Unuse;
+     _Unifors.Unuse;
+     _Imagers.Unuse;
 
      inherited;
 end;
