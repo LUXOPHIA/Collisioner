@@ -4,7 +4,7 @@ interface //####################################################################
 
 uses System.Generics.Collections,
      Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Buffer.Vert, LUX.GPU.OpenGL.Buffer.Unif,
+     LUX, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Buffer.Vert, LUX.GPU.OpenGL.Buffer.Unifor,
      LUX.GPU.OpenGL.Imager;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
@@ -24,7 +24,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLPlugU = record
      private
      public
-       Buff :IGLBufferU;
+       Buff :IGLUnifor;
        Offs :Integer;
        Size :Integer;
      end;
@@ -102,7 +102,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      IGLPlugerU = interface( IGLPluger )
      ['{39DBA43A-6F44-4456-A96D-1A8A73459F61}']
        ///// メソッド
-       procedure Add( const BinP_:GLuint; const Buff_:IGLBufferU;
+       procedure Add( const BinP_:GLuint; const Buff_:IGLUnifor;
                                           const Offs_:Integer = -1;
                                           const Size_:Integer = 1 );
      end;
@@ -117,7 +117,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure DisPlug( const BinP_:GLuint; const Plug_:TGLPlugU ); override;
      public
        ///// メソッド
-       procedure Add( const BinP_:GLuint; const Buff_:IGLBufferU;
+       procedure Add( const BinP_:GLuint; const Buff_:IGLUnifor;
                                           const Offs_:Integer = -1;
                                           const Size_:Integer = 1 );
      end;
@@ -288,7 +288,7 @@ end;
 /////////////////////////////////////////////////////////////////////// メソッド
 
 procedure TGLPlugerU.Add( const BinP_:GLuint;
-                          const Buff_:IGLBufferU;
+                          const Buff_:IGLUnifor;
                           const Offs_:Integer = -1;
                           const Size_:Integer = 1 );
 var
