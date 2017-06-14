@@ -129,8 +129,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property VerBufs :TGLPortsV read GetPortsV;
-       property UniBufs :TGLPortsU read GetPortsU;
+       property Verters :TGLPortsV read GetPortsV;
+       property Unifors :TGLPortsU read GetPortsU;
        property Imagers :TGLPortsI read GetPortsI;
        ///// メソッド
        procedure Use; override;

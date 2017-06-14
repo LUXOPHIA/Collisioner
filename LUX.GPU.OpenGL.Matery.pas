@@ -153,14 +153,14 @@ begin
                Add( _ShaderF{Shad} );
           end;
 
-          with VerBufs do
+          with Verters do
           begin
                Add( 0{BinP}, '_VertexPos'{Name}, 3{EleN}, GL_FLOAT{EleT} );
                Add( 1{BinP}, '_VertexNor'{Name}, 3{EleN}, GL_FLOAT{EleT} );
                Add( 2{BinP}, '_VertexTex'{Name}, 2{EleN}, GL_FLOAT{EleT} );
           end;
 
-          with UniBufs do
+          with Unifors do
           begin
                Add( 0{BinP}, 'TViewerScal'{Name} );
                Add( 1{BinP}, 'TCameraProj'{Name} );
