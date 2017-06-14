@@ -18,19 +18,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
-     TCameraDat = record
-     private
-     public
-       Proj :TSingleM4;
-       Move :TSingleM4;
-     end;
-
-     TNodeDat = record
-     private
-     public
-       Move :TSingleM4;
-     end;
-
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLNode
@@ -74,8 +61,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      ['{648646AC-975D-464E-BD83-C39EA3EB4E1E}']
      {protected}
      {public}
-       ///// メソッド
-       procedure RegBuf;
      end;
 
      IGLShaper = interface( IGLNode )
@@ -94,18 +79,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TGLScener = class( TGLNode, IGLScener )
      private
-       _Cameras :TDictionary<IGLCamera,Integer>;
      protected
-       _CameraUs :TGLBufferU<TCameraDat>;
-       ///// メソッド
-       procedure OnInsertChild( const Child_:TTreeNode ); override;
-       procedure OnRemoveChild( const Child_:TTreeNode ); override;
      public
        constructor Create; override;
        destructor Destroy; override;
-       ///// プロパティ
-       property Cameras  :TDictionary<IGLCamera,Integer> read _Cameras ;
-       property CameraUs :TGLBufferU<TCameraDat>         read _CameraUs;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -183,47 +160,16 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
-/////////////////////////////////////////////////////////////////////// メソッド
-
-procedure TGLScener.OnInsertChild( const Child_:TTreeNode );
-var
-   C :IGLCamera;
-begin
-     if Child_ is TGLCamera then
-     begin
-          _Cameras.Add( Child_ as IGLCamera, _Cameras.Count );
-
-          _CameraUs.Count := _Cameras.Count;
-
-          for C in _Cameras.Keys do C.RegBuf;
-     end;
-
-     inherited;
-end;
-
-procedure TGLScener.OnRemoveChild( const Child_:TTreeNode );
-begin
-     if Child_ is TGLCamera then _Cameras.Remove( Child_ as IGLCamera );
-
-     inherited;
-end;
-
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TGLScener.Create;
 begin
      inherited;
 
-     _Cameras  := TDictionary<IGLCamera,Integer>.Create;
-
-     _CameraUs := TGLBufferU<TCameraDat>.Create( GL_DYNAMIC_DRAW );
 end;
 
 destructor TGLScener.Destroy;
 begin
-     _CameraUs.DisposeOf;
-
-     _Cameras .DisposeOf;
 
      inherited;
 end;
