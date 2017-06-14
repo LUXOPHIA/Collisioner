@@ -38,7 +38,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property CamI :Integer   read GetCamI              ;
        property Proj :TSingleM4 read GetProj write SetProj;
        ///// メソッド
-       procedure RegBuf; override;
+       procedure RegBuf;
        procedure Render;
      end;
 
@@ -105,7 +105,7 @@ procedure TGLCamera.SetMove( const Move_:TSingleM4 );
 begin
      inherited;
 
-     _Move := Move_;  RegBuf;
+     RegBuf;
 end;
 
 //------------------------------------------------------------------------------
@@ -141,7 +141,7 @@ var
    C :TCameraDat;
 begin
      C.Proj := _Proj;
-     C.Move := _Move;
+     C.Move :=  Move;
 
      Scener.CameraUs[ CamI ] := C;
 end;
