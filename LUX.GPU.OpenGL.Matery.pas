@@ -17,7 +17,31 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMatery
 
-     TGLMatery = class
+     IGLMatery = interface
+     ['{13071090-B024-474A-BDA2-AB604AD10B16}']
+     {protected}
+       ///// アクセス
+       function GetShaderV :TGLShaderV;
+       function GetShaderF :TGLShaderF;
+       function GetEngine  :TGLEngine;
+       /////
+       function GetOnBuilded :TProc;
+       procedure SetOnBuilded( const OnBuilded_:TProc );
+     {public}
+       ///// プロパティ
+       property ShaderV :TGLShaderV read GetShaderV;
+       property ShaderF :TGLShaderF read GetShaderF;
+       property Engine  :TGLEngine  read GetEngine ;
+       ///// イベント
+       property OnBuilded :TProc read GetOnBuilded write SetOnBuilded;
+       ///// メソッド
+       procedure Use;
+       procedure Unuse;
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLMatery = class( TInterfacedObject, IGLMatery )
      private
      protected
        _ShaderV :TGLShaderV;
@@ -26,16 +50,20 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// イベント
        _OnBuilded :TProc;
        ///// アクセス
+       function GetShaderV :TGLShaderV;
+       function GetShaderF :TGLShaderF;
+       function GetEngine  :TGLEngine;
+       /////
        function GetOnBuilded :TProc;
        procedure SetOnBuilded( const OnBuilded_:TProc );
      public
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property ShaderV :TGLShaderV read _ShaderV;
-       property ShaderF :TGLShaderF read _ShaderF;
-       property Engine  :TGLEngine  read _Engine ;
-       ///// プロパティ
+       property ShaderV :TGLShaderV read GetShaderV;
+       property ShaderF :TGLShaderF read GetShaderF;
+       property Engine  :TGLEngine  read GetEngine ;
+       ///// イベント
        property OnBuilded :TProc read GetOnBuilded write SetOnBuilded;
        ///// メソッド
        procedure Use; virtual;
@@ -61,6 +89,23 @@ implementation //###############################################################
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
 /////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLMatery.GetShaderV :TGLShaderV;
+begin
+     Result := _ShaderV;
+end;
+
+function TGLMatery.GetShaderF :TGLShaderF;
+begin
+     Result := _ShaderF;
+end;
+
+function TGLMatery.GetEngine  :TGLEngine;
+begin
+     Result := _Engine;
+end;
+
+////////////////////////////////////////////////////////////////////////////////
 
 function TGLMatery.GetOnBuilded :TProc;
 begin
