@@ -150,13 +150,13 @@ end;
 
 procedure TGLCamera.Render;
 begin
+     _Move.Use( 3{BinP} );
+
      with Scener do
      begin
           CameraUs.Use( 0{BinP}, CamI{Offs} );
 
           Draw;
-
-          CameraUs.Unuse( 0{BinP} );
      end;
 end;
 
