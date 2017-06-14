@@ -136,23 +136,15 @@ end;
 
 procedure TGLShaperPoly.Draw;
 begin
-     Scener.NodeUs.Use( 1{BinP}, NodI{Offs} );
+     inherited;
 
      _Matery.Use;
 
-       _PosBuf.Use( 0{BinP} );
-       _NorBuf.Use( 1{BinP} );
-       _TexBuf.Use( 2{BinP} );
+     _PosBuf.Use( 0{BinP} );
+     _NorBuf.Use( 1{BinP} );
+     _TexBuf.Use( 2{BinP} );
 
-         _EleBuf.Draw;
-
-       _PosBuf.Unuse( 0{BinP} );
-       _NorBuf.Unuse( 1{BinP} );
-       _TexBuf.Unuse( 2{BinP} );
-
-     _Matery.Unuse;
-
-     Scener.NodeUs.Unuse( 1{BinP} );
+     _EleBuf.Draw;
 end;
 
 //------------------------------------------------------------------------------
@@ -335,23 +327,15 @@ end;
 
 procedure TGLShaperCopy.Draw;
 begin
-     Scener.NodeUs.Use( 1{BinP}, NodI{Offs} );
+     inherited;
 
      _Matery.Use;
 
-       _Shaper.PosBuf.Use( 0{BinP} );
-       _Shaper.NorBuf.Use( 1{BinP} );
-       _Shaper.TexBuf.Use( 2{BinP} );
+     _Shaper.PosBuf.Use( 0{BinP} );
+     _Shaper.NorBuf.Use( 1{BinP} );
+     _Shaper.TexBuf.Use( 2{BinP} );
 
-         _Shaper.EleBuf.Draw;
-
-       _Shaper.PosBuf.Unuse( 0{BinP} );
-       _Shaper.NorBuf.Unuse( 1{BinP} );
-       _Shaper.TexBuf.Unuse( 2{BinP} );
-
-     _Matery.Unuse;
-
-     Scener.NodeUs.Unuse( 1{BinP} );
+     _Shaper.EleBuf.Draw;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
