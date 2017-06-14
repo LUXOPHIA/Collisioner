@@ -23,12 +23,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      {protected}
        ///// アクセス
        function GetScener :TGLScener;
-       function GetMove :TSingleM4;
-       procedure SetMove( const Move_:TSingleM4 );
+       function GetPose :TSingleM4;
+       procedure SetPose( const Move_:TSingleM4 );
      {public}
        ///// プロパティ
        property Scener :TGLScener read GetScener              ;
-       property Move   :TSingleM4 read GetMove   write SetMove;
+       property Pose   :TSingleM4 read GetPose   write SetPose;
        ///// メソッド
        procedure Draw;
      end;
@@ -36,17 +36,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLNode = class( TTreeNode<TGLNode>, IGLNode )
      private
      protected
-       _Move :TGLUnifor<TSingleM4>;
+       _Pose :TGLUnifor<TSingleM4>;
        ///// アクセス
        function GetScener :TGLScener;
-       function GetMove :TSingleM4;
-       procedure SetMove( const Move_:TSingleM4 ); virtual;
+       function GetPose :TSingleM4;
+       procedure SetPose( const Move_:TSingleM4 ); virtual;
      public
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
        property Scener :TGLScener read GetScener              ;
-       property Move   :TSingleM4 read GetMove   write SetMove;
+       property Pose   :TSingleM4 read GetPose   write SetPose;
        ///// メソッド
        procedure Draw; virtual;
      end;
@@ -112,14 +112,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TGLNode.GetMove :TSingleM4;
+function TGLNode.GetPose :TSingleM4;
 begin
-     Result := _Move[ 0 ];
+     Result := _Pose[ 0 ];
 end;
 
-procedure TGLNode.SetMove( const Move_:TSingleM4 );
+procedure TGLNode.SetPose( const Move_:TSingleM4 );
 begin
-     _Move[ 0 ] := Move_;
+     _Pose[ 0 ] := Move_;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -128,13 +128,15 @@ constructor TGLNode.Create;
 begin
      inherited;
 
-     _Move := TGLUnifor<TSingleM4>.Create( GL_DYNAMIC_DRAW );
-     _Move.Count := 1;
+     _Pose := TGLUnifor<TSingleM4>.Create( GL_DYNAMIC_DRAW );
+     _Pose.Count := 1;
+
+     Pose := TSingleM4.Identify;
 end;
 
 destructor TGLNode.Destroy;
 begin
-     _Move.DisposeOf;
+     _Pose.DisposeOf;
 
      inherited;
 end;
@@ -147,7 +149,7 @@ var
 begin
      for I := 0 to ChildsN-1 do Childs[ I ].Draw;
 
-     _Move.Use( 3{BinP} );
+     _Pose.Use( 3{BinP} );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLScener

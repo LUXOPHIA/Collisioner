@@ -94,7 +94,6 @@ constructor TGLShaper.Create( const Paren_:ITreeNode );
 begin
      inherited;
 
-     Move := TSingleM4.Identify;
 end;
 
 destructor TGLShaper.Destroy;
