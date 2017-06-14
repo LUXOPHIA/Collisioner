@@ -15,19 +15,39 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryI
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryImag
 
-     TGLMateryI = class( TGLMatery )
+     IGLMateryImag = interface( IGLMatery )
+     ['{00978DAD-C3D0-4B55-BD80-935C01F19066}']
+     {protected}
+       ///// アクセス
+       function GetSample :TGLSample;
+       function GetImager :TGLImager2D_RGBA;
+     {public}
+       ///// プロパティ
+       property Sample :TGLSample        read GetSample;
+       property Imager :TGLImager2D_RGBA read GetImager;
+       ///// メソッド
+       procedure Use;
+       procedure Unuse;
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLMateryImag = class( TGLMatery, IGLMateryImag )
      private
      protected
        _Sample :TGLSample;
        _Imager :TGLImager2D_RGBA;
+       ///// アクセス
+       function GetSample :TGLSample;
+       function GetImager :TGLImager2D_RGBA;
      public
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property Sample :TGLSample        read _Sample;
-       property Imager :TGLImager2D_RGBA read _Imager;
+       property Sample :TGLSample        read GetSample;
+       property Imager :TGLImager2D_RGBA read GetImager;
        ///// メソッド
        procedure Use; override;
        procedure Unuse; override;
@@ -45,15 +65,25 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryI
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryImag
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
+function TGLMateryImag.GetSample :TGLSample;
+begin
+     Result := _Sample;
+end;
+
+function TGLMateryImag.GetImager :TGLImager2D_RGBA;
+begin
+     Result := _Imager;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLMateryI.Create;
+constructor TGLMateryImag.Create;
 begin
      inherited;
 
@@ -61,7 +91,7 @@ begin
      _Imager  := TGLImager2D_RGBA.Create;
 end;
 
-destructor TGLMateryI.Destroy;
+destructor TGLMateryImag.Destroy;
 begin
      _Sample.DisposeOf;
      _Imager.DisposeOf;
@@ -71,7 +101,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLMateryI.Use;
+procedure TGLMateryImag.Use;
 begin
      inherited;
 
@@ -79,7 +109,7 @@ begin
      _Imager.Use( 0 );
 end;
 
-procedure TGLMateryI.Unuse;
+procedure TGLMateryImag.Unuse;
 begin
      _Sample.Unuse( 0 );
      _Imager.Unuse( 0 );
