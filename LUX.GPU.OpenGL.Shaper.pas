@@ -23,23 +23,50 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLShaper = class( TGLNode, IGLShaper )
      private
      protected
+       _Matery :IGLMatery;
+     public
+       constructor Create( const Paren_:ITreeNode ); override;
+       destructor Destroy; override;
+       ///// プロパティ
+       property Matery :IGLMatery read _Matery write _Matery;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperPoly
+
+     TGLShaperPoly = class( TGLShaper )
+     private
+     protected
        _PosBuf :TGLBufferVS<TSingle3D>;
        _NorBuf :TGLBufferVS<TSingle3D>;
        _TexBuf :TGLBufferVS<TSingle2D>;
        _EleBuf :TGLBufferE32;
-       _Matery :TGLMatery;
      public
        constructor Create( const Paren_:ITreeNode ); override;
        destructor Destroy; override;
        ///// プロパティ
        property PosBuf :TGLBufferVS<TSingle3D> read _PosBuf;
        property NorBuf :TGLBufferVS<TSingle3D> read _NorBuf;
+       property TexBuf :TGLBufferVS<TSingle2D> read _TexBuf;
        property EleBuf :TGLBufferE32           read _EleBuf;
-       property Matery :TGLMatery              read _Matery write _Matery;
        ///// メソッド
        procedure Draw; override;
        procedure LoadFromFileSTL( const FileName_:String );
        procedure LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>; const DivU_,DivV_:Integer );
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaper
+
+     TGLShaperCopy = class( TGLShaper )
+     private
+     protected
+       _Shaper :TGLShaperPoly;
+     public
+       constructor Create( const Paren_:ITreeNode ); override;
+       destructor Destroy; override;
+       ///// プロパティ
+       property Shaper :TGLShaperPoly read _Shaper write _Shaper;
+       ///// メソッド
+       procedure Draw; override;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -68,18 +95,35 @@ constructor TGLShaper.Create( const Paren_:ITreeNode );
 begin
      inherited;
 
-     _PosBuf := TGLBufferVS<TSingle3D>.Create( GL_STATIC_DRAW );
-     _NorBuf := TGLBufferVS<TSingle3D>.Create( GL_STATIC_DRAW );
-     _TexBuf := TGLBufferVS<TSingle2D>.Create( GL_STATIC_DRAW );
-     _EleBuf := TGLBufferE32          .Create( GL_STATIC_DRAW );
-
      Move := TSingleM4.Identify;
 end;
 
 destructor TGLShaper.Destroy;
 begin
-     if Assigned( _Matery ) then _Matery.DisposeOf;
 
+     inherited;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperPoly
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLShaperPoly.Create( const Paren_:ITreeNode );
+begin
+     inherited;
+
+     _PosBuf := TGLBufferVS<TSingle3D>.Create( GL_STATIC_DRAW );
+     _NorBuf := TGLBufferVS<TSingle3D>.Create( GL_STATIC_DRAW );
+     _TexBuf := TGLBufferVS<TSingle2D>.Create( GL_STATIC_DRAW );
+     _EleBuf := TGLBufferE32          .Create( GL_STATIC_DRAW );
+end;
+
+destructor TGLShaperPoly.Destroy;
+begin
      _PosBuf.DisposeOf;
      _NorBuf.DisposeOf;
      _TexBuf.DisposeOf;
@@ -90,7 +134,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLShaper.Draw;
+procedure TGLShaperPoly.Draw;
 begin
      Scener.NodeUs.Use( 1{BinP}, NodI{Offs} );
 
@@ -113,7 +157,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLShaper.LoadFromFileSTL( const FileName_:String );
+procedure TGLShaperPoly.LoadFromFileSTL( const FileName_:String );
 var
    F :TFileStream;
    Hs :array [ 0..80-1 ] of AnsiChar;
@@ -130,16 +174,17 @@ var
    Es :TGLBufferData<TCardinal3D>;
 begin
      F := TFileStream.Create( FileName_, fmOpenRead );
+     try
+        F.Read( Hs, SizeOf( Hs ) );
 
-     F.Read( Hs, SizeOf( Hs ) );
+        F.Read( FsN, SizeOf( FsN ) );
 
-     F.Read( FsN, SizeOf( FsN ) );
+        SetLength( Fs, FsN );
 
-     SetLength( Fs, FsN );
-
-     F.Read( Fs[0], 50 * FsN );
-
-     F.DisposeOf;
+        F.Read( Fs[0], 50 * FsN );
+     finally
+            F.DisposeOf;
+     end;
 
      _PosBuf.Count := 3 * FsN;
      _NorBuf.Count := 3 * FsN;
@@ -179,7 +224,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLShaper.LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>; const DivU_,DivV_:Integer );
+procedure TGLShaperPoly.LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>; const DivU_,DivV_:Integer );
 //·····························
      function XYtoI( const X_,Y_:Integer ) :Integer;
      begin
@@ -264,6 +309,49 @@ procedure TGLShaper.LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>;
 begin
      MakeVerts;
      MakeElems;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaper
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLShaperCopy.Create( const Paren_:ITreeNode );
+begin
+     inherited;
+
+end;
+
+destructor TGLShaperCopy.Destroy;
+begin
+
+     inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLShaperCopy.Draw;
+begin
+     Scener.NodeUs.Use( 1{BinP}, NodI{Offs} );
+
+     _Matery.Use;
+
+       _Shaper.PosBuf.Use( 0{BinP} );
+       _Shaper.NorBuf.Use( 1{BinP} );
+       _Shaper.TexBuf.Use( 2{BinP} );
+
+         _Shaper.EleBuf.Draw;
+
+       _Shaper.PosBuf.Unuse( 0{BinP} );
+       _Shaper.NorBuf.Unuse( 1{BinP} );
+       _Shaper.TexBuf.Unuse( 2{BinP} );
+
+     _Matery.Unuse;
+
+     Scener.NodeUs.Unuse( 1{BinP} );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
