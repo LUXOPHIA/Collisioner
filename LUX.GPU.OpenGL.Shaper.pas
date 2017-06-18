@@ -77,7 +77,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 implementation //############################################################### ■
 
-uses System.SysUtils, System.Classes, System.RegularExpressions;
+uses System.SysUtils, System.Classes, System.RegularExpressions, System.Generics.Collections;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -149,12 +149,12 @@ end;
 //------------------------------------------------------------------------------
 
 procedure TGLShaperPoly.LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>; const DivU_,DivV_:Integer );
-//·····························
+//··································
      function XYtoI( const X_,Y_:Integer ) :Integer;
      begin
           Result := ( DivU_ + 1 ) * Y_ + X_;
      end;
-     //························
+     //·····························
      procedure MakeVerts;
      var
         C, X, Y, I :Integer;
@@ -195,7 +195,7 @@ procedure TGLShaperPoly.LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle
           _NorBuf.Unmap;
           _TexBuf.Unmap;
      end;
-     //························
+     //·····························
      procedure MakeElems;
      var
         X0, Y0, X1, Y1, I, I00, I01, I10, I11 :Integer;
@@ -229,7 +229,7 @@ procedure TGLShaperPoly.LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle
 
           _EleBuf.Unmap;
      end;
-//·····························
+//··································
 begin
      MakeVerts;
      MakeElems;
@@ -305,118 +305,173 @@ end;
 //------------------------------------------------------------------------------
 
 procedure TGLShaperPoly.LoadFromFileOBJ( const FileName_:String );
+type
+    TVert = record
+      P :Integer;
+      N :Integer;
+      T :Integer;
+    end;
 var
-   S :TStreamReader;
-   L :String;
-   RP, RN, RT, RF, RI :TRegEx;
-   MP, MN, MT :TMatch;
-   MIs :TMatchCollection;
-   P, N :TSingle3D;
-   Ps, Ns, Ps2 :TArray<TSingle3D>;
-   FP, FN :TCardinal3D;
-   FPs, FNs :TArray<TCardinal3D>;
-   I :Integer;
-begin
-     S := TStreamReader.Create( FileName_, TEncoding.Default );
-
-     RP := TRegEx.Create( 'v +([^ ]+) +([^ ]+) +([^ ]+)', [ roIgnoreCase, roCompiled ] );
-     RN := TRegEx.Create( 'vn +([^ ]+) +([^ ]+) +([^ ]+)', [ roIgnoreCase, roCompiled ] );
-     RT := TRegEx.Create( 'vt +([^ ]+) +([^ ]+)', [ roIgnoreCase, roCompiled ] );
-
-     RF := TRegEx.Create( '^f +', [ roIgnoreCase, roCompiled ] );
-     RI := TRegEx.Create( '(\d+)/?(\d*)/?(\d*)', [ roIgnoreCase, roCompiled ] );
-
-     Ps := [];  FPs := [];
-     Ns := [];  FNs := [];
-
-     while not S.EndOfStream do
+   Vs :TDictionary<TVert,Integer>;
+//·····································
+     function ReadVert( const M_:TMatch ) :Cardinal;
+     var
+        V :TVert;
      begin
-          L := S.ReadLine;
-
-          MP := RP.Match( L );
-          MN := RN.Match( L );
-          MT := RT.Match( L );
-
-          if MP.Success then
+          with V do
           begin
-               Assert( MP.Groups.Count = 4 );
+               P := StrToIntDef( M_.Groups[ 1 ].Value, 0 ) - 1;
+               T := StrToIntDef( M_.Groups[ 2 ].Value, 0 ) - 1;
+               N := StrToIntDef( M_.Groups[ 3 ].Value, 0 ) - 1;
+          end;
 
-               P.X := MP.Groups[ 1 ].Value.ToSingle;
-               P.Y := MP.Groups[ 2 ].Value.ToSingle;
-               P.Z := MP.Groups[ 3 ].Value.ToSingle;
-
-               N := TSingle3D.Create( 0, 0, 1 );
-
-               Ps := Ps + [ P ];
-          end
+          if Vs.ContainsKey( V ) then Result := Vs[ V ]
           else
-          if MN.Success then
           begin
-               Assert( MN.Groups.Count = 4 );
+               Result := Vs.Count;  Vs.Add( V, Result );
+          end;
+     end;
+//·····································
+var
+   F :TStreamReader;
+   RV, RN, RT, RF, RI :TRegEx;
+   Ps, Ns :TArray<TSingle3D>;
+   Ts :TArray<TSingle2D>;
+   L :String; 
+   P, N :TSingle3D;
+   T :TSingle2D;
+   Es :TArray<TCardinal3D>;
+   Ms :TMatchCollection;
+   E :TCardinal3D;
+   K :Integer;
+   V :TPair<TVert,Integer>;
+begin
+     Vs := TDictionary<TVert,Integer>.Create;
 
-               N.X := MN.Groups[ 1 ].Value.ToSingle;
-               N.Y := MN.Groups[ 2 ].Value.ToSingle;
-               N.Z := MN.Groups[ 3 ].Value.ToSingle;
+     F := TStreamReader.Create( FileName_, TEncoding.Default );
+     try
+          RV := TRegEx.Create( 'v[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+([^ \t\n]+)' );
+          RN := TRegEx.Create( 'vn[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+([^ \t\n]+)' );
+          RT := TRegEx.Create( 'vt[ \t]+([^ \t]+)[ \t]+([^ \t]+)' );
+          RF := TRegEx.Create( 'f( [^\n]+)' );
+          RI := TRegEx.Create( '[ \t]+(\d+)/?(\d*)/?(\d*)' );
 
-               Ns := Ns + [ N ];
-          end
-          else
-          if MT.Success then
+          Ps := [];
+          Ns := [];
+          Ts := [];
+          Es := [];
+          while not F.EndOfStream do
           begin
-               Assert( MT.Groups.Count = 3 );
+               L := F.ReadLine;
 
-          end
-          else
-          if RF.IsMatch( L ) then
-          begin
-               MIs := RI.Matches( L );
-
-               Assert( MIs.Count >= 3 );
-
-               FP.X := MIs[ 0 ].Groups[ 1 ].Value.ToInteger - 1;
-               FP.Y := MIs[ 1 ].Groups[ 1 ].Value.ToInteger - 1;
-               FP.Z := MIs[ 2 ].Groups[ 1 ].Value.ToInteger - 1;
-
-               FN.X := MIs[ 0 ].Groups[ 3 ].Value.ToInteger - 1;
-               FN.Y := MIs[ 1 ].Groups[ 3 ].Value.ToInteger - 1;
-               FN.Z := MIs[ 2 ].Groups[ 3 ].Value.ToInteger - 1;
-
-               FPs := FPs + [ FP ];
-               FNs := FNs + [ FN ];
-
-               if MIs.Count = 4 then
+               with RV.Match( L ) do
                begin
-                    FP.X := MIs[ 2 ].Groups[ 1 ].Value.ToInteger - 1;
-                    FP.Y := MIs[ 3 ].Groups[ 1 ].Value.ToInteger - 1;
-                    FP.Z := MIs[ 0 ].Groups[ 1 ].Value.ToInteger - 1;
+                    if Success then
+                    begin
+                         P.X := Groups[ 1 ].Value.ToSingle;
+                         P.Y := Groups[ 2 ].Value.ToSingle;
+                         P.Z := Groups[ 3 ].Value.ToSingle;
 
-                    FN.X := MIs[ 2 ].Groups[ 3 ].Value.ToInteger - 1;
-                    FN.Y := MIs[ 3 ].Groups[ 3 ].Value.ToInteger - 1;
-                    FN.Z := MIs[ 0 ].Groups[ 3 ].Value.ToInteger - 1;
+                         Ps := Ps + [ P ];
+                    end;
+               end;
 
-                    FPs := FPs + [ FP ];
-                    FNs := FNs + [ FN ];
+               with RN.Match( L ) do
+               begin
+                    if Success then
+                    begin
+                         N.X := Groups[ 1 ].Value.ToSingle;
+                         N.Y := Groups[ 2 ].Value.ToSingle;
+                         N.Z := Groups[ 3 ].Value.ToSingle;
+
+                         Ns := Ns + [ N ];
+                    end;
+               end;
+
+               with RT.Match( L ) do
+               begin
+                    if Success then
+                    begin
+                         T.X := Groups[ 1 ].Value.ToSingle;
+                         T.Y := Groups[ 2 ].Value.ToSingle;
+
+                         Ts := Ts + [ T ];
+                    end;
+               end;
+
+               with RF.Match( L ) do
+               begin
+                    if Success then
+                    begin
+                         Ms := RI.Matches( Groups[ 1 ].Value );
+
+                         E.X := ReadVert( Ms[ 0 ] );
+                         E.Y := ReadVert( Ms[ 1 ] );
+                         E.Z := ReadVert( Ms[ 2 ] );
+
+                         Es := Es + [ E ];
+
+                         for K := 3 to Ms.Count-1 do
+                         begin
+                              E.Y := E.Z;  E.Z := ReadVert( Ms[ K ] );
+
+                              Es := Es + [ E ];
+                         end;
+                    end;
                end;
           end;
+     finally
+            F.DisposeOf;
      end;
 
-     S.DisposeOf;
-
-     SetLength( Ps2, Length( FNs ) );
-
-     for I := 0 to High( FNs ) do
+     if Length( Ps ) > 0 then
      begin
-          with FNs[ I ] do
+          with _PosBuf do
           begin
-               Ps2[ X ] := Ps[ FPs[ I ].X ];
-               Ps2[ Y ] := Ps[ FPs[ I ].Y ];
-               Ps2[ Z ] := Ps[ FPs[ I ].Z ];
+               Count := Vs.Count;
+
+               with Map( GL_WRITE_ONLY ) do
+               begin
+                    for V in Vs do Items[ V.Value ] := Ps[ V.Key.P ];
+               end;
+
+               Unmap;
           end;
      end;
 
-     _PosBuf.Import( Ps2 );
-     _NorBuf.Import( Ns  );
-     _EleBuf.Import( FNs );
+     if Length( Ns ) > 0 then
+     begin
+          with _NorBuf do
+          begin
+               Count := Vs.Count;
+
+               with Map( GL_WRITE_ONLY ) do
+               begin
+                    for V in Vs do Items[ V.Value ] := Ns[ V.Key.N ];
+               end;
+
+               Unmap;
+          end;
+     end;
+
+     if Length( Ts ) > 0 then
+     begin
+          with _TexBuf do
+          begin
+               Count := Vs.Count;
+
+               with Map( GL_WRITE_ONLY ) do
+               begin
+                    for V in Vs do Items[ V.Value ] := Ts[ V.Key.T ];
+               end;
+
+               Unmap;
+          end;
+     end;
+
+     Vs.DisposeOf;
+
+     _EleBuf.Import( Es );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperCopy
