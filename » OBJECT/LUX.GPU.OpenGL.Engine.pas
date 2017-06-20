@@ -210,7 +210,13 @@ begin
 
             glEnableVertexAttribArray( L );
 
-            with Port_ do glVertexAttribFormat( L, EleN, EleT, GL_FALSE, Offs );
+            with Port_ do
+            begin
+                 case EleT of
+                 GL_INT   :glVertexAttribIFormat( L, EleN, EleT, Offs );
+                 GL_FLOAT :glVertexAttribFormat( L, EleN, EleT, GL_FALSE, Offs );
+                 end;
+            end;
 
             glVertexAttribBinding( L, BinP_ );
 
