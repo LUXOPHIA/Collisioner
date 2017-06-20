@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.D3, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Buffer;
+     LUX, LUX.D2, LUX.D3, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Buffer;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -30,17 +30,60 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        ///// アクセス
        function GetKind :GLenum; override;
-       function GetElemT :GLenum;
+       function GetElemN :GLint; virtual; abstract;
+       function GetElemT :GLenum; virtual; abstract;
      public
        ///// プロパティ
        property ElemT :GLenum read GetElemT;
        ///// メソッド
-       procedure Draw;
+       procedure Draw; virtual; abstract;
      end;
 
-     TGLElemer8  = TGLElemer<TByte3D>;
-     TGLElemer16 = TGLElemer<TWord3D>;
-     TGLElemer32 = TGLElemer<TCardinal3D>;
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLElemerTria<_TYPE_>
+
+     IGLElemerTria = interface( IGLBuffer )
+     ['{8D7AA8F0-FDEF-4B6C-A537-D861D07CB6D4}']
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLElemerTria<_TYPE_:record> = class( TGLElemer<_TYPE_>, IGLElemerTria )
+     private
+     protected
+       ///// アクセス
+       function GetElemN :GLint; override;
+       function GetElemT :GLenum; override;
+     public
+       ///// メソッド
+       procedure Draw; override;
+     end;
+
+     TGLElemerTria8  = TGLElemerTria<TByte3D>;
+     TGLElemerTria16 = TGLElemerTria<TWord3D>;
+     TGLElemerTria32 = TGLElemerTria<TCardinal3D>;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLElemerLine<_TYPE_>
+
+     IGLElemerLine = interface( IGLBuffer )
+     ['{7B63D84E-9B99-4661-94B5-0E508A59810A}']
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLElemerLine<_TYPE_:record> = class( TGLElemer<_TYPE_>, IGLElemerLine )
+     private
+     protected
+       ///// アクセス
+       function GetElemN :GLint; override;
+       function GetElemT :GLenum; override;
+     public
+       ///// メソッド
+       procedure Draw; override;
+     end;
+
+     TGLElemerLine8  = TGLElemerLine<TByte2D>;
+     TGLElemerLine16 = TGLElemerLine<TWord2D>;
+     TGLElemerLine32 = TGLElemerLine<TCardinal2D>;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
 
@@ -67,7 +110,22 @@ begin
      Result := GL_ELEMENT_ARRAY_BUFFER;
 end;
 
-function TGLElemer<_TYPE_>.GetElemT :GLenum;
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLElemerTria<_TYPE_>
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLElemerTria<_TYPE_>.GetElemN :GLint;
+begin
+     Result := 3;
+end;
+
+function TGLElemerTria<_TYPE_>.GetElemT :GLenum;
 begin
      case  SizeOf( _TYPE_ ) of
        3: Result := GL_UNSIGNED_BYTE;
@@ -81,11 +139,47 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLElemer<_TYPE_>.Draw;
+procedure TGLElemerTria<_TYPE_>.Draw;
 begin
      Bind;
 
-       glDrawElements( GL_TRIANGLES, 3{Poin} * _Count, GetElemT, nil );
+       glDrawElements( GL_TRIANGLES, GetElemN * _Count, GetElemT, nil );
+
+     Unbind;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLElemerLine<_TYPE_>
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLElemerLine<_TYPE_>.GetElemN :GLint;
+begin
+     Result := 2;
+end;
+
+function TGLElemerLine<_TYPE_>.GetElemT :GLenum;
+begin
+     case  SizeOf( _TYPE_ ) of
+       2: Result := GL_UNSIGNED_BYTE;
+       4: Result := GL_UNSIGNED_SHORT;
+       8: Result := GL_UNSIGNED_INT;
+     else Assert( False, 'Unkown Type!' );
+     end;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLElemerLine<_TYPE_>.Draw;
+begin
+     Bind;
+
+       glDrawElements( GL_LINES, GetElemN * _Count, GetElemT, nil );
 
      Unbind;
 end;
