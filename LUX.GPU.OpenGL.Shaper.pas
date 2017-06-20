@@ -38,7 +38,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _PosBuf :TGLVerterS<TSingle3D>;
        _NorBuf :TGLVerterS<TSingle3D>;
        _TexBuf :TGLVerterS<TSingle2D>;
-       _EleBuf :TGLElemer32;
+       _EleBuf :TGLElemerTria32;
      public
        constructor Create( const Paren_:ITreeNode ); override;
        destructor Destroy; override;
@@ -46,7 +46,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property PosBuf :TGLVerterS<TSingle3D> read _PosBuf;
        property NorBuf :TGLVerterS<TSingle3D> read _NorBuf;
        property TexBuf :TGLVerterS<TSingle2D> read _TexBuf;
-       property EleBuf :TGLElemer32           read _EleBuf;
+       property EleBuf :TGLElemerTria32       read _EleBuf;
        ///// メソッド
        procedure Draw; override;
        procedure LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>; const DivU_,DivV_:Integer );
@@ -118,7 +118,7 @@ begin
      _PosBuf := TGLVerterS<TSingle3D>.Create( GL_STATIC_DRAW );
      _NorBuf := TGLVerterS<TSingle3D>.Create( GL_STATIC_DRAW );
      _TexBuf := TGLVerterS<TSingle2D>.Create( GL_STATIC_DRAW );
-     _EleBuf := TGLElemer32          .Create( GL_STATIC_DRAW );
+     _EleBuf := TGLElemerTria32      .Create( GL_STATIC_DRAW );
 end;
 
 destructor TGLShaperPoly.Destroy;
