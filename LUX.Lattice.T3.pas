@@ -2,8 +2,8 @@
 
 interface //#################################################################### ■
 
-uses System.SysUtils,
-     LUX;
+uses System.SysUtils, System.Classes,
+     LUX, LUX.D3;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -75,9 +75,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetMargsY( const MargsY_:Integer );
        function GetMargsZ :Integer;
        procedure SetMargsZ( const MargsZ_:Integer );
+       function GetItemSize :Integer;
+       function GetTotalN :Integer;
+       function GetTotalSize :Integer;
 
        function GetLines( const Y_,Z_:Integer ) :PByteArray;
-       function GetItemSize :Integer;
        function GetLineSize :Integer;
        function GetStepX :Integer;
        function GetStepY :Integer;
@@ -98,15 +100,19 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property MargsX                          :Integer    read GetMargsX   write SetMargsX;
        property MargsY                          :Integer    read GetMargsY   write SetMargsY;
        property MargsZ                          :Integer    read GetMargsZ   write SetMargsZ;
+       property ItemSize                        :Integer    read GetItemSize                ;
+       property TotalN                          :Integer    read GetTotalN                  ;
+       property TotalSize                       :Integer    read GetTotalSize               ;
 
        property Lines[ const Y_,Z_:Integer ]    :PByteArray read GetLines                   ;
-       property ItemSize                        :Integer    read GetItemSize                ;
        property LineSize                        :Integer    read GetLineSize                ;
        property StepX                           :Integer    read GetStepX                   ;
        property StepY                           :Integer    read GetStepY                   ;
        property StepZ                           :Integer    read GetStepZ                   ;
        ///// メソッド
        class procedure Swap( var Array0_,Array1_:TArray3D<_TItem_> ); static;
+       procedure Read( const Stream_:TStream ); virtual;
+       procedure Write( const Stream_:TStream ); virtual;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TBricArray3D<_TItem_>
@@ -191,6 +197,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property BricsX                          :Integer read GetBricsX write SetBricsX;
        property BricsY                          :Integer read GetBricsY write SetBricsY;
        property BricsZ                          :Integer read GetBricsZ write SetBricsZ;
+       ///// メソッド
+       procedure Read( const Stream_:TStream ); override;
+       procedure Write( const Stream_:TStream ); override;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -217,7 +226,7 @@ begin
      _TotalY := _MargsY + _ItemsY + _MargsY;
      _TotalZ := _MargsZ + _ItemsZ + _MargsZ;
 
-     SetLength( _Items, _TotalZ * _TotalY * _TotalX );
+     SetLength( _Items, GetTotalN );
 end;
 
 function TArray3D<_TItem_>.XYZtoI( const X_,Y_,Z_:Integer ) :Integer;
@@ -310,14 +319,26 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TArray3D<_TItem_>.GetLines( const Y_,Z_:Integer ) :PByteArray;
-begin
-     Result := @_Items[ XYZtoI( 0, Y_, Z_ ) ];
-end;
-
 function TArray3D<_TItem_>.GetItemSize :Integer;
 begin
      Result := SizeOf( _TItem_ );
+end;
+
+function TArray3D<_TItem_>.GetTotalN :Integer;
+begin
+     Result := _TotalZ * _TotalY * _TotalX;
+end;
+
+function TArray3D<_TItem_>.GetTotalSize :Integer;
+begin
+     Result := GetTotalN * GetItemSize;
+end;
+
+//------------------------------------------------------------------------------
+
+function TArray3D<_TItem_>.GetLines( const Y_,Z_:Integer ) :PByteArray;
+begin
+     Result := @_Items[ XYZtoI( 0, Y_, Z_ ) ];
 end;
 
 function TArray3D<_TItem_>.GetLineSize :Integer;
@@ -389,6 +410,18 @@ var
    A :TArray3D<_TItem_>;
 begin
      A := Array0_;  Array0_ := Array1_;  Array1_ := A;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TArray3D<_TItem_>.Read( const Stream_:TStream );
+begin
+     Stream_.Read( _Items[ 0 ], GetTotalSize );
+end;
+
+procedure TArray3D<_TItem_>.Write( const Stream_:TStream );
+begin
+     Stream_.Write( _Items[ 0 ], GetTotalSize );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TBricArray3D<_TItem_>
@@ -480,6 +513,56 @@ end;
 
 destructor TGridArray3D<_TItem_>.Destroy;
 begin
+
+     inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGridArray3D<_TItem_>.Read( const Stream_:TStream );
+var
+   S, M :TCardinal3D;
+begin
+     with Stream_ do
+     begin
+          Read( S, SizeOf( TCardinal3D ) );
+          Read( M, SizeOf( TCardinal3D ) );
+     end;
+
+     BricsX := S.X;
+     BricsY := S.Y;
+     BricsZ := S.Z;
+
+     MargsX := M.X;
+     MargsY := M.Y;
+     MargsZ := M.Z;
+
+     inherited;
+end;
+
+procedure TGridArray3D<_TItem_>.Write( const Stream_:TStream );
+var
+   S, M :TCardinal3D;
+begin
+     with S do
+     begin
+          X := BricsX;
+          Y := BricsY;
+          Z := BricsZ;
+     end;
+
+     with M do
+     begin
+          X := MargsX;
+          Y := MargsY;
+          Z := MargsZ;
+     end;
+
+     with Stream_ do
+     begin
+          Write( S, SizeOf( TCardinal3D ) );
+          Write( M, SizeOf( TCardinal3D ) );
+     end;
 
      inherited;
 end;
