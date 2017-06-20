@@ -37,7 +37,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetKind :GLenum; override;
        function GetElemT :GLenum; virtual; abstract;
        function GetElemS :Integer; virtual; abstract;
-       function GetElemN :GLint; virtual; abstract;
+       function GetElemN :GLint;
      public
        ///// プロパティ
        property ElemT :GLenum read GetElemT;
@@ -48,6 +48,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Unuse( const BinP_:GLuint );
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVerterI<_TYPE_>
+
+     TGLVerterI<_TYPE_:record> = class( TGLVerter<_TYPE_> )
+     private
+     protected
+       ///// アクセス
+       function GetElemT :GLenum; override;
+       function GetElemS :Integer; override;
+     public
+     end;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVerterS<_TYPE_>
 
      TGLVerterS<_TYPE_:record> = class( TGLVerter<_TYPE_> )
@@ -56,7 +67,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// アクセス
        function GetElemT :GLenum; override;
        function GetElemS :Integer; override;
-       function GetElemN :GLint; override;
      public
      end;
 
@@ -85,6 +95,11 @@ begin
      Result := GL_ARRAY_BUFFER;
 end;
 
+function TGLVerter<_TYPE_>.GetElemN :GLint;
+begin
+     Result := SizeOf( _TYPE_ ) div GetElemS;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 /////////////////////////////////////////////////////////////////////// メソッド
@@ -97,6 +112,24 @@ end;
 procedure TGLVerter<_TYPE_>.Unuse( const BinP_:GLuint );
 begin
      glBindVertexBuffer( BinP_, 0, 0, 0 );
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVerterI<_TYPE_>
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLVerterI<_TYPE_>.GetElemT :GLenum;
+begin
+     Result := GL_INT;
+end;
+
+function TGLVerterI<_TYPE_>.GetElemS :Integer;
+begin
+     Result := SizeOf( Integer );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVerterS<_TYPE_>
@@ -115,11 +148,6 @@ end;
 function TGLVerterS<_TYPE_>.GetElemS :Integer;
 begin
      Result := SizeOf( Single );
-end;
-
-function TGLVerterS<_TYPE_>.GetElemN :GLint;
-begin
-     Result := SizeOf( _TYPE_ ) div GetElemS;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
