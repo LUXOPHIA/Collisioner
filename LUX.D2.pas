@@ -29,6 +29,66 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
           _2 :Byte;                  );
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShortint2D
+
+     TShortint2D = record
+     private
+     public
+       constructor Create( const V_:Shortint ); overload;
+       constructor Create( const X_,Y_:Shortint ); overload;
+     case Byte of
+      0:( _ :array [ 1..2 ] of Shortint; );
+      1:(  X :Shortint;
+           Y :Shortint;                  );
+      2:( _1 :Shortint;
+          _2 :Shortint;                  );
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TWord2D
+
+     TWord2D = record
+     private
+     public
+       constructor Create( const V_:Word ); overload;
+       constructor Create( const X_,Y_:Word ); overload;
+     case Byte of
+      0:( _ :array [ 1..2 ] of Word; );
+      1:(  X :Word;
+           Y :Word;                  );
+      2:( _1 :Word;
+          _2 :Word;                  );
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSmallint2D
+
+     TSmallint2D = record
+     private
+     public
+       constructor Create( const V_:Smallint ); overload;
+       constructor Create( const X_,Y_:Smallint ); overload;
+     case Byte of
+      0:( _ :array [ 1..2 ] of Smallint; );
+      1:(  X :Smallint;
+           Y :Smallint;                  );
+      2:( _1 :Smallint;
+          _2 :Smallint;                  );
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCardinal2D
+
+     TCardinal2D = record
+     private
+     public
+       constructor Create( const V_:Cardinal ); overload;
+       constructor Create( const X_,Y_:Cardinal ); overload;
+     case Byte of
+      0:( _ :array [ 1..2 ] of Cardinal; );
+      1:(  X :Cardinal;
+           Y :Cardinal;                  );
+      2:( _1 :Cardinal;
+          _2 :Cardinal;                  );
+     end;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TInteger2D
 
      TInteger2D = record
@@ -625,6 +685,78 @@ begin
 end;
 
 constructor TByte2D.Create( const X_,Y_:Byte );
+begin
+     X := X_;
+     Y := Y_;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShortint2D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TShortint2D.Create( const V_:Shortint );
+begin
+     X := V_;
+     Y := V_;
+end;
+
+constructor TShortint2D.Create( const X_,Y_:Shortint );
+begin
+     X := X_;
+     Y := Y_;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TWord2D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TWord2D.Create( const V_:Word );
+begin
+     X := V_;
+     Y := V_;
+end;
+
+constructor TWord2D.Create( const X_,Y_:Word );
+begin
+     X := X_;
+     Y := Y_;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSmallint2D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TSmallint2D.Create( const V_:Smallint );
+begin
+     X := V_;
+     Y := V_;
+end;
+
+constructor TSmallint2D.Create( const X_,Y_:Smallint );
+begin
+     X := X_;
+     Y := Y_;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCardinal2D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TCardinal2D.Create( const V_:Cardinal );
+begin
+     X := V_;
+     Y := V_;
+end;
+
+constructor TCardinal2D.Create( const X_,Y_:Cardinal );
 begin
      X := X_;
      Y := Y_;
