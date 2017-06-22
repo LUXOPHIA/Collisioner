@@ -13,7 +13,28 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      ///%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOepnGL
 
-     TOepnGL = class
+     IOpenGL = interface
+     ['{836B9BB2-77E5-4553-B115-EF40C24D0251}']
+       ///// アクセス
+       function GetPFD :TPixelFormatDescriptor;
+       procedure SetPFD( const PFD_:TPixelFormatDescriptor );
+       function GetPFI :Integer;
+       procedure SetPFI( const PFI_:Integer );
+       function GetRC :HGLRC;
+       ///// プロパティ
+       property PFD :TPixelFormatDescriptor read GetPFD write SetPFD;
+       property PFI :Integer                read GetPFI write SetPFI;
+       property RC  :HGLRC                  read GetRC              ;
+       ///// メソッド
+       procedure BeginGL;
+       procedure EndGL;
+       procedure InitOpenGL;
+       procedure ApplyPixelFormat( const DC_:HDC );
+       function glGetString( const Name_:GLenum ) :String;
+       function glGetInteger( const Name_:GLenum ) :GLint;
+     end;
+
+     TOpenGL = class( TInterfacedObject, IOpenGL )
      private
      protected
        _WND :HWND;
@@ -22,8 +43,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _PFI :Integer;
        _RC  :HGLRC;
        ///// アクセス
+       function GetPFD :TPixelFormatDescriptor;
        procedure SetPFD( const PFD_:TPixelFormatDescriptor );
+       function GetPFI :Integer;
        procedure SetPFI( const PFI_:Integer );
+       function GetRC :HGLRC;
        ///// メソッド
        procedure CreateWindow; virtual; abstract;
        procedure DestroyWindow; virtual; abstract;
@@ -37,9 +61,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property PFD :TPixelFormatDescriptor read _PFD write SetPFD;
-       property PFI :Integer                read _PFI write SetPFI;
-       property RC  :HGLRC                  read _RC              ;
+       property PFD :TPixelFormatDescriptor read GetPFD write SetPFD;
+       property PFI :Integer                read GetPFI write SetPFI;
+       property RC  :HGLRC                  read GetRC              ;
        ///// 定数
        class function DefaultPFD :TPixelFormatDescriptor;
        ///// メソッド
@@ -47,8 +71,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure EndGL;
        procedure InitOpenGL;
        procedure ApplyPixelFormat( const DC_:HDC );
-       class function glGetString( const Name_:GLenum ) :String;
-       class function glGetInteger( const Name_:GLenum ) :GLint;
+       function glGetString( const Name_:GLenum ) :String;
+       function glGetInteger( const Name_:GLenum ) :GLint;
      end;
 
      ///%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLObject
@@ -76,7 +100,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【変数】
 
-    _OpenGL_ :TOepnGL;
+    _OpenGL_ :IOpenGL;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
@@ -94,7 +118,12 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-procedure TOepnGL.SetPFD( const PFD_:TPixelFormatDescriptor );
+function TOpenGL.GetPFD :TPixelFormatDescriptor;
+begin
+     Result := _PFD;
+end;
+
+procedure TOpenGL.SetPFD( const PFD_:TPixelFormatDescriptor );
 begin
      DestroyRC;
      DestroyDC;
@@ -105,7 +134,12 @@ begin
      CreateRC;
 end;
 
-procedure TOepnGL.SetPFI( const PFI_:Integer );
+function TOpenGL.GetPFI :Integer;
+begin
+     Result := _PFI;
+end;
+
+procedure TOpenGL.SetPFI( const PFI_:Integer );
 begin
      DestroyRC;
      DestroyDC;
@@ -116,9 +150,14 @@ begin
      CreateRC;
 end;
 
+function TOpenGL.GetRC :HGLRC;
+begin
+     Result := _RC;
+end;
+
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TOepnGL.ValidatePFD( const PFD_:TPixelFormatDescriptor );
+procedure TOpenGL.ValidatePFD( const PFD_:TPixelFormatDescriptor );
 var
    I :Integer;
 begin
@@ -131,7 +170,7 @@ begin
      ValidatePFI( I );
 end;
 
-procedure TOepnGL.ValidatePFI( const PFI_:Integer );
+procedure TOpenGL.ValidatePFI( const PFI_:Integer );
 begin
      _PFI := PFI_;
 
@@ -140,33 +179,33 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TOepnGL.CreateDC;
+procedure TOpenGL.CreateDC;
 begin
      _DC := GetDC( _WND );
 end;
 
-procedure TOepnGL.DestroyDC;
+procedure TOpenGL.DestroyDC;
 begin
      ReleaseDC( 0, _DC );
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TOepnGL.CreateRC;
+procedure TOpenGL.CreateRC;
 begin
      ApplyPixelFormat( _DC );
 
      _RC := wglCreateContext( _DC );
 end;
 
-procedure TOepnGL.DestroyRC;
+procedure TOpenGL.DestroyRC;
 begin
      wglDeleteContext( _RC );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TOepnGL.Create;
+constructor TOpenGL.Create;
 begin
      inherited;
 
@@ -187,7 +226,7 @@ begin
      if wglGetCurrentContext = 0 then BeginGL;
 end;
 
-destructor TOepnGL.Destroy;
+destructor TOpenGL.Destroy;
 begin
      if wglGetCurrentContext = _RC then EndGL;
 
@@ -202,7 +241,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////////// 定数
 
-class function TOepnGL.DefaultPFD :TPixelFormatDescriptor;
+class function TOpenGL.DefaultPFD :TPixelFormatDescriptor;
 begin
      with Result do
      begin
@@ -237,19 +276,19 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TOepnGL.BeginGL;
+procedure TOpenGL.BeginGL;
 begin
      wglMakeCurrent( _DC, _RC );
 end;
 
-procedure TOepnGL.EndGL;
+procedure TOpenGL.EndGL;
 begin
      wglMakeCurrent( _DC, 0 );
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TOepnGL.InitOpenGL;
+procedure TOpenGL.InitOpenGL;
 begin
      glEnable( GL_DEPTH_TEST );
      glEnable( GL_CULL_FACE  );
@@ -257,14 +296,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TOepnGL.ApplyPixelFormat( const DC_:HDC );
+procedure TOpenGL.ApplyPixelFormat( const DC_:HDC );
 begin
      Assert( SetPixelFormat( DC_, _PFI, @_PFD ), 'SetPixelFormat() is failed!' );
 end;
 
 //------------------------------------------------------------------------------
 
-class function TOepnGL.glGetString( const Name_:GLenum ) :String;
+function TOpenGL.glGetString( const Name_:GLenum ) :String;
 var
    P :PGLchar;
 begin
@@ -273,7 +312,7 @@ begin
      SetString( Result, P, Length( P ) );
 end;
 
-class function TOepnGL.glGetInteger( const Name_:GLenum ) :GLint;
+function TOpenGL.glGetInteger( const Name_:GLenum ) :GLint;
 begin
      Winapi.OpenGL.glGetIntegerv( Name_, @Result );
 end;

@@ -13,9 +13,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOepnGL
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOpenGL_VCL
 
-     TOepnGL = class( LUX.GPU.OpenGL.TOepnGL )
+     TOpenGL_VCL = class( TOpenGL )
      private
        _Form :TCustomForm;
      protected
@@ -39,7 +39,7 @@ uses Winapi.OpenGLext;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOepnGL
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOpenGL_VCL
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -47,14 +47,14 @@ uses Winapi.OpenGLext;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TOepnGL.CreateWindow;
+procedure TOpenGL_VCL.CreateWindow;
 begin
      _Form := TCustomForm.CreateNew( nil );
 
      _WND := _Form.Handle;
 end;
 
-procedure TOepnGL.DestroyWindow;
+procedure TOpenGL_VCL.DestroyWindow;
 begin
      _Form.Free;
 end;
@@ -67,12 +67,10 @@ end;
 
 initialization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 初期化
 
-     _OpenGL_ := TOepnGL.Create;
+     _OpenGL_ := TOpenGL_VCL.Create;
 
      InitOpenGLext;
 
 finalization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 最終化
-
-     _OpenGL_.DisposeOf;
 
 end. //######################################################################### ■

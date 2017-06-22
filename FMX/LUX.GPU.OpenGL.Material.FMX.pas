@@ -1,27 +1,36 @@
-﻿unit LUX.GPU.OpenGL.FMX;
+﻿unit LUX.GPU.OpenGL.Material.FMX;
 
 interface //#################################################################### ■
 
-uses FMX.Forms,
-     LUX, LUX.GPU.OpenGL;
+uses Winapi.OpenGL, Winapi.OpenGLext,
+     LUX,
+     LUX.GPU.OpenGL,
+     LUX.GPU.OpenGL.Imager,
+     LUX.GPU.OpenGL.Imager.FMX,
+     LUX.GPU.OpenGL.Material;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% {RECORD}
-
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOepnGL
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexMateri
 
-     TOepnGL_FMX = class( TOpenGL )
+     TGLMatery = class( TGLMaterial )
      private
-       _Form :TCommonCustomForm;
      protected
-       procedure CreateWindow; override;
-       procedure DestroyWindow; override;
+       _Sample :TGLSample;
+       _Imager :TGLImager2D_RGBA;
      public
+       constructor Create;
+       destructor Destroy; override;
+       ///// プロパティ
+       property Sample :TGLSample        read _Sample;
+       property Imager :TGLImager2D_RGBA read _Imager;
+       ///// メソッド
+       procedure Use; override;
+       procedure Unuse; override;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -32,44 +41,57 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 implementation //############################################################### ■
 
-uses FMX.Platform.Win,
-     Winapi.OpenGLext;
-
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOepnGL
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexMatria
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLMatery.Create;
+begin
+     inherited;
+
+     _Sample  := TGLSample       .Create;
+     _Imager  := TGLImager2D_RGBA.Create;
+end;
+
+destructor TGLMatery.Destroy;
+begin
+     _Sample.DisposeOf;
+     _Imager.DisposeOf;
+
+     inherited;
+end;
+
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TOepnGL_FMX.CreateWindow;
+procedure TGLMatery.Use;
 begin
-     _Form := TCommonCustomForm.Create( nil );
+     inherited;
 
-     _WND := WindowHandleToPlatform( _Form.Handle ).Wnd;
+     _Sample.Use( 0 );
+     _Imager.Use( 0 );
 end;
 
-procedure TOepnGL_FMX.DestroyWindow;
+procedure TGLMatery.Unuse;
 begin
-     _Form.DisposeOf;
-end;
+     _Sample.Unuse( 0 );
+     _Imager.Unuse( 0 );
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+     inherited;
+end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
 //############################################################################## □
 
 initialization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 初期化
-
-     _OpenGL_ := TOepnGL_FMX.Create;
-
-     InitOpenGLext;
 
 finalization //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 最終化
 

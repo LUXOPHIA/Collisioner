@@ -16,31 +16,47 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      IGLShader = interface( IGLObject )
      ['{1E06B97A-6947-4960-8CD7-8FAD5CBCC546}']
+       ///// アクセス
+       function GetKind :GLenum;
+       function GetSource :TStringList;
+       function GetStatus :Boolean;
+       function GetErrors :TStringList;
+       ///// プロパティ
+       property Kind   :GLenum      read GetKind  ;
+       property Source :TStringList read GetSource;
+       property Status :Boolean     read GetStatus;
+       property Errors :TStringList read GetErrors;
      end;
 
      TGLShader = class( TGLObject, IGLShader )
      private
      protected
+       _Kind   :GLenum;
        _Source :TStringList;
        _Status :Boolean;
        _Errors :TStringList;
        ///// イベント
        _OnCompiled :TProc;
        ///// アクセス
+       function GetKind :GLenum;
+       function GetSource :TStringList;
        procedure SetSource( Sender_:TObject );
+       function GetStatus :Boolean;
+       function GetErrors :TStringList;
        ///// メソッド
        procedure Compile( const Source_:String );
-       function GetStatus :Boolean;
-       function GetErrors :String;
+       function glGetStatus :Boolean;
+       function glGetErrors :String;
      public
        constructor Create( const Kind_:GLenum );
        destructor Destroy; override;
+       ///// プロパティ
+       property Kind   :GLenum      read GetKind  ;
+       property Source :TStringList read GetSource;
+       property Status :Boolean     read GetStatus;
+       property Errors :TStringList read GetErrors;
        ///// イベント
        property OnCompiled :TProc read _OnCompiled write _OnCompiled;
-       ///// プロパティ
-       property Source :TStringList read _Source;
-       property Status :Boolean     read _Status;
-       property Errors :TStringList read _Errors;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaderV
@@ -90,14 +106,38 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
+function TGLShader.GetKind :GLenum;
+begin
+     Result := _Kind;
+end;
+
+//------------------------------------------------------------------------------
+
+function TGLShader.GetSource :TStringList;
+begin
+     Result := _Source;
+end;
+
 procedure TGLShader.SetSource( Sender_:TObject );
 begin
      Compile( _Source.Text );
 
-     _Status      := GetStatus;
-     _Errors.Text := GetErrors;
+     _Status      := glGetStatus;
+     _Errors.Text := glGetErrors;
 
      _OnCompiled;
+end;
+
+//------------------------------------------------------------------------------
+
+function TGLShader.GetStatus :Boolean;
+begin
+     Result := _Status;
+end;
+
+function TGLShader.GetErrors :TStringList;
+begin
+     Result := _Errors;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
@@ -115,7 +155,7 @@ begin
      glCompileShader( _ID );
 end;
 
-function TGLShader.GetStatus :Boolean;
+function TGLShader.glGetStatus :Boolean;
 var
    S :GLint;
 begin
@@ -124,7 +164,7 @@ begin
      Result := ( S = GL_TRUE );
 end;
 
-function TGLShader.GetErrors :String;
+function TGLShader.glGetErrors :String;
 var
    N :GLint;
    Cs :TArray<GLchar>;
@@ -150,7 +190,9 @@ begin
 
      _Source.OnChange := SetSource;
 
-     _ID := glCreateShader( Kind_ );
+     _Kind := Kind_;
+
+     _ID := glCreateShader( _Kind );
 
      _OnCompiled := procedure begin end;
 end;

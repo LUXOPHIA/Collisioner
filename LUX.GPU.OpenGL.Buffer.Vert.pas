@@ -24,8 +24,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property ElemS :GLint  read GetElemS;
        property ElemN :GLint  read GetElemN;
        ///// メソッド
-       procedure Use( const BindI_:GLuint );
-       procedure Unuse( const BindI_:GLuint );
+       procedure Use( const BinP_:GLuint );
+       procedure Unuse( const BinP_:GLuint );
      end;
 
      //-------------------------------------------------------------------------
@@ -44,8 +44,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property ElemS :GLint  read GetElemS;
        property ElemN :GLint  read GetElemN;
        ///// メソッド
-       procedure Use( const BindI_:GLuint );
-       procedure Unuse( const BindI_:GLuint );
+       procedure Use( const BinP_:GLuint );
+       procedure Unuse( const BinP_:GLuint );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferVS<_TYPE_>
@@ -89,14 +89,14 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLBufferV<_TYPE_>.Use( const BindI_:GLuint );
+procedure TGLBufferV<_TYPE_>.Use( const BinP_:GLuint );
 begin
-     glBindVertexBuffer( BindI_, _ID, 0, GetElemS * GetElemN );
+     glBindVertexBuffer( BinP_, _ID, 0, GetElemS * GetElemN );
 end;
 
-procedure TGLBufferV<_TYPE_>.Unuse( const BindI_:GLuint );
+procedure TGLBufferV<_TYPE_>.Unuse( const BinP_:GLuint );
 begin
-     glBindVertexBuffer( BindI_, 0, 0, 0 );
+     glBindVertexBuffer( BinP_, 0, 0, 0 );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferVS<_TYPE_>
