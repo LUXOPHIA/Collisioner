@@ -168,6 +168,8 @@ begin
           _WND := WindowHandleToPlatform( Handle ).Wnd;
      end;
 
+     SetWindowLong( _WND, GWL_STYLE, WS_CHILD or WS_CLIPSIBLINGS );
+
      Winapi.Windows.SetParent( _WND, GetRootWND );
 end;
 
