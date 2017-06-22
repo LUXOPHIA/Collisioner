@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.GLView;
+﻿unit LUX.GPU.OpenGL.Viewer;
 
 interface //#################################################################### ■
 
@@ -10,7 +10,7 @@ uses
   LUX, LUX.M4, LUX.GPU.OpenGL, LUX.GPU.OpenGL.FMX, LUX.GPU.OpenGL.Buffer.Unifor, LUX.GPU.OpenGL.Camera;
 
 type
-  TGLView = class(TFrame)
+  TGLViewer = class(TFrame)
   private
     { private 宣言 }
     procedure _OnMouseDown( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single ); inline;
@@ -66,26 +66,26 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLView._OnMouseDown( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single );
+procedure TGLViewer._OnMouseDown( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single );
 begin
      _Form.MouseCapture;
 
      MouseDown( Button_, Shift_, X_, Y_ );
 end;
 
-procedure TGLView._OnMouseMove( Sender_:TObject; Shift_:TShiftState; X_,Y_:Single );
+procedure TGLViewer._OnMouseMove( Sender_:TObject; Shift_:TShiftState; X_,Y_:Single );
 begin
      MouseMove( Shift_, X_, Y_ );
 end;
 
-procedure TGLView._OnMouseUp( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single );
+procedure TGLViewer._OnMouseUp( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single );
 begin
      MouseUp( Button_, Shift_, X_, Y_ );
 
      _Form.ReleaseCapture;
 end;
 
-procedure TGLView._OnMouseWheel( Sender_:TObject; Shift_:TShiftState; WheelDelta_:Integer; var Handled_:Boolean );
+procedure TGLViewer._OnMouseWheel( Sender_:TObject; Shift_:TShiftState; WheelDelta_:Integer; var Handled_:Boolean );
 begin
      MouseWheel( Shift_, WheelDelta_, Handled_ );
 end;
@@ -94,33 +94,33 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLView.GetRootForm :TForm;
+function TGLViewer.GetRootForm :TForm;
 begin
      Result := Self.Root.GetObject as TForm;
 end;
 
-function TGLView.GetRootWND :HWND;
+function TGLViewer.GetRootWND :HWND;
 begin
      Result := WindowHandleToPlatform( GetRootForm.Handle ).Wnd;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLView.DoAbsoluteChanged;
+procedure TGLViewer.DoAbsoluteChanged;
 begin
      inherited;
 
      FitWindow;
 end;
 
-procedure TGLView.ParentChanged;
+procedure TGLViewer.ParentChanged;
 begin
      inherited;
 
      _Form.Visible := Self.ParentedVisible;
 end;
 
-procedure TGLView.Paint;
+procedure TGLViewer.Paint;
 begin
      BeginRender;
 
@@ -134,14 +134,14 @@ begin
      EndRender;
 end;
 
-procedure TGLView.Resize;
+procedure TGLViewer.Resize;
 begin
      inherited;
 
      if not ( csLoading in Self.ComponentState ) then FitWindow;
 end;
 
-procedure TGLView.AncestorVisibleChanged( const Visible_: Boolean );
+procedure TGLViewer.AncestorVisibleChanged( const Visible_: Boolean );
 begin
      inherited;
 
@@ -150,7 +150,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLView.CreateWindow;
+procedure TGLViewer.CreateWindow;
 begin
      _Form := TCommonCustomForm.Create( Self );
 
@@ -173,7 +173,7 @@ begin
      Winapi.Windows.SetParent( _WND, GetRootWND );
 end;
 
-procedure TGLView.FitWindow;
+procedure TGLViewer.FitWindow;
 var
    R :TRectF;
 begin
@@ -190,21 +190,21 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLView.CreateDC;
+procedure TGLViewer.CreateDC;
 begin
      _DC := GetDC( _WND );
 
      _OpenGL_.ApplyPixelFormat( _DC );
 end;
 
-procedure TGLView.DestroyDC;
+procedure TGLViewer.DestroyDC;
 begin
      ReleaseDC( _WND, _DC );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLView.Create( AOwner_:TComponent );
+constructor TGLViewer.Create( AOwner_:TComponent );
 begin
      inherited;
 
@@ -220,7 +220,7 @@ begin
      _Viewer.Count := 1;
 end;
 
-destructor TGLView.Destroy;
+destructor TGLViewer.Destroy;
 begin
      _Viewer.DisposeOf;
 
@@ -231,14 +231,14 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLView.Repaint;
+procedure TGLViewer.Repaint;
 begin
      Paint;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLView.RecreateDC;
+procedure TGLViewer.RecreateDC;
 begin
      DestroyDC;
 
@@ -249,14 +249,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLView.BeginGL;
+procedure TGLViewer.BeginGL;
 begin
      _OpenGL_.EndGL;
 
        wglMakeCurrent( _DC, _OpenGL_.RC );
 end;
 
-procedure TGLView.EndGL;
+procedure TGLViewer.EndGL;
 begin
        wglMakeCurrent( _DC, 0 );
 
@@ -265,7 +265,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLView.BeginRender;
+procedure TGLViewer.BeginRender;
 begin
      BeginGL;
 
@@ -276,7 +276,7 @@ begin
        _Viewer.Use( 0{BinP} );
 end;
 
-procedure TGLView.EndRender;
+procedure TGLViewer.EndRender;
 begin
        _Viewer.Unuse( 0{BinP} );
 
