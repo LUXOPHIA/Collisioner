@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.GLView;
+﻿unit LUX.GPU.OpenGL.Viewer;
 
 interface
 
@@ -9,7 +9,7 @@ uses
   LUX, LUX.M4, LUX.GPU.OpenGL, LUX.GPU.OpenGL.VCL, LUX.GPU.OpenGL.Buffer.Unifor, LUX.GPU.OpenGL.Camera;
 
 type
-  TGLView = class(TFrame)
+  TGLViewer = class(TFrame)
   private
     { Private 宣言 }
     ///// メソッドU
@@ -52,12 +52,12 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLView.WMEraseBkgnd( var Message_:TWmEraseBkgnd );
+procedure TGLViewer.WMEraseBkgnd( var Message_:TWmEraseBkgnd );
 begin
      ///// 背景描画を無効化
 end;
 
-procedure TGLView.WMPaint( var Message_:TWMPaint );
+procedure TGLViewer.WMPaint( var Message_:TWMPaint );
 begin
      inherited;
 
@@ -76,7 +76,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLView.Resize;
+procedure TGLViewer.Resize;
 begin
      inherited;
 
@@ -93,14 +93,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLView.CreateWnd;
+procedure TGLViewer.CreateWnd;
 begin
      inherited;
 
      CreateDC;
 end;
 
-procedure TGLView.DestroyWnd;
+procedure TGLViewer.DestroyWnd;
 begin
      DestroyDC;
 
@@ -109,21 +109,21 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLView.CreateDC;
+procedure TGLViewer.CreateDC;
 begin
      _DC := GetDC( Handle );
 
      _OpenGL_.ApplyPixelFormat( _DC );
 end;
 
-procedure TGLView.DestroyDC;
+procedure TGLViewer.DestroyDC;
 begin
      ReleaseDC( Handle, _DC );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLView.Create( AOwner_:TComponent );
+constructor TGLViewer.Create( AOwner_:TComponent );
 begin
      inherited;
 
@@ -135,7 +135,7 @@ begin
      _Viewer.Count := 1;
 end;
 
-destructor TGLView.Destroy;
+destructor TGLViewer.Destroy;
 begin
      _Viewer.DisposeOf;
 
@@ -146,21 +146,21 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLView.RecreateDC;
+procedure TGLViewer.RecreateDC;
 begin
      Self.RecreateWnd;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLView.BeginGL;
+procedure TGLViewer.BeginGL;
 begin
      _OpenGL_.EndGL;
 
        wglMakeCurrent( _DC, _OpenGL_.RC );
 end;
 
-procedure TGLView.EndGL;
+procedure TGLViewer.EndGL;
 begin
        wglMakeCurrent( _DC, 0 );
 
@@ -169,7 +169,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLView.BeginRender;
+procedure TGLViewer.BeginRender;
 begin
      BeginGL;
 
@@ -180,7 +180,7 @@ begin
        _Viewer.Use( 0{BinP} );
 end;
 
-procedure TGLView.EndRender;
+procedure TGLViewer.EndRender;
 begin
        _Viewer.Unuse( 0{BinP} );
 

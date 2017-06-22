@@ -1,4 +1,4 @@
-object GLView: TGLView
+object GLViewer: TGLViewer
   Left = 0
   Top = 0
   Width = 400
