@@ -1,9 +1,13 @@
-﻿unit LUX.GPU.OpenGL.Buffer.Elem;
+﻿unit LUX.GPU.OpenGL.Matery.FMX;
 
 interface //#################################################################### ■
 
 uses Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.D3, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Buffer;
+     LUX,
+     LUX.GPU.OpenGL,
+     LUX.GPU.OpenGL.Imager,
+     LUX.GPU.OpenGL.Imager.FMX,
+     LUX.GPU.OpenGL.Matery;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -11,36 +15,43 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferE<_TYPE_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryImag
 
-     IGLBufferE = interface( IGLBuffer )
-     ['{BCD91AB4-D6E5-49E1-8670-D4C4ED39AFD3}']
+     IGLMateryImag = interface( IGLMatery )
+     ['{426B4B0E-FDA1-44B2-9B2A-0B7371E2E7D0}']
+     {protected}
        ///// アクセス
-       function GetElemT :GLenum;
+       function GetSample :TGLSample;
+       function GetImager :TGLImager2D_RGBA;
+     {public}
        ///// プロパティ
-       property ElemT :GLenum read GetElemT;
+       property Sample :TGLSample        read GetSample;
+       property Imager :TGLImager2D_RGBA read GetImager;
        ///// メソッド
-       procedure Draw;
+       procedure Use;
+       procedure Unuse;
      end;
 
      //-------------------------------------------------------------------------
 
-     TGLBufferE<_TYPE_:record> = class( TGLBuffer<_TYPE_>, IGLBufferE )
+     TGLMateryImag = class( TGLMatery, IGLMateryImag )
      private
      protected
+       _Sample :TGLSample;
+       _Imager :TGLImager2D_RGBA;
        ///// アクセス
-       function GetKind :GLenum; override;
-       function GetElemT :GLenum;
+       function GetSample :TGLSample;
+       function GetImager :TGLImager2D_RGBA;
      public
+       constructor Create;
+       destructor Destroy; override;
        ///// プロパティ
-       property ElemT :GLenum read GetElemT;
+       property Sample :TGLSample        read GetSample;
+       property Imager :TGLImager2D_RGBA read GetImager;
        ///// メソッド
-       procedure Draw;
+       procedure Use; override;
+       procedure Unuse; override;
      end;
-
-     TGLBufferE8  = TGLBufferE<TByte3D>;
-     TGLBufferE16 = TGLBufferE<TWord3D>;
-     TGLBufferE32 = TGLBufferE<TCardinal3D>;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
 
@@ -54,7 +65,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferE<_TYPE_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryImag
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -62,32 +73,50 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLBufferE<_TYPE_>.GetKind :GLenum;
+function TGLMateryImag.GetSample :TGLSample;
 begin
-     Result := GL_ELEMENT_ARRAY_BUFFER;
+     Result := _Sample;
 end;
 
-function TGLBufferE<_TYPE_>.GetElemT :GLenum;
+function TGLMateryImag.GetImager :TGLImager2D_RGBA;
 begin
-     case  SizeOf( _TYPE_ ) of
-       3: Result := GL_UNSIGNED_BYTE;
-       6: Result := GL_UNSIGNED_SHORT;
-      12: Result := GL_UNSIGNED_INT;
-     else Assert( False, 'Unkown Type!' );
-     end;
+     Result := _Imager;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
+constructor TGLMateryImag.Create;
+begin
+     inherited;
+
+     _Sample  := TGLSample       .Create;
+     _Imager  := TGLImager2D_RGBA.Create;
+end;
+
+destructor TGLMateryImag.Destroy;
+begin
+     _Sample.DisposeOf;
+     _Imager.DisposeOf;
+
+     inherited;
+end;
+
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLBufferE<_TYPE_>.Draw;
+procedure TGLMateryImag.Use;
 begin
-     Bind;
+     inherited;
 
-       glDrawElements( GL_TRIANGLES, 3{Poin} * _Count, GetElemT, nil );
+     _Sample.Use( 0 );
+     _Imager.Use( 0 );
+end;
 
-     Unbind;
+procedure TGLMateryImag.Unuse;
+begin
+     _Sample.Unuse( 0 );
+     _Imager.Unuse( 0 );
+
+     inherited;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】

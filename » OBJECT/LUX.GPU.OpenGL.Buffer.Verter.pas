@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Buffer.Vert;
+﻿unit LUX.GPU.OpenGL.Buffer.Verter;
 
 interface //#################################################################### ■
 
@@ -11,9 +11,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferV<_TYPE_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVerter<_TYPE_>
 
-     IGLBufferV = interface( IGLBuffer )
+     IGLVerter = interface( IGLBuffer )
      ['{1DDD600E-0FA5-4D07-A280-72B96722D0C7}']
        ///// アクセス
        function GetElemT :GLenum;
@@ -30,7 +30,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLBufferV<_TYPE_:record> = class( TGLBuffer<_TYPE_>, IGLBufferV )
+     TGLVerter<_TYPE_:record> = class( TGLBuffer<_TYPE_>, IGLVerter )
      private
      protected
        ///// アクセス
@@ -48,9 +48,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Unuse( const BinP_:GLuint );
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferVS<_TYPE_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVerterS<_TYPE_>
 
-     TGLBufferVS<_TYPE_:record> = class( TGLBufferV<_TYPE_> )
+     TGLVerterS<_TYPE_:record> = class( TGLVerter<_TYPE_> )
      private
      protected
        ///// アクセス
@@ -72,7 +72,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferV<_TYPE_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVerter<_TYPE_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -80,7 +80,7 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLBufferV<_TYPE_>.GetKind :GLenum;
+function TGLVerter<_TYPE_>.GetKind :GLenum;
 begin
      Result := GL_ARRAY_BUFFER;
 end;
@@ -89,17 +89,17 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLBufferV<_TYPE_>.Use( const BinP_:GLuint );
+procedure TGLVerter<_TYPE_>.Use( const BinP_:GLuint );
 begin
      glBindVertexBuffer( BinP_, _ID, 0, GetElemS * GetElemN );
 end;
 
-procedure TGLBufferV<_TYPE_>.Unuse( const BinP_:GLuint );
+procedure TGLVerter<_TYPE_>.Unuse( const BinP_:GLuint );
 begin
      glBindVertexBuffer( BinP_, 0, 0, 0 );
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBufferVS<_TYPE_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVerterS<_TYPE_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -107,17 +107,17 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLBufferVS<_TYPE_>.GetElemT :GLenum;
+function TGLVerterS<_TYPE_>.GetElemT :GLenum;
 begin
      Result := GL_FLOAT;
 end;
 
-function TGLBufferVS<_TYPE_>.GetElemS :Integer;
+function TGLVerterS<_TYPE_>.GetElemS :Integer;
 begin
      Result := SizeOf( Single );
 end;
 
-function TGLBufferVS<_TYPE_>.GetElemN :GLint;
+function TGLVerterS<_TYPE_>.GetElemN :GLint;
 begin
      Result := SizeOf( _TYPE_ ) div GetElemS;
 end;

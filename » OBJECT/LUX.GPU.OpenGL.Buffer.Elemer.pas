@@ -1,13 +1,9 @@
-﻿unit LUX.GPU.OpenGL.Material.FMX;
+﻿unit LUX.GPU.OpenGL.Buffer.Elemer;
 
 interface //#################################################################### ■
 
 uses Winapi.OpenGL, Winapi.OpenGLext,
-     LUX,
-     LUX.GPU.OpenGL,
-     LUX.GPU.OpenGL.Imager,
-     LUX.GPU.OpenGL.Imager.FMX,
-     LUX.GPU.OpenGL.Material;
+     LUX, LUX.D3, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Buffer;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -15,23 +11,36 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexMateri
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLElemer<_TYPE_>
 
-     TGLMatery = class( TGLMaterial )
+     IGLElemer = interface( IGLBuffer )
+     ['{BCD91AB4-D6E5-49E1-8670-D4C4ED39AFD3}']
+       ///// アクセス
+       function GetElemT :GLenum;
+       ///// プロパティ
+       property ElemT :GLenum read GetElemT;
+       ///// メソッド
+       procedure Draw;
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLElemer<_TYPE_:record> = class( TGLBuffer<_TYPE_>, IGLElemer )
      private
      protected
-       _Sample :TGLSample;
-       _Imager :TGLImager2D_RGBA;
+       ///// アクセス
+       function GetKind :GLenum; override;
+       function GetElemT :GLenum;
      public
-       constructor Create;
-       destructor Destroy; override;
        ///// プロパティ
-       property Sample :TGLSample        read _Sample;
-       property Imager :TGLImager2D_RGBA read _Imager;
+       property ElemT :GLenum read GetElemT;
        ///// メソッド
-       procedure Use; override;
-       procedure Unuse; override;
+       procedure Draw;
      end;
+
+     TGLElemer8  = TGLElemer<TByte3D>;
+     TGLElemer16 = TGLElemer<TWord3D>;
+     TGLElemer32 = TGLElemer<TCardinal3D>;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
 
@@ -45,46 +54,40 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexMatria
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLElemer<_TYPE_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLElemer<_TYPE_>.GetKind :GLenum;
+begin
+     Result := GL_ELEMENT_ARRAY_BUFFER;
+end;
+
+function TGLElemer<_TYPE_>.GetElemT :GLenum;
+begin
+     case  SizeOf( _TYPE_ ) of
+       3: Result := GL_UNSIGNED_BYTE;
+       6: Result := GL_UNSIGNED_SHORT;
+      12: Result := GL_UNSIGNED_INT;
+     else Assert( False, 'Unkown Type!' );
+     end;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TGLMatery.Create;
-begin
-     inherited;
-
-     _Sample  := TGLSample       .Create;
-     _Imager  := TGLImager2D_RGBA.Create;
-end;
-
-destructor TGLMatery.Destroy;
-begin
-     _Sample.DisposeOf;
-     _Imager.DisposeOf;
-
-     inherited;
-end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLMatery.Use;
+procedure TGLElemer<_TYPE_>.Draw;
 begin
-     inherited;
+     Bind;
 
-     _Sample.Use( 0 );
-     _Imager.Use( 0 );
-end;
+       glDrawElements( GL_TRIANGLES, 3{Poin} * _Count, GetElemT, nil );
 
-procedure TGLMatery.Unuse;
-begin
-     _Sample.Unuse( 0 );
-     _Imager.Unuse( 0 );
-
-     inherited;
+     Unbind;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
