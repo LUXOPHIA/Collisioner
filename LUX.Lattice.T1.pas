@@ -167,8 +167,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function Interp( const I_:Single ) :_TItem_; overload; virtual;
        function InterpPos( const Pos_:Single ) :_TItem_; overload; virtual;
        function AddTail( const Pos_:Single; const Val_:_TItem_ ) :Integer; overload;
-       function Insert( const PV_:TPosval1D<_TItem_> ) :Integer; overload;
-       function Insert( const Pos_:Single; const Val_:_TItem_ ) :Integer; overload;
+       function Insert( const PV_:TPosval1D<_TItem_> ) :Integer; overload; virtual;
+       function Insert( const Pos_:Single; const Val_:_TItem_ ) :Integer; overload; virtual;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
