@@ -28,6 +28,7 @@ type
     ///// アクセス
     function GetRootForm :TForm;
     function GetRootWND :HWND;
+    function GetPixSiz :System.Types.TSize;
     ///// メソッド
     procedure DoAbsoluteChanged; override;
     procedure ParentChanged; override;
@@ -43,10 +44,11 @@ type
     constructor Create( AOwner_:TComponent ); override;
     destructor Destroy; override;
     ///// プロパティ
-    property Form   :TCommonCustomForm read _Form                ;
-    property WND    :HWND              read _WND                 ;
-    property DC     :HDC               read _DC                  ;
-    property Camera :TGLCamera         read _Camera write _Camera;
+    property Form   :TCommonCustomForm  read   _Form                ;
+    property WND    :HWND               read   _WND                 ;
+    property DC     :HDC                read   _DC                  ;
+    property PixSiz :System.Types.TSize read GetPixSiz              ;
+    property Camera :TGLCamera          read   _Camera write _Camera;
     ///// イベント
     property OnPaint :TProc read _OnPaint write _OnPaint;
     ///// メソッド
@@ -56,6 +58,7 @@ type
     procedure EndGL;
     procedure BeginRender;
     procedure EndRender;
+    function MakeScreenShot :FMX.Graphics.TBitmap;
   end;
 
 implementation //############################################################### ■
@@ -104,6 +107,15 @@ begin
      Result := WindowHandleToPlatform( GetRootForm.Handle ).Wnd;
 end;
 
+function TGLViewer.GetPixSiz :System.Types.TSize;
+begin
+     with Result do
+     begin
+          Width  := Round( _Form.Width  * Scene.GetSceneScale );
+          Height := Round( _Form.Height * Scene.GetSceneScale );
+     end;
+end;
+
 /////////////////////////////////////////////////////////////////////// メソッド
 
 procedure TGLViewer.DoAbsoluteChanged;
@@ -124,8 +136,7 @@ procedure TGLViewer.Paint;
 begin
      BeginRender;
 
-       glViewport( 0, 0, Round( _Form.Width  * Scene.GetSceneScale ),
-                         Round( _Form.Height * Scene.GetSceneScale ) );
+       with GetPixSiz do glViewport( 0, 0, Width, Height );
 
        if Assigned( _Camera ) then _Camera.Render;
 
@@ -285,6 +296,47 @@ begin
        SwapBuffers( _DC );
 
      EndGL;
+end;
+
+//------------------------------------------------------------------------------
+
+function TGLViewer.MakeScreenShot :FMX.Graphics.TBitmap;
+var
+   Cs :TArray<TAlphaColor>;
+   C, B :PAlphaColor;
+   Bs :TBitmapData;
+   S, Y :Integer;
+begin
+     Result := FMX.Graphics.TBitmap.Create;
+
+     with Result do
+     begin
+          SetSize( GetPixSiz );
+
+          SetLength( Cs, Height * Width );
+
+          C := @Cs[ 0 ];
+
+          BeginGL;
+            glReadBuffer( GL_FRONT );
+            glReadPixels( 0, 0, Width, Height, GL_BGRA, GL_UNSIGNED_BYTE, C );
+          EndGL;
+
+          Map( TMapAccess.Write, Bs );
+
+          S := SizeOf( TAlphaColor ) * Width;
+
+          for Y := Height-1 downto 0 do
+          begin
+               B := Bs.GetScanline( Y );
+
+               System.Move( C^, B^, S );
+
+               Inc( C, Width );
+          end;
+
+          Unmap( Bs );
+     end;
 end;
 
 end. //######################################################################### ■
