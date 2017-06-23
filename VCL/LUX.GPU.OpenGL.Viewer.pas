@@ -5,8 +5,11 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  Winapi.OpenGL, Winapi.OpenGLext,
-  LUX, LUX.M4, LUX.GPU.OpenGL, LUX.GPU.OpenGL.VCL, LUX.GPU.OpenGL.Buffer.Unifor, LUX.GPU.OpenGL.Camera;
+  LUX, LUX.M4,
+  LUX.GPU.OpenGL,
+  LUX.GPU.OpenGL.VCL,
+  LUX.GPU.OpenGL.Buffer.Unifor,
+  LUX.GPU.OpenGL.Camera;
 
 type
   TGLViewer = class(TFrame)
@@ -42,11 +45,15 @@ type
     procedure EndGL;
     procedure BeginRender;
     procedure EndRender;
+    function MakeScreenShot :Vcl.Graphics.TBitmap;
   end;
 
 implementation //############################################################### ■
 
 {$R *.dfm}
+
+uses System.UITypes,
+     Winapi.OpenGL, Winapi.OpenGLext;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -186,9 +193,47 @@ begin
 
        glFlush;
 
-       SwapBuffers( _DC );
-
      EndGL;
+
+     SwapBuffers( _DC );
+end;
+
+//------------------------------------------------------------------------------
+
+function TGLViewer.MakeScreenShot :Vcl.Graphics.TBitmap;
+var
+   Cs :TArray<TAlphaColor>;
+   C, B :PAlphaColor;
+   S, Y :Integer;
+begin
+     Result := Vcl.Graphics.TBitmap.Create;
+
+     with Result do
+     begin
+          PixelFormat := TPixelFormat.pf32bit;
+
+          SetSize( ClientWidth, ClientHeight );
+
+          SetLength( Cs, Height * Width );
+
+          C := @Cs[ 0 ];
+
+          BeginGL;
+            glReadBuffer( GL_FRONT );
+            glReadPixels( 0, 0, Width, Height, GL_BGRA, GL_UNSIGNED_BYTE, C );
+          EndGL;
+
+          S := SizeOf( TAlphaColor ) * Width;
+
+          for Y := Height-1 downto 0 do
+          begin
+               B := Scanline[ Y ];
+
+               System.Move( C^, B^, S );
+
+               Inc( C, Width );
+          end;
+     end;
 end;
 
 end. //######################################################################### ■
