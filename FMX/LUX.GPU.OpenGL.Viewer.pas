@@ -74,6 +74,8 @@ begin
      _Form.MouseCapture;
 
      MouseDown( Button_, Shift_, X_, Y_ );
+
+     MouseClick( Button_, Shift_, X_, Y_ );
 end;
 
 procedure TGLViewer._OnMouseMove( Sender_:TObject; Shift_:TShiftState; X_,Y_:Single );
