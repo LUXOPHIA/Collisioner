@@ -41,6 +41,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetScener :TGLScener;
        function GetPose :TSingleM4;
        procedure SetPose( const Move_:TSingleM4 ); virtual;
+       ///// メソッド
+       procedure BeginDraw; virtual;
+       procedure DrawCore; virtual;
+       procedure EndDraw; virtual;
      public
        constructor Create; override;
        destructor Destroy; override;
@@ -122,6 +126,23 @@ begin
      _Pose[ 0 ] := Move_;
 end;
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLNode.BeginDraw;
+begin
+     _Pose.Use( 3{BinP} );
+end;
+
+procedure TGLNode.DrawCore;
+begin
+
+end;
+
+procedure TGLNode.EndDraw;
+begin
+     _Pose.Unuse( 3{BinP} );
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TGLNode.Create;
@@ -147,9 +168,13 @@ procedure TGLNode.Draw;
 var
    I :Integer;
 begin
-     for I := 0 to ChildsN-1 do Childs[ I ].Draw;
+     BeginDraw;
 
-     _Pose.Use( 3{BinP} );
+       DrawCore;
+
+     EndDraw;
+
+     for I := 0 to ChildsN-1 do Childs[ I ].Draw;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLScener
