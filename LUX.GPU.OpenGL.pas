@@ -290,8 +290,9 @@ end;
 
 procedure TOpenGL.InitOpenGL;
 begin
-     glEnable( GL_DEPTH_TEST );
-     glEnable( GL_CULL_FACE  );
+     glEnable( GL_DEPTH_TEST         );
+     glEnable( GL_CULL_FACE          );
+     glEnable( GL_PROGRAM_POINT_SIZE );
 end;
 
 //------------------------------------------------------------------------------
