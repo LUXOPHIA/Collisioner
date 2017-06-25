@@ -39,15 +39,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Draw; virtual; abstract;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLElemerTria<_TYPE_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLElemerFace<_TYPE_>
 
-     IGLElemerTria = interface( IGLBuffer )
+     IGLElemerFace = interface( IGLBuffer )
      ['{8D7AA8F0-FDEF-4B6C-A537-D861D07CB6D4}']
      end;
 
      //-------------------------------------------------------------------------
 
-     TGLElemerTria<_TYPE_:record> = class( TGLElemer<_TYPE_>, IGLElemerTria )
+     TGLElemerFace<_TYPE_:record> = class( TGLElemer<_TYPE_>, IGLElemerFace )
      private
      protected
        ///// アクセス
@@ -58,9 +58,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Draw; override;
      end;
 
-     TGLElemerTria8  = TGLElemerTria<TByte3D>;
-     TGLElemerTria16 = TGLElemerTria<TWord3D>;
-     TGLElemerTria32 = TGLElemerTria<TCardinal3D>;
+     TGLElemerFace8  = TGLElemerFace<TByte3D>;
+     TGLElemerFace16 = TGLElemerFace<TWord3D>;
+     TGLElemerFace32 = TGLElemerFace<TCardinal3D>;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLElemerLine<_TYPE_>
 
@@ -112,7 +112,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLElemerTria<_TYPE_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLElemerFace<_TYPE_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -120,12 +120,12 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLElemerTria<_TYPE_>.GetElemN :GLint;
+function TGLElemerFace<_TYPE_>.GetElemN :GLint;
 begin
      Result := 3;
 end;
 
-function TGLElemerTria<_TYPE_>.GetElemT :GLenum;
+function TGLElemerFace<_TYPE_>.GetElemT :GLenum;
 begin
      case  SizeOf( _TYPE_ ) of
        3: Result := GL_UNSIGNED_BYTE;
@@ -139,7 +139,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLElemerTria<_TYPE_>.Draw;
+procedure TGLElemerFace<_TYPE_>.Draw;
 begin
      Bind;
 
