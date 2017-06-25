@@ -30,15 +30,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Matery :IGLMatery read _Matery write _Matery;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperPoly
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperFace
 
-     TGLShaperPoly = class( TGLShaper )
+     TGLShaperFace = class( TGLShaper )
      private
      protected
        _PosBuf :TGLVerterS<TSingle3D>;
        _NorBuf :TGLVerterS<TSingle3D>;
        _TexBuf :TGLVerterS<TSingle2D>;
-       _EleBuf :TGLElemerTria32;
+       _EleBuf :TGLElemerFace32;
      public
        constructor Create( const Paren_:ITreeNode ); override;
        destructor Destroy; override;
@@ -46,7 +46,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property PosBuf :TGLVerterS<TSingle3D> read _PosBuf;
        property NorBuf :TGLVerterS<TSingle3D> read _NorBuf;
        property TexBuf :TGLVerterS<TSingle2D> read _TexBuf;
-       property EleBuf :TGLElemerTria32       read _EleBuf;
+       property EleBuf :TGLElemerFace32       read _EleBuf;
        ///// メソッド
        procedure Draw; override;
        procedure LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>; const DivU_,DivV_:Integer );
@@ -59,12 +59,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLShaperCopy = class( TGLShaper )
      private
      protected
-       _Shaper :TGLShaperPoly;
+       _Shaper :TGLShaperFace;
      public
        constructor Create( const Paren_:ITreeNode ); override;
        destructor Destroy; override;
        ///// プロパティ
-       property Shaper :TGLShaperPoly read _Shaper write _Shaper;
+       property Shaper :TGLShaperFace read _Shaper write _Shaper;
        ///// メソッド
        procedure Draw; override;
      end;
@@ -103,7 +103,7 @@ begin
      inherited;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperPoly
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperFace
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -111,17 +111,17 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLShaperPoly.Create( const Paren_:ITreeNode );
+constructor TGLShaperFace.Create( const Paren_:ITreeNode );
 begin
      inherited;
 
      _PosBuf := TGLVerterS<TSingle3D>.Create( GL_STATIC_DRAW );
      _NorBuf := TGLVerterS<TSingle3D>.Create( GL_STATIC_DRAW );
      _TexBuf := TGLVerterS<TSingle2D>.Create( GL_STATIC_DRAW );
-     _EleBuf := TGLElemerTria32      .Create( GL_STATIC_DRAW );
+     _EleBuf := TGLElemerFace32      .Create( GL_STATIC_DRAW );
 end;
 
-destructor TGLShaperPoly.Destroy;
+destructor TGLShaperFace.Destroy;
 begin
      _PosBuf.DisposeOf;
      _NorBuf.DisposeOf;
@@ -133,7 +133,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLShaperPoly.Draw;
+procedure TGLShaperFace.Draw;
 begin
      inherited;
 
@@ -148,7 +148,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLShaperPoly.LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>; const DivU_,DivV_:Integer );
+procedure TGLShaperFace.LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>; const DivU_,DivV_:Integer );
 //··································
      function XYtoI( const X_,Y_:Integer ) :Integer;
      begin
@@ -237,7 +237,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLShaperPoly.LoadFromFileSTL( const FileName_:String );
+procedure TGLShaperFace.LoadFromFileSTL( const FileName_:String );
 var
    F :TFileStream;
    Hs :array [ 0..80-1 ] of AnsiChar;
@@ -304,7 +304,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLShaperPoly.LoadFromFileOBJ( const FileName_:String );
+procedure TGLShaperFace.LoadFromFileOBJ( const FileName_:String );
 type
     TVert = record
       P :Integer;
