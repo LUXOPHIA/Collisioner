@@ -105,7 +105,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLShaperCopy = class( TGLShaper )
      private
      protected
-       _Shaper :TGLShaperFace;
+       _Shaper :TGLShaperPoin;
        ///// メソッド
        procedure BeginDraw; override;
        procedure DrawCore; override;
@@ -114,7 +114,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const Paren_:ITreeNode ); override;
        destructor Destroy; override;
        ///// プロパティ
-       property Shaper :TGLShaperFace read _Shaper write _Shaper;
+       property Shaper :TGLShaperPoin read _Shaper write _Shaper;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -1140,6 +1140,8 @@ begin
 
      with _Shaper do
      begin
+          if not Assigned( Self._Matery ) then Matery.Use;
+
           PosBuf.Use( 0{BinP} );
           NorBuf.Use( 1{BinP} );
           TexBuf.Use( 2{BinP} );
@@ -1148,7 +1150,7 @@ end;
 
 procedure TGLShaperCopy.DrawCore;
 begin
-     _Shaper.EleBuf.Draw;
+     _Shaper.DrawCore;
 end;
 
 procedure TGLShaperCopy.EndDraw;
@@ -1158,6 +1160,8 @@ begin
           PosBuf.Unuse( 0{BinP} );
           NorBuf.Unuse( 1{BinP} );
           TexBuf.Unuse( 2{BinP} );
+
+          if not Assigned( Self._Matery ) then Matery.Use;
      end;
 
      inherited;
