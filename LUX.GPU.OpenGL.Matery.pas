@@ -22,6 +22,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      {protected}
        ///// アクセス
        function GetShaderV :TGLShaderV;
+       function GetShaderG :TGLShaderG;
        function GetShaderF :TGLShaderF;
        function GetEngine  :TGLEngine;
        /////
@@ -30,6 +31,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      {public}
        ///// プロパティ
        property ShaderV :TGLShaderV read GetShaderV;
+       property ShaderG :TGLShaderG read GetShaderG;
        property ShaderF :TGLShaderF read GetShaderF;
        property Engine  :TGLEngine  read GetEngine ;
        ///// イベント
@@ -45,12 +47,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        _ShaderV :TGLShaderV;
+       _ShaderG :TGLShaderG;
        _ShaderF :TGLShaderF;
        _Engine  :TGLEngine;
        ///// イベント
        _OnBuilded :TProc;
        ///// アクセス
        function GetShaderV :TGLShaderV;
+       function GetShaderG :TGLShaderG;
        function GetShaderF :TGLShaderF;
        function GetEngine  :TGLEngine;
        /////
@@ -61,6 +65,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        destructor Destroy; override;
        ///// プロパティ
        property ShaderV :TGLShaderV read GetShaderV;
+       property ShaderG :TGLShaderG read GetShaderG;
        property ShaderF :TGLShaderF read GetShaderF;
        property Engine  :TGLEngine  read GetEngine ;
        ///// イベント
@@ -95,6 +100,11 @@ begin
      Result := _ShaderV;
 end;
 
+function TGLMatery.GetShaderG :TGLShaderG;
+begin
+     Result := _ShaderG;
+end;
+
 function TGLMatery.GetShaderF :TGLShaderF;
 begin
      Result := _ShaderF;
@@ -126,10 +136,19 @@ begin
      _OnBuilded := procedure begin end;
 
      _ShaderV := TGLShaderV.Create;
+     _ShaderG := TGLShaderG.Create;
      _ShaderF := TGLShaderF.Create;
      _Engine  := TGLEngine .Create;
 
      with _ShaderV do
+     begin
+          OnCompiled := procedure
+          begin
+               _Engine.Link;
+          end;
+     end;
+
+     with _ShaderG do
      begin
           OnCompiled := procedure
           begin
@@ -150,14 +169,15 @@ begin
           with Shaders do
           begin
                Add( _ShaderV{Shad} );
+               Add( _ShaderG{Shad} );
                Add( _ShaderF{Shad} );
           end;
 
           with Verters do
           begin
-               Add( 0{BinP}, '_VertexPos'{Name}, 3{EleN}, GL_FLOAT{EleT} );
-               Add( 1{BinP}, '_VertexNor'{Name}, 3{EleN}, GL_FLOAT{EleT} );
-               Add( 2{BinP}, '_VertexTex'{Name}, 2{EleN}, GL_FLOAT{EleT} );
+               Add( 0{BinP}, '_SenderPos'{Name}, 3{EleN}, GL_FLOAT{EleT} );
+               Add( 1{BinP}, '_SenderNor'{Name}, 3{EleN}, GL_FLOAT{EleT} );
+               Add( 2{BinP}, '_SenderTex'{Name}, 2{EleN}, GL_FLOAT{EleT} );
           end;
 
           with Unifors do
@@ -175,7 +195,7 @@ begin
 
           with Framers do
           begin
-               Add( 0{BinP}, '_Frag_Col'{Name} );
+               Add( 0{BinP}, '_ResultCol'{Name} );
           end;
 
           Onlinked := procedure
@@ -188,6 +208,7 @@ end;
 destructor TGLMatery.Destroy;
 begin
      _ShaderV.DisposeOf;
+     _ShaderG.DisposeOf;
      _ShaderF.DisposeOf;
      _Engine .DisposeOf;
 
