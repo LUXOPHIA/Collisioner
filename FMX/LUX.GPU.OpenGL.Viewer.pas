@@ -7,16 +7,18 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Platform.Win,
   Winapi.Windows, Winapi.OpenGL, Winapi.OpenGLext,
-  LUX, LUX.M4, LUX.GPU.OpenGL, LUX.GPU.OpenGL.FMX, LUX.GPU.OpenGL.Buffer.Unifor, LUX.GPU.OpenGL.Camera;
+  LUX, LUX.M4, LUX.FMX.Forms,
+  LUX.GPU.OpenGL, LUX.GPU.OpenGL.FMX, LUX.GPU.OpenGL.Buffer.Unifor, LUX.GPU.OpenGL.Camera;
 
 type
   TGLViewer = class(TFrame)
   private
     { private 宣言 }
-    procedure _OnMouseDown( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single ); inline;
-    procedure _OnMouseMove( Sender_:TObject; Shift_:TShiftState; X_,Y_:Single ); inline;
-    procedure _OnMouseUp( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single ); inline;
-    procedure _OnMouseWheel( Sender_:TObject; Shift_:TShiftState; WheelDelta_:Integer; var Handled_:Boolean ); inline;
+    procedure GoMouseClick( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single );
+    procedure GoMouseDown( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single ); inline;
+    procedure GoMouseMove( Sender_:TObject; Shift_:TShiftState; X_,Y_:Single ); inline;
+    procedure GoMouseUp( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single ); inline;
+    procedure GoMouseWheel( Sender_:TObject; Shift_:TShiftState; WheelDelta_:Integer; var Handled_:Boolean ); inline;
   protected
     _Form   :TCommonCustomForm;
     _WND    :HWND;
@@ -69,28 +71,31 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLViewer._OnMouseDown( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single );
+procedure TGLViewer.GoMouseClick( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single );
+begin
+     MouseClick( Button_, Shift_, X_, Y_ );
+end;
+
+procedure TGLViewer.GoMouseDown( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single );
 begin
      _Form.MouseCapture;
 
      MouseDown( Button_, Shift_, X_, Y_ );
-
-     MouseClick( Button_, Shift_, X_, Y_ );
 end;
 
-procedure TGLViewer._OnMouseMove( Sender_:TObject; Shift_:TShiftState; X_,Y_:Single );
+procedure TGLViewer.GoMouseMove( Sender_:TObject; Shift_:TShiftState; X_,Y_:Single );
 begin
      MouseMove( Shift_, X_, Y_ );
 end;
 
-procedure TGLViewer._OnMouseUp( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single );
+procedure TGLViewer.GoMouseUp( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single );
 begin
      MouseUp( Button_, Shift_, X_, Y_ );
 
      _Form.ReleaseCapture;
 end;
 
-procedure TGLViewer._OnMouseWheel( Sender_:TObject; Shift_:TShiftState; WheelDelta_:Integer; var Handled_:Boolean );
+procedure TGLViewer.GoMouseWheel( Sender_:TObject; Shift_:TShiftState; WheelDelta_:Integer; var Handled_:Boolean );
 begin
      MouseWheel( Shift_, WheelDelta_, Handled_ );
 end;
@@ -165,16 +170,17 @@ end;
 
 procedure TGLViewer.CreateWindow;
 begin
-     _Form := TCommonCustomForm.Create( Self );
+     _Form := TCommonCustomForm.CreateNew( Self );
 
      with _Form do
      begin
           BorderStyle := TFmxFormBorderStyle.None;
 
-          OnMouseDown  := _OnMouseDown ;
-          OnMouseMove  := _OnMouseMove ;
-          OnMouseUp    := _OnMouseUp   ;
-          OnMouseWheel := _OnMouseWheel;
+          OnMouseClick := GoMouseClick;
+          OnMouseDown  := GoMouseDown ;
+          OnMouseMove  := GoMouseMove ;
+          OnMouseUp    := GoMouseUp   ;
+          OnMouseWheel := GoMouseWheel;
 
           HandleNeeded;
 
