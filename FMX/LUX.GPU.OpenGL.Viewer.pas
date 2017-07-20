@@ -7,8 +7,8 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Platform.Win,
   Winapi.Windows, Winapi.OpenGL, Winapi.OpenGLext,
-  LUX, LUX.M4, LUX.FMX.Forms,
-  LUX.GPU.OpenGL, LUX.GPU.OpenGL.FMX, LUX.GPU.OpenGL.Buffer.Unifor, LUX.GPU.OpenGL.Camera;
+  LUX, LUX.D3, LUX.D4, LUX.M4, LUX.FMX.Forms,
+  LUX.GPU.OpenGL, LUX.GPU.OpenGL.FMX, LUX.GPU.OpenGL.Buffer.Unifor, LUX.GPU.OpenGL.Scener, LUX.GPU.OpenGL.Camera;
 
 type
   TGLViewer = class(TFrame)
@@ -25,6 +25,7 @@ type
     _DC     :HDC;
     _Viewer :TGLUnifor<TSingleM4>;
     _Camera :TGLCamera;
+    _Picker :TGLNode;
     ///// イベント
     _OnPaint :TProc;
     ///// アクセス
@@ -51,6 +52,7 @@ type
     property DC     :HDC                read   _DC                  ;
     property PixSiz :System.Types.TSize read GetPixSiz              ;
     property Camera :TGLCamera          read   _Camera write _Camera;
+    property Picker :TGLNode            read   _Picker              ;
     ///// イベント
     property OnPaint :TProc read _OnPaint write _OnPaint;
     ///// メソッド
@@ -61,6 +63,8 @@ type
     procedure BeginRender;
     procedure EndRender;
     function MakeScreenShot :FMX.Graphics.TBitmap;
+    function ShootRay( const X_,Y_:Single ) :TSingleRay3D;
+    function PickObject( const X_,Y_:Single ) :TGLNode;
   end;
 
 implementation //############################################################### ■
@@ -80,6 +84,8 @@ procedure TGLViewer.GoMouseDown( Sender_:TObject; Button_:TMouseButton; Shift_:T
 begin
      _Form.MouseCapture;
 
+     _Picker := PickObject( X_, Y_ );
+
      MouseDown( Button_, Shift_, X_, Y_ );
 end;
 
@@ -91,6 +97,8 @@ end;
 procedure TGLViewer.GoMouseUp( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single );
 begin
      MouseUp( Button_, Shift_, X_, Y_ );
+
+     _Picker := nil;
 
      _Form.ReleaseCapture;
 end;
@@ -237,6 +245,8 @@ begin
 
      _Viewer := TGLUnifor<TSingleM4>.Create( GL_DYNAMIC_DRAW );
      _Viewer.Count := 1;
+
+     _Picker := nil;
 end;
 
 destructor TGLViewer.Destroy;
@@ -345,6 +355,35 @@ begin
 
           Unmap( Bs );
      end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TGLViewer.ShootRay( const X_,Y_:Single ) :TSingleRay3D;
+var
+   S, P0, P1 :TSingle4D;
+begin
+     with GetPixSiz do
+     begin
+          S.X :=     X_ / Width  * 2 - 1;
+          S.Y := 1 - Y_ / Height * 2    ;
+          S.Z := 1 - 0.2;
+          S.W := 1;
+     end;
+
+     P0 := _Camera.AbsoPose * TSingle4D.Create( 0, 0, 0, 1 );
+     P1 := _Camera.AbsoPose * _Camera.Proj.Inverse * _Viewer[ 0 ].Inverse * S;
+
+     with Result do
+     begin
+          Pos := TSingle3D(      P0 );
+          Vec := TSingle3D( P1 - P0 ).Unitor;
+     end;
+end;
+
+function TGLViewer.PickObject( const X_,Y_:Single ) :TGLNode;
+begin
+     Result := _Camera.Scener.HitRay( ShootRay( X_, Y_ ) );
 end;
 
 end. //######################################################################### ■
