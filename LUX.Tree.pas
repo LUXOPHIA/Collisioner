@@ -6,12 +6,17 @@ uses LUX;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
+     ITreeItem = interface;
+     ITreeNode = interface;
+
      TTreeItem                          = class;
      TTreeNode                          = class;
      TTreeNode<_TParen_,_TChild_:class> = class;
      TTreeNode<_TNode_:class>           = class;
      TTreeRoot<_TChild_:class>          = class;
      TTreeLeaf<_TParen_:class>          = class;
+
+     TNodeProc<_INode_:class> = reference to procedure( const Node_:_INode_ );
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -81,6 +86,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Tail                       :ITreeNode read GetTail                   ;
        property Childs[ const I_:Integer ] :ITreeNode read GetChilds  write SetChilds; default;
        property ChildsN                    :Integer   read GetChildsN                ;
+       ///// メソッド
+       procedure Remove;
+       //class procedure RemoveChild( const Child_:TTreeNode );
+       procedure DeleteChilds;
+       procedure InsertHead( const Child_:TTreeNode );
+       procedure InsertTail( const Child_:TTreeNode );
+       procedure InsertPrev( const Sibli_:TTreeNode );
+       procedure InsertNext( const Sibli_:TTreeNode );
+       //class procedure Swap( const C1_,C2_:TTreeNode );
+       procedure Swap( const I1_,I2_:Integer );
+       procedure RunFamily( const Proc_:TNodeProc<TTreeNode> );
      end;
 
      //-------------------------------------------------------------------------
@@ -151,6 +167,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure InsertNext( const Sibli_:TTreeNode );
        class procedure Swap( const C1_,C2_:TTreeNode ); overload;
        procedure Swap( const I1_,I2_:Integer ); overload;
+       procedure RunFamily( const Proc_:TNodeProc<TTreeNode> );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTreeNode<_TParen_,_TChild_>
@@ -643,6 +660,17 @@ procedure TTreeNode.Swap( const I1_,I2_:Integer );
 begin
      Swap( Childs[ I1_ ] as TTreeNode,
            Childs[ I2_ ] as TTreeNode );
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TTreeNode.RunFamily( const Proc_:TNodeProc<TTreeNode> );
+var
+   I :Integer;
+begin
+     Proc_( Self );
+
+     for I := 0 to ChildsN-1 do Childs[ I ].RunFamily( Proc_ );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TTreeNode<_TParen_,_TChild_>
