@@ -134,10 +134,26 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TGLShaperLineCube = class( TGLShaperLine )
      private
+       ///// メソッド
+       procedure MakeModel;
      protected
+       _SizeX :Single;
+       _SizeY :Single;
+       _SizeZ :Single;
+       ///// アクセス
+       function GetSizeX :Single;
+       procedure SetSizeX( const SizeX_:Single );
+       function GetSizeY :Single;
+       procedure SetSizeY( const SizeY_:Single );
+       function GetSizeZ :Single;
+       procedure SetSizeZ( const SizeZ_:Single );
      public
        constructor Create; override;
        destructor Destroy; override;
+       ///// プロパティ
+       property SizeX :Single read GetSizeX write SetSizeX;
+       property SizeY :Single read GetSizeY write SetSizeY;
+       property SizeZ :Single read GetSizeZ write SetSizeZ;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -1267,7 +1283,63 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLShaperLineCube.MakeModel;
+var
+   SX, SY, SZ :Single;
+begin
+     SX := _SizeX / 2;
+     SY := _SizeY / 2;
+     SZ := _SizeZ / 2;
+
+     _PosBuf[ 0 ] := TSingle3D.Create( -SX, -SY, -SZ );
+     _PosBuf[ 1 ] := TSingle3D.Create( +SX, -SY, -SZ );
+     _PosBuf[ 2 ] := TSingle3D.Create( -SX, +SY, -SZ );
+     _PosBuf[ 3 ] := TSingle3D.Create( +SX, +SY, -SZ );
+     _PosBuf[ 4 ] := TSingle3D.Create( -SX, -SY, +SZ );
+     _PosBuf[ 5 ] := TSingle3D.Create( +SX, -SY, +SZ );
+     _PosBuf[ 6 ] := TSingle3D.Create( -SX, +SY, +SZ );
+     _PosBuf[ 7 ] := TSingle3D.Create( +SX, +SY, +SZ );
+
+     _BouBox.Min.X := -SX;  _BouBox.Max.X := +SX;
+     _BouBox.Min.Y := -SY;  _BouBox.Max.Y := +SY;
+     _BouBox.Min.Z := -SZ;  _BouBox.Max.Z := +SZ;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLShaperLineCube.GetSizeX :Single;
+begin
+     Result := _SizeX;
+end;
+
+procedure TGLShaperLineCube.SetSizeX( const SizeX_:Single );
+begin
+     _SizeX := SizeX_;  MakeModel;
+end;
+
+function TGLShaperLineCube.GetSizeY :Single;
+begin
+     Result := _SizeY;
+end;
+
+procedure TGLShaperLineCube.SetSizeY( const SizeY_:Single );
+begin
+     _SizeY := SizeY_;  MakeModel;
+end;
+
+function TGLShaperLineCube.GetSizeZ :Single;
+begin
+     Result := _SizeZ;
+end;
+
+procedure TGLShaperLineCube.SetSizeZ( const SizeZ_:Single );
+begin
+     _SizeZ := SizeZ_;  MakeModel;
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
@@ -1281,23 +1353,14 @@ begin
 
      _Matery := TGLMateryColor.Create;
 
-     _PosBuf[ 0 ] := TSingle3D.Create( -0.5, -0.5, -0.5 );
-     _PosBuf[ 1 ] := TSingle3D.Create( +0.5, -0.5, -0.5 );
-     _PosBuf[ 2 ] := TSingle3D.Create( -0.5, +0.5, -0.5 );
-     _PosBuf[ 3 ] := TSingle3D.Create( +0.5, +0.5, -0.5 );
-     _PosBuf[ 4 ] := TSingle3D.Create( -0.5, -0.5, +0.5 );
-     _PosBuf[ 5 ] := TSingle3D.Create( +0.5, -0.5, +0.5 );
-     _PosBuf[ 6 ] := TSingle3D.Create( -0.5, +0.5, +0.5 );
-     _PosBuf[ 7 ] := TSingle3D.Create( +0.5, +0.5, +0.5 );
-
-     _NorBuf[ 0 ] := TSingle3D.Create( -0.5, -0.5, -0.5 );
-     _NorBuf[ 1 ] := TSingle3D.Create( +0.5, -0.5, -0.5 );
-     _NorBuf[ 2 ] := TSingle3D.Create( -0.5, +0.5, -0.5 );
-     _NorBuf[ 3 ] := TSingle3D.Create( +0.5, +0.5, -0.5 );
-     _NorBuf[ 4 ] := TSingle3D.Create( -0.5, -0.5, +0.5 );
-     _NorBuf[ 5 ] := TSingle3D.Create( +0.5, -0.5, +0.5 );
-     _NorBuf[ 6 ] := TSingle3D.Create( -0.5, +0.5, +0.5 );
-     _NorBuf[ 7 ] := TSingle3D.Create( +0.5, +0.5, +0.5 );
+     _NorBuf[ 0 ] := TSingle3D.Create( -1, -1, -1 ).Unitor;
+     _NorBuf[ 1 ] := TSingle3D.Create( +1, -1, -1 ).Unitor;
+     _NorBuf[ 2 ] := TSingle3D.Create( -1, +1, -1 ).Unitor;
+     _NorBuf[ 3 ] := TSingle3D.Create( +1, +1, -1 ).Unitor;
+     _NorBuf[ 4 ] := TSingle3D.Create( -1, -1, +1 ).Unitor;
+     _NorBuf[ 5 ] := TSingle3D.Create( +1, -1, +1 ).Unitor;
+     _NorBuf[ 6 ] := TSingle3D.Create( -1, +1, +1 ).Unitor;
+     _NorBuf[ 7 ] := TSingle3D.Create( +1, +1, +1 ).Unitor;
 
      _EleBuf[ 00 ] := TCardinal2D.Create( 0, 1 );
      _EleBuf[ 01 ] := TCardinal2D.Create( 0, 2 );
@@ -1314,6 +1377,12 @@ begin
      _EleBuf[ 09 ] := TCardinal2D.Create( 6, 4 );
      _EleBuf[ 10 ] := TCardinal2D.Create( 5, 1 );
      _EleBuf[ 11 ] := TCardinal2D.Create( 3, 2 );
+
+     _SizeX := 1;
+     _SizeY := 1;
+     _SizeZ := 1;
+
+     MakeModel;
 end;
 
 destructor TGLShaperLineCube.Destroy;
