@@ -4,7 +4,7 @@ interface //####################################################################
 
 uses System.Generics.Collections,
      Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.D2, LUX.D3, LUX.M4, LUX.Tree,
+     LUX, LUX.D1, LUX.D2, LUX.D3, LUX.M4, LUX.Tree,
      LUX.GPU.OpenGL,
      LUX.GPU.OpenGL.Buffer.Unifor;
 
@@ -44,6 +44,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _RelaPose :TSingleM4;
        _AbsoPose :TGLUnifor<TSingleM4>;  upAbsoPose :Boolean;
+       _BouBox   :TSingleArea3D;
+       _Visible  :Boolean;
        ///// アクセス
        function GetScener :TGLScener; virtual;
        function GetRelaPose :TSingleM4; virtual;
@@ -59,11 +61,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
-       property Scener   :TGLScener read GetScener                    ;
-       property RelaPose :TSingleM4 read GetRelaPose write SetRelaPose;
-       property AbsoPose :TSingleM4 read GetAbsoPose write SetAbsoPose;
+       property Scener   :TGLScener     read GetScener                    ;
+       property RelaPose :TSingleM4     read GetRelaPose write SetRelaPose;
+       property AbsoPose :TSingleM4     read GetAbsoPose write SetAbsoPose;
+       property BouBox   :TSingleArea3D read   _BouBox                    ;
+       property Visible  :Boolean       read   _Visible  write   _Visible ;
        ///// メソッド
        procedure Draw; virtual;
+       procedure CalcBouBox; virtual;
+       function HitBouBox( const AbsoRay_:TSingleRay3D ) :TSingleArea;
+       procedure HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLNode ); overload;
+       function HitRay( const AbsoRay_:TSingleRay3D ) :TGLNode; overload;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCamera
@@ -214,6 +222,8 @@ begin
      _AbsoPose.Count := 1;
 
      RelaPose := TSingleM4.Identify;
+
+     _Visible := True;
 end;
 
 destructor TGLNode.Destroy;
@@ -229,13 +239,93 @@ procedure TGLNode.Draw;
 var
    I :Integer;
 begin
-     BeginDraw;
+     if _Visible then
+     begin
+          BeginDraw;
 
-       DrawMain;
+            DrawMain;
 
-     EndDraw;
+          EndDraw;
 
-     for I := 0 to ChildsN-1 do Childs[ I ].Draw;
+          for I := 0 to ChildsN-1 do Childs[ I ].Draw;
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TGLNode.CalcBouBox;
+begin
+     _BouBox := TSingleArea3D.NeMax;
+end;
+
+//------------------------------------------------------------------------------
+
+function TGLNode.HitBouBox( const AbsoRay_:TSingleRay3D ) :TSingleArea;
+//······································
+     procedure Slab( const Min_,Max_,Pos_,Vec_:Single );
+     var
+        T0, T1 :Single;
+     begin
+          T0 := ( Min_ - Pos_ ) / Vec_;
+          T1 := ( Max_ - Pos_ ) / Vec_;
+
+          with Result do
+          begin
+               if Min < T0 then Min := T0;
+               if T1 < Max then Max := T1;
+          end;
+     end;
+//······································
+var
+   R :TSingleRay3D;
+begin
+     Result := TSingleArea.PoMax;
+
+     R := AbsoPose.Inverse * AbsoRay_;
+
+     with R, _BouBox do
+     begin
+          if Vec.X > 0 then Slab( Min.X, Max.X, Pos.X, Vec.X )
+                       else
+          if Vec.X < 0 then Slab( Max.X, Min.X, Pos.X, Vec.X );
+
+          if Vec.Y > 0 then Slab( Min.Y, Max.Y, Pos.Y, Vec.Y )
+                       else
+          if Vec.Y < 0 then Slab( Max.Y, Min.Y, Pos.Y, Vec.Y );
+
+          if Vec.Z > 0 then Slab( Min.Z, Max.Z, Pos.Z, Vec.Z )
+                       else
+          if Vec.Z < 0 then Slab( Max.Z, Min.Z, Pos.Z, Vec.Z );
+     end;
+end;
+
+procedure TGLNode.HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLNode );
+var
+   L :TSingleArea;
+   I :Integer;
+begin
+     L := HitBouBox( AbsoRay_ );
+
+     if L.Min <= L.Max then
+     begin
+          if L.Min < Len_ then
+          begin
+               Len_ := L.Min;
+               Obj_ := Self;
+          end;
+     end;
+
+     for I := 0 to ChildsN-1 do Childs[ I ].HitRay( AbsoRay_, Len_, Obj_ );
+end;
+
+function TGLNode.HitRay( const AbsoRay_:TSingleRay3D ) :TGLNode;
+var
+   L :Single;
+begin
+     L      := Single.MaxValue;
+     Result := nil;
+
+     HitRay( AbsoRay_, L, Result );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLScener
