@@ -10,6 +10,7 @@ uses System.Generics.Collections,
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
+     TGLNode   = class;
      TGLScener = class;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
@@ -23,39 +24,49 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      {protected}
        ///// アクセス
        function GetScener :TGLScener;
-       function GetPose :TSingleM4;
-       procedure SetPose( const Move_:TSingleM4 );
+       function GetRelaPose :TSingleM4;
+       procedure SetRelaPose( const RelaPose_:TSingleM4 );
+       function GetAbsoPose :TSingleM4;
+       procedure SetAbsoPose( const AbsoPose_:TSingleM4 );
      {public}
        ///// プロパティ
-       property Scener :TGLScener read GetScener              ;
-       property Pose   :TSingleM4 read GetPose   write SetPose;
+       property Scener   :TGLScener read GetScener                    ;
+       property RelaPose :TSingleM4 read GetRelaPose write SetRelaPose;
+       property AbsoPose :TSingleM4 read GetAbsoPose write SetAbsoPose;
        ///// メソッド
        procedure Draw;
      end;
 
+     //-------------------------------------------------------------------------
+
      TGLNode = class( TTreeNode<TGLNode>, IGLNode )
      private
      protected
-       _Pose :TGLUnifor<TSingleM4>;
+       _RelaPose :TSingleM4;
+       _AbsoPose :TGLUnifor<TSingleM4>;  upAbsoPose :Boolean;
        ///// アクセス
-       function GetScener :TGLScener;
-       function GetPose :TSingleM4;
-       procedure SetPose( const Move_:TSingleM4 ); virtual;
+       function GetScener :TGLScener; virtual;
+       function GetRelaPose :TSingleM4; virtual;
+       procedure SetRelaPose( const RelaPose_:TSingleM4 ); virtual;
+       procedure CalAbsoPose;
+       function GetAbsoPose :TSingleM4; virtual;
+       procedure SetAbsoPose( const AbsoPose_:TSingleM4 ); virtual;
        ///// メソッド
        procedure BeginDraw; virtual;
-       procedure DrawCore; virtual;
+       procedure DrawMain; virtual;
        procedure EndDraw; virtual;
      public
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
-       property Scener :TGLScener read GetScener              ;
-       property Pose   :TSingleM4 read GetPose   write SetPose;
+       property Scener   :TGLScener read GetScener                    ;
+       property RelaPose :TSingleM4 read GetRelaPose write SetRelaPose;
+       property AbsoPose :TSingleM4 read GetAbsoPose write SetAbsoPose;
        ///// メソッド
        procedure Draw; virtual;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLScener
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCamera
 
      IGLCamera = interface( IGLNode )
      ['{648646AC-975D-464E-BD83-C39EA3EB4E1E}']
@@ -63,16 +74,23 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      {public}
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaper
+
      IGLShaper = interface( IGLNode )
      ['{8045CCEA-8FC4-4D0A-A6CE-A97FF6972A7F}']
      {protected}
      {public}
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLScener
+
      IGLScener = interface( IGLNode )
      ['{600C6A00-B748-4A1B-A841-A7135257ABCA}']
      {protected}
      {public}
+       ///// プロパティ
+       property RelaPose :TSingleM4 read GetRelaPose;
+       property AbsoPose :TSingleM4 read GetAbsoPose;
      end;
 
      //-------------------------------------------------------------------------
@@ -80,9 +98,21 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLScener = class( TGLNode, IGLScener )
      private
      protected
+       ///// アクセス
+       function GetRelaPose :TSingleM4; override;
+       procedure SetRelaPose( const RelaPose_:TSingleM4 ); override;
+       function GetAbsoPose :TSingleM4; override;
+       procedure SetAbsoPose( const AbsoPose_:TSingleM4 ); override;
+       ///// メソッド
+       procedure BeginDraw; override;
+       procedure DrawMain; override;
+       procedure EndDraw; override;
      public
        constructor Create; override;
        destructor Destroy; override;
+       ///// プロパティ
+       property RelaPose :TSingleM4 read GetRelaPose;
+       property AbsoPose :TSingleM4 read GetAbsoPose;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -116,31 +146,62 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TGLNode.GetPose :TSingleM4;
+function TGLNode.GetRelaPose :TSingleM4;
 begin
-     Result := _Pose[ 0 ];
+     Result := _RelaPose;
 end;
 
-procedure TGLNode.SetPose( const Move_:TSingleM4 );
+procedure TGLNode.SetRelaPose( const RelaPose_:TSingleM4 );
 begin
-     _Pose[ 0 ] := Move_;
+     _RelaPose := RelaPose_;
+
+     RunFamily( procedure( const Node_:TTreeNode )
+     begin
+          ( Node_ as TGLNode ).upAbsoPose := True;
+     end );
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TGLNode.CalAbsoPose;
+begin
+     if upAbsoPose then
+     begin
+          _AbsoPose[ 0 ] := Paren.AbsoPose * _RelaPose;
+
+          upAbsoPose := False;
+     end;
+end;
+
+function TGLNode.GetAbsoPose :TSingleM4;
+begin
+     CalAbsoPose;
+
+     Result := _AbsoPose[ 0 ];
+end;
+
+procedure TGLNode.SetAbsoPose( const AbsoPose_:TSingleM4 );
+begin
+     RelaPose := Paren.AbsoPose.Inverse * AbsoPose_;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
 procedure TGLNode.BeginDraw;
 begin
-     _Pose.Use( 3{BinP} );
+     CalAbsoPose;
+
+     _AbsoPose.Use( 3{BinP} );
 end;
 
-procedure TGLNode.DrawCore;
+procedure TGLNode.DrawMain;
 begin
 
 end;
 
 procedure TGLNode.EndDraw;
 begin
-     _Pose.Unuse( 3{BinP} );
+     _AbsoPose.Unuse( 3{BinP} );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -149,15 +210,15 @@ constructor TGLNode.Create;
 begin
      inherited;
 
-     _Pose := TGLUnifor<TSingleM4>.Create( GL_DYNAMIC_DRAW );
-     _Pose.Count := 1;
+     _AbsoPose := TGLUnifor<TSingleM4>.Create( GL_DYNAMIC_DRAW );
+     _AbsoPose.Count := 1;
 
-     Pose := TSingleM4.Identify;
+     RelaPose := TSingleM4.Identify;
 end;
 
 destructor TGLNode.Destroy;
 begin
-     _Pose.DisposeOf;
+     _AbsoPose.DisposeOf;
 
      inherited;
 end;
@@ -170,7 +231,7 @@ var
 begin
      BeginDraw;
 
-       DrawCore;
+       DrawMain;
 
      EndDraw;
 
@@ -182,6 +243,45 @@ end;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLScener.GetRelaPose :TSingleM4;
+begin
+     Result := TSingleM4.Identify;
+end;
+
+procedure TGLScener.SetRelaPose( const RelaPose_:TSingleM4 );
+begin
+
+end;
+
+function TGLScener.GetAbsoPose :TSingleM4;
+begin
+     Result := TSingleM4.Identify;
+end;
+
+procedure TGLScener.SetAbsoPose( const AbsoPose_:TSingleM4 );
+begin
+
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLScener.BeginDraw;
+begin
+
+end;
+
+procedure TGLScener.DrawMain;
+begin
+
+end;
+
+procedure TGLScener.EndDraw;
+begin
+
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
