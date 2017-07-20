@@ -119,8 +119,8 @@ end;
 
 procedure TGLCamera.Render;
 begin
-     _Proj.Use( 1{BinP} );
-     _Pose.Use( 2{BinP} );
+     _Proj    .Use( 1{BinP} );
+     _AbsoPose.Use( 2{BinP} );
 
      Scener.Draw;
 end;
