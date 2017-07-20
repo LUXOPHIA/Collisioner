@@ -27,7 +27,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure BeginDraw; override;
        procedure EndDraw; override;
      public
-       constructor Create( const Paren_:ITreeNode ); override;
+       constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
        property Matery :IGLMatery read _Matery write _Matery;
@@ -43,10 +43,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _TexBuf :TGLVerterS<TSingle2D>;
        ///// メソッド
        procedure BeginDraw; override;
-       procedure DrawCore; override;
+       procedure DrawMain; override;
        procedure EndDraw; override;
      public
-       constructor Create( const Paren_:ITreeNode ); override;
+       constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
        property PosBuf :TGLVerterS<TSingle3D> read _PosBuf;
@@ -67,10 +67,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _LineW  :Single;
        ///// メソッド
        procedure BeginDraw; override;
-       procedure DrawCore; override;
+       procedure DrawMain; override;
        procedure EndDraw; override;
      public
-       constructor Create( const Paren_:ITreeNode ); override;
+       constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
        property EleBuf :TGLElemerLine32 read _EleBuf             ;
@@ -88,9 +88,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _EleBuf :TGLElemerFace32;
        ///// メソッド
-       procedure DrawCore; override;
+       procedure DrawMain; override;
      public
-       constructor Create( const Paren_:ITreeNode ); override;
+       constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
        property EleBuf :TGLElemerFace32 read _EleBuf;
@@ -108,10 +108,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _Shaper :TGLShaperPoin;
        ///// メソッド
        procedure BeginDraw; override;
-       procedure DrawCore; override;
+       procedure DrawMain; override;
        procedure EndDraw; override;
      public
-       constructor Create( const Paren_:ITreeNode ); override;
+       constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
        property Shaper :TGLShaperPoin read _Shaper write _Shaper;
@@ -155,7 +155,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLShaper.Create( const Paren_:ITreeNode );
+constructor TGLShaper.Create;
 begin
      inherited;
 
@@ -184,7 +184,7 @@ begin
      _TexBuf.Use( 2{BinP} );
 end;
 
-procedure TGLShaperPoin.DrawCore;
+procedure TGLShaperPoin.DrawMain;
 begin
      glDrawArrays( GL_POINTS, 0, _PosBuf.Count );
 end;
@@ -200,7 +200,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLShaperPoin.Create( const Paren_:ITreeNode );
+constructor TGLShaperPoin.Create;
 begin
      inherited;
 
@@ -499,7 +499,7 @@ begin
      glLineWidth( _LineW );
 end;
 
-procedure TGLShaperLine.DrawCore;
+procedure TGLShaperLine.DrawMain;
 begin
      _EleBuf.Draw;
 end;
@@ -512,7 +512,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLShaperLine.Create( const Paren_:ITreeNode );
+constructor TGLShaperLine.Create;
 begin
      inherited;
 
@@ -822,14 +822,14 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLShaperFace.DrawCore;
+procedure TGLShaperFace.DrawMain;
 begin
      _EleBuf.Draw;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLShaperFace.Create( const Paren_:ITreeNode );
+constructor TGLShaperFace.Create;
 begin
      inherited;
 
@@ -1148,9 +1148,9 @@ begin
      end;
 end;
 
-procedure TGLShaperCopy.DrawCore;
+procedure TGLShaperCopy.DrawMain;
 begin
-     _Shaper.DrawCore;
+     _Shaper.DrawMain;
 end;
 
 procedure TGLShaperCopy.EndDraw;
@@ -1169,7 +1169,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLShaperCopy.Create( const Paren_:ITreeNode );
+constructor TGLShaperCopy.Create;
 begin
      inherited;
 
