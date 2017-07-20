@@ -26,7 +26,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetProj :TSingleM4; virtual;
        procedure SetProj( const Proj_:TSingleM4 ); virtual;
      public
-       constructor Create( const Paren_:ITreeNode ); override;
+       constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
        property Proj :TSingleM4 read GetProj write SetProj;
@@ -44,7 +44,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetSize :Single; virtual;
        procedure SetSize( const Size_:Single ); virtual;
      public
-       constructor Create( const Paren_:ITreeNode ); override;
+       constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
        property Size :Single read GetSize write SetSize;
@@ -60,7 +60,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetAngl :Single; virtual;
        procedure SetAngl( const Angl_:Single ); virtual;
      public
-       constructor Create( const Paren_:ITreeNode ); override;
+       constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
        property Angl :Single read GetAngl write SetAngl;
@@ -100,7 +100,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLCamera.Create( const Paren_:ITreeNode );
+constructor TGLCamera.Create;
 begin
      inherited;
 
@@ -151,7 +151,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLCameraOrth.Create( const Paren_:ITreeNode );
+constructor TGLCameraOrth.Create;
 begin
      inherited;
 
@@ -190,7 +190,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLCameraPers.Create( const Paren_:ITreeNode );
+constructor TGLCameraPers.Create;
 begin
      inherited;
 
