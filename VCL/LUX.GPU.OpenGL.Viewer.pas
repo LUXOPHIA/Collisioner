@@ -5,10 +5,11 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  LUX, LUX.M4,
+  LUX, LUX.D3, LUX.D4, LUX.M4,
   LUX.GPU.OpenGL,
   LUX.GPU.OpenGL.VCL,
   LUX.GPU.OpenGL.Buffer.Unifor,
+  LUX.GPU.OpenGL.Scener,
   LUX.GPU.OpenGL.Camera;
 
 type
@@ -22,6 +23,7 @@ type
     _DC     :HDC;
     _Viewer :TGLUnifor<TSingleM4>;
     _Camera :TGLCamera;
+    _Picker :TGLNode;
     ///// イベント
     _OnPaint :TProc;
     ///// メソッド
@@ -37,6 +39,7 @@ type
     ///// プロパティ
     property DC     :HDC       read _DC                  ;
     property Camera :TGLCamera read _Camera write _Camera;
+    property Picker :TGLNode   read _Picker              ;
     ///// イベント
     property OnPaint :TProc read _OnPaint write _OnPaint;
     ///// メソッド
@@ -46,6 +49,8 @@ type
     procedure BeginRender;
     procedure EndRender;
     function MakeScreenShot :Vcl.Graphics.TBitmap;
+    function ShootRay( const X_,Y_:Single ) :TSingleRay3D;
+    function PickObject( const X_,Y_:Single ) :TGLNode;
   end;
 
 implementation //############################################################### ■
@@ -234,6 +239,35 @@ begin
                Inc( C, Width );
           end;
      end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TGLViewer.ShootRay( const X_,Y_:Single ) :TSingleRay3D;
+var
+   S, P0, P1 :TSingle4D;
+begin
+     with S do
+     begin
+          X :=     X_ / ClientWidth  * 2 - 1;
+          Y := 1 - Y_ / ClientHeight * 2    ;
+          Z := 1 - 0.2;
+          W := 1;
+     end;
+
+     P0 := _Camera.AbsoPose * TSingle4D.Create( 0, 0, 0, 1 );
+     P1 := _Camera.AbsoPose * _Camera.Proj.Inverse * _Viewer[ 0 ].Inverse * S;
+
+     with Result do
+     begin
+          Pos := TSingle3D(      P0 );
+          Vec := TSingle3D( P1 - P0 ).Unitor;
+     end;
+end;
+
+function TGLViewer.PickObject( const X_,Y_:Single ) :TGLNode;
+begin
+     Result := _Camera.Scener.HitRay( ShootRay( X_, Y_ ) );
 end;
 
 end. //######################################################################### ■
