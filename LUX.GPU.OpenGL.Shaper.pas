@@ -718,6 +718,8 @@ begin
      _PosBuf.Unmap;
      _NorBuf.Unmap;
      _EleBuf.Unmap;
+
+     CalcBouBox;
 end;
 
 //------------------------------------------------------------------------------
@@ -889,6 +891,8 @@ begin
      Vs.DisposeOf;
 
      _EleBuf.Import( Es );
+
+     CalcBouBox;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperFace
@@ -1029,6 +1033,8 @@ begin
      _PosBuf.Unmap;
      _NorBuf.Unmap;
      _EleBuf.Unmap;
+
+     CalcBouBox;
 end;
 
 //------------------------------------------------------------------------------
@@ -1201,6 +1207,8 @@ begin
      Vs.DisposeOf;
 
      _EleBuf.Import( Es );
+
+     CalcBouBox;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperCopy
