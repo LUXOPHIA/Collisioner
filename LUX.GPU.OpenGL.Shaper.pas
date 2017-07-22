@@ -26,7 +26,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaper
 
-     TGLShaper = class( TGLNode, IGLShaper )
+     TGLShaper = class( TGLObject, IGLShaper )
      private
      protected
        _Matery :IGLMatery;

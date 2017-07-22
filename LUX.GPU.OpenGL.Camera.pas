@@ -16,7 +16,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCamera
 
-     TGLCamera = class( TGLNode, IGLCamera )
+     TGLCamera = class( TGLObject, IGLCamera )
      private
        const _N :Single = 0.1;
        const _F :Single = 1000;

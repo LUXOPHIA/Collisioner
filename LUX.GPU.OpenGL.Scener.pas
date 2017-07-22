@@ -10,16 +10,16 @@ uses System.Generics.Collections,
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
-     TGLNode   = class;
+     TGLObject = class;
      TGLScener = class;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLNode
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLObject
 
-     IGLNode = interface
+     IGLObject = interface
      ['{049DB60C-9F5D-45B9-89D8-E4AC58C807E3}']
      {protected}
        ///// アクセス
@@ -39,7 +39,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLNode = class( TTreeNode<TGLNode>, IGLNode )
+     TGLObject = class( TTreeNode<TGLObject>, IGLObject )
      private
      protected
        _RelaPose :TSingleM4;
@@ -62,6 +62,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        destructor Destroy; override;
        ///// プロパティ
        property Scener   :TGLScener     read GetScener                    ;
+       property     Pose :TSingleM4     read GetRelaPose write SetRelaPose;
        property RelaPose :TSingleM4     read GetRelaPose write SetRelaPose;
        property AbsoPose :TSingleM4     read GetAbsoPose write SetAbsoPose;
        property BouBox   :TSingleArea3D read   _BouBox                    ;
@@ -70,13 +71,13 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Draw; virtual;
        procedure CalcBouBox; virtual;
        function HitBouBox( const AbsoRay_:TSingleRay3D ) :TSingleArea;
-       procedure HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLNode ); overload;
-       function HitRay( const AbsoRay_:TSingleRay3D ) :TGLNode; overload;
+       procedure HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLObject ); overload;
+       function HitRay( const AbsoRay_:TSingleRay3D ) :TGLObject; overload;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCamera
 
-     IGLCamera = interface( IGLNode )
+     IGLCamera = interface( IGLObject )
      ['{648646AC-975D-464E-BD83-C39EA3EB4E1E}']
      {protected}
      {public}
@@ -84,7 +85,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaper
 
-     IGLShaper = interface( IGLNode )
+     IGLShaper = interface( IGLObject )
      ['{8045CCEA-8FC4-4D0A-A6CE-A97FF6972A7F}']
      {protected}
      {public}
@@ -92,7 +93,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLScener
 
-     IGLScener = interface( IGLNode )
+     IGLScener = interface( IGLObject )
      ['{600C6A00-B748-4A1B-A841-A7135257ABCA}']
      {protected}
      {public}
@@ -103,7 +104,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLScener = class( TGLNode, IGLScener )
+     TGLScener = class( TGLObject, IGLScener )
      private
      protected
        ///// アクセス
@@ -139,7 +140,7 @@ uses System.SysUtils, System.Classes,
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLNode
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLObject
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -147,31 +148,31 @@ uses System.SysUtils, System.Classes,
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLNode.GetScener :TGLScener;
+function TGLObject.GetScener :TGLScener;
 begin
      Result := RootNode as TGLScener;
 end;
 
 //------------------------------------------------------------------------------
 
-function TGLNode.GetRelaPose :TSingleM4;
+function TGLObject.GetRelaPose :TSingleM4;
 begin
      Result := _RelaPose;
 end;
 
-procedure TGLNode.SetRelaPose( const RelaPose_:TSingleM4 );
+procedure TGLObject.SetRelaPose( const RelaPose_:TSingleM4 );
 begin
      _RelaPose := RelaPose_;
 
      RunFamily( procedure( const Node_:TTreeNode )
      begin
-          ( Node_ as TGLNode ).upAbsoPose := True;
+          ( Node_ as TGLObject ).upAbsoPose := True;
      end );
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLNode.CalAbsoPose;
+procedure TGLObject.CalAbsoPose;
 begin
      if upAbsoPose then
      begin
@@ -181,40 +182,40 @@ begin
      end;
 end;
 
-function TGLNode.GetAbsoPose :TSingleM4;
+function TGLObject.GetAbsoPose :TSingleM4;
 begin
      CalAbsoPose;
 
      Result := _AbsoPose[ 0 ];
 end;
 
-procedure TGLNode.SetAbsoPose( const AbsoPose_:TSingleM4 );
+procedure TGLObject.SetAbsoPose( const AbsoPose_:TSingleM4 );
 begin
      RelaPose := Paren.AbsoPose.Inverse * AbsoPose_;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLNode.BeginDraw;
+procedure TGLObject.BeginDraw;
 begin
      CalAbsoPose;
 
      _AbsoPose.Use( 3{BinP} );
 end;
 
-procedure TGLNode.DrawMain;
+procedure TGLObject.DrawMain;
 begin
 
 end;
 
-procedure TGLNode.EndDraw;
+procedure TGLObject.EndDraw;
 begin
      _AbsoPose.Unuse( 3{BinP} );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLNode.Create;
+constructor TGLObject.Create;
 begin
      inherited;
 
@@ -226,7 +227,7 @@ begin
      _Visible := True;
 end;
 
-destructor TGLNode.Destroy;
+destructor TGLObject.Destroy;
 begin
      _AbsoPose.DisposeOf;
 
@@ -235,7 +236,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLNode.Draw;
+procedure TGLObject.Draw;
 var
    I :Integer;
 begin
@@ -253,14 +254,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLNode.CalcBouBox;
+procedure TGLObject.CalcBouBox;
 begin
      _BouBox := TSingleArea3D.NeMax;
 end;
 
 //------------------------------------------------------------------------------
 
-function TGLNode.HitBouBox( const AbsoRay_:TSingleRay3D ) :TSingleArea;
+function TGLObject.HitBouBox( const AbsoRay_:TSingleRay3D ) :TSingleArea;
 //······································
      procedure Slab( const Min_,Max_,Pos_,Vec_:Single );
      var
@@ -299,7 +300,7 @@ begin
      end;
 end;
 
-procedure TGLNode.HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLNode );
+procedure TGLObject.HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLObject );
 var
    L :TSingleArea;
    I :Integer;
@@ -318,7 +319,7 @@ begin
      for I := 0 to ChildsN-1 do Childs[ I ].HitRay( AbsoRay_, Len_, Obj_ );
 end;
 
-function TGLNode.HitRay( const AbsoRay_:TSingleRay3D ) :TGLNode;
+function TGLObject.HitRay( const AbsoRay_:TSingleRay3D ) :TGLObject;
 var
    L :Single;
 begin
