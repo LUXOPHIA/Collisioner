@@ -1,10 +1,10 @@
-﻿unit LUX.GPU.OpenGL.Imager.FMX;
+﻿unit LUX.GPU.OpenGL.Atom.Imager.FMX;
 
 interface //#################################################################### ■
 
 uses System.UITypes,
      FMX.Graphics,
-     LUX, LUX.GPU.OpenGL.Imager;
+     LUX, LUX.GPU.OpenGL.Atom.Imager;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 

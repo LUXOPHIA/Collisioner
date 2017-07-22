@@ -8,7 +8,11 @@ uses
   FMX.Platform.Win,
   Winapi.Windows, Winapi.OpenGL, Winapi.OpenGLext,
   LUX, LUX.D3, LUX.D4, LUX.M4, LUX.FMX.Forms,
-  LUX.GPU.OpenGL, LUX.GPU.OpenGL.FMX, LUX.GPU.OpenGL.Buffer.Unifor, LUX.GPU.OpenGL.Scener, LUX.GPU.OpenGL.Camera;
+  LUX.GPU.OpenGL,
+  LUX.GPU.OpenGL.FMX,
+  LUX.GPU.OpenGL.Atom.Buffer.Unifor,
+  LUX.GPU.OpenGL.Scener,
+  LUX.GPU.OpenGL.Camera;
 
 type
   TGLViewer = class(TFrame)
