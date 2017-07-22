@@ -15,20 +15,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShader
 
-     IGLShader = interface( IGLObject )
-     ['{1E06B97A-6947-4960-8CD7-8FAD5CBCC546}']
-       ///// アクセス
-       function GetKind :GLenum;
-       function GetSource :TStringList;
-       function GetStatus :Boolean;
-       function GetErrors :TStringList;
-       ///// プロパティ
-       property Kind   :GLenum      read GetKind  ;
-       property Source :TStringList read GetSource;
-       property Status :Boolean     read GetStatus;
-       property Errors :TStringList read GetErrors;
-     end;
-
      TGLShader = class( TGLObject, IGLShader )
      private
      protected
