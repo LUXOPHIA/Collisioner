@@ -23,7 +23,6 @@ type
     _DC     :HDC;
     _Viewer :TGLUnifor<TSingleM4>;
     _Camera :TGLCamera;
-    _Picker :TGLObject;
     ///// イベント
     _OnPaint :TProc;
     ///// メソッド
@@ -39,7 +38,6 @@ type
     ///// プロパティ
     property DC     :HDC       read _DC                  ;
     property Camera :TGLCamera read _Camera write _Camera;
-    property Picker :TGLObject read _Picker              ;
     ///// イベント
     property OnPaint :TProc read _OnPaint write _OnPaint;
     ///// メソッド
