@@ -22,6 +22,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _Source :TStringList;
        _Status :Boolean;
        _Errors :TStringList;
+       _Progra :IGLProgra;
        ///// イベント
        _OnCompiled :TProc;
        ///// アクセス
@@ -30,6 +31,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSource( Sender_:TObject );
        function GetStatus :Boolean;
        function GetErrors :TStringList;
+       function GetProgra :IGLProgra;
+       procedure SetProgra( const Progra_:IGLProgra );
        ///// メソッド
        procedure Compile( const Source_:String );
        function glGetStatus :Boolean;
@@ -42,6 +45,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Source :TStringList read GetSource;
        property Status :Boolean     read GetStatus;
        property Errors :TStringList read GetErrors;
+       property Progra :IGLProgra   read GetProgra write SetProgra;
        ///// イベント
        property OnCompiled :TProc read _OnCompiled write _OnCompiled;
      end;
@@ -113,6 +117,8 @@ begin
      _Errors.Text := glGetErrors;
 
      if Assigned( _OnCompiled ) then _OnCompiled;
+
+     if Assigned( _Progra ) then _Progra.Link;
 end;
 
 //------------------------------------------------------------------------------
@@ -125,6 +131,18 @@ end;
 function TGLShader.GetErrors :TStringList;
 begin
      Result := _Errors;
+end;
+
+//------------------------------------------------------------------------------
+
+function TGLShader.GetProgra :IGLProgra;
+begin
+     Result := _Progra;
+end;
+
+procedure TGLShader.SetProgra( const Progra_:IGLProgra );
+begin
+     _Progra := Progra_;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド

@@ -226,11 +226,15 @@ end;
 procedure TGLProgra.Attach( const Shader_:IGLShader );
 begin
      glAttachShader( _ID, Shader_.ID );
+
+     Shader_.Progra := Self as IGLProgra;
 end;
 
 procedure TGLProgra.Detach( const Shader_:IGLShader );
 begin
      glDetachShader( _ID, Shader_.ID );
+
+     Shader_.Progra := nil;
 end;
 
 //------------------------------------------------------------------------------
