@@ -112,7 +112,7 @@ begin
      _Status      := glGetStatus;
      _Errors.Text := glGetErrors;
 
-     _OnCompiled;
+     if Assigned( _OnCompiled ) then _OnCompiled;
 end;
 
 //------------------------------------------------------------------------------
@@ -180,8 +180,6 @@ begin
      _Kind := Kind_;
 
      _ID := glCreateShader( _Kind );
-
-     _OnCompiled := procedure begin end;
 end;
 
 destructor TGLShader.Destroy;
