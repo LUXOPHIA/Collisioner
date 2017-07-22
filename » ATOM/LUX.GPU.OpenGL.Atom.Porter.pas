@@ -11,14 +11,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPortS
-
-     TGLPortS = record
-     private
-     public
-       Shad :IGLShader;
-     end;
-
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPortF
 
      TGLPortF = record
@@ -86,20 +78,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure DelPorts;
        procedure Use; virtual;
        procedure Unuse; virtual;
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPortsS
-
-     TGLPortsS = class( TGLPorts<TGLPortS> )
-     private
-     protected
-       ///// メソッド
-       procedure AddPort( const BinP_:GLuint; const Port_:TGLPortS ); override;
-       procedure DelPort( const BinP_:GLuint; const Port_:TGLPortS ); override;
-     public
-       ///// メソッド
-       procedure Add( const Shad_:IGLShader );
-       procedure Del( const Shad_:IGLShader );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPortsF
@@ -171,12 +149,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 implementation //############################################################### ■
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPortS
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPortF
 
@@ -293,45 +265,6 @@ end;
 procedure TGLPorts<_TPort_>.Unuse;
 begin
 
-end;
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPortsS
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-procedure TGLPortsS.AddPort( const BinP_:GLuint; const Port_:TGLPortS );
-begin
-     _Progra.Attach( Port_.Shad );
-end;
-
-procedure TGLPortsS.DelPort( const BinP_:GLuint; const Port_:TGLPortS );
-begin
-     _Progra.Detach( Port_.Shad );
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-procedure TGLPortsS.Add( const Shad_:IGLShader );
-var
-   P :TGLPortS;
-begin
-     with P do
-     begin
-          Shad := Shad_;
-     end;
-
-     inherited Add( Shad_.Kind, P );
-end;
-
-procedure TGLPortsS.Del( const Shad_:IGLShader );
-begin
-     inherited Del( Shad_.Kind );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPortsF

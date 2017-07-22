@@ -200,12 +200,9 @@ begin
 
      with _Progra do
      begin
-          with Shaders do
-          begin
-               Add( _ShaderV{Shad} );
-               Add( _ShaderG{Shad} );
-               Add( _ShaderF{Shad} );
-          end;
+          Attach( _ShaderV{Shad} );
+          Attach( _ShaderG{Shad} );
+          Attach( _ShaderF{Shad} );
 
           with Verters do
           begin
@@ -331,11 +328,8 @@ begin
 
      with _Progra do
      begin
-          with Shaders do
-          begin
-               Add( _ShaderV{Shad} );
-               Add( _ShaderF{Shad} );
-          end;
+          Attach( _ShaderV{Shad} );
+          Attach( _ShaderF{Shad} );
 
           with Verters do
           begin

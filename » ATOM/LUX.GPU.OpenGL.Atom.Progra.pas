@@ -20,14 +20,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      ['{8EB00198-A04B-4632-8B23-1DF1B171A75F}']
      {protected}
        ///// アクセス
-       function GetShaders :TGLPortsS;
        function GetFramers :TGLPortsF;
        function GetVerters :TGLPortsV;
        function GetUnifors :TGLPortsU;
        function GetImagers :TGLPortsI;
      {public}
        ///// プロパティ
-       property Shaders :TGLPortsS read GetShaders;
        property Framers :TGLPortsF read GetFramers;
        property Verters :TGLPortsV read GetVerters;
        property Unifors :TGLPortsU read GetUnifors;
@@ -41,7 +39,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _Status  :Boolean;
        _Errors  :TStringList;
-       _Shaders :TGLPortsS;
        _Framers :TGLPortsF;
        _Verters :TGLPortsV;
        _Unifors :TGLPortsU;
@@ -51,7 +48,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// アクセス
        function GetStatus :Boolean;
        function GetErrors :TStringList;
-       function GetShaders :TGLPortsS;
        function GetFramers :TGLPortsF;
        function GetVerters :TGLPortsV;
        function GetUnifors :TGLPortsU;
@@ -68,7 +64,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property Status  :Boolean     read GetStatus ;
        property Errors  :TStringList read GetErrors ;
-       property Shaders :TGLPortsS   read GetShaders;
        property Framers :TGLPortsF   read GetFramers;
        property Verters :TGLPortsV   read GetVerters;
        property Unifors :TGLPortsU   read GetUnifors;
@@ -117,11 +112,6 @@ begin
 end;
 
 //------------------------------------------------------------------------------
-
-function TGLProgra.GetShaders :TGLPortsS;
-begin
-     Result := _Shaders;
-end;
 
 function TGLProgra.GetFramers :TGLPortsF;
 begin
@@ -189,7 +179,6 @@ begin
 
      _Errors := TStringList.Create;
 
-     _Shaders := TGLPortsS.Create( Self as IGLProgra );
      _Framers := TGLPortsF.Create( Self as IGLProgra );
      _Verters := TGLPortsV.Create( Self as IGLProgra );
      _Unifors := TGLPortsU.Create( Self as IGLProgra );
@@ -205,7 +194,6 @@ destructor TGLProgra.Destroy;
 begin
      glDeleteProgram( _ID );
 
-     _Shaders.DisposeOf;
      _Framers.DisposeOf;
      _Verters.DisposeOf;
      _Unifors.DisposeOf;
