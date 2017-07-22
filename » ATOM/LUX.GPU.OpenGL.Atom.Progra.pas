@@ -22,10 +22,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// アクセス
        function GetShaders :TGLPortsS;
        function GetFramers :TGLPortsF;
+       function GetVerters :TGLPortsV;
+       function GetUnifors :TGLPortsU;
+       function GetImagers :TGLPortsI;
      {public}
        ///// プロパティ
        property Shaders :TGLPortsS read GetShaders;
        property Framers :TGLPortsF read GetFramers;
+       property Verters :TGLPortsV read GetVerters;
+       property Unifors :TGLPortsU read GetUnifors;
+       property Imagers :TGLPortsI read GetImagers;
      end;
 
      //-------------------------------------------------------------------------
@@ -37,6 +43,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _Errors  :TStringList;
        _Shaders :TGLPortsS;
        _Framers :TGLPortsF;
+       _Verters :TGLPortsV;
+       _Unifors :TGLPortsU;
+       _Imagers :TGLPortsI;
        ///// イベント
        _OnLinked :TProc;
        ///// アクセス
@@ -44,10 +53,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetErrors :TStringList;
        function GetShaders :TGLPortsS;
        function GetFramers :TGLPortsF;
+       function GetVerters :TGLPortsV;
+       function GetUnifors :TGLPortsU;
+       function GetImagers :TGLPortsI;
        ///// イベント
        function GetOnLinked :TProc;
        procedure SetOnLinked( const OnLinked_:TProc );
-       procedure DoOnLinked; virtual;
        ///// メソッド
        function glGetStatus :Boolean;
        function glGetErrors :String;
@@ -59,6 +70,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Errors  :TStringList read GetErrors ;
        property Shaders :TGLPortsS   read GetShaders;
        property Framers :TGLPortsF   read GetFramers;
+       property Verters :TGLPortsV   read GetVerters;
+       property Unifors :TGLPortsU   read GetUnifors;
+       property Imagers :TGLPortsI   read GetImagers;
        ///// イベント
        property OnLinked :TProc read GetOnLinked write SetOnLinked;
        ///// メソッド
@@ -114,6 +128,21 @@ begin
      Result := _Framers;
 end;
 
+function TGLProgra.GetVerters :TGLPortsV;
+begin
+     Result := _Verters;
+end;
+
+function TGLProgra.GetUnifors :TGLPortsU;
+begin
+     Result := _Unifors;
+end;
+
+function TGLProgra.GetImagers :TGLPortsI;
+begin
+     Result := _Imagers;
+end;
+
 /////////////////////////////////////////////////////////////////////// イベント
 
 function TGLProgra.GetOnLinked :TProc;
@@ -124,11 +153,6 @@ end;
 procedure TGLProgra.SetOnLinked( const OnLinked_:TProc );
 begin
      _OnLinked := OnLinked_;
-end;
-
-procedure TGLProgra.DoOnLinked;
-begin
-     _OnLinked;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
@@ -167,11 +191,14 @@ begin
 
      _Shaders := TGLPortsS.Create( Self as IGLProgra );
      _Framers := TGLPortsF.Create( Self as IGLProgra );
+     _Verters := TGLPortsV.Create( Self as IGLProgra );
+     _Unifors := TGLPortsU.Create( Self as IGLProgra );
+     _Imagers := TGLPortsI.Create( Self as IGLProgra );
 
      _ID     := glCreateProgram;
      _Status := False;
 
-     _OnLinked := procedure begin end;
+     _OnLinked := nil;
 end;
 
 destructor TGLProgra.Destroy;
@@ -180,6 +207,9 @@ begin
 
      _Shaders.DisposeOf;
      _Framers.DisposeOf;
+     _Verters.DisposeOf;
+     _Unifors.DisposeOf;
+     _Imagers.DisposeOf;
 
      _Errors.DisposeOf;
 
@@ -224,7 +254,11 @@ begin
      _Status      := glGetStatus;
      _Errors.Text := glGetErrors;
 
-     DoOnLinked;
+     _Verters.AddPorts;
+     _Unifors.AddPorts;
+     _Imagers.AddPorts;
+
+     if Assigned( _OnLinked ) then _OnLinked;
 end;
 
 //------------------------------------------------------------------------------
@@ -232,10 +266,18 @@ end;
 procedure TGLProgra.Use;
 begin
      glUseProgram( _ID );
+
+     _Verters.Use;
+     _Unifors.Use;
+     _Imagers.Use;
 end;
 
 procedure TGLProgra.Unuse;
 begin
+     _Verters.Unuse;
+     _Unifors.Unuse;
+     _Imagers.Unuse;
+
      glUseProgram( 0 );
 end;
 
