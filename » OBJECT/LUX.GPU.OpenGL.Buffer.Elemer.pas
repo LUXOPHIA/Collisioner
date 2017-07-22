@@ -3,7 +3,9 @@
 interface //#################################################################### ■
 
 uses Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.D2, LUX.D3, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Buffer;
+     LUX, LUX.D2, LUX.D3,
+     LUX.GPU.OpenGL.Atom,
+     LUX.GPU.OpenGL.Buffer;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 

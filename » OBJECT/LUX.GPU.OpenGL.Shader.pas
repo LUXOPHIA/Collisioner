@@ -4,7 +4,8 @@ interface //####################################################################
 
 uses System.SysUtils, System.Classes,
      Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.GPU.OpenGL;
+     LUX,
+     LUX.GPU.OpenGL.Atom;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 

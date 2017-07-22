@@ -4,8 +4,13 @@ interface //####################################################################
 
 uses System.Generics.Collections,
      Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.GPU.OpenGL, LUX.GPU.OpenGL.Buffer, LUX.GPU.OpenGL.Buffer.Verter,
-     LUX.GPU.OpenGL.Buffer.Unifor, LUX.GPU.OpenGL.Shader, LUX.GPU.OpenGL.Progra;
+     LUX,
+     LUX.GPU.OpenGL.Atom,
+     LUX.GPU.OpenGL.Buffer,
+     LUX.GPU.OpenGL.Buffer.Verter,
+     LUX.GPU.OpenGL.Buffer.Unifor,
+     LUX.GPU.OpenGL.Shader,
+     LUX.GPU.OpenGL.Progra;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
