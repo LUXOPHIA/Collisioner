@@ -33,7 +33,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBuffer<_TYPE_>
 
-     IGLBuffer = interface( IGLObject )
+     IGLBuffer = interface( IGLAtomer )
      ['{196C0785-DF74-480C-B1DB-76E689F19E32}']
        ///// アクセス
        function GetKind :GLenum;
@@ -56,7 +56,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLBuffer<_TYPE_:record> = class( TGLObject, IGLBuffer )
+     TGLBuffer<_TYPE_:record> = class( TGLAtomer, IGLBuffer )
      private
      protected
        _Align :GLint;

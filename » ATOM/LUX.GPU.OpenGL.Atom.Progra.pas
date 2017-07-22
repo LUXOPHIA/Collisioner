@@ -34,7 +34,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLProgra = class( TGLObject, IGLProgra )
+     TGLProgra = class( TGLAtomer, IGLProgra )
      private
      protected
        _Status  :Boolean;

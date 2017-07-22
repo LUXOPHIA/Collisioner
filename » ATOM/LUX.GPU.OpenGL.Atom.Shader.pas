@@ -15,7 +15,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShader
 
-     TGLShader = class( TGLObject, IGLShader )
+     TGLShader = class( TGLAtomer, IGLShader )
      private
      protected
        _Kind   :GLenum;
