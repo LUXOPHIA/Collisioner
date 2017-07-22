@@ -20,16 +20,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      ['{8EB00198-A04B-4632-8B23-1DF1B171A75F}']
      {protected}
        ///// アクセス
-       function GetFramers :TGLPortsF;
-       function GetVerters :TGLPortsV;
-       function GetUnifors :TGLPortsU;
-       function GetImagers :TGLPortsI;
+       function GetFramers :TGLPorterF;
+       function GetVerters :TGLPorterV;
+       function GetUnifors :TGLPorterU;
+       function GetImagers :TGLPorterI;
      {public}
        ///// プロパティ
-       property Framers :TGLPortsF read GetFramers;
-       property Verters :TGLPortsV read GetVerters;
-       property Unifors :TGLPortsU read GetUnifors;
-       property Imagers :TGLPortsI read GetImagers;
+       property Framers :TGLPorterF read GetFramers;
+       property Verters :TGLPorterV read GetVerters;
+       property Unifors :TGLPorterU read GetUnifors;
+       property Imagers :TGLPorterI read GetImagers;
      end;
 
      //-------------------------------------------------------------------------
@@ -39,19 +39,19 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _Status  :Boolean;
        _Errors  :TStringList;
-       _Framers :TGLPortsF;
-       _Verters :TGLPortsV;
-       _Unifors :TGLPortsU;
-       _Imagers :TGLPortsI;
+       _Framers :TGLPorterF;
+       _Verters :TGLPorterV;
+       _Unifors :TGLPorterU;
+       _Imagers :TGLPorterI;
        ///// イベント
        _OnLinked :TProc;
        ///// アクセス
        function GetStatus :Boolean;
        function GetErrors :TStringList;
-       function GetFramers :TGLPortsF;
-       function GetVerters :TGLPortsV;
-       function GetUnifors :TGLPortsU;
-       function GetImagers :TGLPortsI;
+       function GetFramers :TGLPorterF;
+       function GetVerters :TGLPorterV;
+       function GetUnifors :TGLPorterU;
+       function GetImagers :TGLPorterI;
        ///// イベント
        function GetOnLinked :TProc;
        procedure SetOnLinked( const OnLinked_:TProc );
@@ -64,10 +64,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property Status  :Boolean     read GetStatus ;
        property Errors  :TStringList read GetErrors ;
-       property Framers :TGLPortsF   read GetFramers;
-       property Verters :TGLPortsV   read GetVerters;
-       property Unifors :TGLPortsU   read GetUnifors;
-       property Imagers :TGLPortsI   read GetImagers;
+       property Framers :TGLPorterF  read GetFramers;
+       property Verters :TGLPorterV  read GetVerters;
+       property Unifors :TGLPorterU  read GetUnifors;
+       property Imagers :TGLPorterI  read GetImagers;
        ///// イベント
        property OnLinked :TProc read GetOnLinked write SetOnLinked;
        ///// メソッド
@@ -113,22 +113,22 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TGLProgra.GetFramers :TGLPortsF;
+function TGLProgra.GetFramers :TGLPorterF;
 begin
      Result := _Framers;
 end;
 
-function TGLProgra.GetVerters :TGLPortsV;
+function TGLProgra.GetVerters :TGLPorterV;
 begin
      Result := _Verters;
 end;
 
-function TGLProgra.GetUnifors :TGLPortsU;
+function TGLProgra.GetUnifors :TGLPorterU;
 begin
      Result := _Unifors;
 end;
 
-function TGLProgra.GetImagers :TGLPortsI;
+function TGLProgra.GetImagers :TGLPorterI;
 begin
      Result := _Imagers;
 end;
@@ -179,10 +179,10 @@ begin
 
      _Errors := TStringList.Create;
 
-     _Framers := TGLPortsF.Create( Self as IGLProgra );
-     _Verters := TGLPortsV.Create( Self as IGLProgra );
-     _Unifors := TGLPortsU.Create( Self as IGLProgra );
-     _Imagers := TGLPortsI.Create( Self as IGLProgra );
+     _Framers := TGLPorterF.Create( Self as IGLProgra );
+     _Verters := TGLPorterV.Create( Self as IGLProgra );
+     _Unifors := TGLPorterU.Create( Self as IGLProgra );
+     _Imagers := TGLPorterI.Create( Self as IGLProgra );
 
      _ID     := glCreateProgram;
      _Status := False;
