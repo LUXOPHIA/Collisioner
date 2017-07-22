@@ -24,16 +24,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetProgra  :TGLProgra;
        function GetShaderV :TGLShaderV;
        function GetShaderF :TGLShaderF;
-       /////
-       function GetOnBuilded :TProc;
-       procedure SetOnBuilded( const OnBuilded_:TProc );
      {public}
        ///// プロパティ
        property Progra  :TGLProgra  read GetProgra ;
        property ShaderV :TGLShaderV read GetShaderV;
        property ShaderF :TGLShaderF read GetShaderF;
-       ///// イベント
-       property OnBuilded :TProc read GetOnBuilded write SetOnBuilded;
        ///// メソッド
        procedure Use;
        procedure Unuse;
@@ -47,15 +42,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _Progra  :TGLProgra;
        _ShaderV :TGLShaderV;
        _ShaderF :TGLShaderF;
-       ///// イベント
-       _OnBuilded :TProc;
        ///// アクセス
        function GetProgra  :TGLProgra;
        function GetShaderV :TGLShaderV;
        function GetShaderF :TGLShaderF;
-       /////
-       function GetOnBuilded :TProc;
-       procedure SetOnBuilded( const OnBuilded_:TProc );
      public
        constructor Create;
        destructor Destroy; override;
@@ -63,8 +53,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Progra  :TGLProgra  read GetProgra ;
        property ShaderV :TGLShaderV read GetShaderV;
        property ShaderF :TGLShaderF read GetShaderF;
-       ///// イベント
-       property OnBuilded :TProc read GetOnBuilded write SetOnBuilded;
        ///// メソッド
        procedure Use; virtual;
        procedure Unuse; virtual;
@@ -77,7 +65,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      {protected}
        ///// アクセス
        function GetShaderG :TGLShaderG;
-       procedure SetOnBuilded( const OnBuilded_:TProc );
      {public}
        ///// プロパティ
        property ShaderG :TGLShaderG read GetShaderG;
@@ -157,18 +144,6 @@ begin
      Result := _Progra;
 end;
 
-////////////////////////////////////////////////////////////////////////////////
-
-function TGLMatery.GetOnBuilded :TProc;
-begin
-     Result := _OnBuilded;
-end;
-
-procedure TGLMatery.SetOnBuilded( const OnBuilded_:TProc );
-begin
-     _OnBuilded := OnBuilded_;
-end;
-
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TGLMatery.Create;
@@ -179,54 +154,38 @@ begin
      _ShaderV := TGLShaderV.Create;
      _ShaderF := TGLShaderF.Create;
 
-     with _ShaderV do
+     with _ShaderV.Source do
      begin
-          with Source do
-          begin
-               BeginUpdate;
+          BeginUpdate;
 
-               Add( '#version 430' );
+          Add( '#version 430' );
 
-               Add( 'layout( std140 ) uniform TViewerScal{ layout( row_major ) mat4 _ViewerScal; };' );
-               Add( 'layout( std140 ) uniform TCameraProj{ layout( row_major ) mat4 _CameraProj; };' );
-               Add( 'layout( std140 ) uniform TCameraPose{ layout( row_major ) mat4 _CameraPose; };' );
-               Add( 'layout( std140 ) uniform TShaperPose{ layout( row_major ) mat4 _ShaperPose; };' );
+          Add( 'layout( std140 ) uniform TViewerScal{ layout( row_major ) mat4 _ViewerScal; };' );
+          Add( 'layout( std140 ) uniform TCameraProj{ layout( row_major ) mat4 _CameraProj; };' );
+          Add( 'layout( std140 ) uniform TCameraPose{ layout( row_major ) mat4 _CameraPose; };' );
+          Add( 'layout( std140 ) uniform TShaperPose{ layout( row_major ) mat4 _ShaperPose; };' );
 
-               Add( 'in vec4 _SenderPos;' );
-               Add( 'in vec4 _SenderNor;' );
-               Add( 'in vec2 _SenderTex;' );
+          Add( 'in vec4 _SenderPos;' );
+          Add( 'in vec4 _SenderNor;' );
+          Add( 'in vec2 _SenderTex;' );
 
-               Add( 'out TSenderVF' );
-               Add( '{' );
-               Add( '  vec4 Pos;' );
-               Add( '  vec4 Nor;' );
-               Add( '  vec2 Tex;' );
-               Add( '}' );
-               Add( '_Result;' );
+          Add( 'out TSenderVF' );
+          Add( '{' );
+          Add( '  vec4 Pos;' );
+          Add( '  vec4 Nor;' );
+          Add( '  vec2 Tex;' );
+          Add( '}' );
+          Add( '_Result;' );
 
-               Add( 'void main()' );
-               Add( '{' );
-               Add( '  _Result.Pos =                     _ShaperPose     * _SenderPos;' );
-               Add( '  _Result.Nor = transpose( inverse( _ShaperPose ) ) * _SenderNor;' );
-               Add( '  _Result.Tex =                                       _SenderTex;' );
-               Add( '  gl_Position = _ViewerScal * _CameraProj * inverse( _CameraPose ) * _Result.Pos;' );
-               Add( '}' );
+          Add( 'void main()' );
+          Add( '{' );
+          Add( '  _Result.Pos =                     _ShaperPose     * _SenderPos;' );
+          Add( '  _Result.Nor = transpose( inverse( _ShaperPose ) ) * _SenderNor;' );
+          Add( '  _Result.Tex =                                       _SenderTex;' );
+          Add( '  gl_Position = _ViewerScal * _CameraProj * inverse( _CameraPose ) * _Result.Pos;' );
+          Add( '}' );
 
-               EndUpdate;
-          end;
-
-          OnCompiled := procedure
-          begin
-               _Progra.Link;
-          end;
-     end;
-
-     with _ShaderF do
-     begin
-          OnCompiled := procedure
-          begin
-               _Progra.Link;
-          end;
+          EndUpdate;
      end;
 
      with _Progra do
@@ -257,11 +216,6 @@ begin
           with Framers do
           begin
                Add( 0{BinP}, '_ResultCol'{Name} );
-          end;
-
-          Onlinked := procedure
-          begin
-               if Assigned( _OnBuilded ) then _OnBuilded;
           end;
      end;
 end;
@@ -307,14 +261,6 @@ begin
      inherited;
 
      _ShaderG := TGLShaderG.Create;
-
-     with _ShaderG do
-     begin
-          OnCompiled := procedure
-          begin
-               _Progra.Link;
-          end;
-     end;
 
      with _Progra do
      begin
