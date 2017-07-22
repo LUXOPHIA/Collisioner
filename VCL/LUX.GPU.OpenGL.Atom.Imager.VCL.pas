@@ -1,10 +1,10 @@
-﻿unit LUX.GPU.OpenGL.Imager.VCL;
+﻿unit LUX.GPU.OpenGL.Atom.Imager.VCL;
 
 interface //#################################################################### ■
 
 uses System.UITypes,
      Vcl.Graphics,
-     LUX, LUX.GPU.OpenGL.Imager;
+     LUX, LUX.GPU.OpenGL.Atom.Imager;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 

@@ -8,7 +8,7 @@ uses
   LUX, LUX.D3, LUX.D4, LUX.M4,
   LUX.GPU.OpenGL,
   LUX.GPU.OpenGL.VCL,
-  LUX.GPU.OpenGL.Buffer.Unifor,
+  LUX.GPU.OpenGL.Atom.Buffer.Unifor,
   LUX.GPU.OpenGL.Scener,
   LUX.GPU.OpenGL.Camera;
 
@@ -23,7 +23,7 @@ type
     _DC     :HDC;
     _Viewer :TGLUnifor<TSingleM4>;
     _Camera :TGLCamera;
-    _Picker :TGLNode;
+    _Picker :TGLObject;
     ///// イベント
     _OnPaint :TProc;
     ///// メソッド
@@ -39,7 +39,7 @@ type
     ///// プロパティ
     property DC     :HDC       read _DC                  ;
     property Camera :TGLCamera read _Camera write _Camera;
-    property Picker :TGLNode   read _Picker              ;
+    property Picker :TGLObject read _Picker              ;
     ///// イベント
     property OnPaint :TProc read _OnPaint write _OnPaint;
     ///// メソッド
@@ -50,7 +50,7 @@ type
     procedure EndRender;
     function MakeScreenShot :Vcl.Graphics.TBitmap;
     function ShootRay( const X_,Y_:Single ) :TSingleRay3D;
-    function PickObject( const X_,Y_:Single ) :TGLNode;
+    function PickObject( const X_,Y_:Single ) :TGLObject;
   end;
 
 implementation //############################################################### ■
@@ -265,7 +265,7 @@ begin
      end;
 end;
 
-function TGLViewer.PickObject( const X_,Y_:Single ) :TGLNode;
+function TGLViewer.PickObject( const X_,Y_:Single ) :TGLObject;
 begin
      Result := _Camera.Scener.HitRay( ShootRay( X_, Y_ ) );
 end;
