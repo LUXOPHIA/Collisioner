@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Engine;
+﻿unit LUX.GPU.OpenGL.Atom.Engine;
 
 interface //#################################################################### ■
 
@@ -6,11 +6,11 @@ uses System.Generics.Collections,
      Winapi.OpenGL, Winapi.OpenGLext,
      LUX,
      LUX.GPU.OpenGL.Atom,
-     LUX.GPU.OpenGL.Buffer,
-     LUX.GPU.OpenGL.Buffer.Verter,
-     LUX.GPU.OpenGL.Buffer.Unifor,
-     LUX.GPU.OpenGL.Shader,
-     LUX.GPU.OpenGL.Progra;
+     LUX.GPU.OpenGL.Atom.Buffer,
+     LUX.GPU.OpenGL.Atom.Buffer.Verter,
+     LUX.GPU.OpenGL.Atom.Buffer.Unifor,
+     LUX.GPU.OpenGL.Atom.Shader,
+     LUX.GPU.OpenGL.Atom.Progra;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 

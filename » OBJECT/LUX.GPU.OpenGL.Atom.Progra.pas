@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Progra;
+﻿unit LUX.GPU.OpenGL.Atom.Progra;
 
 interface //#################################################################### ■
 
@@ -6,7 +6,7 @@ uses System.SysUtils, System.Classes, System.Generics.Collections,
      Winapi.OpenGL, Winapi.OpenGLext,
      LUX,
      LUX.GPU.OpenGL.Atom,
-     LUX.GPU.OpenGL.Shader;
+     LUX.GPU.OpenGL.Atom.Shader;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 

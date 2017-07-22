@@ -1,11 +1,11 @@
-﻿unit LUX.GPU.OpenGL.Buffer.Elemer;
+﻿unit LUX.GPU.OpenGL.Atom.Buffer.Elemer;
 
 interface //#################################################################### ■
 
 uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX, LUX.D2, LUX.D3,
      LUX.GPU.OpenGL.Atom,
-     LUX.GPU.OpenGL.Buffer;
+     LUX.GPU.OpenGL.Atom.Buffer;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 

@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Buffer;
+﻿unit LUX.GPU.OpenGL.Atom.Buffer;
 
 interface //#################################################################### ■
 

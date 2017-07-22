@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Shader;
+﻿unit LUX.GPU.OpenGL.Atom.Shader;
 
 interface //#################################################################### ■
 
