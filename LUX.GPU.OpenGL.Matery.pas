@@ -7,7 +7,7 @@ uses System.SysUtils,
      LUX,
      LUX.GPU.OpenGL,
      LUX.GPU.OpenGL.Atom.Shader,
-     LUX.GPU.OpenGL.Atom.Engine;
+     LUX.GPU.OpenGL.Atom.Progra;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -24,7 +24,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetShaderV :TGLShaderV;
        function GetShaderG :TGLShaderG;
        function GetShaderF :TGLShaderF;
-       function GetEngine  :TGLEngine;
+       function GetProgra  :TGLProgra;
        /////
        function GetOnBuilded :TProc;
        procedure SetOnBuilded( const OnBuilded_:TProc );
@@ -33,7 +33,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property ShaderV :TGLShaderV read GetShaderV;
        property ShaderG :TGLShaderG read GetShaderG;
        property ShaderF :TGLShaderF read GetShaderF;
-       property Engine  :TGLEngine  read GetEngine ;
+       property Progra  :TGLProgra  read GetProgra ;
        ///// イベント
        property OnBuilded :TProc read GetOnBuilded write SetOnBuilded;
        ///// メソッド
@@ -49,14 +49,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _ShaderV :TGLShaderV;
        _ShaderG :TGLShaderG;
        _ShaderF :TGLShaderF;
-       _Engine  :TGLEngine;
+       _Progra  :TGLProgra;
        ///// イベント
        _OnBuilded :TProc;
        ///// アクセス
        function GetShaderV :TGLShaderV;
        function GetShaderG :TGLShaderG;
        function GetShaderF :TGLShaderF;
-       function GetEngine  :TGLEngine;
+       function GetProgra  :TGLProgra;
        /////
        function GetOnBuilded :TProc;
        procedure SetOnBuilded( const OnBuilded_:TProc );
@@ -67,7 +67,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property ShaderV :TGLShaderV read GetShaderV;
        property ShaderG :TGLShaderG read GetShaderG;
        property ShaderF :TGLShaderF read GetShaderF;
-       property Engine  :TGLEngine  read GetEngine ;
+       property Progra  :TGLProgra  read GetProgra ;
        ///// イベント
        property OnBuilded :TProc read GetOnBuilded write SetOnBuilded;
        ///// メソッド
@@ -83,14 +83,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _ShaderV :TGLShaderV;
        _ShaderG :TGLShaderG;
        _ShaderF :TGLShaderF;
-       _Engine  :TGLEngine;
+       _Progra  :TGLProgra;
        ///// イベント
        _OnBuilded :TProc;
        ///// アクセス
        function GetShaderV :TGLShaderV;
        function GetShaderG :TGLShaderG;
        function GetShaderF :TGLShaderF;
-       function GetEngine  :TGLEngine;
+       function GetProgra  :TGLProgra;
        /////
        function GetOnBuilded :TProc;
        procedure SetOnBuilded( const OnBuilded_:TProc );
@@ -101,7 +101,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property ShaderV :TGLShaderV read GetShaderV;
        property ShaderG :TGLShaderG read GetShaderG;
        property ShaderF :TGLShaderF read GetShaderF;
-       property Engine  :TGLEngine  read GetEngine ;
+       property Progra  :TGLProgra  read GetProgra ;
        ///// イベント
        property OnBuilded :TProc read GetOnBuilded write SetOnBuilded;
        ///// メソッド
@@ -144,9 +144,9 @@ begin
      Result := _ShaderF;
 end;
 
-function TGLMatery.GetEngine  :TGLEngine;
+function TGLMatery.GetProgra  :TGLProgra;
 begin
-     Result := _Engine;
+     Result := _Progra;
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -172,13 +172,13 @@ begin
      _ShaderV := TGLShaderV.Create;
      _ShaderG := TGLShaderG.Create;
      _ShaderF := TGLShaderF.Create;
-     _Engine  := TGLEngine .Create;
+     _Progra  := TGLProgra .Create;
 
      with _ShaderV do
      begin
           OnCompiled := procedure
           begin
-               _Engine.Link;
+               _Progra.Link;
           end;
      end;
 
@@ -186,7 +186,7 @@ begin
      begin
           OnCompiled := procedure
           begin
-               _Engine.Link;
+               _Progra.Link;
           end;
      end;
 
@@ -194,11 +194,11 @@ begin
      begin
           OnCompiled := procedure
           begin
-               _Engine.Link;
+               _Progra.Link;
           end;
      end;
 
-     with _Engine do
+     with _Progra do
      begin
           with Shaders do
           begin
@@ -244,7 +244,7 @@ begin
      _ShaderV.DisposeOf;
      _ShaderG.DisposeOf;
      _ShaderF.DisposeOf;
-     _Engine .DisposeOf;
+     _Progra .DisposeOf;
 
      inherited;
 end;
@@ -253,12 +253,12 @@ end;
 
 procedure TGLMatery.Use;
 begin
-     _Engine.Use;
+     _Progra.Use;
 end;
 
 procedure TGLMatery.Unuse;
 begin
-     _Engine.Unuse;
+     _Progra.Unuse;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryColor
@@ -284,9 +284,9 @@ begin
      Result := _ShaderF;
 end;
 
-function TGLMateryColor.GetEngine  :TGLEngine;
+function TGLMateryColor.GetProgra  :TGLProgra;
 begin
-     Result := _Engine;
+     Result := _Progra;
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -311,13 +311,13 @@ begin
 
      _ShaderV := TGLShaderV.Create;
      _ShaderF := TGLShaderF.Create;
-     _Engine  := TGLEngine .Create;
+     _Progra  := TGLProgra .Create;
 
      with _ShaderV do
      begin
           OnCompiled := procedure
           begin
-               _Engine.Link;
+               _Progra.Link;
           end;
      end;
 
@@ -325,11 +325,11 @@ begin
      begin
           OnCompiled := procedure
           begin
-               _Engine.Link;
+               _Progra.Link;
           end;
      end;
 
-     with _Engine do
+     with _Progra do
      begin
           with Shaders do
           begin
@@ -388,7 +388,7 @@ destructor TGLMateryColor.Destroy;
 begin
      _ShaderV.DisposeOf;
      _ShaderF.DisposeOf;
-     _Engine .DisposeOf;
+     _Progra .DisposeOf;
 
      inherited;
 end;
@@ -397,12 +397,12 @@ end;
 
 procedure TGLMateryColor.Use;
 begin
-     _Engine.Use;
+     _Progra.Use;
 end;
 
 procedure TGLMateryColor.Unuse;
 begin
-     _Engine.Unuse;
+     _Progra.Unuse;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
