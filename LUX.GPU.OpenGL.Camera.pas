@@ -5,7 +5,7 @@ interface //####################################################################
 uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX, LUX.M4, LUX.Tree,
      LUX.GPU.OpenGL,
-     LUX.GPU.OpenGL.Buffer.Unifor,
+     LUX.GPU.OpenGL.Atom.Buffer.Unifor,
      LUX.GPU.OpenGL.Scener;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】

@@ -6,8 +6,8 @@ uses System.SysUtils,
      Winapi.OpenGL, Winapi.OpenGLext,
      LUX,
      LUX.GPU.OpenGL,
-     LUX.GPU.OpenGL.Shader,
-     LUX.GPU.OpenGL.Engine;
+     LUX.GPU.OpenGL.Atom.Shader,
+     LUX.GPU.OpenGL.Atom.Engine;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 

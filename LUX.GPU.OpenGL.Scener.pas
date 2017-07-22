@@ -6,7 +6,7 @@ uses System.Generics.Collections,
      Winapi.OpenGL, Winapi.OpenGLext,
      LUX, LUX.D1, LUX.D2, LUX.D3, LUX.M4, LUX.Tree,
      LUX.GPU.OpenGL,
-     LUX.GPU.OpenGL.Buffer.Unifor;
+     LUX.GPU.OpenGL.Atom.Buffer.Unifor;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
