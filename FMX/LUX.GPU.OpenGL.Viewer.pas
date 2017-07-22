@@ -29,7 +29,6 @@ type
     _DC     :HDC;
     _Viewer :TGLUnifor<TSingleM4>;
     _Camera :TGLCamera;
-    _Picker :TGLObject;
     ///// イベント
     _OnPaint :TProc;
     ///// アクセス
@@ -56,7 +55,6 @@ type
     property DC     :HDC                read   _DC                  ;
     property PixSiz :System.Types.TSize read GetPixSiz              ;
     property Camera :TGLCamera          read   _Camera write _Camera;
-    property Picker :TGLObject          read   _Picker              ;
     ///// イベント
     property OnPaint :TProc read _OnPaint write _OnPaint;
     ///// メソッド
@@ -88,8 +86,6 @@ procedure TGLViewer.GoMouseDown( Sender_:TObject; Button_:TMouseButton; Shift_:T
 begin
      _Form.MouseCapture;
 
-     _Picker := PickObject( X_, Y_ );
-
      MouseDown( Button_, Shift_, X_, Y_ );
 end;
 
@@ -101,8 +97,6 @@ end;
 procedure TGLViewer.GoMouseUp( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single );
 begin
      MouseUp( Button_, Shift_, X_, Y_ );
-
-     _Picker := nil;
 
      _Form.ReleaseCapture;
 end;
@@ -249,8 +243,6 @@ begin
 
      _Viewer := TGLUnifor<TSingleM4>.Create( GL_DYNAMIC_DRAW );
      _Viewer.Count := 1;
-
-     _Picker := nil;
 end;
 
 destructor TGLViewer.Destroy;
