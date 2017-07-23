@@ -158,32 +158,32 @@ begin
      begin
           BeginUpdate;
 
-          Add( '#version 430' );
+            Add( '#version 430' );
 
-          Add( 'layout( std140 ) uniform TViewerScal{ layout( row_major ) mat4 _ViewerScal; };' );
-          Add( 'layout( std140 ) uniform TCameraProj{ layout( row_major ) mat4 _CameraProj; };' );
-          Add( 'layout( std140 ) uniform TCameraPose{ layout( row_major ) mat4 _CameraPose; };' );
-          Add( 'layout( std140 ) uniform TShaperPose{ layout( row_major ) mat4 _ShaperPose; };' );
+            Add( 'layout( std140 ) uniform TViewerScal{ layout( row_major ) mat4 _ViewerScal; };' );
+            Add( 'layout( std140 ) uniform TCameraProj{ layout( row_major ) mat4 _CameraProj; };' );
+            Add( 'layout( std140 ) uniform TCameraPose{ layout( row_major ) mat4 _CameraPose; };' );
+            Add( 'layout( std140 ) uniform TShaperPose{ layout( row_major ) mat4 _ShaperPose; };' );
 
-          Add( 'in vec4 _SenderPos;' );
-          Add( 'in vec4 _SenderNor;' );
-          Add( 'in vec2 _SenderTex;' );
+            Add( 'in vec4 _SenderPos;' );
+            Add( 'in vec4 _SenderNor;' );
+            Add( 'in vec2 _SenderTex;' );
 
-          Add( 'out TSenderVF' );
-          Add( '{' );
-          Add( '  vec4 Pos;' );
-          Add( '  vec4 Nor;' );
-          Add( '  vec2 Tex;' );
-          Add( '}' );
-          Add( '_Result;' );
+            Add( 'out TSenderVF' );
+            Add( '{' );
+            Add( '  vec4 Pos;' );
+            Add( '  vec4 Nor;' );
+            Add( '  vec2 Tex;' );
+            Add( '}' );
+            Add( '_Result;' );
 
-          Add( 'void main()' );
-          Add( '{' );
-          Add( '  _Result.Pos =                     _ShaperPose     * _SenderPos;' );
-          Add( '  _Result.Nor = transpose( inverse( _ShaperPose ) ) * _SenderNor;' );
-          Add( '  _Result.Tex =                                       _SenderTex;' );
-          Add( '  gl_Position = _ViewerScal * _CameraProj * inverse( _CameraPose ) * _Result.Pos;' );
-          Add( '}' );
+            Add( 'void main()' );
+            Add( '{' );
+            Add( '  _Result.Pos =                     _ShaperPose     * _SenderPos;' );
+            Add( '  _Result.Nor = transpose( inverse( _ShaperPose ) ) * _SenderNor;' );
+            Add( '  _Result.Tex =                                       _SenderTex;' );
+            Add( '  gl_Position = _ViewerScal * _CameraProj * inverse( _CameraPose ) * _Result.Pos;' );
+            Add( '}' );
 
           EndUpdate;
      end;
@@ -293,17 +293,19 @@ begin
      begin
           BeginUpdate;
 
-          Add( '#version 430' );
+            Add( '#version 430' );
 
-          Add( 'in TSenderGF{' );
-          Add( '  vec4 Pos;' );
-          Add( '  vec4 Nor;' );
-          Add( '  vec2 Tex;' );
-          Add( '} _Sender;' );
+            Add( 'in TSenderVF' );
+            Add( '{' );
+            Add( '  vec4 Pos;' );
+            Add( '  vec4 Nor;' );
+            Add( '  vec2 Tex;' );
+            Add( '}' );
+            Add( '_Sender;' );
 
-          Add( 'out vec4 _ResultCol;' );
+            Add( 'out vec4 _ResultCol;' );
 
-          Add( 'void main(){ _ResultCol = vec4( 1, 0, 0, 1 ); }' );
+            Add( 'void main(){ _ResultCol = vec4( 1, 0, 0, 1 ); }' );
 
           EndUpdate;
      end;
@@ -333,19 +335,19 @@ begin
      begin
           BeginUpdate;
 
-          Add( '#version 430' );
+            Add( '#version 430' );
 
-          Add( 'in TSenderVF' );
-          Add( '{' );
-          Add( '  vec4 Pos;' );
-          Add( '  vec4 Nor;' );
-          Add( '  vec2 Tex;' );
-          Add( '}' );
-          Add( '_Sender;' );
+            Add( 'in TSenderVF' );
+            Add( '{' );
+            Add( '  vec4 Pos;' );
+            Add( '  vec4 Nor;' );
+            Add( '  vec2 Tex;' );
+            Add( '}' );
+            Add( '_Sender;' );
 
-          Add( 'out vec4 _ResultCol;' );
+            Add( 'out vec4 _ResultCol;' );
 
-          Add( 'void main(){ _ResultCol = ( 1 + normalize( _Sender.Nor ) ) / 2; }' );
+            Add( 'void main(){ _ResultCol = ( 1 + normalize( _Sender.Nor ) ) / 2; }' );
 
           EndUpdate;
      end;
