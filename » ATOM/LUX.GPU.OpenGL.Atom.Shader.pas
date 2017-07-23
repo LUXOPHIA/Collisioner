@@ -31,8 +31,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSource( Sender_:TObject );
        function GetStatus :Boolean;
        function GetErrors :TStringList;
-       function GetProgra :IGLProgra;
-       procedure SetProgra( const Progra_:IGLProgra );
        ///// メソッド
        procedure Compile( const Source_:String );
        function glGetStatus :Boolean;
@@ -45,9 +43,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Source :TStringList read GetSource;
        property Status :Boolean     read GetStatus;
        property Errors :TStringList read GetErrors;
-       property Progra :IGLProgra   read GetProgra write SetProgra;
        ///// イベント
        property OnCompiled :TProc read _OnCompiled write _OnCompiled;
+       ///// メソッド
+       procedure Attach( const Progra_:IGLProgra );
+       procedure Detach( const Progra_:IGLProgra );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaderV
@@ -133,18 +133,6 @@ begin
      Result := _Errors;
 end;
 
-//------------------------------------------------------------------------------
-
-function TGLShader.GetProgra :IGLProgra;
-begin
-     Result := _Progra;
-end;
-
-procedure TGLShader.SetProgra( const Progra_:IGLProgra );
-begin
-     _Progra := Progra_;
-end;
-
 /////////////////////////////////////////////////////////////////////// メソッド
 
 procedure TGLShader.Compile( const Source_:String );
@@ -208,6 +196,18 @@ begin
      _Errors.DisposeOf;
 
      inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLShader.Attach( const Progra_:IGLProgra );
+begin
+     _Progra := Progra_;
+end;
+
+procedure TGLShader.Detach( const Progra_:IGLProgra );
+begin
+     _Progra := nil;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaderV

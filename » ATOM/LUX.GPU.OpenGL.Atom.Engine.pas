@@ -132,14 +132,14 @@ procedure TGLEngine.Attach( const Shader_:IGLShader );
 begin
      inherited;
 
-     Shader_.Progra := Self as IGLEngine;
+     Shader_.Attach( Self as IGLEngine );
 end;
 
 procedure TGLEngine.Detach( const Shader_:IGLShader );
 begin
      inherited;
 
-     Shader_.Progra := nil;
+     Shader_.Detach( Self as IGLEngine );
 end;
 
 //------------------------------------------------------------------------------

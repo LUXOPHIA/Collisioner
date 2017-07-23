@@ -64,14 +64,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetSource :TStringList;
        function GetStatus :Boolean;
        function GetErrors :TStringList;
-       function GetProgra :IGLProgra;
-       procedure SetProgra( const Progra_:IGLProgra );
        ///// プロパティ
        property Kind   :GLenum      read GetKind  ;
        property Source :TStringList read GetSource;
        property Status :Boolean     read GetStatus;
        property Errors :TStringList read GetErrors;
-       property Progra :IGLProgra   read GetProgra write SetProgra;
+       ///// メソッド
+       procedure Attach( const Progra_:IGLProgra );
+       procedure Detach( const Progra_:IGLProgra );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLProgra
