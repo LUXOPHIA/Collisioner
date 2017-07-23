@@ -411,9 +411,12 @@ procedure TGLPorterU.AddPort( const BinP_:GLuint; const Port_:TGLPortU );
 var
    L :GLuint;
 begin
-     L := _Progra.glGetBlocLoca( Port_.Name );
+     with _Progra do
+     begin
+          L := glGetBlocLoca( Port_.Name );
 
-     glUniformBlockBinding( _Progra.ID, L, BinP_ );
+          glUniformBlockBinding( ID, L, BinP_ );
+     end;
 end;
 
 procedure TGLPorterU.DelPort( const BinP_:GLuint; const Port_:TGLPortU );
@@ -453,11 +456,7 @@ begin
      begin
           L := glGetUnifLoca( Port_.Name );
 
-          Use;
-
-            glUniform1i( L, BinP_ );
-
-          Unuse;
+          glProgramUniform1i( ID, L, BinP_ );
      end;
 end;
 
