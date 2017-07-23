@@ -7,7 +7,7 @@ uses System.SysUtils,
      LUX,
      LUX.GPU.OpenGL,
      LUX.GPU.OpenGL.Atom.Shader,
-     LUX.GPU.OpenGL.Atom.Progra;
+     LUX.GPU.OpenGL.Atom.Engine;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -21,12 +21,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      ['{13071090-B024-474A-BDA2-AB604AD10B16}']
      {protected}
        ///// アクセス
-       function GetProgra  :TGLProgra;
+       function GetEngine  :TGLEngine;
        function GetShaderV :TGLShaderV;
        function GetShaderF :TGLShaderF;
      {public}
        ///// プロパティ
-       property Progra  :TGLProgra  read GetProgra ;
+       property Engine  :TGLEngine  read GetEngine ;
        property ShaderV :TGLShaderV read GetShaderV;
        property ShaderF :TGLShaderF read GetShaderF;
        ///// メソッド
@@ -39,18 +39,18 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLMatery = class( TInterfacedObject, IGLMatery )
      private
      protected
-       _Progra  :TGLProgra;
+       _Engine  :TGLEngine;
        _ShaderV :TGLShaderV;
        _ShaderF :TGLShaderF;
        ///// アクセス
-       function GetProgra  :TGLProgra;
+       function GetEngine  :TGLEngine;
        function GetShaderV :TGLShaderV;
        function GetShaderF :TGLShaderF;
      public
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property Progra  :TGLProgra  read GetProgra ;
+       property Engine  :TGLEngine  read GetEngine ;
        property ShaderV :TGLShaderV read GetShaderV;
        property ShaderF :TGLShaderF read GetShaderF;
        ///// メソッド
@@ -139,9 +139,9 @@ begin
      Result := _ShaderF;
 end;
 
-function TGLMatery.GetProgra  :TGLProgra;
+function TGLMatery.GetEngine  :TGLEngine;
 begin
-     Result := _Progra;
+     Result := _Engine;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -150,7 +150,7 @@ constructor TGLMatery.Create;
 begin
      inherited;
 
-     _Progra  := TGLProgra .Create;
+     _Engine  := TGLEngine .Create;
      _ShaderV := TGLShaderV.Create;
      _ShaderF := TGLShaderF.Create;
 
@@ -188,7 +188,7 @@ begin
           EndUpdate;
      end;
 
-     with _Progra do
+     with _Engine do
      begin
           Attach( _ShaderV{Shad} );
           Attach( _ShaderF{Shad} );
@@ -222,7 +222,7 @@ end;
 
 destructor TGLMatery.Destroy;
 begin
-     _Progra .DisposeOf;
+     _Engine .DisposeOf;
      _ShaderV.DisposeOf;
      _ShaderF.DisposeOf;
 
@@ -233,12 +233,12 @@ end;
 
 procedure TGLMatery.Use;
 begin
-     _Progra.Use;
+     _Engine.Use;
 end;
 
 procedure TGLMatery.Unuse;
 begin
-     _Progra.Unuse;
+     _Engine.Unuse;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryG
@@ -262,7 +262,7 @@ begin
 
      _ShaderG := TGLShaderG.Create;
 
-     with _Progra do
+     with _Engine do
      begin
           Attach( _ShaderG{Shad} );
      end;

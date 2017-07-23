@@ -21,15 +21,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      {protected}
        ///// アクセス
        function GetFramers :TGLPorterF;
-       function GetVerters :TGLPorterV;
-       function GetUnifors :TGLPorterU;
-       function GetImagers :TGLPorterI;
      {public}
        ///// プロパティ
        property Framers :TGLPorterF read GetFramers;
-       property Verters :TGLPorterV read GetVerters;
-       property Unifors :TGLPorterU read GetUnifors;
-       property Imagers :TGLPorterI read GetImagers;
      end;
 
      //-------------------------------------------------------------------------
@@ -40,21 +34,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _Status  :Boolean;
        _Errors  :TStringList;
        _Framers :TGLPorterF;
-       _Verters :TGLPorterV;
-       _Unifors :TGLPorterU;
-       _Imagers :TGLPorterI;
        ///// イベント
        _OnLinked :TProc;
        ///// アクセス
        function GetStatus :Boolean;
        function GetErrors :TStringList;
        function GetFramers :TGLPorterF;
-       function GetVerters :TGLPorterV;
-       function GetUnifors :TGLPorterU;
-       function GetImagers :TGLPorterI;
        ///// イベント
        function GetOnLinked :TProc;
        procedure SetOnLinked( const OnLinked_:TProc );
+       procedure DoOnLinked; virtual;
        ///// メソッド
        function glGetStatus :Boolean;
        function glGetErrors :String;
@@ -65,17 +54,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Status  :Boolean     read GetStatus ;
        property Errors  :TStringList read GetErrors ;
        property Framers :TGLPorterF  read GetFramers;
-       property Verters :TGLPorterV  read GetVerters;
-       property Unifors :TGLPorterU  read GetUnifors;
-       property Imagers :TGLPorterI  read GetImagers;
        ///// イベント
        property OnLinked :TProc read GetOnLinked write SetOnLinked;
        ///// メソッド
        function glGetVertLoca( const Name_:String ) :GLuint;
        function glGetBlocLoca( const Name_:String ) :GLuint;
        function glGetUnifLoca( const Name_:String ) :GLuint;
-       procedure Attach( const Shader_:IGLShader );
-       procedure Detach( const Shader_:IGLShader );
+       procedure Attach( const Shader_:IGLShader ); virtual;
+       procedure Detach( const Shader_:IGLShader ); virtual;
        procedure Link;
        procedure Use; virtual;
        procedure Unuse; virtual;
@@ -118,21 +104,6 @@ begin
      Result := _Framers;
 end;
 
-function TGLProgra.GetVerters :TGLPorterV;
-begin
-     Result := _Verters;
-end;
-
-function TGLProgra.GetUnifors :TGLPorterU;
-begin
-     Result := _Unifors;
-end;
-
-function TGLProgra.GetImagers :TGLPorterI;
-begin
-     Result := _Imagers;
-end;
-
 /////////////////////////////////////////////////////////////////////// イベント
 
 function TGLProgra.GetOnLinked :TProc;
@@ -143,6 +114,11 @@ end;
 procedure TGLProgra.SetOnLinked( const OnLinked_:TProc );
 begin
      _OnLinked := OnLinked_;
+end;
+
+procedure TGLProgra.DoOnLinked;
+begin
+     if Assigned( _OnLinked ) then _OnLinked;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
@@ -180,9 +156,6 @@ begin
      _Errors := TStringList.Create;
 
      _Framers := TGLPorterF.Create( Self as IGLProgra );
-     _Verters := TGLPorterV.Create( Self as IGLProgra );
-     _Unifors := TGLPorterU.Create( Self as IGLProgra );
-     _Imagers := TGLPorterI.Create( Self as IGLProgra );
 
      _ID     := glCreateProgram;
      _Status := False;
@@ -195,9 +168,6 @@ begin
      glDeleteProgram( _ID );
 
      _Framers.DisposeOf;
-     _Verters.DisposeOf;
-     _Unifors.DisposeOf;
-     _Imagers.DisposeOf;
 
      _Errors.DisposeOf;
 
@@ -226,15 +196,11 @@ end;
 procedure TGLProgra.Attach( const Shader_:IGLShader );
 begin
      glAttachShader( _ID, Shader_.ID );
-
-     Shader_.Progra := Self as IGLProgra;
 end;
 
 procedure TGLProgra.Detach( const Shader_:IGLShader );
 begin
      glDetachShader( _ID, Shader_.ID );
-
-     Shader_.Progra := nil;
 end;
 
 //------------------------------------------------------------------------------
@@ -246,11 +212,7 @@ begin
      _Status      := glGetStatus;
      _Errors.Text := glGetErrors;
 
-     _Verters.AddPorts;
-     _Unifors.AddPorts;
-     _Imagers.AddPorts;
-
-     if Assigned( _OnLinked ) then _OnLinked;
+     DoOnLinked;
 end;
 
 //------------------------------------------------------------------------------
@@ -258,18 +220,10 @@ end;
 procedure TGLProgra.Use;
 begin
      glUseProgram( _ID );
-
-     _Verters.Use;
-     _Unifors.Use;
-     _Imagers.Use;
 end;
 
 procedure TGLProgra.Unuse;
 begin
-     _Verters.Unuse;
-     _Unifors.Unuse;
-     _Imagers.Unuse;
-
      glUseProgram( 0 );
 end;
 
