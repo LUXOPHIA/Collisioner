@@ -345,6 +345,8 @@ function CharsToStr( const Cs_:TArray<AnsiChar> ) :AnsiString;
 
 function FileToBytes( const FileName_:string ) :TBytes;
 
+function Comb( N_,K_:Integer ) :UInt64;
+
 implementation //############################################################### ■
 
 uses System.Math;
@@ -1682,6 +1684,24 @@ begin
           finally
                  Free;
           end;
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function Comb( N_,K_:Integer ) :UInt64;
+var
+   I :Integer;
+begin
+     if N_ < 2 * K_ then K_ := N_ - K_;
+
+     Result := 1;
+
+     for I := 1 to K_ do
+     begin
+          //Result := Result * ( N_ - K_ + I ) div I;
+
+          Result := Result * N_ div I;  Dec( N_ );
      end;
 end;
 
