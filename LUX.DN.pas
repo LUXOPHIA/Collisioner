@@ -376,20 +376,50 @@ end;
 
 class operator TSingleND.Add( const A_,B_:TSingleND ) :TSingleND;
 var
-   I :Integer;
+   L, H, I :Integer;
 begin
-     Result.DimN := A_.DimN;
+     if A_.DimN <= B_.DimN then
+     begin
+          L := A_.DimN;
+          H := B_.DimN;
 
-     for I := 0 to Result.DimN-1 do Result[ I ] := A_[ I ] + B_[ I ];
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] + B_[ I ];
+          for I := L to H-1 do Result[ I ] :=     0   + B_[ I ];
+     end
+     else
+     begin
+          L := B_.DimN;
+          H := A_.DimN;
+
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] + B_[ I ];
+          for I := L to H-1 do Result[ I ] := A_[ I ] +     0  ;
+     end;
 end;
 
 class operator TSingleND.Subtract( const A_,B_:TSingleND ) :TSingleND;
 var
-   I :Integer;
+   L, H, I :Integer;
 begin
-     Result.DimN := A_.DimN;
+     if A_.DimN <= B_.DimN then
+     begin
+          L := A_.DimN;
+          H := B_.DimN;
 
-     for I := 0 to Result.DimN-1 do Result[ I ] := A_[ I ] - B_[ I ];
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] - B_[ I ];
+          for I := L to H-1 do Result[ I ] :=     0   - B_[ I ];
+     end
+     else
+     begin
+          L := B_.DimN;
+          H := A_.DimN;
+
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] - B_[ I ];
+          for I := L to H-1 do Result[ I ] := A_[ I ] -     0  ;
+     end;
 end;
 
 class operator TSingleND.Multiply( const A_:TSingleND; const B_:Single ) :TSingleND;
@@ -413,11 +443,26 @@ end;
 
 class operator TSingleND.Multiply( const A_,B_:TSingleND ) :TSingleND;
 var
-   I :Integer;
+   L, H, I :Integer;
 begin
-     Result.DimN := B_.DimN;
+     if A_.DimN <= B_.DimN then
+     begin
+          L := A_.DimN;
+          H := B_.DimN;
 
-     for I := 0 to Result.DimN-1 do Result[ I ] := A_[ I ] * B_[ I ];
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] * B_[ I ];
+          for I := L to H-1 do Result[ I ] :=     0   * B_[ I ];
+     end
+     else
+     begin
+          L := B_.DimN;
+          H := A_.DimN;
+
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] * B_[ I ];
+          for I := L to H-1 do Result[ I ] := A_[ I ] *     0  ;
+     end;
 end;
 
 class operator TSingleND.Divide( const A_:TSingleND; const B_:Single ) :TSingleND;
@@ -431,11 +476,26 @@ end;
 
 class operator TSingleND.Divide( const A_,B_:TSingleND ) :TSingleND;
 var
-   I :Integer;
+   L, H, I :Integer;
 begin
-     Result.DimN := B_.DimN;
+     if A_.DimN <= B_.DimN then
+     begin
+          L := A_.DimN;
+          H := B_.DimN;
 
-     for I := 0 to Result.DimN-1 do Result[ I ] := A_[ I ] / B_[ I ];
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] / B_[ I ];
+          for I := L to H-1 do Result[ I ] :=     0   / B_[ I ];
+     end
+     else
+     begin
+          L := B_.DimN;
+          H := A_.DimN;
+
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] / B_[ I ];
+          for I := L to H-1 do Result[ I ] := A_[ I ] /     0  ;
+     end;
 end;
 
 ///////////////////////////////////////////////////////////////////////// 型変換
@@ -650,20 +710,50 @@ end;
 
 class operator TDoubleND.Add( const A_,B_:TDoubleND ) :TDoubleND;
 var
-   I :Integer;
+   L, H, I :Integer;
 begin
-     Result.DimN := A_.DimN;
+     if A_.DimN <= B_.DimN then
+     begin
+          L := A_.DimN;
+          H := B_.DimN;
 
-     for I := 0 to Result.DimN-1 do Result[ I ] := A_[ I ] + B_[ I ];
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] + B_[ I ];
+          for I := L to H-1 do Result[ I ] :=     0   + B_[ I ];
+     end
+     else
+     begin
+          L := B_.DimN;
+          H := A_.DimN;
+
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] + B_[ I ];
+          for I := L to H-1 do Result[ I ] := A_[ I ] +     0  ;
+     end;
 end;
 
 class operator TDoubleND.Subtract( const A_,B_:TDoubleND ) :TDoubleND;
 var
-   I :Integer;
+   L, H, I :Integer;
 begin
-     Result.DimN := A_.DimN;
+     if A_.DimN <= B_.DimN then
+     begin
+          L := A_.DimN;
+          H := B_.DimN;
 
-     for I := 0 to Result.DimN-1 do Result[ I ] := A_[ I ] - B_[ I ];
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] - B_[ I ];
+          for I := L to H-1 do Result[ I ] :=     0   - B_[ I ];
+     end
+     else
+     begin
+          L := B_.DimN;
+          H := A_.DimN;
+
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] - B_[ I ];
+          for I := L to H-1 do Result[ I ] := A_[ I ] -     0  ;
+     end;
 end;
 
 class operator TDoubleND.Multiply( const A_:TDoubleND; const B_:Double ) :TDoubleND;
@@ -686,11 +776,26 @@ end;
 
 class operator TDoubleND.Multiply( const A_,B_:TDoubleND ) :TDoubleND;
 var
-   I :Integer;
+   L, H, I :Integer;
 begin
-     Result.DimN := B_.DimN;
+     if A_.DimN <= B_.DimN then
+     begin
+          L := A_.DimN;
+          H := B_.DimN;
 
-     for I := 0 to Result.DimN-1 do Result[ I ] := A_[ I ] * B_[ I ];
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] * B_[ I ];
+          for I := L to H-1 do Result[ I ] :=     0   * B_[ I ];
+     end
+     else
+     begin
+          L := B_.DimN;
+          H := A_.DimN;
+
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] * B_[ I ];
+          for I := L to H-1 do Result[ I ] := A_[ I ] *     0  ;
+     end;
 end;
 
 class operator TDoubleND.Divide( const A_:TDoubleND; const B_:Double ) :TDoubleND;
@@ -704,11 +809,26 @@ end;
 
 class operator TDoubleND.Divide( const A_,B_:TDoubleND ) :TDoubleND;
 var
-   I :Integer;
+   L, H, I :Integer;
 begin
-     Result.DimN := B_.DimN;
+     if A_.DimN <= B_.DimN then
+     begin
+          L := A_.DimN;
+          H := B_.DimN;
 
-     for I := 0 to Result.DimN-1 do Result[ I ] := A_[ I ] / B_[ I ];
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] / B_[ I ];
+          for I := L to H-1 do Result[ I ] :=     0   / B_[ I ];
+     end
+     else
+     begin
+          L := B_.DimN;
+          H := A_.DimN;
+
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] / B_[ I ];
+          for I := L to H-1 do Result[ I ] := A_[ I ] /     0  ;
+     end;
 end;
 
 ///////////////////////////////////////////////////////////////////////// 型変換
@@ -959,20 +1079,50 @@ end;
 
 class operator TdSingleND.Add( const A_,B_:TdSingleND ) :TdSingleND;
 var
-   I :Integer;
+   L, H, I :Integer;
 begin
-     Result.DimN := A_.DimN;
+     if A_.DimN <= B_.DimN then
+     begin
+          L := A_.DimN;
+          H := B_.DimN;
 
-     for I := 0 to Result.DimN-1 do Result[ I ] := A_[ I ] + B_[ I ];
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] + B_[ I ];
+          for I := L to H-1 do Result[ I ] :=     0   + B_[ I ];
+     end
+     else
+     begin
+          L := B_.DimN;
+          H := A_.DimN;
+
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] + B_[ I ];
+          for I := L to H-1 do Result[ I ] := A_[ I ] +     0  ;
+     end;
 end;
 
 class operator TdSingleND.Subtract( const A_,B_:TdSingleND ) :TdSingleND;
 var
-   I :Integer;
+   L, H, I :Integer;
 begin
-     Result.DimN := A_.DimN;
+     if A_.DimN <= B_.DimN then
+     begin
+          L := A_.DimN;
+          H := B_.DimN;
 
-     for I := 0 to Result.DimN-1 do Result[ I ] := A_[ I ] - B_[ I ];
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] - B_[ I ];
+          for I := L to H-1 do Result[ I ] :=     0   - B_[ I ];
+     end
+     else
+     begin
+          L := B_.DimN;
+          H := A_.DimN;
+
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] - B_[ I ];
+          for I := L to H-1 do Result[ I ] := A_[ I ] -     0  ;
+     end;
 end;
 
 class operator TdSingleND.Multiply( const A_:TdSingleND; const B_:TdSingle ) :TdSingleND;
@@ -995,11 +1145,26 @@ end;
 
 class operator TdSingleND.Multiply( const A_,B_:TdSingleND ) :TdSingleND;
 var
-   I :Integer;
+   L, H, I :Integer;
 begin
-     Result.DimN := B_.DimN;
+     if A_.DimN <= B_.DimN then
+     begin
+          L := A_.DimN;
+          H := B_.DimN;
 
-     for I := 0 to Result.DimN-1 do Result[ I ] := A_[ I ] * B_[ I ];
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] * B_[ I ];
+          for I := L to H-1 do Result[ I ] :=     0   * B_[ I ];
+     end
+     else
+     begin
+          L := B_.DimN;
+          H := A_.DimN;
+
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] * B_[ I ];
+          for I := L to H-1 do Result[ I ] := A_[ I ] *     0  ;
+     end;
 end;
 
 class operator TdSingleND.Divide( const A_:TdSingleND; const B_:TdSingle ) :TdSingleND;
@@ -1013,11 +1178,26 @@ end;
 
 class operator TdSingleND.Divide( const A_,B_:TdSingleND ) :TdSingleND;
 var
-   I :Integer;
+   L, H, I :Integer;
 begin
-     Result.DimN := B_.DimN;
+     if A_.DimN <= B_.DimN then
+     begin
+          L := A_.DimN;
+          H := B_.DimN;
 
-     for I := 0 to Result.DimN-1 do Result[ I ] := A_[ I ] / B_[ I ];
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] / B_[ I ];
+          for I := L to H-1 do Result[ I ] :=     0   / B_[ I ];
+     end
+     else
+     begin
+          L := B_.DimN;
+          H := A_.DimN;
+
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] / B_[ I ];
+          for I := L to H-1 do Result[ I ] := A_[ I ] /     0  ;
+     end;
 end;
 
 ///////////////////////////////////////////////////////////////////////// 型変換
@@ -1194,20 +1374,50 @@ end;
 
 class operator TdDoubleND.Add( const A_,B_:TdDoubleND ) :TdDoubleND;
 var
-   I :Integer;
+   L, H, I :Integer;
 begin
-     Result.DimN := A_.DimN;
+     if A_.DimN <= B_.DimN then
+     begin
+          L := A_.DimN;
+          H := B_.DimN;
 
-     for I := 0 to Result.DimN-1 do Result[ I ] := A_[ I ] + B_[ I ];
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] + B_[ I ];
+          for I := L to H-1 do Result[ I ] :=     0   + B_[ I ];
+     end
+     else
+     begin
+          L := B_.DimN;
+          H := A_.DimN;
+
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] + B_[ I ];
+          for I := L to H-1 do Result[ I ] := A_[ I ] +     0  ;
+     end;
 end;
 
 class operator TdDoubleND.Subtract( const A_,B_:TdDoubleND ) :TdDoubleND;
 var
-   I :Integer;
+   L, H, I :Integer;
 begin
-     Result.DimN := A_.DimN;
+     if A_.DimN <= B_.DimN then
+     begin
+          L := A_.DimN;
+          H := B_.DimN;
 
-     for I := 0 to Result.DimN-1 do Result[ I ] := A_[ I ] - B_[ I ];
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] - B_[ I ];
+          for I := L to H-1 do Result[ I ] :=     0   - B_[ I ];
+     end
+     else
+     begin
+          L := B_.DimN;
+          H := A_.DimN;
+
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] - B_[ I ];
+          for I := L to H-1 do Result[ I ] := A_[ I ] -     0  ;
+     end;
 end;
 
 class operator TdDoubleND.Multiply( const A_:TdDoubleND; const B_:TdDouble ) :TdDoubleND;
@@ -1230,11 +1440,26 @@ end;
 
 class operator TdDoubleND.Multiply( const A_,B_:TdDoubleND ) :TdDoubleND;
 var
-   I :Integer;
+   L, H, I :Integer;
 begin
-     Result.DimN := B_.DimN;
+     if A_.DimN <= B_.DimN then
+     begin
+          L := A_.DimN;
+          H := B_.DimN;
 
-     for I := 0 to Result.DimN-1 do Result[ I ] := A_[ I ] * B_[ I ];
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] * B_[ I ];
+          for I := L to H-1 do Result[ I ] :=     0   * B_[ I ];
+     end
+     else
+     begin
+          L := B_.DimN;
+          H := A_.DimN;
+
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] * B_[ I ];
+          for I := L to H-1 do Result[ I ] := A_[ I ] *     0  ;
+     end;
 end;
 
 class operator TdDoubleND.Divide( const A_:TdDoubleND; const B_:TdDouble ) :TdDoubleND;
@@ -1248,11 +1473,26 @@ end;
 
 class operator TdDoubleND.Divide( const A_,B_:TdDoubleND ) :TdDoubleND;
 var
-   I :Integer;
+   L, H, I :Integer;
 begin
-     Result.DimN := B_.DimN;
+     if A_.DimN <= B_.DimN then
+     begin
+          L := A_.DimN;
+          H := B_.DimN;
 
-     for I := 0 to Result.DimN-1 do Result[ I ] := A_[ I ] / B_[ I ];
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] / B_[ I ];
+          for I := L to H-1 do Result[ I ] :=     0   / B_[ I ];
+     end
+     else
+     begin
+          L := B_.DimN;
+          H := A_.DimN;
+
+          Result.DimN := H;
+          for I := 0 to L-1 do Result[ I ] := A_[ I ] / B_[ I ];
+          for I := L to H-1 do Result[ I ] := A_[ I ] /     0  ;
+     end;
 end;
 
 ///////////////////////////////////////////////////////////////////////// 型変換
