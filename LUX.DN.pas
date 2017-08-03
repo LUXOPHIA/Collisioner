@@ -30,6 +30,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const N_:Integer ); overload;
        constructor Create( const V_:Single; const N_:Integer ); overload;
        constructor Create( const Vs_:array of Single ); overload;
+       constructor Create( const D_:TSingleND ); overload;
        ///// プロパティ
        property os[ const I_:Integer ] :Single    read Getos     write Setos    ; default;
        property DimN                   :Integer   read GetDimN   write SetDimN  ;
@@ -85,6 +86,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const N_:Integer ); overload;
        constructor Create( const V_:Double; const N_:Integer ); overload;
        constructor Create( const Vs_:array of Double ); overload;
+       constructor Create( const D_:TDoubleND ); overload;
        ///// プロパティ
        property os[ const I_:Integer ] :Double    read Getos     write Setos    ; default;
        property DimN                   :Integer   read GetDimN   write SetDimN  ;
@@ -144,6 +146,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const N_:Integer ); overload;
        constructor Create( const V_:TdSingle; const N_:Integer ); overload;
        constructor Create( const Vs_:array of TdSingle ); overload;
+       constructor Create( const D_:TdSingleND ); overload;
        ///// プロパティ
        property os[ const I_:Integer ] :TdSingle   read Getos     write Setos    ; default;
        property DimN                   :Integer    read GetDimN   write SetDimN  ;
@@ -195,6 +198,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const N_:Integer ); overload;
        constructor Create( const V_:TdDouble; const N_:Integer ); overload;
        constructor Create( const Vs_:array of TdDouble ); overload;
+       constructor Create( const D_:TdDoubleND ); overload;
        ///// プロパティ
        property os[ const I_:Integer ] :TdDouble   read Getos     write Setos    ; default;
        property DimN                   :Integer    read GetDimN   write SetDimN  ;
@@ -352,6 +356,11 @@ begin
      DimN := Length( Vs_ );
 
      for I := 0 to DimN-1 do _s[ I ] := Vs_[ I ];
+end;
+
+constructor TSingleND.Create( const D_:TSingleND );
+begin
+     _s := Copy( D_._s );
 end;
 
 ///////////////////////////////////////////////////////////////////////// 演算子
@@ -686,6 +695,11 @@ begin
      DimN := Length( Vs_ );
 
      for I := 0 to DimN-1 do _s[ I ] := Vs_[ I ];
+end;
+
+constructor TDoubleND.Create( const D_:TDoubleND );
+begin
+     _s := Copy( D_._s );
 end;
 
 ///////////////////////////////////////////////////////////////////////// 演算子
@@ -1057,6 +1071,11 @@ begin
      for I := 0 to DimN-1 do _s[ I ] := Vs_[ I ];
 end;
 
+constructor TdSingleND.Create( const D_:TdSingleND );
+begin
+     _s := Copy( D_._s );
+end;
+
 ///////////////////////////////////////////////////////////////////////// 演算子
 
 class operator TdSingleND.Negative( const V_:TdSingleND ) :TdSingleND;
@@ -1350,6 +1369,11 @@ begin
      DimN := Length( Vs_ );
 
      for I := 0 to DimN-1 do _s[ I ] := Vs_[ I ];
+end;
+
+constructor TdDoubleND.Create( const D_:TdDoubleND );
+begin
+     _s := Copy( D_._s );
 end;
 
 ///////////////////////////////////////////////////////////////////////// 演算子
