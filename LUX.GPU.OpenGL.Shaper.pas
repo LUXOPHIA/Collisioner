@@ -2,7 +2,8 @@
 
 interface //#################################################################### ■
 
-uses Winapi.OpenGL, Winapi.OpenGLext,
+uses System.UITypes,
+     Winapi.OpenGL, Winapi.OpenGLext,
      LUX, LUX.D2, LUX.D3, LUX.M4, LUX.Tree,
      LUX.GPU.OpenGL,
      LUX.GPU.OpenGL.Atom.Buffer,
@@ -147,13 +148,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSizeY( const SizeY_:Single );
        function GetSizeZ :Single;
        procedure SetSizeZ( const SizeZ_:Single );
+       function GetColor :TAlphaColorF;
+       procedure SetColor( const Color_:TAlphaColorF );
      public
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
-       property SizeX :Single read GetSizeX write SetSizeX;
-       property SizeY :Single read GetSizeY write SetSizeY;
-       property SizeZ :Single read GetSizeZ write SetSizeZ;
+       property SizeX :Single       read GetSizeX write SetSizeX;
+       property SizeY :Single       read GetSizeY write SetSizeY;
+       property SizeZ :Single       read GetSizeZ write SetSizeZ;
+       property Color :TAlphaColorF read GetColor write SetColor;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -262,31 +266,39 @@ end;
 procedure TGLShaperPoin.CalcBouBox;
 var
    P :TGLBufferData<TSingle3D>;
+   B :TSingleArea3D;
    I :Integer;
 begin
      inherited;
 
-     P := _PosBuf.Map( GL_READ_ONLY );
+     B := TSingleArea3D.NeMax;
 
-     for I := 0 to _PosBuf.Count-1 do
+     with _PosBuf do
      begin
-          with P[ I ] do
+          P := Map( GL_READ_ONLY );
+
+          for I := 0 to Count-1 do
           begin
-               if X < _BouBox.Min.X then _BouBox.Min.X := X
-                                    else
-               if _BouBox.Max.X < X then _BouBox.Max.X := X;
+               with P[ I ] do
+               begin
+                    if X < B.Min.X then B.Min.X := X
+                                   else
+                    if B.Max.X < X then B.Max.X := X;
 
-               if Y < _BouBox.Min.Y then _BouBox.Min.Y := Y
-                                    else
-               if _BouBox.Max.Y < Y then _BouBox.Max.Y := Y;
+                    if Y < B.Min.Y then B.Min.Y := Y
+                                   else
+                    if B.Max.Y < Y then B.Max.Y := Y;
 
-               if Z < _BouBox.Min.Z then _BouBox.Min.Z := Z
-                                    else
-               if _BouBox.Max.Z < Z then _BouBox.Max.Z := Z;
+                    if Z < B.Min.Z then B.Min.Z := Z
+                                   else
+                    if B.Max.Z < Z then B.Max.Z := Z;
+               end;
           end;
+
+          Unmap;
      end;
 
-     _PosBuf.Unmap;
+     _Inform.BouBox := B;
 end;
 
 //------------------------------------------------------------------------------
@@ -1284,7 +1296,7 @@ end;
 
 procedure TGLShaperCopy.CalcBouBox;
 begin
-     _BouBox := _Shaper.BouBox;
+     BouBox := _Shaper.BouBox;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperLineCube
@@ -1310,9 +1322,7 @@ begin
      _PosBuf[ 6 ] := TSingle3D.Create( -SX, +SY, +SZ );
      _PosBuf[ 7 ] := TSingle3D.Create( +SX, +SY, +SZ );
 
-     _BouBox.Min.X := -SX;  _BouBox.Max.X := +SX;
-     _BouBox.Min.Y := -SY;  _BouBox.Max.Y := +SY;
-     _BouBox.Min.Z := -SZ;  _BouBox.Max.Z := +SZ;
+     CalcBouBox;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
@@ -1347,6 +1357,18 @@ end;
 procedure TGLShaperLineCube.SetSizeZ( const SizeZ_:Single );
 begin
      _SizeZ := SizeZ_;  MakeModel;
+end;
+
+//------------------------------------------------------------------------------
+
+function TGLShaperLineCube.GetColor :TAlphaColorF;
+begin
+     Result := TGLMateryColor( _Matery ).Color;
+end;
+
+procedure TGLShaperLineCube.SetColor( const Color_:TAlphaColorF );
+begin
+     TGLMateryColor( _Matery ).Color := Color_;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
