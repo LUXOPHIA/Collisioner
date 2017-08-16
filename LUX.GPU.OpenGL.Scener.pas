@@ -50,8 +50,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property BouBox :TSingleArea3D  read GetBouBox write SetBouBox;
-       property Matery :TGLMateryColor read   _Matery                ;
+       property BouBox  :TSingleArea3D  read GetBouBox  write SetBouBox ;
+       property Matery  :TGLMateryColor read   _Matery                  ;
+       property Visible :Boolean        read   _Visible write   _Visible;
        ///// メソッド
        procedure Draw;
      end;
