@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.M4, LUX.Tree,
+     LUX, LUX.D3, LUX.M4, LUX.Tree,
      LUX.GPU.OpenGL,
      LUX.GPU.OpenGL.Atom.Buffer.Unifor,
      LUX.GPU.OpenGL.Scener;
@@ -31,6 +31,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property Proj :TSingleM4 read GetProj write SetProj;
        ///// メソッド
+       procedure HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLObject ); override;
        procedure Render;
      end;
 
@@ -116,6 +117,16 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLCamera.HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLObject );
+var
+   I :Integer;
+begin
+     if _Visible then
+     begin
+          for I := 0 to ChildsN-1 do Childs[ I ].HitRay( AbsoRay_, Len_, Obj_ );
+     end;
+end;
 
 procedure TGLCamera.Render;
 begin
