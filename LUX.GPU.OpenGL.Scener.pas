@@ -116,7 +116,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Draw; virtual;
        procedure CalcBouBox; virtual;
        function HitBouBox( const AbsoRay_:TSingleRay3D ) :TSingleArea;
-       procedure HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLObject ); overload;
+       procedure HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLObject ); overload; virtual;
        function HitRay( const AbsoRay_:TSingleRay3D ) :TGLObject; overload;
      end;
 
