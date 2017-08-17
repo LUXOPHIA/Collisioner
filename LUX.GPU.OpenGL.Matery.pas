@@ -474,7 +474,7 @@ begin
           EndUpdate;
      end;
 
-     Assert( _ShaderV.Status );
+     Assert( _ShaderV.Status, _ShaderV.Errors.Text );
 
      with _ShaderF.Source do
      begin
@@ -494,12 +494,12 @@ begin
 
             Add( 'out vec4 _ResultCol;' );
 
-            Add( 'void main(){ _ResultCol = _Ambient + ( 1 + normalize( _Sender.Nor ) ) / 2; }' );
+            Add( 'void main(){ _ResultCol.rgb = _Ambient.rgb + ( 1 + normalize( _Sender.Nor.xyz ) ) / 2; }' );
 
           EndUpdate;
      end;
 
-     Assert( _ShaderF.Status );
+     Assert( _ShaderF.Status, _ShaderF.Errors.Text );
 
      with _Engine do
      begin
