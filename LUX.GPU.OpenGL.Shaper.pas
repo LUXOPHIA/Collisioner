@@ -202,6 +202,7 @@ constructor TGLShaper.Create;
 begin
      inherited;
 
+     _HitTest := True;
 end;
 
 destructor TGLShaper.Destroy;

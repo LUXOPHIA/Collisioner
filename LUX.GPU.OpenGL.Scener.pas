@@ -88,6 +88,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _RelaPose :TSingleM4;
        _AbsoPose :TGLUnifor<TSingleM4>;  upAbsoPose :Boolean;
        _Visible  :Boolean;
+       _HitTest  :Boolean;
        _Inform   :TGLInform;
        ///// アクセス
        function GetScener :TGLScener; virtual;
@@ -111,6 +112,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property RelaPose :TSingleM4     read GetRelaPose write SetRelaPose;
        property AbsoPose :TSingleM4     read GetAbsoPose write SetAbsoPose;
        property Visible  :Boolean       read   _Visible  write   _Visible ;
+       property HitTest  :Boolean       read   _HitTest  write   _HitTest ;
        property Inform   :TGLInform     read   _Inform                    ;
        property BouBox   :TSingleArea3D read GetBouBox   write SetBouBox  ;
        ///// メソッド
@@ -168,6 +170,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property RelaPose :TSingleM4 read GetRelaPose;
        property AbsoPose :TSingleM4 read GetAbsoPose;
+       ///// メソッド
+       procedure HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLObject ); override;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -406,6 +410,7 @@ begin
      RelaPose := TSingleM4.Identify;
 
      _Visible := True;
+     _HitTest := False;
 end;
 
 destructor TGLObject.Destroy;
@@ -494,7 +499,7 @@ var
    L :TSingleArea;
    I :Integer;
 begin
-     if _Visible then
+     if _Visible and _HitTest then
      begin
           if HitBouBox( AbsoRay_, L ) and ( L.Min < Len_ ) then
           begin
@@ -573,6 +578,15 @@ destructor TGLScener.Destroy;
 begin
 
      inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLScener.HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLObject );
+var
+   I :Integer;
+begin
+     for I := 0 to ChildsN-1 do Childs[ I ].HitRay( AbsoRay_, Len_, Obj_ );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
