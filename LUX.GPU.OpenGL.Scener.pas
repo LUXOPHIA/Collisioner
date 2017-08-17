@@ -116,7 +116,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        procedure Draw; virtual;
        procedure CalcBouBox; virtual;
-       function HitBouBox( const AbsoRay_:TSingleRay3D ) :TSingleArea;
+       function HitBouBox( const AbsoRay_:TSingleRay3D; out Len_:TSingleArea ) :Boolean;
        procedure HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLObject ); overload; virtual;
        function HitRay( const AbsoRay_:TSingleRay3D ) :TGLObject; overload;
      end;
@@ -444,7 +444,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TGLObject.HitBouBox( const AbsoRay_:TSingleRay3D ) :TSingleArea;
+function TGLObject.HitBouBox( const AbsoRay_:TSingleRay3D; out Len_:TSingleArea ) :Boolean;
 //······································
      procedure Slab( const Min_,Max_,Pos_,Vec_:Single );
      var
@@ -453,7 +453,7 @@ function TGLObject.HitBouBox( const AbsoRay_:TSingleRay3D ) :TSingleArea;
           T0 := ( Min_ - Pos_ ) / Vec_;
           T1 := ( Max_ - Pos_ ) / Vec_;
 
-          with Result do
+          with Len_ do
           begin
                if Min < T0 then Min := T0;
                if T1 < Max then Max := T1;
@@ -463,24 +463,30 @@ function TGLObject.HitBouBox( const AbsoRay_:TSingleRay3D ) :TSingleArea;
 var
    R :TSingleRay3D;
 begin
-     Result := TSingleArea.PoMax;
-
-     R := AbsoPose.Inverse * AbsoRay_;
-
-     with R, BouBox do
+     if BouBox.Sign = +1 then
      begin
-          if Vec.X > 0 then Slab( Min.X, Max.X, Pos.X, Vec.X )
-                       else
-          if Vec.X < 0 then Slab( Max.X, Min.X, Pos.X, Vec.X );
+          Len_ := TSingleArea.PoMax;
 
-          if Vec.Y > 0 then Slab( Min.Y, Max.Y, Pos.Y, Vec.Y )
-                       else
-          if Vec.Y < 0 then Slab( Max.Y, Min.Y, Pos.Y, Vec.Y );
+          R := AbsoPose.Inverse * AbsoRay_;
 
-          if Vec.Z > 0 then Slab( Min.Z, Max.Z, Pos.Z, Vec.Z )
-                       else
-          if Vec.Z < 0 then Slab( Max.Z, Min.Z, Pos.Z, Vec.Z );
-     end;
+          with R, BouBox do
+          begin
+               if Vec.X > 0 then Slab( Min.X, Max.X, Pos.X, Vec.X )
+                            else
+               if Vec.X < 0 then Slab( Max.X, Min.X, Pos.X, Vec.X );
+
+               if Vec.Y > 0 then Slab( Min.Y, Max.Y, Pos.Y, Vec.Y )
+                            else
+               if Vec.Y < 0 then Slab( Max.Y, Min.Y, Pos.Y, Vec.Y );
+
+               if Vec.Z > 0 then Slab( Min.Z, Max.Z, Pos.Z, Vec.Z )
+                            else
+               if Vec.Z < 0 then Slab( Max.Z, Min.Z, Pos.Z, Vec.Z );
+          end;
+
+          Result := ( Len_.Min <= Len_.Max );
+     end
+     else Result := False;
 end;
 
 procedure TGLObject.HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLObject );
@@ -490,15 +496,10 @@ var
 begin
      if _Visible then
      begin
-          L := HitBouBox( AbsoRay_ );
-
-          if L.Min <= L.Max then
+          if HitBouBox( AbsoRay_, L ) and ( L.Min < Len_ ) then
           begin
-               if L.Min < Len_ then
-               begin
-                    Len_ := L.Min;
-                    Obj_ := Self;
-               end;
+               Len_ := L.Min;
+               Obj_ := Self;
           end;
 
           for I := 0 to ChildsN-1 do Childs[ I ].HitRay( AbsoRay_, Len_, Obj_ );
