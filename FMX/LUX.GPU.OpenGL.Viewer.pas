@@ -357,23 +357,25 @@ end;
 
 function TGLViewer.ShootRay( const X_,Y_:Single ) :TSingleRay3D;
 var
+   M :TSingleM4;
    S, P0, P1 :TSingle4D;
 begin
+     M := _Camera.AbsoPose * _Camera.Proj.Inverse * _Viewer[ 0 ].Inverse;
+
      with GetPixSiz do
      begin
           S.X :=     X_ / Width  * 2 - 1;
           S.Y := 1 - Y_ / Height * 2    ;
-          S.Z := 1 - 0.2;
           S.W := 1;
      end;
 
-     P0 := _Camera.AbsoPose * TSingle4D.Create( 0, 0, 0, 1 );
-     P1 := _Camera.AbsoPose * _Camera.Proj.Inverse * _Viewer[ 0 ].Inverse * S;
+     S.Z := -1;  P0 := M * S;
+     S.Z := +1;  P1 := M * S;
 
      with Result do
      begin
-          Pos := TSingle3D(      P0 );
-          Vec := TSingle3D( P1 - P0 ).Unitor;
+          Pos :=               P0.ToCart  ;
+          Vec := Pos.UnitorTo( P1.ToCart );
      end;
 end;
 
