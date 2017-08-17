@@ -245,7 +245,14 @@ begin
 
             Add( 'void main()' );
             Add( '{' );
-            Add( '  _Result.Pos =                     _ShaperPose     * _SenderPos;' );
+
+            Add( '  mat4 M;' );
+            Add( '  M[ 3 ] = _ShaperPose[ 3 ];' );
+            Add( '  M[ 2 ] = normalize( _CameraPose[ 3 ] - _ShaperPose[ 3 ] );' );
+            Add( '  M[ 1 ] = vec4( normalize( cross( M[ 2 ].xyz, _CameraPose[ 0 ].xyz ) ), 0 );' );
+            Add( '  M[ 0 ] = vec4( normalize( cross( M[ 1 ].xyz, M[ 2 ].xyz ) ), 0 );' );
+
+            Add( '  _Result.Pos =                     M     * _SenderPos;' );
             Add( '  _Result.Nor = transpose( inverse( _ShaperPose ) ) * _SenderNor;' );
             Add( '  _Result.Tex =                                       _SenderTex;' );
             Add( '  gl_Position = _ViewerScal * _CameraProj * inverse( _CameraPose ) * _Result.Pos;' );
