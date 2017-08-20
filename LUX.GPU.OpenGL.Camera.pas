@@ -122,7 +122,7 @@ procedure TGLCamera.HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Ob
 var
    I :Integer;
 begin
-     if _Visible then
+     if _Visible and _HitTest then
      begin
           for I := 0 to ChildsN-1 do Childs[ I ].HitRay( AbsoRay_, Len_, Obj_ );
      end;
