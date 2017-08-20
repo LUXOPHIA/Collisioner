@@ -73,6 +73,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        constructor Create( const V_:Single ); overload;
        constructor Create( const X_,Y_,Z_,W_:Single ); overload;
+       constructor Create( const P_:TSingle3D; const W_:Single ); overload;
        ///// プロパティ
        property V[ const I_:Integer ] :Single    read GetV      write SetV     ; default;
        property Siz2                  :Single    read GetSiz2   write SetSiz2  ;
@@ -102,6 +103,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function VectorTo( const P_:TSingle4D ) :TSingle4D;
        function UnitorTo( const P_:TSingle4D ) :TSingle4D;
        function DistanTo( const P_:TSingle4D ) :Single;
+       function ToCart :TSingle3D;
        class function RandG :TSingle4D; static;
        class function RandBS1 :TSingle4D; static;
        class function RandBS2 :TSingle4D; static;
@@ -137,6 +139,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        constructor Create( const V_:Double ); overload;
        constructor Create( const X_,Y_,Z_,W_:Double ); overload;
+       constructor Create( const P_:TDouble3D; const W_:Double ); overload;
        ///// プロパティ
        property V[ const I_:Integer ] :Double    read GetV      write SetV     ; default;
        property Siz2                  :Double    read GetSiz2   write SetSiz2  ;
@@ -166,6 +169,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function VectorTo( const P_:TDouble4D ) :TDouble4D;
        function UnitorTo( const P_:TDouble4D ) :TDouble4D;
        function DistanTo( const P_:TDouble4D ) :Double;
+       function ToCart :TDouble3D;
        class function RandG :TDouble4D; static;
        class function RandBS1 :TDouble4D; static;
        class function RandBS2 :TDouble4D; static;
@@ -475,6 +479,14 @@ begin
      W := W_;
 end;
 
+constructor TSingle4D.Create( const P_:TSingle3D; const W_:Single );
+begin
+     X := P_.X ;
+     Y := P_.Y ;
+     Z := P_.Z ;
+     W :=    W_;
+end;
+
 ///////////////////////////////////////////////////////////////////////// 演算子
 
 class operator TSingle4D.Negative( const V_:TSingle4D ) :TSingle4D;
@@ -685,6 +697,15 @@ end;
 
 //------------------------------------------------------------------------------
 
+function TSingle4D.ToCart :TSingle3D;
+begin
+     Result.X := X / W;
+     Result.Y := Y / W;
+     Result.Z := Z / W;
+end;
+
+//------------------------------------------------------------------------------
+
 class function TSingle4D.RandG :TSingle4D;
 begin
      with Result do
@@ -795,6 +816,14 @@ begin
      Y := Y_;
      Z := Z_;
      W := W_;
+end;
+
+constructor TDouble4D.Create( const P_:TDouble3D; const W_:Double );
+begin
+     X := P_.X ;
+     Y := P_.Y ;
+     Z := P_.Z ;
+     W :=    W_;
 end;
 
 ///////////////////////////////////////////////////////////////////////// 演算子
@@ -1003,6 +1032,15 @@ end;
 function TDouble4D.DistanTo( const P_:TDouble4D ) :Double;
 begin
      Result := VectorTo( P_ ).Size;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDouble4D.ToCart :TDouble3D;
+begin
+     Result.X := X / W;
+     Result.Y := Y / W;
+     Result.Z := Z / W;
 end;
 
 //------------------------------------------------------------------------------
