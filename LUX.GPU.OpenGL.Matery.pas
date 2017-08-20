@@ -169,42 +169,45 @@ begin
      _ShaderV := TGLShaderV.Create;
      _ShaderF := TGLShaderF.Create;
 
-     with _ShaderV.Source do
+     with _ShaderV do
      begin
-          BeginUpdate;
-            Clear;
+          with Source do
+          begin
+               BeginUpdate;
+                 Clear;
 
-            Add( '#version 430' );
+                 Add( '#version 430' );
 
-            Add( 'layout( std140 ) uniform TViewerScal{ layout( row_major ) mat4 _ViewerScal; };' );
-            Add( 'layout( std140 ) uniform TCameraProj{ layout( row_major ) mat4 _CameraProj; };' );
-            Add( 'layout( std140 ) uniform TCameraPose{ layout( row_major ) mat4 _CameraPose; };' );
-            Add( 'layout( std140 ) uniform TShaperPose{ layout( row_major ) mat4 _ShaperPose; };' );
+                 Add( 'layout( std140 ) uniform TViewerScal{ layout( row_major ) mat4 _ViewerScal; };' );
+                 Add( 'layout( std140 ) uniform TCameraProj{ layout( row_major ) mat4 _CameraProj; };' );
+                 Add( 'layout( std140 ) uniform TCameraPose{ layout( row_major ) mat4 _CameraPose; };' );
+                 Add( 'layout( std140 ) uniform TShaperPose{ layout( row_major ) mat4 _ShaperPose; };' );
 
-            Add( 'in vec4 _SenderPos;' );
-            Add( 'in vec4 _SenderNor;' );
-            Add( 'in vec2 _SenderTex;' );
+                 Add( 'in vec4 _SenderPos;' );
+                 Add( 'in vec4 _SenderNor;' );
+                 Add( 'in vec2 _SenderTex;' );
 
-            Add( 'out TSenderVF' );
-            Add( '{' );
-            Add( '  vec4 Pos;' );
-            Add( '  vec4 Nor;' );
-            Add( '  vec2 Tex;' );
-            Add( '}' );
-            Add( '_Result;' );
+                 Add( 'out TSenderVF' );
+                 Add( '{' );
+                 Add( '  vec4 Pos;' );
+                 Add( '  vec4 Nor;' );
+                 Add( '  vec2 Tex;' );
+                 Add( '}' );
+                 Add( '_Result;' );
 
-            Add( 'void main()' );
-            Add( '{' );
-            Add( '  _Result.Pos =                     _ShaperPose     * _SenderPos;' );
-            Add( '  _Result.Nor = transpose( inverse( _ShaperPose ) ) * _SenderNor;' );
-            Add( '  _Result.Tex =                                       _SenderTex;' );
-            Add( '  gl_Position = _ViewerScal * _CameraProj * inverse( _CameraPose ) * _Result.Pos;' );
-            Add( '}' );
+                 Add( 'void main()' );
+                 Add( '{' );
+                 Add( '  _Result.Pos =                     _ShaperPose     * _SenderPos;' );
+                 Add( '  _Result.Nor = transpose( inverse( _ShaperPose ) ) * _SenderNor;' );
+                 Add( '  _Result.Tex =                                       _SenderTex;' );
+                 Add( '  gl_Position = _ViewerScal * _CameraProj * inverse( _CameraPose ) * _Result.Pos;' );
+                 Add( '}' );
 
-          EndUpdate;
+               EndUpdate;
+          end;
+
+          Assert( Status, Errors.Text );
      end;
-
-     Assert( _ShaderV.Status );
 
      with _Engine do
      begin
@@ -320,60 +323,66 @@ begin
      _Color := TGLUnifor<TAlphaColorF>.Create( GL_STATIC_DRAW );
      _Color.Count := 1;
 
-     with _ShaderV.Source do
+     with _ShaderV do
      begin
-          BeginUpdate;
-            Clear;
+          with Source do
+          begin
+               BeginUpdate;
+                 Clear;
 
-            Add( '#version 430' );
+                 Add( '#version 430' );
 
-            Add( 'layout( std140 ) uniform TViewerScal{ layout( row_major ) mat4 _ViewerScal; };' );
-            Add( 'layout( std140 ) uniform TCameraProj{ layout( row_major ) mat4 _CameraProj; };' );
-            Add( 'layout( std140 ) uniform TCameraPose{ layout( row_major ) mat4 _CameraPose; };' );
-            Add( 'layout( std140 ) uniform TShaperPose{ layout( row_major ) mat4 _ShaperPose; };' );
+                 Add( 'layout( std140 ) uniform TViewerScal{ layout( row_major ) mat4 _ViewerScal; };' );
+                 Add( 'layout( std140 ) uniform TCameraProj{ layout( row_major ) mat4 _CameraProj; };' );
+                 Add( 'layout( std140 ) uniform TCameraPose{ layout( row_major ) mat4 _CameraPose; };' );
+                 Add( 'layout( std140 ) uniform TShaperPose{ layout( row_major ) mat4 _ShaperPose; };' );
 
-            Add( 'in vec4 _SenderPos;' );
+                 Add( 'in vec4 _SenderPos;' );
 
-            Add( 'out TSenderVF' );
-            Add( '{' );
-            Add( '  vec4 Pos;' );
-            Add( '}' );
-            Add( '_Result;' );
+                 Add( 'out TSenderVF' );
+                 Add( '{' );
+                 Add( '  vec4 Pos;' );
+                 Add( '}' );
+                 Add( '_Result;' );
 
-            Add( 'void main()' );
-            Add( '{' );
-            Add( '  _Result.Pos = _ShaperPose * _SenderPos;' );
-            Add( '  gl_Position = _ViewerScal * _CameraProj * inverse( _CameraPose ) * _Result.Pos;' );
-            Add( '}' );
+                 Add( 'void main()' );
+                 Add( '{' );
+                 Add( '  _Result.Pos = _ShaperPose * _SenderPos;' );
+                 Add( '  gl_Position = _ViewerScal * _CameraProj * inverse( _CameraPose ) * _Result.Pos;' );
+                 Add( '}' );
 
-          EndUpdate;
+               EndUpdate;
+          end;
+
+          Assert( Status, Errors.Text );
      end;
 
-     Assert( _ShaderV.Status );
-
-     with _ShaderF.Source do
+     with _ShaderF do
      begin
-          BeginUpdate;
-            Clear;
+          with Source do
+          begin
+               BeginUpdate;
+                 Clear;
 
-            Add( '#version 430' );
+                 Add( '#version 430' );
 
-            Add( 'layout( std140 ) uniform TMateryCol{ vec4 _MateryCol; };' );
+                 Add( 'layout( std140 ) uniform TMateryCol{ vec4 _MateryCol; };' );
 
-            Add( 'in TSenderVF' );
-            Add( '{' );
-            Add( '  vec4 Pos;' );
-            Add( '}' );
-            Add( '_Sender;' );
+                 Add( 'in TSenderVF' );
+                 Add( '{' );
+                 Add( '  vec4 Pos;' );
+                 Add( '}' );
+                 Add( '_Sender;' );
 
-            Add( 'out vec4 _ResultCol;' );
+                 Add( 'out vec4 _ResultCol;' );
 
-            Add( 'void main(){ _ResultCol = _MateryCol; }' );
+                 Add( 'void main(){ _ResultCol = _MateryCol; }' );
 
-          EndUpdate;
+               EndUpdate;
+          end;
+
+          Assert( Status, Errors.Text );
      end;
-
-     Assert( _ShaderF.Status );
 
      with _Engine do
      begin
@@ -442,64 +451,70 @@ begin
      _Ambient := TGLUnifor<TAlphaColorF>.Create( GL_STATIC_DRAW );
      _Ambient.Count := 1;
 
-     with _ShaderV.Source do
+     with _ShaderV do
      begin
-          BeginUpdate;
-            Clear;
+          with Source do
+          begin
+               BeginUpdate;
+                 Clear;
 
-            Add( '#version 430' );
+                 Add( '#version 430' );
 
-            Add( 'layout( std140 ) uniform TViewerScal{ layout( row_major ) mat4 _ViewerScal; };' );
-            Add( 'layout( std140 ) uniform TCameraProj{ layout( row_major ) mat4 _CameraProj; };' );
-            Add( 'layout( std140 ) uniform TCameraPose{ layout( row_major ) mat4 _CameraPose; };' );
-            Add( 'layout( std140 ) uniform TShaperPose{ layout( row_major ) mat4 _ShaperPose; };' );
+                 Add( 'layout( std140 ) uniform TViewerScal{ layout( row_major ) mat4 _ViewerScal; };' );
+                 Add( 'layout( std140 ) uniform TCameraProj{ layout( row_major ) mat4 _CameraProj; };' );
+                 Add( 'layout( std140 ) uniform TCameraPose{ layout( row_major ) mat4 _CameraPose; };' );
+                 Add( 'layout( std140 ) uniform TShaperPose{ layout( row_major ) mat4 _ShaperPose; };' );
 
-            Add( 'in vec4 _SenderPos;' );
-            Add( 'in vec4 _SenderNor;' );
+                 Add( 'in vec4 _SenderPos;' );
+                 Add( 'in vec4 _SenderNor;' );
 
-            Add( 'out TSenderVF' );
-            Add( '{' );
-            Add( '  vec4 Pos;' );
-            Add( '  vec4 Nor;' );
-            Add( '}' );
-            Add( '_Result;' );
+                 Add( 'out TSenderVF' );
+                 Add( '{' );
+                 Add( '  vec4 Pos;' );
+                 Add( '  vec4 Nor;' );
+                 Add( '}' );
+                 Add( '_Result;' );
 
-            Add( 'void main()' );
-            Add( '{' );
-            Add( '  _Result.Pos =                     _ShaperPose     * _SenderPos;' );
-            Add( '  _Result.Nor = transpose( inverse( _ShaperPose ) ) * _SenderNor;' );
-            Add( '  gl_Position = _ViewerScal * _CameraProj * inverse( _CameraPose ) * _Result.Pos;' );
-            Add( '}' );
+                 Add( 'void main()' );
+                 Add( '{' );
+                 Add( '  _Result.Pos =                     _ShaperPose     * _SenderPos;' );
+                 Add( '  _Result.Nor = transpose( inverse( _ShaperPose ) ) * _SenderNor;' );
+                 Add( '  gl_Position = _ViewerScal * _CameraProj * inverse( _CameraPose ) * _Result.Pos;' );
+                 Add( '}' );
 
-          EndUpdate;
+               EndUpdate;
+          end;
+
+          Assert( Status, Errors.Text );
      end;
 
-     Assert( _ShaderV.Status );
-
-     with _ShaderF.Source do
+     with _ShaderF do
      begin
-          BeginUpdate;
-            Clear;
+          with Source do
+          begin
+               BeginUpdate;
+                 Clear;
 
-            Add( '#version 430' );
+                 Add( '#version 430' );
 
-            Add( 'layout( std140 ) uniform TAmbient{ vec4 _Ambient; };' );
+                 Add( 'layout( std140 ) uniform TAmbient{ vec4 _Ambient; };' );
 
-            Add( 'in TSenderVF' );
-            Add( '{' );
-            Add( '  vec4 Pos;' );
-            Add( '  vec4 Nor;' );
-            Add( '}' );
-            Add( '_Sender;' );
+                 Add( 'in TSenderVF' );
+                 Add( '{' );
+                 Add( '  vec4 Pos;' );
+                 Add( '  vec4 Nor;' );
+                 Add( '}' );
+                 Add( '_Sender;' );
 
-            Add( 'out vec4 _ResultCol;' );
+                 Add( 'out vec4 _ResultCol;' );
 
-            Add( 'void main(){ _ResultCol = _Ambient + ( 1 + normalize( _Sender.Nor ) ) / 2; }' );
+                 Add( 'void main(){ _ResultCol.rgb = _Ambient.rgb + ( 1 + normalize( _Sender.Nor.xyz ) ) / 2; }' );
 
-          EndUpdate;
+               EndUpdate;
+          end;
+
+          Assert( Status, Errors.Text );
      end;
-
-     Assert( _ShaderF.Status );
 
      with _Engine do
      begin
