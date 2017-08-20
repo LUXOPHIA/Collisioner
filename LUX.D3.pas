@@ -2,7 +2,7 @@
 
 interface //#################################################################### ■
 
-uses System.Math.Vectors,
+uses System.Math, System.Math.Vectors,
      LUX, LUX.D1, LUX.D2;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
@@ -393,6 +393,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
        ///// アクセス
        function GetPoin( const I_:Integer ) :TSingle3D;
+       function GetSign :TValueSign;
+       function GetSizeX :Single;
+       function GetSizeY :Single;
+       function GetSizeZ :Single;
      public
        Min :TSingle3D;
        Max :TSingle3D;
@@ -402,7 +406,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                                  MaxX_,MaxY_,MaxZ_:Single ); overload;
        constructor Create( const Min_,Max_:TSingle3D ); overload;
        ///// プロパティ
-       property Poin[ const I_:Integer ] :TSingle3D read GetPoin;
+       property Poin[ const I_:Integer ] :TSingle3D  read GetPoin ;
+       property Sign                     :TValueSign read GetSign ;
+       property SizeX                    :Single     read GetSizeX;
+       property SizeY                    :Single     read GetSizeY;
+       property SizeZ                    :Single     read GetSizeZ;
+
        ///// 定数
        class function NeInf :TSingleArea3D; static;
        class function NeMax :TSingleArea3D; static;
@@ -417,6 +426,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
        ///// アクセス
        function GetPoin( const I_:Integer ) :TDouble3D;
+       function GetSign :TValueSign;
+       function GetSizeX :Double;
+       function GetSizeY :Double;
+       function GetSizeZ :Double;
      public
        Min :TDouble3D;
        Max :TDouble3D;
@@ -426,7 +439,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                                  MaxX_,MaxY_,MaxZ_:Double ); overload;
        constructor Create( const Min_,Max_:TDouble3D ); overload;
        ///// プロパティ
-       property Poin[ const I_:Integer ] :TDouble3D read GetPoin;
+       property Poin[ const I_:Integer ] :TDouble3D  read GetPoin ;
+       property Sign                     :TValueSign read GetSign ;
+       property SizeX                    :Double     read GetSizeX;
+       property SizeY                    :Double     read GetSizeY;
+       property SizeZ                    :Double     read GetSizeZ;
        ///// 定数
        class function NeInf :TDoubleArea3D; static;
        class function NeMax :TDoubleArea3D; static;
@@ -525,7 +542,7 @@ function PolySolveReal( const Ks_:TDouble3D; out Xs_:TDouble2D ) :Byte; overload
 
 implementation //############################################################### ■
 
-uses System.SysUtils, System.Math;
+uses System.SysUtils;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -1853,6 +1870,40 @@ begin
      end;
 end;
 
+//------------------------------------------------------------------------------
+
+function TSingleArea3D.GetSign :TValueSign;
+var
+   SX, SY, SZ :Byte;
+begin
+     SX := 1 + System.Math.Sign( Max.X - Min.X );
+     SY := 1 + System.Math.Sign( Max.Y - Min.Y );
+     SZ := 1 + System.Math.Sign( Max.Z - Min.Z );
+
+     case SZ * SY * SX of
+       0: Result := -1;
+       8: Result := +1;
+     else Result :=  0;
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingleArea3D.GetSizeX :Single;
+begin
+     Result := Max.X - Min.X;
+end;
+
+function TSingleArea3D.GetSizeY :Single;
+begin
+     Result := Max.Y - Min.Y;
+end;
+
+function TSingleArea3D.GetSizeZ :Single;
+begin
+     Result := Max.Z - Min.Z;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TSingleArea3D.Create( const Min_,Max_:Single );
@@ -1934,6 +1985,40 @@ begin
        6: Result := TDouble3D.Create( Min.X, Max.Y, Max.Z );
        7: Result := TDouble3D.Create( Max.X, Max.Y, Max.Z );
      end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleArea3D.GetSign :TValueSign;
+var
+   SX, SY, SZ :Byte;
+begin
+     SX := 1 + System.Math.Sign( Max.X - Min.X );
+     SY := 1 + System.Math.Sign( Max.Y - Min.Y );
+     SZ := 1 + System.Math.Sign( Max.Z - Min.Z );
+
+     case SZ * SY * SX of
+       0: Result := -1;
+       8: Result := +1;
+     else Result :=  0;
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleArea3D.GetSizeX :Double;
+begin
+     Result := Max.X - Min.X;
+end;
+
+function TDoubleArea3D.GetSizeY :Double;
+begin
+     Result := Max.Y - Min.Y;
+end;
+
+function TDoubleArea3D.GetSizeZ :Double;
+begin
+     Result := Max.Z - Min.Z;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
