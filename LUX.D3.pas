@@ -393,7 +393,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
        ///// アクセス
        function GetPoin( const I_:Integer ) :TSingle3D;
-       function GetSign :TValueSign;
+       function GetSign :ShortInt;
        function GetSizeX :Single;
        function GetSizeY :Single;
        function GetSizeZ :Single;
@@ -406,11 +406,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                                  MaxX_,MaxY_,MaxZ_:Single ); overload;
        constructor Create( const Min_,Max_:TSingle3D ); overload;
        ///// プロパティ
-       property Poin[ const I_:Integer ] :TSingle3D  read GetPoin ;
-       property Sign                     :TValueSign read GetSign ;
-       property SizeX                    :Single     read GetSizeX;
-       property SizeY                    :Single     read GetSizeY;
-       property SizeZ                    :Single     read GetSizeZ;
+       property Poin[ const I_:Integer ] :TSingle3D read GetPoin ;
+       property Sign                     :ShortInt  read GetSign ;
+       property SizeX                    :Single    read GetSizeX;
+       property SizeY                    :Single    read GetSizeY;
+       property SizeZ                    :Single    read GetSizeZ;
 
        ///// 定数
        class function NeInf :TSingleArea3D; static;
@@ -426,7 +426,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
        ///// アクセス
        function GetPoin( const I_:Integer ) :TDouble3D;
-       function GetSign :TValueSign;
+       function GetSign :ShortInt;
        function GetSizeX :Double;
        function GetSizeY :Double;
        function GetSizeZ :Double;
@@ -439,11 +439,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                                  MaxX_,MaxY_,MaxZ_:Double ); overload;
        constructor Create( const Min_,Max_:TDouble3D ); overload;
        ///// プロパティ
-       property Poin[ const I_:Integer ] :TDouble3D  read GetPoin ;
-       property Sign                     :TValueSign read GetSign ;
-       property SizeX                    :Double     read GetSizeX;
-       property SizeY                    :Double     read GetSizeY;
-       property SizeZ                    :Double     read GetSizeZ;
+       property Poin[ const I_:Integer ] :TDouble3D read GetPoin ;
+       property Sign                     :ShortInt  read GetSign ;
+       property SizeX                    :Double    read GetSizeX;
+       property SizeY                    :Double    read GetSizeY;
+       property SizeZ                    :Double    read GetSizeZ;
        ///// 定数
        class function NeInf :TDoubleArea3D; static;
        class function NeMax :TDoubleArea3D; static;
@@ -1872,7 +1872,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TSingleArea3D.GetSign :TValueSign;
+function TSingleArea3D.GetSign :ShortInt;
 var
    SX, SY, SZ :Byte;
 begin
@@ -1882,8 +1882,9 @@ begin
 
      case SZ * SY * SX of
        0: Result := -1;
-       8: Result := +1;
-     else Result :=  0;
+       1: Result :=  0;
+       8: Result := +2;
+     else Result := +1;
      end;
 end;
 
@@ -1989,7 +1990,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TDoubleArea3D.GetSign :TValueSign;
+function TDoubleArea3D.GetSign :ShortInt;
 var
    SX, SY, SZ :Byte;
 begin
@@ -1999,8 +2000,9 @@ begin
 
      case SZ * SY * SX of
        0: Result := -1;
-       8: Result := +1;
-     else Result :=  0;
+       1: Result :=  0;
+       8: Result := +2;
+     else Result := +1;
      end;
 end;
 
