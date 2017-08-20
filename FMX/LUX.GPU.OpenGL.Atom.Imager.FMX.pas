@@ -146,7 +146,7 @@ begin
 
      BMP_.Map( TMapAccess.Read, B );
 
-     for Y := 0 to TexelsX-1 do
+     for Y := 0 to TexelsY-1 do
      begin
           for X := 0 to TexelsX-1 do
           begin
@@ -168,7 +168,7 @@ begin
 
      BMP_.Map( TMapAccess.Write, B );
 
-     for Y := 0 to TexelsX-1 do
+     for Y := 0 to TexelsY-1 do
      begin
           for X := 0 to TexelsX-1 do
           begin

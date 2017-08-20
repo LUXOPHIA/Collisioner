@@ -143,7 +143,7 @@ begin
      TexelsX := BMP_.Width ;
      TexelsY := BMP_.Height;
 
-     for Y := 0 to TexelsX-1 do
+     for Y := 0 to TexelsY-1 do
      begin
           for X := 0 to TexelsX-1 do
           begin
@@ -168,7 +168,7 @@ var
 begin
      BMP_.SetSize( TexelsX, TexelsY );
 
-     for Y := 0 to TexelsX-1 do
+     for Y := 0 to TexelsY-1 do
      begin
           for X := 0 to TexelsX-1 do
           begin
