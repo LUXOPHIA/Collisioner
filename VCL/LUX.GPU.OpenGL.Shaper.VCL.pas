@@ -108,7 +108,7 @@ begin
                Brush.Color := TColors.Black;
                FillRect( TRect.Create( 0, 0, S.Width, S.Height ) );
 
-//               Font.Color := TColors.White;
+               Font.Color := TColors.White;
                TextOut( 0, 0, _Text );
           end;
      end;
