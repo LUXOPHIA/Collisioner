@@ -468,7 +468,9 @@ function TGLObject.HitBouBox( const AbsoRay_:TSingleRay3D; out Len_:TSingleArea 
 var
    R :TSingleRay3D;
 begin
-     if BouBox.Sign > 0 then
+     Result := False;
+
+     if BouBox.Sign = +1 then
      begin
           Len_ := TSingleArea.PoMax;
 
@@ -478,20 +480,25 @@ begin
           begin
                if Vec.X > 0 then Slab( Min.X, Max.X, Pos.X, Vec.X )
                             else
-               if Vec.X < 0 then Slab( Max.X, Min.X, Pos.X, Vec.X );
+               if Vec.X < 0 then Slab( Max.X, Min.X, Pos.X, Vec.X )
+                            else
+               if ( Pos.X < Min.X ) or ( Max.X < Pos.X ) then Exit;
 
                if Vec.Y > 0 then Slab( Min.Y, Max.Y, Pos.Y, Vec.Y )
                             else
-               if Vec.Y < 0 then Slab( Max.Y, Min.Y, Pos.Y, Vec.Y );
+               if Vec.Y < 0 then Slab( Max.Y, Min.Y, Pos.Y, Vec.Y )
+                            else
+               if ( Pos.Y < Min.Y ) or ( Max.Y < Pos.Y ) then Exit;
 
                if Vec.Z > 0 then Slab( Min.Z, Max.Z, Pos.Z, Vec.Z )
                             else
-               if Vec.Z < 0 then Slab( Max.Z, Min.Z, Pos.Z, Vec.Z );
+               if Vec.Z < 0 then Slab( Max.Z, Min.Z, Pos.Z, Vec.Z )
+                            else
+               if ( Pos.Z < Min.Z ) or ( Max.Z < Pos.Z ) then Exit;
           end;
 
           Result := ( Len_.Min <= Len_.Max );
-     end
-     else Result := False;
+     end;
 end;
 
 procedure TGLObject.HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLObject );
