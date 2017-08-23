@@ -2,7 +2,7 @@
 
 interface //#################################################################### ■
 
-uses System.UITypes,
+uses System.UITypes, System.Classes,
      Winapi.OpenGL, Winapi.OpenGLext,
      Vcl.Graphics,
      LUX, LUX.D2, LUX.D3, LUX.M4, LUX.Tree,
@@ -32,10 +32,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _SizeY :Single;
        _Text  :String;
        _BMP   :TBitmap;
+       _Font  :TFont;
        ///// アクセス
        function GetText :String;
        procedure SetText( const Text_:String );
        function GetFont :TFont;
+       procedure SetFont( Sender:TObject );
      public
        constructor Create; override;
        destructor Destroy; override;
@@ -108,7 +110,6 @@ begin
                Brush.Color := TColors.Black;
                FillRect( TRect.Create( 0, 0, S.Width, S.Height ) );
 
-               Font.Color := TColors.White;
                TextOut( 0, 0, _Text );
           end;
      end;
@@ -120,7 +121,12 @@ end;
 
 function TGLShaperText.GetFont :TFont;
 begin
-     Result := _BMP.Canvas.Font;
+     Result := _Font;
+end;
+
+procedure TGLShaperText.SetFont( Sender:TObject );
+begin
+     _BMP.Canvas.Font.Assign( _Font );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -128,6 +134,9 @@ end;
 constructor TGLShaperText.Create;
 begin
      inherited;
+
+     _Font := TFont.Create;
+     _Font.OnChange := SetFont;
 
      _PosBuf.Count := 4;
      _NorBuf.Count := 4;
@@ -160,6 +169,8 @@ end;
 destructor TGLShaperText.Destroy;
 begin
      _BMP.Free;
+
+     _Font.Free;
 
      inherited;
 end;
