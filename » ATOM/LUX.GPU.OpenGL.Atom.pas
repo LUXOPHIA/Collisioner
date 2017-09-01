@@ -92,9 +92,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// イベント
        property OnLinked :TProc read GetOnLinked write SetOnLinked;
        ///// メソッド
-       function glGetVertLoca( const Name_:String ) :GLuint;
-       function glGetBlocLoca( const Name_:String ) :GLuint;
-       function glGetUnifLoca( const Name_:String ) :GLuint;
+       function GetProgramResourceIndex( const Kind_:GLenum; const Name_:String ) :GLuint;
        procedure Attach( const Shader_:IGLShader );
        procedure Detach( const Shader_:IGLShader );
        procedure Link;
