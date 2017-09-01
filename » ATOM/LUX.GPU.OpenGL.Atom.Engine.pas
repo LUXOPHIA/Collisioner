@@ -38,10 +38,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _Verters :TGLPorterV;
        _Unifors :TGLPorterU;
        _Imagers :TGLPorterI;
+       _Storags :TGLPorterS;
        ///// アクセス
        function GetVerters :TGLPorterV;
        function GetUnifors :TGLPorterU;
        function GetImagers :TGLPorterI;
+       function GetStorags :TGLPorterS;
        ///// イベント
        procedure DoOnLinked; override;
      public
@@ -51,6 +53,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Verters :TGLPorterV read GetVerters;
        property Unifors :TGLPorterU read GetUnifors;
        property Imagers :TGLPorterI read GetImagers;
+       property Storags :TGLPorterS read GetStorags;
        ///// メソッド
        procedure Attach( const Shader_:IGLShader ); override;
        procedure Detach( const Shader_:IGLShader ); override;
@@ -93,6 +96,11 @@ begin
      Result := _Imagers;
 end;
 
+function TGLEngine.GetStorags :TGLPorterS;
+begin
+     Result := _Storags;
+end;
+
 /////////////////////////////////////////////////////////////////////// イベント
 
 procedure TGLEngine.DoOnLinked;
@@ -100,6 +108,7 @@ begin
      _Verters.AddPorts;
      _Unifors.AddPorts;
      _Imagers.AddPorts;
+     _Storags.AddPorts;
 
      inherited;
 end;
@@ -115,6 +124,7 @@ begin
      _Verters := TGLPorterV.Create( Self as IGLEngine );
      _Unifors := TGLPorterU.Create( Self as IGLEngine );
      _Imagers := TGLPorterI.Create( Self as IGLEngine );
+     _Storags := TGLPorterS.Create( Self as IGLEngine );
 end;
 
 destructor TGLEngine.Destroy;
@@ -122,6 +132,7 @@ begin
      _Verters.DisposeOf;
      _Unifors.DisposeOf;
      _Imagers.DisposeOf;
+     _Storags.DisposeOf;
 
      inherited;
 end;
@@ -151,6 +162,7 @@ begin
      _Verters.Use;
      _Unifors.Use;
      _Imagers.Use;
+     _Storags.Use;
 end;
 
 procedure TGLEngine.Unuse;
@@ -158,6 +170,7 @@ begin
      _Verters.Unuse;
      _Unifors.Unuse;
      _Imagers.Unuse;
+     _Storags.Unuse;
 
      inherited;
 end;
