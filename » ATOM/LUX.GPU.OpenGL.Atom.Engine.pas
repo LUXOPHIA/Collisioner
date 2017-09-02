@@ -38,12 +38,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _Verters :TGLPorterV;
        _Unifors :TGLPorterU;
        _Imagers :TGLPorterI;
-       _Storags :TGLPorterS;
+       _StoBufs :TGLPorterS;
        ///// アクセス
        function GetVerters :TGLPorterV;
        function GetUnifors :TGLPorterU;
        function GetImagers :TGLPorterI;
-       function GetStorags :TGLPorterS;
+       function GetStoBufs :TGLPorterS;
        ///// イベント
        procedure DoOnLinked; override;
      public
@@ -53,7 +53,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Verters :TGLPorterV read GetVerters;
        property Unifors :TGLPorterU read GetUnifors;
        property Imagers :TGLPorterI read GetImagers;
-       property Storags :TGLPorterS read GetStorags;
+       property StoBufs :TGLPorterS read GetStoBufs;
        ///// メソッド
        procedure Attach( const Shader_:IGLShader ); override;
        procedure Detach( const Shader_:IGLShader ); override;
@@ -96,9 +96,9 @@ begin
      Result := _Imagers;
 end;
 
-function TGLEngine.GetStorags :TGLPorterS;
+function TGLEngine.GetStoBufs :TGLPorterS;
 begin
-     Result := _Storags;
+     Result := _StoBufs;
 end;
 
 /////////////////////////////////////////////////////////////////////// イベント
@@ -108,7 +108,7 @@ begin
      _Verters.AddPorts;
      _Unifors.AddPorts;
      _Imagers.AddPorts;
-     _Storags.AddPorts;
+     _StoBufs.AddPorts;
 
      inherited;
 end;
@@ -124,7 +124,7 @@ begin
      _Verters := TGLPorterV.Create( Self as IGLEngine );
      _Unifors := TGLPorterU.Create( Self as IGLEngine );
      _Imagers := TGLPorterI.Create( Self as IGLEngine );
-     _Storags := TGLPorterS.Create( Self as IGLEngine );
+     _StoBufs := TGLPorterS.Create( Self as IGLEngine );
 end;
 
 destructor TGLEngine.Destroy;
@@ -132,7 +132,7 @@ begin
      _Verters.DisposeOf;
      _Unifors.DisposeOf;
      _Imagers.DisposeOf;
-     _Storags.DisposeOf;
+     _StoBufs.DisposeOf;
 
      inherited;
 end;
@@ -162,7 +162,7 @@ begin
      _Verters.Use;
      _Unifors.Use;
      _Imagers.Use;
-     _Storags.Use;
+     _StoBufs.Use;
 end;
 
 procedure TGLEngine.Unuse;
@@ -170,7 +170,7 @@ begin
      _Verters.Unuse;
      _Unifors.Unuse;
      _Imagers.Unuse;
-     _Storags.Unuse;
+     _StoBufs.Unuse;
 
      inherited;
 end;
