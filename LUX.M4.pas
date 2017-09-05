@@ -80,7 +80,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RotateX( const T_:Single ) :TSingleM4; static;
        class function RotateY( const T_:Single ) :TSingleM4; static;
        class function RotateZ( const T_:Single ) :TSingleM4; static;
-       class function Identify :TSingleM4; static;
+       class function Identity :TSingleM4; static;
        class function ProjOrth( const L_,R_,B_,T_,N_,F_:Single ) :TSingleM4; static;
        class function ProjPers( const L_,R_,B_,T_,N_,F_:Single ) :TSingleM4; static;
 
@@ -147,7 +147,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RotateX( const T_:Double ) :TDoubleM4; static;
        class function RotateY( const T_:Double ) :TDoubleM4; static;
        class function RotateZ( const T_:Double ) :TDoubleM4; static;
-       class function Identify :TDoubleM4; static;
+       class function Identity :TDoubleM4; static;
        class function ProjOrth( const L_,R_,B_,T_,N_,F_:Double ) :TDoubleM4; static;
        class function ProjPers( const L_,R_,B_,T_,N_,F_:Double ) :TDoubleM4; static;
 
@@ -211,7 +211,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RotateX( const T_:TdSingle ) :TdSingleM4; static;
        class function RotateY( const T_:TdSingle ) :TdSingleM4; static;
        class function RotateZ( const T_:TdSingle ) :TdSingleM4; static;
-       class function Identify :TdSingleM4; static;
+       class function Identity :TdSingleM4; static;
 
      case Integer of
       0:( _ :array [ 1..4, 1..4 ] of TdSingle; );
@@ -275,7 +275,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RotateX( const T_:TdDouble ) :TdDoubleM4; static;
        class function RotateY( const T_:TdDouble ) :TdDoubleM4; static;
        class function RotateZ( const T_:TdDouble ) :TdDoubleM4; static;
-       class function Identify :TdDoubleM4; static;
+       class function Identity :TdDoubleM4; static;
 
      case Integer of
       0:( _ :array [ 1..4, 1..4 ] of TdDouble; );
@@ -309,7 +309,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function RotateX( const T_:Single ) :TSingleDualM4; static;
        class function RotateY( const T_:Single ) :TSingleDualM4; static;
        class function RotateZ( const T_:Single ) :TSingleDualM4; static;
-       class function Identify :TSingleDualM4; static;
+       class function Identity :TSingleDualM4; static;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -805,7 +805,7 @@ begin
      end
 end;
 
-class function TSingleM4.Identify :TSingleM4;
+class function TSingleM4.Identity :TSingleM4;
 begin
      with Result do
      begin
@@ -1332,7 +1332,7 @@ begin
      end
 end;
 
-class function TDoubleM4.Identify :TDoubleM4;
+class function TDoubleM4.Identity :TDoubleM4;
 begin
      with Result do
      begin
@@ -1826,7 +1826,7 @@ begin
      end
 end;
 
-class function TdSingleM4.Identify :TdSingleM4;
+class function TdSingleM4.Identity :TdSingleM4;
 begin
      with Result do
      begin
@@ -2308,7 +2308,7 @@ begin
      end
 end;
 
-class function TdDoubleM4.Identify :TdDoubleM4;
+class function TdDoubleM4.Identity :TdDoubleM4;
 begin
      with Result do
      begin
@@ -2424,12 +2424,12 @@ begin
      end;
 end;
 
-class function TSingleDualM4.Identify :TSingleDualM4;
+class function TSingleDualM4.Identity :TSingleDualM4;
 begin
      with Result do
      begin
-          _o := TSingleM4.Identify;
-          _i := TSingleM4.Identify;
+          _o := TSingleM4.Identity;
+          _i := TSingleM4.Identity;
      end;
 end;
 
