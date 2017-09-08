@@ -78,7 +78,7 @@ begin
                C.R := R / 255;
                C.G := G / 255;
                C.B := B / 255;
-               C.A := A / 255;
+               C.A := 1      ;
           end;
 
           Texels[ X ] := C;
@@ -152,7 +152,7 @@ begin
                     C.R := R / 255;
                     C.G := G / 255;
                     C.B := B / 255;
-                    C.A := A / 255;
+                    C.A := 1      ;
                end;
 
                Texels[ X, Y ] := C;
