@@ -347,7 +347,7 @@ procedure TGLPorterV.AddPort( const BinP_:GLuint; const Port_:TGLPortV );
 var
    L :GLuint;
 begin
-     L := _Progra.glGetVertLoca( Port_.Name );
+     L := _Progra.GetProgramResourceLocation( GL_PROGRAM_INPUT, Port_.Name );
 
      with _Varray do
      begin
@@ -373,7 +373,7 @@ procedure TGLPorterV.DelPort( const BinP_:GLuint; const Port_:TGLPortV );
 var
    L :GLuint;
 begin
-     L := _Progra.glGetVertLoca( Port_.Name );
+     L := _Progra.GetProgramResourceLocation( GL_PROGRAM_INPUT, Port_.Name );
 
      with _Varray do
      begin
@@ -443,13 +443,13 @@ end;
 
 procedure TGLPorterU.AddPort( const BinP_:GLuint; const Port_:TGLPortU );
 var
-   L :GLuint;
+   I :GLuint;
 begin
      with _Progra do
      begin
-          L := glGetBlocLoca( Port_.Name );
+          I := GetProgramResourceIndex( GL_UNIFORM_BLOCK, Port_.Name );
 
-          glUniformBlockBinding( ID, L, BinP_ );
+          glUniformBlockBinding( ID, I, BinP_ );
      end;
 end;
 
@@ -488,7 +488,7 @@ var
 begin
      with _Progra do
      begin
-          L := glGetUnifLoca( Port_.Name );
+          L := GetProgramResourceLocation( GL_UNIFORM, Port_.Name );
 
           glProgramUniform1i( ID, L, BinP_ );
      end;
@@ -525,13 +525,13 @@ end;
 
 procedure TGLPorterS.AddPort( const BinP_:GLuint; const Port_:TGLPortS );
 var
-   L :GLuint;
+   I :GLuint;
 begin
      with _Progra do
      begin
-          L := GetProgramResourceIndex( GL_SHADER_STORAGE_BLOCK, Port_.Name );
+          I := GetProgramResourceIndex( GL_SHADER_STORAGE_BLOCK, Port_.Name );
 
-          glShaderStorageBlockBinding( ID, L, BinP_ );
+          glShaderStorageBlockBinding( ID, I, BinP_ );
      end;
 end;
 

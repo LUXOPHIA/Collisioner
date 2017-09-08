@@ -92,10 +92,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// イベント
        property OnLinked :TProc read GetOnLinked write SetOnLinked;
        ///// メソッド
-       function glGetVertLoca( const Name_:String ) :GLuint;
-       function glGetBlocLoca( const Name_:String ) :GLuint;
-       function glGetUnifLoca( const Name_:String ) :GLuint;
-	   function GetProgramResourceIndex( const Kind_:GLenum; const Name_:String ) :GLuint;
+       function GetAttribLocation( const Name_:String ) :GLuint;
+       function GetUniformLocation( const Name_:String ) :GLuint;
+       function GetProgramResourceLocation( const Kind_:GLenum; const Name_:String ) :GLuint;
+       function GetUniformBlockIndex( const Name_:String ) :GLuint;
+       function GetProgramResourceIndex( const Kind_:GLenum; const Name_:String ) :GLuint;
+       procedure BindFragDataLocation( const BinP_:GLuint; const Name_:String );
        procedure Attach( const Shader_:IGLShader );
        procedure Detach( const Shader_:IGLShader );
        procedure Link;

@@ -57,10 +57,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// イベント
        property OnLinked :TProc read GetOnLinked write SetOnLinked;
        ///// メソッド
-       function glGetVertLoca( const Name_:String ) :GLuint;
-       function glGetBlocLoca( const Name_:String ) :GLuint;
-       function glGetUnifLoca( const Name_:String ) :GLuint;
-	   function GetProgramResourceIndex( const Kind_:GLenum; const Name_:String ) :GLuint;
+       function GetAttribLocation( const Name_:String ) :GLuint;
+       function GetUniformLocation( const Name_:String ) :GLuint;
+       function GetProgramResourceLocation( const Kind_:GLenum; const Name_:String ) :GLuint;
+       function GetUniformBlockIndex( const Name_:String ) :GLuint;
+       function GetProgramResourceIndex( const Kind_:GLenum; const Name_:String ) :GLuint;
        procedure BindFragDataLocation( const BinP_:GLuint; const Name_:String );
        procedure Attach( const Shader_:IGLShader ); virtual;
        procedure Detach( const Shader_:IGLShader ); virtual;
@@ -178,25 +179,34 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function TGLProgra.glGetVertLoca( const Name_:String ) :GLuint;
+function TGLProgra.GetAttribLocation( const Name_:String ) :GLuint;
 begin
      Result := glGetAttribLocation( _ID, PAnsiChar( AnsiString( Name_ ) ) );
 end;
 
-function TGLProgra.glGetBlocLoca( const Name_:String ) :GLuint;
-begin
-     Result := glGetUniformBlockIndex( _ID, PAnsiChar( AnsiString( Name_ ) ) );
-end;
-
-function TGLProgra.glGetUnifLoca( const Name_:String ) :GLuint;
+function TGLProgra.GetUniformLocation( const Name_:String ) :GLuint;
 begin
      Result := glGetUniformLocation( _ID, PAnsiChar( AnsiString( Name_ ) ) );
+end;
+
+function TGLProgra.GetProgramResourceLocation( const Kind_:GLenum; const Name_:String ) :GLuint;
+begin
+     Result := glGetProgramResourceLocation( _ID, Kind_, PAnsiChar( AnsiString( Name_ ) ) );
+end;
+
+//------------------------------------------------------------------------------
+
+function TGLProgra.GetUniformBlockIndex( const Name_:String ) :GLuint;
+begin
+     Result := glGetUniformBlockIndex( _ID, PAnsiChar( AnsiString( Name_ ) ) );
 end;
 
 function TGLProgra.GetProgramResourceIndex( const Kind_:GLenum; const Name_:String ) :GLuint;
 begin
      Result := glGetProgramResourceIndex( _ID, Kind_, PAnsiChar( AnsiString( Name_ ) ) );
 end;
+
+//------------------------------------------------------------------------------
 
 procedure TGLProgra.BindFragDataLocation( const BinP_:GLuint; const Name_:String );
 begin
