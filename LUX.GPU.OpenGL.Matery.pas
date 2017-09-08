@@ -508,7 +508,10 @@ begin
 
                  Add( 'out vec4 _ResultCol;' );
 
-                 Add( 'void main(){ _ResultCol.rgb = _Ambient.rgb + ( 1 + normalize( _Sender.Nor.xyz ) ) / 2; }' );
+                 Add( 'void main()' );
+                 Add( '{' );
+                 Add( '  _ResultCol = vec4( _Ambient.rgb + ( 1 + normalize( _Sender.Nor.xyz ) ) / 2, 1 );' );
+                 Add( '}' );
 
                EndUpdate;
           end;
