@@ -55,6 +55,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const Name_:String );
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPortS
+
+     TGLPortS = record
+     private
+     public
+       Name :String;
+       /////
+       constructor Create( const Name_:String );
+     end;
+
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPorter<_TPort_>
@@ -140,6 +150,19 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Add( const BinP_:GLuint; const Name_:String );
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPorterS
+
+     TGLPorterS = class( TGLPorter<TGLPortS> )
+     private
+     protected
+       ///// メソッド
+       procedure AddPort( const BinP_:GLuint; const Port_:TGLPortS ); override;
+       procedure DelPort( const BinP_:GLuint; const Port_:TGLPortS ); override;
+     public
+       ///// メソッド
+       procedure Add( const BinP_:GLuint; const Name_:String );
+     end;
+
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
 
 //var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【変数】
@@ -191,6 +214,17 @@ end;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TGLPortI.Create( const Name_:String );
+begin
+     Name := Name_;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPortS
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLPortS.Create( const Name_:String );
 begin
      Name := Name_;
 end;
@@ -472,6 +506,47 @@ end;
 procedure TGLPorterI.Add( const BinP_:GLuint; const Name_:String );
 var
    P :TGLPortI;
+begin
+     with P do
+     begin
+          Name := Name_;
+     end;
+
+     inherited Add( BinP_, P );
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPorterS
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLPorterS.AddPort( const BinP_:GLuint; const Port_:TGLPortS );
+var
+   L :GLuint;
+begin
+     with _Progra do
+     begin
+          L := GetProgramResourceIndex( GL_SHADER_STORAGE_BLOCK, Port_.Name );
+
+          glShaderStorageBlockBinding( ID, L, BinP_ );
+     end;
+end;
+
+procedure TGLPorterS.DelPort( const BinP_:GLuint; const Port_:TGLPortS );
+begin
+
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLPorterS.Add( const BinP_:GLuint; const Name_:String );
+var
+   P :TGLPortS;
 begin
      with P do
      begin

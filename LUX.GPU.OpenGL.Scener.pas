@@ -407,7 +407,7 @@ begin
      _AbsoPose := TGLUnifor<TSingleM4>.Create( GL_DYNAMIC_DRAW );
      _AbsoPose.Count := 1;
 
-     RelaPose := TSingleM4.Identify;
+     RelaPose := TSingleM4.Identity;
 
      _Visible := True;
      _HitTest := False;
@@ -538,7 +538,7 @@ end;
 
 function TGLScener.GetRelaPose :TSingleM4;
 begin
-     Result := TSingleM4.Identify;
+     Result := TSingleM4.Identity;
 end;
 
 procedure TGLScener.SetRelaPose( const RelaPose_:TSingleM4 );
@@ -548,7 +548,7 @@ end;
 
 function TGLScener.GetAbsoPose :TSingleM4;
 begin
-     Result := TSingleM4.Identify;
+     Result := TSingleM4.Identity;
 end;
 
 procedure TGLScener.SetAbsoPose( const AbsoPose_:TSingleM4 );
