@@ -345,7 +345,7 @@ function CharsToStr( const Cs_:TArray<AnsiChar> ) :AnsiString;
 
 function FileToBytes( const FileName_:string ) :TBytes;
 
-function Comb( N_,K_:Integer ) :UInt64;
+function Comb( N_,K_:Cardinal ) :UInt64;
 
 implementation //############################################################### ■
 
@@ -1689,9 +1689,9 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Comb( N_,K_:Integer ) :UInt64;
+function Comb( N_,K_:Cardinal ) :UInt64;
 var
-   I :Integer;
+   I :Cardinal;
 begin
      if N_ < 2 * K_ then K_ := N_ - K_;
 
