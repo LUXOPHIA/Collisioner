@@ -470,7 +470,7 @@ var
 begin
      Result := False;
 
-     if BouBox.Sign = +1 then
+     if BouBox.Sign > 0 then
      begin
           Len_ := TSingleArea.PoMax;
 
