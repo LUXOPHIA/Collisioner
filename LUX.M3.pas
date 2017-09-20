@@ -204,6 +204,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
+function ArrowRot( const P0_,P1_:TSingle3D ) :TSingleM3; overload;
+function ArrowRot( const P0_,P1_:TDouble3D ) :TDoubleM3; overload;
+
 implementation //############################################################### ■
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
@@ -1358,6 +1361,60 @@ end;
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
+
+function ArrowRot( const P0_,P1_:TSingle3D ) :TSingleM3;
+var
+   AX, AY ,AZ, E :TSingle3D;
+begin
+     AZ := P0_.UnitorTo( P1_ );
+
+     with AZ do
+     begin
+          case MinI( Abs( X ), Abs( Y ) ,Abs( Z ) ) of
+            1: E := TSingle3D.Create( 1, 0, 0 );
+            2: E := TSingle3D.Create( 0, 1, 0 );
+            3: E := TSingle3D.Create( 0, 0, 1 );
+          end;
+     end;
+
+     AY := CrossProduct( AZ, E ).Unitor;
+
+     AX := CrossProduct( AY, AZ );
+
+     with Result do
+     begin
+          _11 := AX.X;  _12 := AY.X;  _13 := AZ.X;
+          _21 := AX.Y;  _22 := AY.Y;  _23 := AZ.Y;
+          _31 := AX.Z;  _32 := AY.Z;  _33 := AZ.Z;
+     end;
+end;
+
+function ArrowRot( const P0_,P1_:TDouble3D ) :TDoubleM3;
+var
+   AX, AY ,AZ, E :TDouble3D;
+begin
+     AZ := P0_.UnitorTo( P1_ );
+
+     with AZ do
+     begin
+          case MinI( Abs( X ), Abs( Y ) ,Abs( Z ) ) of
+            1: E := TDouble3D.Create( 1, 0, 0 );
+            2: E := TDouble3D.Create( 0, 1, 0 );
+            3: E := TDouble3D.Create( 0, 0, 1 );
+          end;
+     end;
+
+     AY := CrossProduct( AZ, E ).Unitor;
+
+     AX := CrossProduct( AY, AZ );
+
+     with Result do
+     begin
+          _11 := AX.X;  _12 := AY.X;  _13 := AZ.X;
+          _21 := AX.Y;  _22 := AY.Y;  _23 := AZ.Y;
+          _31 := AX.Z;  _32 := AY.Z;  _33 := AZ.Z;
+     end;
+end;
 
 //############################################################################## □
 
