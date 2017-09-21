@@ -7,10 +7,8 @@ uses System.Generics.Collections,
      LUX, LUX.D1, LUX.D2, LUX.D3, LUX.M4, LUX.Tree,
      LUX.GPU.OpenGL,
      LUX.GPU.OpenGL.Atom.Buffer,
-     LUX.GPU.OpenGL.Atom.Buffer.Verter,
-     LUX.GPU.OpenGL.Atom.Buffer.Elemer,
      LUX.GPU.OpenGL.Atom.Buffer.Unifor,
-     LUX.GPU.OpenGL.Matery;
+     LUX.GPU.OpenGL.Inform;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -19,43 +17,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      IGLShaper = interface;
      IGLScener = interface;
 
-     TGLInform = class;
      TGLObject = class;
      TGLScener = class;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLInform
-
-     TGLInform = class
-     private
-       ///// メソッド
-       procedure MakeModel;
-     protected
-       _BouBox  :TSingleArea3D;
-       _Matery  :TGLMateryColor;
-       _PosBuf  :TGLVerterS<TSingle3D>;
-       _EleBuf  :TGLElemerLine32;
-       _Visible :Boolean;
-       ///// アクセス
-       function GetBouBox :TSingleArea3D; virtual;
-       procedure SetBouBox( const BouBox_:TSingleArea3D ); virtual;
-       ///// メソッド
-       procedure BeginDraw; virtual;
-       procedure DrawMain; virtual;
-       procedure EndDraw; virtual;
-     public
-       constructor Create;
-       destructor Destroy; override;
-       ///// プロパティ
-       property BouBox  :TSingleArea3D  read GetBouBox  write SetBouBox ;
-       property Matery  :TGLMateryColor read   _Matery                  ;
-       property Visible :Boolean        read   _Visible write   _Visible;
-       ///// メソッド
-       procedure Draw;
-     end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLObject
 
@@ -77,7 +44,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property AbsoPose :TSingleM4     read GetAbsoPose write SetAbsoPose;
        property BouBox   :TSingleArea3D read GetBouBox   write SetBouBox  ;
        ///// メソッド
+       procedure BeginDraw;
+       procedure DrawMain;
+       procedure EndDraw;
        procedure Draw;
+       procedure CalcBouBox;
+       function HitBouBox( const AbsoRay_:TSingleRay3D; out Len_:TSingleArea ) :Boolean;
+       procedure HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLObject ); overload;
+       function HitRay( const AbsoRay_:TSingleRay3D ) :TGLObject; overload;
      end;
 
      //-------------------------------------------------------------------------
@@ -99,10 +73,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetAbsoPose( const AbsoPose_:TSingleM4 ); virtual;
        function GetBouBox :TSingleArea3D; virtual;
        procedure SetBouBox( const BouBox_:TSingleArea3D ); virtual;
-       ///// メソッド
-       procedure BeginDraw; virtual;
-       procedure DrawMain; virtual;
-       procedure EndDraw; virtual;
      public
        constructor Create; override;
        destructor Destroy; override;
@@ -116,6 +86,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Inform   :TGLInform     read   _Inform                    ;
        property BouBox   :TSingleArea3D read GetBouBox   write SetBouBox  ;
        ///// メソッド
+       procedure BeginDraw; virtual;
+       procedure DrawMain; virtual;
+       procedure EndDraw; virtual;
        procedure Draw; virtual;
        procedure CalcBouBox; virtual;
        function HitBouBox( const AbsoRay_:TSingleRay3D; out Len_:TSingleArea ) :Boolean;
@@ -160,10 +133,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetRelaPose( const RelaPose_:TSingleM4 ); override;
        function GetAbsoPose :TSingleM4; override;
        procedure SetAbsoPose( const AbsoPose_:TSingleM4 ); override;
-       ///// メソッド
-       procedure BeginDraw; override;
-       procedure DrawMain; override;
-       procedure EndDraw; override;
      public
        constructor Create; override;
        destructor Destroy; override;
@@ -171,6 +140,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property RelaPose :TSingleM4 read GetRelaPose;
        property AbsoPose :TSingleM4 read GetAbsoPose;
        ///// メソッド
+       procedure BeginDraw; override;
+       procedure DrawMain; override;
+       procedure EndDraw; override;
        procedure HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLObject ); override;
      end;
 
@@ -189,125 +161,6 @@ uses System.SysUtils, System.Classes,
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLInform
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-procedure TGLInform.MakeModel;
-begin
-     with _BouBox do
-     begin
-          if ( Min.X < Max.X ) and ( Min.Y < Max.Y ) and ( Min.Z < Max.Z ) then
-          begin
-               _PosBuf[ 0 ] := TSingle3D.Create( Min.X, Min.Y, Min.Z );
-               _PosBuf[ 1 ] := TSingle3D.Create( Max.X, Min.Y, Min.Z );
-               _PosBuf[ 2 ] := TSingle3D.Create( Min.X, Max.Y, Min.Z );
-               _PosBuf[ 3 ] := TSingle3D.Create( Max.X, Max.Y, Min.Z );
-               _PosBuf[ 4 ] := TSingle3D.Create( Min.X, Min.Y, Max.Z );
-               _PosBuf[ 5 ] := TSingle3D.Create( Max.X, Min.Y, Max.Z );
-               _PosBuf[ 6 ] := TSingle3D.Create( Min.X, Max.Y, Max.Z );
-               _PosBuf[ 7 ] := TSingle3D.Create( Max.X, Max.Y, Max.Z );
-          end;
-     end;
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-/////////////////////////////////////////////////////////////////////// アクセス
-
-function TGLInform.GetBouBox :TSingleArea3D;
-begin
-     Result := _BouBox;
-end;
-
-procedure TGLInform.SetBouBox( const BouBox_:TSingleArea3D );
-begin
-     _BouBox := BouBox_;  MakeModel;
-end;
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-procedure TGLInform.BeginDraw;
-begin
-     _Matery.Use;
-
-     glLineWidth( 1 );
-
-     _PosBuf.Use( 0{BinP} );
-end;
-
-procedure TGLInform.DrawMain;
-begin
-     _EleBuf.Draw;
-end;
-
-procedure TGLInform.EndDraw;
-begin
-     _PosBuf.Unuse( 0{BinP} );
-
-     _Matery.Unuse;
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TGLInform.Create;
-begin
-     inherited;
-
-     _Matery := TGLMateryColor.Create;
-
-     _PosBuf := TGLVerterS<TSingle3D>.Create( GL_STATIC_DRAW );
-     _EleBuf := TGLElemerLine32      .Create( GL_STATIC_DRAW );
-
-     _PosBuf.Count :=  8;
-     _EleBuf.Count := 12;
-
-     _EleBuf[ 00 ] := TCardinal2D.Create( 0, 1 );
-     _EleBuf[ 01 ] := TCardinal2D.Create( 0, 2 );
-     _EleBuf[ 02 ] := TCardinal2D.Create( 0, 4 );
-
-     _EleBuf[ 03 ] := TCardinal2D.Create( 1, 3 );
-     _EleBuf[ 04 ] := TCardinal2D.Create( 2, 6 );
-     _EleBuf[ 05 ] := TCardinal2D.Create( 4, 5 );
-
-     _EleBuf[ 06 ] := TCardinal2D.Create( 7, 6 );
-     _EleBuf[ 07 ] := TCardinal2D.Create( 7, 5 );
-     _EleBuf[ 08 ] := TCardinal2D.Create( 7, 3 );
-
-     _EleBuf[ 09 ] := TCardinal2D.Create( 6, 4 );
-     _EleBuf[ 10 ] := TCardinal2D.Create( 5, 1 );
-     _EleBuf[ 11 ] := TCardinal2D.Create( 3, 2 );
-
-     _Visible := True;
-
-     MakeModel;
-end;
-
-destructor TGLInform.Destroy;
-begin
-     _PosBuf.DisposeOf;
-
-     _Matery.DisposeOf;
-
-     inherited;
-end;
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-procedure TGLInform.Draw;
-begin
-     if _Visible then
-     begin
-          BeginDraw;
-
-            DrawMain;
-
-          EndDraw;
-     end;
-end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLObject
 
@@ -375,27 +228,6 @@ begin
      _Inform.BouBox := BouBox_;
 end;
 
-/////////////////////////////////////////////////////////////////////// メソッド
-
-procedure TGLObject.BeginDraw;
-begin
-     CalAbsoPose;
-
-     _AbsoPose.Use( 3{BinP} );
-end;
-
-procedure TGLObject.DrawMain;
-begin
-
-end;
-
-procedure TGLObject.EndDraw;
-begin
-     _Inform.Draw;
-
-     _AbsoPose.Unuse( 3{BinP} );
-end;
-
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TGLObject.Create;
@@ -423,6 +255,25 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLObject.BeginDraw;
+begin
+     CalAbsoPose;
+
+     _AbsoPose.Use( 3{BinP} );
+end;
+
+procedure TGLObject.DrawMain;
+begin
+
+end;
+
+procedure TGLObject.EndDraw;
+begin
+     _Inform.Draw;
+
+     _AbsoPose.Unuse( 3{BinP} );
+end;
 
 procedure TGLObject.Draw;
 var
@@ -556,6 +407,20 @@ begin
 
 end;
 
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLScener.Create;
+begin
+     inherited;
+
+end;
+
+destructor TGLScener.Destroy;
+begin
+
+     inherited;
+end;
+
 /////////////////////////////////////////////////////////////////////// メソッド
 
 procedure TGLScener.BeginDraw;
@@ -572,22 +437,6 @@ procedure TGLScener.EndDraw;
 begin
 
 end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TGLScener.Create;
-begin
-     inherited;
-
-end;
-
-destructor TGLScener.Destroy;
-begin
-
-     inherited;
-end;
-
-/////////////////////////////////////////////////////////////////////// メソッド
 
 procedure TGLScener.HitRay( const AbsoRay_:TSingleRay3D; var Len_:Single; var Obj_:TGLObject );
 var
