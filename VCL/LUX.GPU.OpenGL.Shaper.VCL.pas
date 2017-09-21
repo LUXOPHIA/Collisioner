@@ -13,6 +13,7 @@ uses System.UITypes, System.Classes,
      LUX.GPU.OpenGL.Scener,
      LUX.GPU.OpenGL.Matery,
      LUX.GPU.OpenGL.Matery.VCL,
+     LUX.GPU.OpenGL.Matery.Preset,
      LUX.GPU.OpenGL.Shaper;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
