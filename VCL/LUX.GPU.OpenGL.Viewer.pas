@@ -7,7 +7,7 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   LUX, LUX.D3, LUX.D4, LUX.M4,
   LUX.GPU.OpenGL,
-  LUX.GPU.OpenGL.VCL,
+  LUX.GPU.OpenGL.Window,
   LUX.GPU.OpenGL.Atom.Buffer.Unifor,
   LUX.GPU.OpenGL.Scener,
   LUX.GPU.OpenGL.Camera;
