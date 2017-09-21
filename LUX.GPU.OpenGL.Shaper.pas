@@ -29,14 +29,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        _Matery :IGLMatery;
-       ///// メソッド
-       procedure BeginDraw; override;
-       procedure EndDraw; override;
      public
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
        property Matery :IGLMatery read _Matery write _Matery;
+       ///// メソッド
+       procedure BeginDraw; override;
+       procedure EndDraw; override;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperPoin
@@ -47,10 +47,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _PosBuf :TGLVerterS<TSingle3D>;
        _NorBuf :TGLVerterS<TSingle3D>;
        _TexBuf :TGLVerterS<TSingle2D>;
-       ///// メソッド
-       procedure BeginDraw; override;
-       procedure DrawMain; override;
-       procedure EndDraw; override;
      public
        constructor Create; override;
        destructor Destroy; override;
@@ -59,6 +55,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property NorBuf :TGLVerterS<TSingle3D> read _NorBuf;
        property TexBuf :TGLVerterS<TSingle2D> read _TexBuf;
        ///// メソッド
+       procedure BeginDraw; override;
+       procedure DrawMain; override;
+       procedure EndDraw; override;
        procedure CalcBouBox; override;
        procedure LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>; const DivU_,DivV_:Integer ); virtual;
        procedure LoadFromFileSTL( const FileName_:String );
@@ -72,10 +71,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _EleBuf :TGLElemerLine32;
        _LineW  :Single;
-       ///// メソッド
-       procedure BeginDraw; override;
-       procedure DrawMain; override;
-       procedure EndDraw; override;
      public
        constructor Create; override;
        destructor Destroy; override;
@@ -83,6 +78,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property EleBuf :TGLElemerLine32 read _EleBuf             ;
        property LineW  :Single          read _LineW  write _LineW;
        ///// メソッド
+       procedure BeginDraw; override;
+       procedure DrawMain; override;
+       procedure EndDraw; override;
        procedure LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>; const DivU_,DivV_:Integer ); override;
        procedure LoadFromFileSTL( const FileName_:String );
        procedure LoadFromFileOBJ( const FileName_:String );
@@ -94,14 +92,13 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        _EleBuf :TGLElemerFace32;
-       ///// メソッド
-       procedure DrawMain; override;
      public
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
        property EleBuf :TGLElemerFace32 read _EleBuf;
        ///// メソッド
+       procedure DrawMain; override;
        procedure LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>; const DivU_,DivV_:Integer ); override;
        procedure LoadFromFileSTL( const FileName_:String );
        procedure LoadFromFileOBJ( const FileName_:String );
@@ -127,6 +124,21 @@ uses System.SysUtils, System.Classes, System.RegularExpressions, System.Generics
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLShaper.Create;
+begin
+     inherited;
+
+     _HitTest := True;
+end;
+
+destructor TGLShaper.Destroy;
+begin
+
+     inherited;
+end;
+
 /////////////////////////////////////////////////////////////////////// メソッド
 
 procedure TGLShaper.BeginDraw;
@@ -143,26 +155,31 @@ begin
      inherited;
 end;
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TGLShaper.Create;
-begin
-     inherited;
-
-     _HitTest := True;
-end;
-
-destructor TGLShaper.Destroy;
-begin
-
-     inherited;
-end;
-
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperPoin
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLShaperPoin.Create;
+begin
+     inherited;
+
+     _PosBuf := TGLVerterS<TSingle3D>.Create( GL_STATIC_DRAW );
+     _NorBuf := TGLVerterS<TSingle3D>.Create( GL_STATIC_DRAW );
+     _TexBuf := TGLVerterS<TSingle2D>.Create( GL_STATIC_DRAW );
+end;
+
+destructor TGLShaperPoin.Destroy;
+begin
+     _PosBuf.DisposeOf;
+     _NorBuf.DisposeOf;
+     _TexBuf.DisposeOf;
+
+     inherited;
+end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
@@ -189,27 +206,7 @@ begin
      inherited;
 end;
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TGLShaperPoin.Create;
-begin
-     inherited;
-
-     _PosBuf := TGLVerterS<TSingle3D>.Create( GL_STATIC_DRAW );
-     _NorBuf := TGLVerterS<TSingle3D>.Create( GL_STATIC_DRAW );
-     _TexBuf := TGLVerterS<TSingle2D>.Create( GL_STATIC_DRAW );
-end;
-
-destructor TGLShaperPoin.Destroy;
-begin
-     _PosBuf.DisposeOf;
-     _NorBuf.DisposeOf;
-     _TexBuf.DisposeOf;
-
-     inherited;
-end;
-
-/////////////////////////////////////////////////////////////////////// メソッド
+//------------------------------------------------------------------------------
 
 procedure TGLShaperPoin.CalcBouBox;
 var
@@ -527,6 +524,24 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLShaperLine.Create;
+begin
+     inherited;
+
+     _EleBuf := TGLElemerLine32.Create( GL_STATIC_DRAW );
+
+     _LineW := 1;
+end;
+
+destructor TGLShaperLine.Destroy;
+begin
+     _EleBuf.DisposeOf;
+
+     inherited;
+end;
+
 /////////////////////////////////////////////////////////////////////// メソッド
 
 procedure TGLShaperLine.BeginDraw;
@@ -547,25 +562,7 @@ begin
      inherited;
 end;
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TGLShaperLine.Create;
-begin
-     inherited;
-
-     _EleBuf := TGLElemerLine32.Create( GL_STATIC_DRAW );
-
-     _LineW := 1;
-end;
-
-destructor TGLShaperLine.Destroy;
-begin
-     _EleBuf.DisposeOf;
-
-     inherited;
-end;
-
-/////////////////////////////////////////////////////////////////////// メソッド
+//------------------------------------------------------------------------------
 
 procedure TGLShaperLine.LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>; const DivU_,DivV_:Integer );
 //··································
@@ -861,13 +858,6 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
-/////////////////////////////////////////////////////////////////////// メソッド
-
-procedure TGLShaperFace.DrawMain;
-begin
-     _EleBuf.Draw;
-end;
-
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TGLShaperFace.Create;
@@ -885,6 +875,13 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLShaperFace.DrawMain;
+begin
+     _EleBuf.Draw;
+end;
+
+//------------------------------------------------------------------------------
 
 procedure TGLShaperFace.LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle3D>; const DivU_,DivV_:Integer );
 //··································
