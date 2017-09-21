@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Matery.VCL;
+﻿unit LUX.GPU.OpenGL.Matery.Imager.Preset;
 
 interface //#################################################################### ■
 
