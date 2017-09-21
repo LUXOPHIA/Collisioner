@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Atom.Imager.FMX;
+﻿unit LUX.GPU.OpenGL.Atom.Imager.Preset;
 
 interface //#################################################################### ■
 
