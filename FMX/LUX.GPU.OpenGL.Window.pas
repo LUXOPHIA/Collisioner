@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.FMX;
+﻿unit LUX.GPU.OpenGL.Window;
 
 interface //#################################################################### ■
 
