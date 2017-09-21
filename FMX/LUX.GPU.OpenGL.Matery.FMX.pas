@@ -34,7 +34,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLMateryImag = class( TGLMatery, IGLMateryImag )
+     TGLMateryImag = class( TGLMateryNorTex, IGLMateryImag )
      private
      protected
        _Sample :TGLSample;
@@ -55,7 +55,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryImagG
 
-     TGLMateryImagG = class( TGLMateryG, IGLMateryImag )
+     TGLMateryImagG = class( TGLMateryNorTexG, IGLMateryImag )
      private
      protected
        _Sample :TGLSample;
@@ -110,8 +110,16 @@ constructor TGLMateryImag.Create;
 begin
      inherited;
 
-     _Sample  := TGLSample       .Create;
-     _Imager  := TGLImager2D_RGBA.Create;
+     with _Engine do
+     begin
+          with Imagers do
+          begin
+               Add( 0{BinP}, '_Imager'{Name} );
+          end;
+     end;
+
+     _Sample := TGLSample       .Create;
+     _Imager := TGLImager2D_RGBA.Create;
 end;
 
 destructor TGLMateryImag.Destroy;
@@ -164,8 +172,16 @@ constructor TGLMateryImagG.Create;
 begin
      inherited;
 
-     _Sample  := TGLSample       .Create;
-     _Imager  := TGLImager2D_RGBA.Create;
+     with _Engine do
+     begin
+          with Imagers do
+          begin
+               Add( 0{BinP}, '_Imager'{Name} );
+          end;
+     end;
+
+     _Sample := TGLSample       .Create;
+     _Imager := TGLImager2D_RGBA.Create;
 end;
 
 destructor TGLMateryImagG.Destroy;
