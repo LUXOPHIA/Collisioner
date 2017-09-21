@@ -34,7 +34,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLMateryImag = class( TGLMatery, IGLMateryImag )
+     TGLMateryImag = class( TGLMateryNorTex, IGLMateryImag )
      private
      protected
        _Sample :TGLSample;
@@ -55,7 +55,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryImagG
 
-     TGLMateryImagG = class( TGLMateryG, IGLMateryImag )
+     TGLMateryImagG = class( TGLMateryNorTexG, IGLMateryImag )
      private
      protected
        _Sample :TGLSample;
