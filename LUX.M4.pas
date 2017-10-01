@@ -75,8 +75,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function Transpose :TSingleM4;
        function Inverse :TSingleM4;
        ///// 定数
-       class function Translate( const X_,Y_,Z_:Single ) :TSingleM4; static;
-       class function Scale( const X_,Y_,Z_:Single ) :TSingleM4; static;
+       class function Translate( const X_,Y_,Z_:Single ) :TSingleM4; overload; static;
+       class function Translate( const T_:TSingle3D ) :TSingleM4; overload; static;
+       class function Scale( const X_,Y_,Z_:Single ) :TSingleM4; overload; static;
+       class function Scale( const S_:TSingle3D ) :TSingleM4; overload; static;
        class function RotateX( const T_:Single ) :TSingleM4; static;
        class function RotateY( const T_:Single ) :TSingleM4; static;
        class function RotateZ( const T_:Single ) :TSingleM4; static;
@@ -142,8 +144,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function Transpose :TDoubleM4;
        function Inverse :TDoubleM4;
        ///// 定数
-       class function Translate( const X_,Y_,Z_:Double ) :TDoubleM4; static;
-       class function Scale( const X_,Y_,Z_:Double ) :TDoubleM4; static;
+       class function Translate( const X_,Y_,Z_:Double ) :TDoubleM4; overload; static;
+       class function Translate( const T_:TDouble3D ) :TDoubleM4; overload; static;
+       class function Scale( const X_,Y_,Z_:Double ) :TDoubleM4; overload; static;
+       class function Scale( const S_:TDouble3D ) :TDoubleM4; overload; static;
        class function RotateX( const T_:Double ) :TDoubleM4; static;
        class function RotateY( const T_:Double ) :TDoubleM4; static;
        class function RotateZ( const T_:Double ) :TDoubleM4; static;
@@ -206,8 +210,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function Transpose :TdSingleM4;
        function Inverse :TdSingleM4;
        ///// 定数
-       class function Translate( const X_,Y_,Z_:TdSingle ) :TdSingleM4; static;
-       class function Scale( const X_,Y_,Z_:TdSingle ) :TdSingleM4; static;
+       class function Translate( const X_,Y_,Z_:TdSingle ) :TdSingleM4; overload; static;
+       class function Translate( const T_:TdSingle3D ) :TdSingleM4; overload; static;
+       class function Scale( const X_,Y_,Z_:TdSingle ) :TdSingleM4; overload; static;
+       class function Scale( const S_:TdSingle3D ) :TdSingleM4; overload; static;
        class function RotateX( const T_:TdSingle ) :TdSingleM4; static;
        class function RotateY( const T_:TdSingle ) :TdSingleM4; static;
        class function RotateZ( const T_:TdSingle ) :TdSingleM4; static;
@@ -270,8 +276,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function Transpose :TdDoubleM4;
        function Inverse :TdDoubleM4;
        ///// 定数
-       class function Translate( const X_,Y_,Z_:TdDouble ) :TdDoubleM4; static;
-       class function Scale( const X_,Y_,Z_:TdDouble ) :TdDoubleM4; static;
+       class function Translate( const X_,Y_,Z_:TdDouble ) :TdDoubleM4; overload; static;
+       class function Translate( const T_:TdDouble3D ) :TdDoubleM4; overload; static;
+       class function Scale( const X_,Y_,Z_:TdDouble ) :TdDoubleM4; overload; static;
+       class function Scale( const S_:TdDouble3D ) :TdDoubleM4; overload; static;
        class function RotateX( const T_:TdDouble ) :TdDoubleM4; static;
        class function RotateY( const T_:TdDouble ) :TdDoubleM4; static;
        class function RotateZ( const T_:TdDouble ) :TdDoubleM4; static;
@@ -322,6 +330,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 function Tensor( const T_:TSingle2D; const Func_:TConstFunc<TdSingle2D,TdSingle3D> ) :TSingleM4; overload;
 function Tensor( const T_:TDouble2D; const Func_:TConstFunc<TdDouble2D,TdDouble3D> ) :TDoubleM4; overload;
+
+function ArrowPose( const P0_,P1_:TSingle3D ) :TSingleM4; overload;
+function ArrowPose( const P0_,P1_:TDouble3D ) :TDoubleM4; overload;
 
 implementation //############################################################### ■
 
@@ -718,6 +729,8 @@ begin
                                       {41} {42} {43} {44} ).Det;
 end;
 
+//------------------------------------------------------------------------------
+
 function TSingleM4.Transpose :TSingleM4;
 begin
      Result._11 := _11;  Result._12 := _21;  Result._13 := _31;  Result._14 := _41;
@@ -725,6 +738,8 @@ begin
      Result._31 := _13;  Result._32 := _23;  Result._33 := _33;  Result._34 := _43;
      Result._41 := _14;  Result._42 := _24;  Result._43 := _34;  Result._44 := _44;
 end;
+
+//------------------------------------------------------------------------------
 
 function TSingleM4.Inverse :TSingleM4;
 var
@@ -738,6 +753,8 @@ begin
                    + _14 * A._41 )
 end;
 
+/////////////////////////////////////////////////////////////////////////// 定数
+
 class function TSingleM4.Translate( const X_,Y_,Z_:Single ) :TSingleM4;
 begin
      with Result do
@@ -749,6 +766,13 @@ begin
      end
 end;
 
+class function TSingleM4.Translate( const T_:TSingle3D ) :TSingleM4;
+begin
+     with T_ do Result := Translate( X, Y, Z );
+end;
+
+//------------------------------------------------------------------------------
+
 class function TSingleM4.Scale( const X_,Y_,Z_:Single ) :TSingleM4;
 begin
      with Result do
@@ -759,6 +783,13 @@ begin
           _41 := 0;   _42 := 0;   _43 := 0;   _44 := 1;
      end
 end;
+
+class function TSingleM4.Scale( const S_:TSingle3D ) :TSingleM4;
+begin
+     with S_ do Result := Scale( X, Y, Z );
+end;
+
+//------------------------------------------------------------------------------
 
 class function TSingleM4.RotateX( const T_:Single ) :TSingleM4;
 var
@@ -804,6 +835,8 @@ begin
           _41 :=  0;  _42 :=  0;  _43 :=  0;  _44 :=  1;
      end
 end;
+
+//------------------------------------------------------------------------------
 
 class function TSingleM4.Identity :TSingleM4;
 begin
@@ -1276,6 +1309,13 @@ begin
      end
 end;
 
+class function TDoubleM4.Translate( const T_:TDouble3D ) :TDoubleM4;
+begin
+     with T_ do Result := Translate( X, Y, Z );
+end;
+
+//------------------------------------------------------------------------------
+
 class function TDoubleM4.Scale( const X_,Y_,Z_:Double ) :TDoubleM4;
 begin
      with Result do
@@ -1286,6 +1326,13 @@ begin
           _41 := 0;   _42 := 0;   _43 := 0;   _44 := 1;
      end
 end;
+
+class function TDoubleM4.Scale( const S_:TDouble3D ) :TDoubleM4;
+begin
+     with S_ do Result := Scale( X, Y, Z );
+end;
+
+//------------------------------------------------------------------------------
 
 class function TDoubleM4.RotateX( const T_:Double ) :TDoubleM4;
 var
@@ -1331,6 +1378,8 @@ begin
           _41 :=  0;  _42 :=  0;  _43 :=  0;  _44 :=  1;
      end
 end;
+
+//------------------------------------------------------------------------------
 
 class function TDoubleM4.Identity :TDoubleM4;
 begin
@@ -1759,6 +1808,8 @@ begin
                    + _14 * A._41 )
 end;
 
+/////////////////////////////////////////////////////////////////////////// 定数
+
 class function TdSingleM4.Translate( const X_,Y_,Z_:TdSingle ) :TdSingleM4;
 begin
      with Result do
@@ -1770,6 +1821,13 @@ begin
      end
 end;
 
+class function TdSingleM4.Translate( const T_:TdSingle3D ) :TdSingleM4;
+begin
+     with T_ do Result := Translate( X, Y, Z );
+end;
+
+//------------------------------------------------------------------------------
+
 class function TdSingleM4.Scale( const X_,Y_,Z_:TdSingle ) :TdSingleM4;
 begin
      with Result do
@@ -1780,6 +1838,13 @@ begin
           _41 := 0;   _42 := 0;   _43 := 0;   _44 := 1;
      end
 end;
+
+class function TdSingleM4.Scale( const S_:TdSingle3D ) :TdSingleM4;
+begin
+     with S_ do Result := Scale( X, Y, Z );
+end;
+
+//------------------------------------------------------------------------------
 
 class function TdSingleM4.RotateX( const T_:TdSingle ) :TdSingleM4;
 var
@@ -1825,6 +1890,8 @@ begin
           _41 :=  0;  _42 :=  0;  _43 :=  0;  _44 :=  1;
      end
 end;
+
+//------------------------------------------------------------------------------
 
 class function TdSingleM4.Identity :TdSingleM4;
 begin
@@ -2252,6 +2319,13 @@ begin
      end
 end;
 
+class function TdDoubleM4.Translate( const T_:TdDouble3D ) :TdDoubleM4;
+begin
+     with T_ do Result := Translate( X, Y, Z );
+end;
+
+//------------------------------------------------------------------------------
+
 class function TdDoubleM4.Scale( const X_,Y_,Z_:TdDouble ) :TdDoubleM4;
 begin
      with Result do
@@ -2262,6 +2336,13 @@ begin
           _41 := 0;   _42 := 0;   _43 := 0;   _44 := 1;
      end
 end;
+
+class function TdDoubleM4.Scale( const S_:TdDouble3D ) :TdDoubleM4;
+begin
+     with S_ do Result := Scale( X, Y, Z );
+end;
+
+//------------------------------------------------------------------------------
 
 class function TdDoubleM4.RotateX( const T_:TdDouble ) :TdDoubleM4;
 var
@@ -2307,6 +2388,8 @@ begin
           _41 :=  0;  _42 :=  0;  _43 :=  0;  _44 :=  1;
      end
 end;
+
+//------------------------------------------------------------------------------
 
 class function TdDoubleM4.Identity :TdDoubleM4;
 begin
@@ -2483,6 +2566,22 @@ begin
           AxisY := FY.d;
           AxisZ := CrossProduct( FX.d, FY.d );
      end;
+end;
+
+//------------------------------------------------------------------------------
+
+function ArrowPose( const P0_,P1_:TSingle3D ) :TSingleM4;
+begin
+     Result := ArrowRot( P0_, P1_ );
+
+     Result.AxisP := ( P1_ + P0_ ) / 2;
+end;
+
+function ArrowPose( const P0_,P1_:TDouble3D ) :TDoubleM4;
+begin
+     Result := ArrowRot( P0_, P1_ );
+
+     Result.AxisP := ( P1_ + P0_ ) / 2;
 end;
 
 //############################################################################## □

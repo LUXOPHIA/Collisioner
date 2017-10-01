@@ -326,7 +326,7 @@ function MaxI( const Vs_:array of Double ) :Integer; overload;
 function RealMod( const X_,Range_:Integer ) :Integer; overload;
 function RealMod( const X_,Range_:Int64 ) :Int64; overload;
 
-{$IF Defined( MACOS ) and Defined( MSWINDOWS ) }
+{$IF Defined( MACOS ) or Defined( MSWINDOWS ) }
 function RevBytes( const Value_:Word ) :Word; overload;
 function RevBytes( const Value_:Smallint ) :Smallint; overload;
 
@@ -339,7 +339,7 @@ function RevBytes( const Value_:Int64 ) :Int64; overload;
 function RevBytes( const Value_:Double ) :Double; overload;
 {$ENDIF}
 
-{$IF Defined( MACOS ) and Defined( MSWINDOWS ) }
+{$IF Defined( MACOS ) or Defined( MSWINDOWS ) }
 function CharsToStr( const Cs_:TArray<AnsiChar> ) :AnsiString;
 {$ENDIF}
 
@@ -1566,7 +1566,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IF Defined( MACOS ) and Defined( MSWINDOWS ) }
+{$IF Defined( MACOS ) or Defined( MSWINDOWS ) }
 
 function RevBytes( const Value_:Word ) :Word;
 asm
@@ -1656,7 +1656,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IF Defined( MACOS ) and Defined( MSWINDOWS ) }
+{$IF Defined( MACOS ) or Defined( MSWINDOWS ) }
 
 function CharsToStr( const Cs_:TArray<AnsiChar> ) :AnsiString;
 var
