@@ -326,7 +326,7 @@ function MaxI( const Vs_:array of Double ) :Integer; overload;
 function RealMod( const X_,Range_:Integer ) :Integer; overload;
 function RealMod( const X_,Range_:Int64 ) :Int64; overload;
 
-{$IF Defined( MACOS ) and Defined( MSWINDOWS ) }
+{$IF Defined( MACOS ) or Defined( MSWINDOWS ) }
 function RevBytes( const Value_:Word ) :Word; overload;
 function RevBytes( const Value_:Smallint ) :Smallint; overload;
 
@@ -339,13 +339,18 @@ function RevBytes( const Value_:Int64 ) :Int64; overload;
 function RevBytes( const Value_:Double ) :Double; overload;
 {$ENDIF}
 
-{$IF Defined( MACOS ) and Defined( MSWINDOWS ) }
+{$IF Defined( MACOS ) or Defined( MSWINDOWS ) }
 function CharsToStr( const Cs_:TArray<AnsiChar> ) :AnsiString;
 {$ENDIF}
 
 function FileToBytes( const FileName_:string ) :TBytes;
 
 function Comb( N_,K_:Cardinal ) :UInt64;
+
+function BinPowN( const N_:Integer ) :Integer; overload;
+function BinPowN( const N_:Cardinal ) :Cardinal; overload;
+function BinPowN( const N_:Int64 ) :Int64; overload;
+function BinPowN( const N_:UInt64 ) :UInt64; overload;
 
 implementation //############################################################### ■
 
@@ -1561,7 +1566,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IF Defined( MACOS ) and Defined( MSWINDOWS ) }
+{$IF Defined( MACOS ) or Defined( MSWINDOWS ) }
 
 function RevBytes( const Value_:Word ) :Word;
 asm
@@ -1651,7 +1656,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IF Defined( MACOS ) and Defined( MSWINDOWS ) }
+{$IF Defined( MACOS ) or Defined( MSWINDOWS ) }
 
 function CharsToStr( const Cs_:TArray<AnsiChar> ) :AnsiString;
 var
@@ -1703,6 +1708,28 @@ begin
 
           Result := Result * N_ div I;  Dec( N_ );
      end;
+end;
+
+//------------------------------------------------------------------------------
+
+function BinPowN( const N_:Integer ) :Integer;
+begin
+     Result := 1 shl N_;
+end;
+
+function BinPowN( const N_:Cardinal ) :Cardinal;
+begin
+     Result := 1 shl N_;
+end;
+
+function BinPowN( const N_:Int64 ) :Int64;
+begin
+     Result := 1 shl N_;
+end;
+
+function BinPowN( const N_:UInt64 ) :UInt64;
+begin
+     Result := 1 shl N_;
 end;
 
 //############################################################################## □

@@ -2,7 +2,8 @@
 
 interface //#################################################################### ■
 
-uses LUX;
+uses System.SysUtils,
+     LUX;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -55,6 +56,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetItemsX( const ItemsX_:Integer );
        function GetMargsX :Integer;
        procedure SetMargsX( const MargsX_:Integer );
+     public
+       ///// イベント
+       _OnChange :TProc;
      public
        constructor Create; overload;
        constructor Create( const ItemsX_:Integer ); overload;
@@ -208,6 +212,8 @@ begin
      _TotalX := _MargsX + _ItemsX + _MargsX;
 
      SetLength( _Items, _TotalX );
+
+     _OnChange;
 end;
 
 function TArray1D<_TItem_>.XtoI( const X_:Integer ) :Integer;
@@ -271,6 +277,8 @@ end;
 constructor TArray1D<_TItem_>.Create( const ItemsX_,MargsX_:Integer );
 begin
      inherited Create;
+
+     _OnChange := procedure begin end;
 
      _ItemsX := ItemsX_;
      _MargsX := MargsX_;
