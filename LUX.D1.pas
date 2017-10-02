@@ -302,6 +302,9 @@ function Min( const A_,B_,C_:TdSingle ) :TdSingle; overload;
 function Max( const A_,B_,C_:TdSingle ) :TdSingle; overload;
 function Max( const A_,B_,C_:TdDouble ) :TdDouble; overload;
 
+function Gauss( const X_,SD_:Single ) :Single; overload;
+function Gauss( const X_,SD_:Double ) :Double; overload;
+
 implementation //############################################################### ■
 
 uses System.SysUtils, System.Math;
@@ -1367,6 +1370,26 @@ begin
           if B_ >= C_ then Result := B_
                       else Result := C_;
      end;
+end;
+
+//------------------------------------------------------------------------------
+
+function Gauss( const X_,SD_:Single ) :Single;
+var
+   V :Single;
+begin
+     V := Pow2( SD_ );
+
+     Result := Exp( -Pow2( X_ ) / ( 2 * V ) ) / Roo2( Pi2 * V );
+end;
+
+function Gauss( const X_,SD_:Double ) :Double;
+var
+   V :Double;
+begin
+     V := Pow2( SD_ );
+
+     Result := Exp( -Pow2( X_ ) / ( 2 * V ) ) / Roo2( Pi2 * V );
 end;
 
 //############################################################################## □
