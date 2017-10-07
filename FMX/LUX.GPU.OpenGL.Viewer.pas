@@ -142,6 +142,8 @@ procedure TGLViewer.ParentChanged;
 begin
      inherited;
 
+     Winapi.Windows.SetParent( _WND, GetRootWND );
+
      _Form.Visible := Self.ParentedVisible;
 end;
 
@@ -194,8 +196,6 @@ begin
      end;
 
      SetWindowLong( _WND, GWL_STYLE, WS_CHILD or WS_CLIPSIBLINGS );
-
-     Winapi.Windows.SetParent( _WND, GetRootWND );
 end;
 
 procedure TGLViewer.FitWindow;
