@@ -98,13 +98,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        Min :Single;
        Max :Single;
        /////
-       constructor Create( const Min_,Max_:Single );
+       constructor Create( const Min_,Max_:Single );  overload;
+       constructor Create( const V1_,V2_,V3_:Single );  overload;
        ///// 定数
        class function NeInf :TSingleArea; inline; static;
        class function NeMax :TSingleArea; inline; static;
        class function Zero  :TSingleArea; inline; static;
        class function PoMax :TSingleArea; inline; static;
        class function PoInf :TSingleArea; inline; static;
+       ///// メソッド
+       function Collision( const Area_:TSingleArea ) :Boolean;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea
@@ -115,13 +118,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        Min :Double;
        Max :Double;
        /////
-       constructor Create( const Min_,Max_:Double );
+       constructor Create( const Min_,Max_:Double );  overload;
+       constructor Create( const V1_,V2_,V3_:Double );  overload;
        ///// 定数
        class function NeInf :TDoubleArea; inline; static;
        class function NeMax :TDoubleArea; inline; static;
        class function Zero  :TDoubleArea; inline; static;
        class function PoMax :TDoubleArea; inline; static;
        class function PoInf :TDoubleArea; inline; static;
+       ///// メソッド
+       function Collision( const Area_:TDoubleArea ) :Boolean;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -671,6 +677,46 @@ begin
      Max := Max_;
 end;
 
+constructor TSingleArea.Create( const V1_,V2_,V3_:Single );
+begin
+     if V1_ <= V2_ then
+     begin
+          // V1_ <= V2_
+          if V1_ <= V3_ then
+          begin
+               // V1_ <= V2_, V3_
+               Min := V1_;
+
+               if V2_ <= V3_ then Max := V3_   // V1_ <= V2_ <= V3_
+                             else Max := V2_;  // V1_ <= V3_ <  V2_
+          end
+          else
+          begin
+               // V3_ < V1_ <= V2_
+               Min := V3_;
+               Max := V2_;
+          end;
+     end
+     else
+     begin
+          // V2_ < V1_
+          if V1_ <= V3_ then
+          begin
+               // V2_ < V1_ <= V3_
+               Min := V2_;
+               Max := V3_;
+          end
+          else
+          begin
+               // V2_, V3_ < V1_
+               Max := V1_;
+
+               if V2_ <= V3_ then Min := V2_   // V2_ <= V3_ < V1_
+                             else Min := V3_;  // V3_ <  V2_ < V1_
+          end;
+     end;
+end;
+
 /////////////////////////////////////////////////////////////////////////// 定数
 
 class function TSingleArea.NeInf :TSingleArea;
@@ -702,6 +748,13 @@ begin
                                    Single.PositiveInfinity );
 end;
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TSingleArea.Collision( const Area_:TSingleArea ) :Boolean;
+begin
+     Result := ( Area_.Min < Max ) and ( Min < Area_.Max );
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -712,6 +765,46 @@ constructor TDoubleArea.Create( const Min_,Max_:Double );
 begin
      Min := Min_;
      Max := Max_;
+end;
+
+constructor TDoubleArea.Create( const V1_,V2_,V3_:Double );
+begin
+     if V1_ <= V2_ then
+     begin
+          // V1_ <= V2_
+          if V1_ <= V3_ then
+          begin
+               // V1_ <= V2_, V3_
+               Min := V1_;
+
+               if V2_ <= V3_ then Max := V3_   // V1_ <= V2_ <= V3_
+                             else Max := V2_;  // V1_ <= V3_ <  V2_
+          end
+          else
+          begin
+               // V3_ < V1_ <= V2_
+               Min := V3_;
+               Max := V2_;
+          end;
+     end
+     else
+     begin
+          // V2_ < V1_
+          if V1_ <= V3_ then
+          begin
+               // V2_ < V1_ <= V3_
+               Min := V2_;
+               Max := V3_;
+          end
+          else
+          begin
+               // V2_, V3_ < V1_
+               Max := V1_;
+
+               if V2_ <= V3_ then Min := V2_   // V2_ <= V3_ < V1_
+                             else Min := V3_;  // V3_ <  V2_ < V1_
+          end;
+     end;
 end;
 
 /////////////////////////////////////////////////////////////////////////// 定数
@@ -743,6 +836,13 @@ class function TDoubleArea.PoInf :TDoubleArea;
 begin
      Result := TDoubleArea.Create( Double.NegativeInfinity,
                                    Double.PositiveInfinity );
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TDoubleArea.Collision( const Area_:TDoubleArea ) :Boolean;
+begin
+     Result := ( Area_.Min < Max ) and ( Min < Area_.Max );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
