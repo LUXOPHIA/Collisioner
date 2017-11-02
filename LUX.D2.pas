@@ -122,13 +122,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSize( const Size_:Single ); inline;
        function GetUnitor :TSingle2D; inline;
        procedure SetUnitor( const Unitor_:TSingle2D ); inline;
+       function GetOrthant :Byte;
      public
        constructor Create( const X_,Y_:Single );
        ///// プロパティ
-       property _s[ const I_:Integer ] :Single    read GetV      write SetV     ; default;
-       property Siz2                   :Single    read GetSiz2   write SetSiz2  ;
-       property Size                   :Single    read GetSize   write SetSize  ;
-       property Unitor                 :TSingle2D read GetUnitor write SetUnitor;
+       property _s[ const I_:Integer ] :Single    read GetV       write SetV     ; default;
+       property Siz2                   :Single    read GetSiz2    write SetSiz2  ;
+       property Size                   :Single    read GetSize    write SetSize  ;
+       property Unitor                 :TSingle2D read GetUnitor  write SetUnitor;
+       property Orthant                :Byte      read GetOrthant                ;
        ///// 演算子
        class operator Negative( const V_:TSingle2D ) :TSingle2D; inline;
        class operator Positive( const V_:TSingle2D ) :TSingle2D; inline;
@@ -180,13 +182,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSize( const Size_:Double ); inline;
        function GetUnitor :TDouble2D; inline;
        procedure SetUnitor( const Unitor_:TDouble2D ); inline;
+       function GetOrthant :Byte;
      public
        constructor Create( const X_,Y_:Double );
        ///// プロパティ
-       property _s[ const I_:Integer ] :Double    read GetV      write SetV     ; default;
-       property Siz2                   :Double    read GetSiz2   write SetSiz2  ;
-       property Size                   :Double    read GetSize   write SetSize  ;
-       property Unitor                 :TDouble2D read GetUnitor write SetUnitor;
+       property _s[ const I_:Integer ] :Double    read GetV       write SetV     ; default;
+       property Siz2                   :Double    read GetSiz2    write SetSiz2  ;
+       property Size                   :Double    read GetSize    write SetSize  ;
+       property Unitor                 :TDouble2D read GetUnitor  write SetUnitor;
+       property Orthant                :Byte      read GetOrthant                ;
        ///// 演算子
        class operator Negative( const V_:TDouble2D ) :TDouble2D; inline;
        class operator Positive( const V_:TDouble2D ) :TDouble2D; inline;
@@ -828,6 +832,15 @@ begin
      Self := Size * Unitor_;
 end;
 
+//------------------------------------------------------------------------------
+
+function TSingle2D.GetOrthant :Byte;
+begin
+     Result := 0;
+     if X >= 0 then Result := Result or 1;
+     if Y >= 0 then Result := Result or 2;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TSingle2D.Create( const X_,Y_:Single );
@@ -1066,6 +1079,15 @@ end;
 procedure TDouble2D.SetUnitor( const Unitor_:TDouble2D );
 begin
      Self := Size * Unitor_;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDouble2D.GetOrthant :Byte;
+begin
+     Result := 0;
+     if X >= 0 then Result := Result or 1;
+     if Y >= 0 then Result := Result or 2;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
