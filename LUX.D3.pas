@@ -429,6 +429,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function Zero  :TSingleArea3D; static;
        class function PoMax :TSingleArea3D; static;
        class function PoInf :TSingleArea3D; static;
+       ///// メソッド
+       function Slab( const Norv_:TSingle3D ) :TSingleArea;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea3D
@@ -469,6 +471,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function Zero  :TDoubleArea3D; static;
        class function PoMax :TDoubleArea3D; static;
        class function PoInf :TDoubleArea3D; static;
+       ///// メソッド
+       function Slab( const Norv_:TDouble3D ) :TDoubleArea;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleRay3D
@@ -2039,6 +2043,22 @@ begin
                                      Single.PositiveInfinity );
 end;
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TSingleArea3D.Slab( const Norv_:TSingle3D ) :TSingleArea;
+var
+   I0, I1 :Byte;
+begin
+     I1 := Norv_.Orthant;
+     I0 := I1 xor 7;
+
+     with Result do
+     begin
+          Min := DotProduct( Norv_, Poin[ I0 ] );
+          Max := DotProduct( Norv_, Poin[ I1 ] );
+     end;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -2187,6 +2207,22 @@ class function TDoubleArea3D.PoInf :TDoubleArea3D;
 begin
      Result := TDoubleArea3D.Create( Double.NegativeInfinity,
                                      Double.PositiveInfinity );
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TDoubleArea3D.Slab( const Norv_:TDouble3D ) :TDoubleArea;
+var
+   I0, I1 :Byte;
+begin
+     I1 := Norv_.Orthant;
+     I0 := I1 xor 7;
+
+     with Result do
+     begin
+          Min := DotProduct( Norv_, Poin[ I0 ] );
+          Max := DotProduct( Norv_, Poin[ I1 ] );
+     end;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleRay3D
