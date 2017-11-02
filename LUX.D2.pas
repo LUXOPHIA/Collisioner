@@ -555,6 +555,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSizeX( const SizeX_:Single );
        function GetSizeY :Single;
        procedure SetSizeY( const SizeY_:Single );
+       function GetAreaX :TSingleArea;
+       procedure SetAreaX( const AreaX_:TSingleArea );
+       function GetAreaY :TSingleArea;
+       procedure SetAreaY( const AreaY_:TSingleArea );
      public
        Min :TSingle2D;
        Max :TSingle2D;
@@ -564,15 +568,19 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                                  MaxX_,MaxY_:Single ); overload;
        constructor Create( const Min_,Max_:TSingle2D ); overload;
        ///// プロパティ
-       property Poin[ const I_:Integer ] :TSingle2D read GetPoin                ;
-       property SizeX                    :Single    read GetSizeX write SetSizeX;
-       property SizeY                    :Single    read GetSizeY write SetSizeY;
+       property Poin[ const I_:Integer ] :TSingle2D   read GetPoin                ;
+       property SizeX                    :Single      read GetSizeX write SetSizeX;
+       property SizeY                    :Single      read GetSizeY write SetSizeY;
+       property AreaX                    :TSingleArea read GetAreaX write SetAreaX;
+       property AreaY                    :TSingleArea read GetAreaY write SetAreaY;
        ///// 定数
        class function NeInf :TSingleArea2D; inline; static;
        class function NeMax :TSingleArea2D; inline; static;
        class function Zero  :TSingleArea2D; inline; static;
        class function PoMax :TSingleArea2D; inline; static;
        class function PoInf :TSingleArea2D; inline; static;
+       ///// メソッド
+       function Collision( const Area_:TSingleArea2D ) :Boolean;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea2D
@@ -585,6 +593,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSizeX( const SizeX_:Double );
        function GetSizeY :Double;
        procedure SetSizeY( const SizeY_:Double );
+       function GetAreaX :TDoubleArea;
+       procedure SetAreaX( const AreaX_:TDoubleArea );
+       function GetAreaY :TDoubleArea;
+       procedure SetAreaY( const AreaY_:TDoubleArea );
      public
        Min :TDouble2D;
        Max :TDouble2D;
@@ -594,15 +606,19 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                                  MaxX_,MaxY_:Double ); overload;
        constructor Create( const Min_,Max_:TDouble2D ); overload;
        ///// プロパティ
-       property Poin[ const I_:Integer ] :TDouble2D read GetPoin                ;
-       property SizeX                    :Double    read GetSizeX write SetSizeX;
-       property SizeY                    :Double    read GetSizeY write SetSizeY;
+       property Poin[ const I_:Integer ] :TDouble2D   read GetPoin                ;
+       property SizeX                    :Double      read GetSizeX write SetSizeX;
+       property SizeY                    :Double      read GetSizeY write SetSizeY;
+       property AreaX                    :TDoubleArea read GetAreaX write SetAreaX;
+       property AreaY                    :TDoubleArea read GetAreaY write SetAreaY;
        ///// 定数
        class function NeInf :TDoubleArea2D; inline; static;
        class function NeMax :TDoubleArea2D; inline; static;
        class function Zero  :TDoubleArea2D; inline; static;
        class function PoMax :TDoubleArea2D; inline; static;
        class function PoInf :TDoubleArea2D; inline; static;
+       ///// メソッド
+       function Collision( const Area_:TDoubleArea2D ) :Boolean;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -2328,6 +2344,30 @@ begin
      Max.Y := C + S;
 end;
 
+//------------------------------------------------------------------------------
+
+function TSingleArea2D.GetAreaX :TSingleArea;
+begin
+     Result := TSingleArea.Create( Min.X, Max.X );
+end;
+
+procedure TSingleArea2D.SetAreaX( const AreaX_:TSingleArea );
+begin
+     Min.X := AreaX_.Min;
+     Max.X := AreaX_.Max;
+end;
+
+function TSingleArea2D.GetAreaY :TSingleArea;
+begin
+     Result := TSingleArea.Create( Min.Y, Max.Y );
+end;
+
+procedure TSingleArea2D.SetAreaY( const AreaY_:TSingleArea );
+begin
+     Min.Y := AreaY_.Min;
+     Max.Y := AreaY_.Max;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TSingleArea2D.Create( const Min_,Max_:Single );
@@ -2389,6 +2429,14 @@ begin
                                      Single.PositiveInfinity );
 end;
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TSingleArea2D.Collision( const Area_:TSingleArea2D ) :Boolean;
+begin
+     Result := AreaX.Collision( Area_.AreaX )
+           and AreaY.Collision( Area_.AreaY );
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea2D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -2439,6 +2487,30 @@ begin
 
      Min.Y := C - S;
      Max.Y := C + S;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleArea2D.GetAreaX :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( Min.X, Max.X );
+end;
+
+procedure TDoubleArea2D.SetAreaX( const AreaX_:TDoubleArea );
+begin
+     Min.X := AreaX_.Min;
+     Max.X := AreaX_.Max;
+end;
+
+function TDoubleArea2D.GetAreaY :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( Min.Y, Max.Y );
+end;
+
+procedure TDoubleArea2D.SetAreaY( const AreaY_:TDoubleArea );
+begin
+     Min.Y := AreaY_.Min;
+     Max.Y := AreaY_.Max;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -2500,6 +2572,14 @@ class function TDoubleArea2D.PoInf :TDoubleArea2D;
 begin
      Result := TDoubleArea2D.Create( Double.NegativeInfinity,
                                      Double.PositiveInfinity );
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TDoubleArea2D.Collision( const Area_:TDoubleArea2D ) :Boolean;
+begin
+     Result := AreaX.Collision( Area_.AreaX )
+           and AreaY.Collision( Area_.AreaY );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
