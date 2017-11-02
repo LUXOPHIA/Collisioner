@@ -440,6 +440,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function PoInf :TSingleArea3D; static;
        ///// メソッド
        function Slab( const Norv_:TSingle3D ) :TSingleArea;
+       function Collision( const Area_:TSingleArea3D ) :Boolean;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea3D
@@ -491,6 +492,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function PoInf :TDoubleArea3D; static;
        ///// メソッド
        function Slab( const Norv_:TDouble3D ) :TDoubleArea;
+       function Collision( const Area_:TDoubleArea3D ) :Boolean;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleRay3D
@@ -2112,6 +2114,15 @@ begin
      end;
 end;
 
+//------------------------------------------------------------------------------
+
+function TSingleArea3D.Collision( const Area_:TSingleArea3D ) :Boolean;
+begin
+     Result := AreaX.Collision( Area_.AreaX )
+           and AreaY.Collision( Area_.AreaY )
+           and AreaZ.Collision( Area_.AreaZ );
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -2311,6 +2322,15 @@ begin
           Min := DotProduct( Norv_, Poin[ I0 ] );
           Max := DotProduct( Norv_, Poin[ I1 ] );
      end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleArea3D.Collision( const Area_:TDoubleArea3D ) :Boolean;
+begin
+     Result := AreaX.Collision( Area_.AreaX )
+           and AreaY.Collision( Area_.AreaY )
+           and AreaZ.Collision( Area_.AreaZ );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleRay3D
