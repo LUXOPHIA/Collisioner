@@ -124,14 +124,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSize( const Size_:Single ); inline;
        function GetUnitor :TSingle3D; inline;
        procedure SetUnitor( const Unitor_:TSingle3D ); inline;
+       function GetOrthant :Byte;
      public
        constructor Create( const V_:Single ); overload;
        constructor Create( const X_,Y_,Z_:Single ); overload;
        ///// プロパティ
-       property _s[ const I_:Integer ] :Single    read GetV      write SetV     ; default;
-       property Siz2                   :Single    read GetSiz2   write SetSiz2  ;
-       property Size                   :Single    read GetSize   write SetSize  ;
-       property Unitor                 :TSingle3D read GetUnitor write SetUnitor;
+       property _s[ const I_:Integer ] :Single    read GetV       write SetV     ; default;
+       property Siz2                   :Single    read GetSiz2    write SetSiz2  ;
+       property Size                   :Single    read GetSize    write SetSize  ;
+       property Unitor                 :TSingle3D read GetUnitor  write SetUnitor;
+       property Orthant                :Byte      read GetOrthant                ;
        ///// 演算子
        class operator Negative( const V_:TSingle3D ) :TSingle3D; inline;
        class operator Positive( const V_:TSingle3D ) :TSingle3D; inline;
@@ -185,14 +187,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSize( const Size_:Double ); inline;
        function GetUnitor :TDouble3D; inline;
        procedure SetUnitor( const Unitor_:TDouble3D ); inline;
+       function GetOrthant :Byte;
      public
        constructor Create( const V_:Double ); overload;
        constructor Create( const X_,Y_,Z_:Double ); overload;
        ///// プロパティ
-       property _s[ const I_:Integer ] :Double    read GetV      write SetV     ; default;
-       property Siz2                   :Double    read GetSiz2   write SetSiz2  ;
-       property Size                   :Double    read GetSize   write SetSize  ;
-       property Unitor                 :TDouble3D read GetUnitor write SetUnitor;
+       property _s[ const I_:Integer ] :Double    read GetV       write SetV     ; default;
+       property Siz2                   :Double    read GetSiz2    write SetSiz2  ;
+       property Size                   :Double    read GetSize    write SetSize  ;
+       property Unitor                 :TDouble3D read GetUnitor  write SetUnitor;
+       property Orthant                :Byte      read GetOrthant                ;
        ///// 演算子
        class operator Negative( const V_:TDouble3D ) :TDouble3D; inline;
        class operator Positive( const V_:TDouble3D ) :TDouble3D; inline;
@@ -397,6 +401,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetSizeX :Single;
        function GetSizeY :Single;
        function GetSizeZ :Single;
+       function GetCenter :TSingle3D;
+       function GetAreaXY :TSingleArea2D;
+       function GetAreaYZ :TSingleArea2D;
+       function GetAreaZX :TSingleArea2D;
      public
        Min :TSingle3D;
        Max :TSingle3D;
@@ -406,12 +414,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                                  MaxX_,MaxY_,MaxZ_:Single ); overload;
        constructor Create( const Min_,Max_:TSingle3D ); overload;
        ///// プロパティ
-       property Poin[ const I_:Integer ] :TSingle3D read GetPoin ;
-       property Sign                     :ShortInt  read GetSign ;
-       property SizeX                    :Single    read GetSizeX;
-       property SizeY                    :Single    read GetSizeY;
-       property SizeZ                    :Single    read GetSizeZ;
-
+       property Poin[ const I_:Integer ] :TSingle3D     read GetPoin  ;
+       property Sign                     :ShortInt      read GetSign  ;
+       property SizeX                    :Single        read GetSizeX ;
+       property SizeY                    :Single        read GetSizeY ;
+       property SizeZ                    :Single        read GetSizeZ ;
+       property Center                   :TSingle3D     read GetCenter;
+       property AreaXY                   :TSingleArea2D read GetAreaXY;
+       property AreaYZ                   :TSingleArea2D read GetAreaYZ;
+       property AreaZX                   :TSingleArea2D read GetAreaZX;
        ///// 定数
        class function NeInf :TSingleArea3D; static;
        class function NeMax :TSingleArea3D; static;
@@ -430,6 +441,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetSizeX :Double;
        function GetSizeY :Double;
        function GetSizeZ :Double;
+       function GetCenter :TDouble3D;
+       function GetAreaXY :TDoubleArea2D;
+       function GetAreaYZ :TDoubleArea2D;
+       function GetAreaZX :TDoubleArea2D;
      public
        Min :TDouble3D;
        Max :TDouble3D;
@@ -439,11 +454,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                                  MaxX_,MaxY_,MaxZ_:Double ); overload;
        constructor Create( const Min_,Max_:TDouble3D ); overload;
        ///// プロパティ
-       property Poin[ const I_:Integer ] :TDouble3D read GetPoin ;
-       property Sign                     :ShortInt  read GetSign ;
-       property SizeX                    :Double    read GetSizeX;
-       property SizeY                    :Double    read GetSizeY;
-       property SizeZ                    :Double    read GetSizeZ;
+       property Poin[ const I_:Integer ] :TDouble3D     read GetPoin  ;
+       property Sign                     :ShortInt      read GetSign  ;
+       property SizeX                    :Double        read GetSizeX ;
+       property SizeY                    :Double        read GetSizeY ;
+       property SizeZ                    :Double        read GetSizeZ ;
+       property Center                   :TDouble3D     read GetCenter;
+       property AreaXY                   :TDoubleArea2D read GetAreaXY;
+       property AreaYZ                   :TDoubleArea2D read GetAreaYZ;
+       property AreaZX                   :TDoubleArea2D read GetAreaZX;
        ///// 定数
        class function NeInf :TDoubleArea3D; static;
        class function NeMax :TDoubleArea3D; static;
@@ -712,6 +731,16 @@ end;
 procedure TSingle3D.SetUnitor( const Unitor_:TSingle3D );
 begin
      Self := Size * Unitor_;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingle3D.GetOrthant :Byte;
+begin
+     Result := 0;
+     if X >= 0 then Result := Result or 1;
+     if Y >= 0 then Result := Result or 2;
+     if Z >= 0 then Result := Result or 4;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -992,6 +1021,16 @@ end;
 procedure TDouble3D.SetUnitor( const Unitor_:TDouble3D );
 begin
      Self := Size * Unitor_;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDouble3D.GetOrthant :Byte;
+begin
+     Result := 0;
+     if X >= 0 then Result := Result or 1;
+     if Y >= 0 then Result := Result or 2;
+     if Z >= 0 then Result := Result or 4;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -1905,6 +1944,38 @@ begin
      Result := Max.Z - Min.Z;
 end;
 
+//------------------------------------------------------------------------------
+
+function TSingleArea3D.GetCenter :TSingle3D;
+begin
+     with Result do
+     begin
+          X := ( Min.X + Max.X ) / 2;
+          Y := ( Min.Y + Max.Y ) / 2;
+          Z := ( Min.Z + Max.Z ) / 2;
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingleArea3D.GetAreaXY :TSingleArea2D;
+begin
+     Result := TSingleArea2D.Create( Min.X, Min.Y,
+                                     Max.X, Max.Y );
+end;
+
+function TSingleArea3D.GetAreaYZ :TSingleArea2D;
+begin
+     Result := TSingleArea2D.Create( Min.Y, Min.Z,
+                                     Max.Y, Max.Z );
+end;
+
+function TSingleArea3D.GetAreaZX :TSingleArea2D;
+begin
+     Result := TSingleArea2D.Create( Min.Z, Min.X,
+                                     Max.Z, Max.X );
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TSingleArea3D.Create( const Min_,Max_:Single );
@@ -2021,6 +2092,38 @@ end;
 function TDoubleArea3D.GetSizeZ :Double;
 begin
      Result := Max.Z - Min.Z;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleArea3D.GetCenter :TDouble3D;
+begin
+     with Result do
+     begin
+          X := ( Min.X + Max.X ) / 2;
+          Y := ( Min.Y + Max.Y ) / 2;
+          Z := ( Min.Z + Max.Z ) / 2;
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleArea3D.GetAreaXY :TDoubleArea2D;
+begin
+     Result := TDoubleArea2D.Create( Min.X, Min.Y,
+                                     Max.X, Max.Y );
+end;
+
+function TDoubleArea3D.GetAreaYZ :TDoubleArea2D;
+begin
+     Result := TDoubleArea2D.Create( Min.Y, Min.Z,
+                                     Max.Y, Max.Z );
+end;
+
+function TDoubleArea3D.GetAreaZX :TDoubleArea2D;
+begin
+     Result := TDoubleArea2D.Create( Min.Z, Min.X,
+                                     Max.Z, Max.X );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
