@@ -555,10 +555,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSizeX( const SizeX_:Single );
        function GetSizeY :Single;
        procedure SetSizeY( const SizeY_:Single );
-       function GetAreaX :TSingleArea;
-       procedure SetAreaX( const AreaX_:TSingleArea );
-       function GetAreaY :TSingleArea;
-       procedure SetAreaY( const AreaY_:TSingleArea );
+       function GetProjX :TSingleArea;
+       procedure SetProjX( const ProjX_:TSingleArea );
+       function GetProjY :TSingleArea;
+       procedure SetProjY( const ProjY_:TSingleArea );
      public
        Min :TSingle2D;
        Max :TSingle2D;
@@ -571,8 +571,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Poin[ const I_:Integer ] :TSingle2D   read GetPoin                ;
        property SizeX                    :Single      read GetSizeX write SetSizeX;
        property SizeY                    :Single      read GetSizeY write SetSizeY;
-       property AreaX                    :TSingleArea read GetAreaX write SetAreaX;
-       property AreaY                    :TSingleArea read GetAreaY write SetAreaY;
+       property ProjX                    :TSingleArea read GetProjX write SetProjX;
+       property ProjY                    :TSingleArea read GetProjY write SetProjY;
        ///// 定数
        class function NeInf :TSingleArea2D; inline; static;
        class function NeMax :TSingleArea2D; inline; static;
@@ -593,10 +593,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSizeX( const SizeX_:Double );
        function GetSizeY :Double;
        procedure SetSizeY( const SizeY_:Double );
-       function GetAreaX :TDoubleArea;
-       procedure SetAreaX( const AreaX_:TDoubleArea );
-       function GetAreaY :TDoubleArea;
-       procedure SetAreaY( const AreaY_:TDoubleArea );
+       function GetProjX :TDoubleArea;
+       procedure SetProjX( const ProjX_:TDoubleArea );
+       function GetProjY :TDoubleArea;
+       procedure SetProjY( const ProjY_:TDoubleArea );
      public
        Min :TDouble2D;
        Max :TDouble2D;
@@ -609,8 +609,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Poin[ const I_:Integer ] :TDouble2D   read GetPoin                ;
        property SizeX                    :Double      read GetSizeX write SetSizeX;
        property SizeY                    :Double      read GetSizeY write SetSizeY;
-       property AreaX                    :TDoubleArea read GetAreaX write SetAreaX;
-       property AreaY                    :TDoubleArea read GetAreaY write SetAreaY;
+       property ProjX                    :TDoubleArea read GetProjX write SetProjX;
+       property ProjY                    :TDoubleArea read GetProjY write SetProjY;
        ///// 定数
        class function NeInf :TDoubleArea2D; inline; static;
        class function NeMax :TDoubleArea2D; inline; static;
@@ -2346,26 +2346,26 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TSingleArea2D.GetAreaX :TSingleArea;
+function TSingleArea2D.GetProjX :TSingleArea;
 begin
      Result := TSingleArea.Create( Min.X, Max.X );
 end;
 
-procedure TSingleArea2D.SetAreaX( const AreaX_:TSingleArea );
+procedure TSingleArea2D.SetProjX( const ProjX_:TSingleArea );
 begin
-     Min.X := AreaX_.Min;
-     Max.X := AreaX_.Max;
+     Min.X := ProjX_.Min;
+     Max.X := ProjX_.Max;
 end;
 
-function TSingleArea2D.GetAreaY :TSingleArea;
+function TSingleArea2D.GetProjY :TSingleArea;
 begin
      Result := TSingleArea.Create( Min.Y, Max.Y );
 end;
 
-procedure TSingleArea2D.SetAreaY( const AreaY_:TSingleArea );
+procedure TSingleArea2D.SetProjY( const ProjY_:TSingleArea );
 begin
-     Min.Y := AreaY_.Min;
-     Max.Y := AreaY_.Max;
+     Min.Y := ProjY_.Min;
+     Max.Y := ProjY_.Max;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -2433,8 +2433,8 @@ end;
 
 function TSingleArea2D.Collision( const Area_:TSingleArea2D ) :Boolean;
 begin
-     Result := AreaX.Collision( Area_.AreaX )
-           and AreaY.Collision( Area_.AreaY );
+     Result := ProjX.Collision( Area_.ProjX )
+           and ProjY.Collision( Area_.ProjY );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea2D
@@ -2491,26 +2491,26 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TDoubleArea2D.GetAreaX :TDoubleArea;
+function TDoubleArea2D.GetProjX :TDoubleArea;
 begin
      Result := TDoubleArea.Create( Min.X, Max.X );
 end;
 
-procedure TDoubleArea2D.SetAreaX( const AreaX_:TDoubleArea );
+procedure TDoubleArea2D.SetProjX( const ProjX_:TDoubleArea );
 begin
-     Min.X := AreaX_.Min;
-     Max.X := AreaX_.Max;
+     Min.X := ProjX_.Min;
+     Max.X := ProjX_.Max;
 end;
 
-function TDoubleArea2D.GetAreaY :TDoubleArea;
+function TDoubleArea2D.GetProjY :TDoubleArea;
 begin
      Result := TDoubleArea.Create( Min.Y, Max.Y );
 end;
 
-procedure TDoubleArea2D.SetAreaY( const AreaY_:TDoubleArea );
+procedure TDoubleArea2D.SetProjY( const ProjY_:TDoubleArea );
 begin
-     Min.Y := AreaY_.Min;
-     Max.Y := AreaY_.Max;
+     Min.Y := ProjY_.Min;
+     Max.Y := ProjY_.Max;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -2578,8 +2578,8 @@ end;
 
 function TDoubleArea2D.Collision( const Area_:TDoubleArea2D ) :Boolean;
 begin
-     Result := AreaX.Collision( Area_.AreaX )
-           and AreaY.Collision( Area_.AreaY );
+     Result := ProjX.Collision( Area_.ProjX )
+           and ProjY.Collision( Area_.ProjY );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
