@@ -2,7 +2,8 @@
 
 interface //#################################################################### ■
 
-uses LUX, LUX.D2, LUX.Geometry, LUX.M2;
+uses LUX, LUX.D1, LUX.D2, LUX.M2,
+     LUX.Geometry;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -56,6 +57,88 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// 型変換
        class operator Implicit( const Circl2_:TDoubleCircl2 ) :TDoubleCircle;
        class operator Implicit( const Circle_:TDoubleCircle ) :TDoubleCircl2;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleTria2D
+
+     //  P3              P* :Poin*
+     //  │＼            E* :Edge*
+     //  │  ＼          N* :Enor*
+     //  │    ＼
+     //  E2─N2  E1
+     //  │    ／  ＼
+     //  │  N1  N3  ＼
+     //  │      │    ＼
+     //  P1───E3───P2
+
+     TSingleTria2D = record
+     private
+       ///// アクセス
+       function GetNorv :Single;
+       function GetEdge1 :TSingle2D;
+       function GetEdge2 :TSingle2D;
+       function GetEdge3 :TSingle2D;
+       function GetEnor1 :TSingle2D;
+       function GetEnor2 :TSingle2D;
+       function GetEnor3 :TSingle2D;
+       function GetAABB :TSingleArea2D;
+     public
+       Poin1 :TSingle2D;
+       Poin2 :TSingle2D;
+       Poin3 :TSingle2D;
+       ///// プロパティ
+       property Norv  :Single        read GetNorv ;
+       property Edge1 :TSingle2D     read GetEdge1;
+       property Edge2 :TSingle2D     read GetEdge2;
+       property Edge3 :TSingle2D     read GetEdge3;
+       property Enor1 :TSingle2D     read GetEnor1;
+       property Enor2 :TSingle2D     read GetEnor2;
+       property Enor3 :TSingle2D     read GetEnor3;
+       property AABB  :TSingleArea2D read GetAABB ;
+       ///// メソッド
+       function ColliEdge( const Area_:TSingleArea2D ) :Boolean;
+       function Collision( const Area_:TSingleArea2D ) :Boolean;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleTria2D
+
+     //  P3              P* :Poin*
+     //  │＼            E* :Edge*
+     //  │  ＼          N* :Enor*
+     //  │    ＼
+     //  E2─N2  E1
+     //  │    ／  ＼
+     //  │  N1  N3  ＼
+     //  │      │    ＼
+     //  P1───E3───P2
+
+     TDoubleTria2D = record
+     private
+       ///// アクセス
+       function GetNorv :Double;
+       function GetEdge1 :TDouble2D;
+       function GetEdge2 :TDouble2D;
+       function GetEdge3 :TDouble2D;
+       function GetEnor1 :TDouble2D;
+       function GetEnor2 :TDouble2D;
+       function GetEnor3 :TDouble2D;
+       function GetAABB :TDoubleArea2D;
+     public
+       Poin1 :TDouble2D;
+       Poin2 :TDouble2D;
+       Poin3 :TDouble2D;
+       ///// プロパティ
+       property Norv  :Double        read GetNorv ;
+       property Edge1 :TDouble2D     read GetEdge1;
+       property Edge2 :TDouble2D     read GetEdge2;
+       property Edge3 :TDouble2D     read GetEdge3;
+       property Enor1 :TDouble2D     read GetEnor1;
+       property Enor2 :TDouble2D     read GetEnor2;
+       property Enor3 :TDouble2D     read GetEnor3;
+       property AABB  :TDoubleArea2D read GetAABB ;
+       ///// メソッド
+       function ColliEdge( const Area_:TDoubleArea2D ) :Boolean;
+       function Collision( const Area_:TDoubleArea2D ) :Boolean;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -201,6 +284,190 @@ begin
           Center :=       Circle_.Center  ;
           Radiu2 := Pow2( Circle_.Radius );
      end;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleTria2D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TSingleTria2D.GetNorv :Single;
+begin
+     Result := CrossProduct( Edge2, Edge3 );
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingleTria2D.GetEdge1 :TSingle2D;
+begin
+     Result := Poin2.VectorTo( Poin3 );
+end;
+
+function TSingleTria2D.GetEdge2 :TSingle2D;
+begin
+     Result := Poin3.VectorTo( Poin1 );
+end;
+
+function TSingleTria2D.GetEdge3 :TSingle2D;
+begin
+     Result := Poin1.VectorTo( Poin2 );
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingleTria2D.GetEnor1 :TSingle2D;
+begin
+     Result := Norv * Edge1.RotL90;
+end;
+
+function TSingleTria2D.GetEnor2 :TSingle2D;
+begin
+     Result := Norv * Edge2.RotL90;
+end;
+
+function TSingleTria2D.GetEnor3 :TSingle2D;
+begin
+     Result := Norv * Edge3.RotL90;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingleTria2D.GetAABB :TSingleArea2D;
+begin
+     with Result do
+     begin
+          ProjX := TSingleArea.Create( Poin1.X, Poin2.X, Poin3.X );
+          ProjY := TSingleArea.Create( Poin1.Y, Poin2.Y, Poin3.Y );
+     end;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+function TSingleTria2D.ColliEdge( const Area_:TSingleArea2D ) :Boolean;
+//······································
+     function CheckEdge( const N,P:TSingle2D ) :Boolean;
+     var
+        B, V :TSingle2D;
+     begin
+          B := Area_.Poin[ N.Orthant ];
+
+          V := P.VectorTo( B );
+
+          Result := DotProduct( N, V ) > 0;
+     end;
+//······································
+begin
+     //  P3
+     //  │＼
+     //  │  ＼
+     //  │    ＼
+     //  E2─N2  E1
+     //  │    ／  ＼
+     //  │  N1  N3  ＼
+     //  │      │    ＼
+     //  P1───E3───P2
+
+     Result := CheckEdge( Enor1, Poin2 )
+           and CheckEdge( Enor2, Poin3 )
+           and CheckEdge( Enor3, Poin1 );
+end;
+
+function TSingleTria2D.Collision( const Area_:TSingleArea2D ) :Boolean;
+begin
+     Result := AABB.Collision( Area_ ) and ColliEdge( Area_ );
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleTria2D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TDoubleTria2D.GetNorv :Double;
+begin
+     Result := CrossProduct( Edge2, Edge3 );
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleTria2D.GetEdge1 :TDouble2D;
+begin
+     Result := Poin2.VectorTo( Poin3 );
+end;
+
+function TDoubleTria2D.GetEdge2 :TDouble2D;
+begin
+     Result := Poin3.VectorTo( Poin1 );
+end;
+
+function TDoubleTria2D.GetEdge3 :TDouble2D;
+begin
+     Result := Poin1.VectorTo( Poin2 );
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleTria2D.GetEnor1 :TDouble2D;
+begin
+     Result := Norv * Edge1.RotL90;
+end;
+
+function TDoubleTria2D.GetEnor2 :TDouble2D;
+begin
+     Result := Norv * Edge2.RotL90;
+end;
+
+function TDoubleTria2D.GetEnor3 :TDouble2D;
+begin
+     Result := Norv * Edge3.RotL90;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleTria2D.GetAABB :TDoubleArea2D;
+begin
+     with Result do
+     begin
+          ProjX := TDoubleArea.Create( Poin1.X, Poin2.X, Poin3.X );
+          ProjY := TDoubleArea.Create( Poin1.Y, Poin2.Y, Poin3.Y );
+     end;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+function TDoubleTria2D.ColliEdge( const Area_:TDoubleArea2D ) :Boolean;
+//······································
+     function CheckEdge( const N,P:TDouble2D ) :Boolean;
+     var
+        B, V :TDouble2D;
+     begin
+          B := Area_.Poin[ N.Orthant ];
+
+          V := P.VectorTo( B );
+
+          Result := DotProduct( N, V ) > 0;
+     end;
+//······································
+begin
+     //  P3
+     //  │＼
+     //  │  ＼
+     //  │    ＼
+     //  E2─N2  E1
+     //  │    ／  ＼
+     //  │  N1  N3  ＼
+     //  │      │    ＼
+     //  P1───E3───P2
+
+     Result := CheckEdge( Enor1, Poin2 )
+           and CheckEdge( Enor2, Poin3 )
+           and CheckEdge( Enor3, Poin1 );
+end;
+
+function TDoubleTria2D.Collision( const Area_:TDoubleArea2D ) :Boolean;
+begin
+     Result := AABB.Collision( Area_ ) and ColliEdge( Area_ );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】

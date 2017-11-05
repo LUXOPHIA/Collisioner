@@ -2,7 +2,8 @@
 
 interface //#################################################################### ■
 
-uses LUX, LUX.D3, LUX.Geometry;
+uses LUX, LUX.D1, LUX.D2, LUX.D3,
+     LUX.Geometry, LUX.Geometry.D2;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -64,6 +65,100 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Implicit( const Sphere_:TDoubleSphere ) :TDoubleSpher2;
        ///// メソッド
        class function Inner( const P1_,P2_,P3_,P4_:TDouble3D ) :TDoubleSphere; static;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleTria3D
+
+     //  P3        P* :Poin*
+     //  │＼      E* :Edge*
+     //  E2  E1
+     //  │    ＼
+     //  P1─E3─P2
+
+     TSingleTria3D = record
+     private
+       ///// アクセス
+       function GetNorv :TSingle3D;
+       function GetEdge1 :TSingle3D;
+       function GetEdge2 :TSingle3D;
+       function GetEdge3 :TSingle3D;
+       function GetProjXY :TSingleTria2D;
+       function GetProjYZ :TSingleTria2D;
+       function GetProjZX :TSingleTria2D;
+       function GetAABB :TSingleArea3D;
+     public
+       Poin1 :TSingle3D;
+       Poin2 :TSingle3D;
+       Poin3 :TSingle3D;
+       ///// プロパティ
+       property Norv   :TSingle3D     read GetNorv  ;
+       property Edge1  :TSingle3D     read GetEdge1 ;
+       property Edge2  :TSingle3D     read GetEdge2 ;
+       property Edge3  :TSingle3D     read GetEdge3 ;
+       property ProjXY :TSingleTria2D read GetProjXY;
+       property ProjYZ :TSingleTria2D read GetProjYZ;
+       property ProjZX :TSingleTria2D read GetProjZX;
+       property AABB   :TSingleArea3D read GetAABB  ;
+       ///// 演算子
+       class operator Negative( const V_:TSingleTria3D ) :TSingleTria3D; inline;
+       class operator Positive( const V_:TSingleTria3D ) :TSingleTria3D; inline;
+       class operator Add( const A_,B_:TSingleTria3D ) :TSingleTria3D; inline;
+       class operator Subtract( const A_,B_:TSingleTria3D ) :TSingleTria3D; inline;
+       class operator Multiply( const A_:TSingleTria3D; const B_:Single ) :TSingleTria3D; inline;
+       class operator Multiply( const A_:Single; const B_:TSingleTria3D ) :TSingleTria3D; inline;
+       class operator Divide( const A_:TSingleTria3D; const B_:Single ) :TSingleTria3D; inline;
+       ///// メソッド
+       function ProjVec( const Vec_:TSingle3D ) :TSingleArea;
+       function CollisionPEF( const Area_:TSingleArea3D ) :Boolean;
+       function CollisionSAT( const Area_:TSingleArea3D ) :Boolean;
+       class function RandG :TSingleTria3D; static;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleTria3D
+
+     //  P3        P* :Poin*
+     //  │＼      E* :Edge*
+     //  E2  E1
+     //  │    ＼
+     //  P1─E3─P2
+
+     TDoubleTria3D = record
+     private
+       ///// アクセス
+       function GetNorv :TDouble3D;
+       function GetEdge1 :TDouble3D;
+       function GetEdge2 :TDouble3D;
+       function GetEdge3 :TDouble3D;
+       function GetProjXY :TDoubleTria2D;
+       function GetProjYZ :TDoubleTria2D;
+       function GetProjZX :TDoubleTria2D;
+       function GetAABB :TDoubleArea3D;
+     public
+       Poin1 :TDouble3D;
+       Poin2 :TDouble3D;
+       Poin3 :TDouble3D;
+       ///// プロパティ
+       property Norv   :TDouble3D     read GetNorv  ;
+       property Edge1  :TDouble3D     read GetEdge1 ;
+       property Edge2  :TDouble3D     read GetEdge2 ;
+       property Edge3  :TDouble3D     read GetEdge3 ;
+       property ProjXY :TDoubleTria2D read GetProjXY;
+       property ProjYZ :TDoubleTria2D read GetProjYZ;
+       property ProjZX :TDoubleTria2D read GetProjZX;
+       property AABB   :TDoubleArea3D read GetAABB  ;
+       ///// 演算子
+       class operator Negative( const V_:TDoubleTria3D ) :TDoubleTria3D; inline;
+       class operator Positive( const V_:TDoubleTria3D ) :TDoubleTria3D; inline;
+       class operator Add( const A_,B_:TDoubleTria3D ) :TDoubleTria3D; inline;
+       class operator Subtract( const A_,B_:TDoubleTria3D ) :TDoubleTria3D; inline;
+       class operator Multiply( const A_:TDoubleTria3D; const B_:Double ) :TDoubleTria3D; inline;
+       class operator Multiply( const A_:Double; const B_:TDoubleTria3D ) :TDoubleTria3D; inline;
+       class operator Divide( const A_:TDoubleTria3D; const B_:Double ) :TDoubleTria3D; inline;
+       ///// メソッド
+       function ProjVec( const Vec_:TDouble3D ) :TDoubleArea;
+       function CollisionPEF( const Area_:TDoubleArea3D ) :Boolean;
+       function CollisionSAT( const Area_:TDoubleArea3D ) :Boolean;
+       class function RandG :TDoubleTria3D; static;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -282,6 +377,506 @@ begin
      begin
           Center :=InnerCenter( P1_,P2_,P3_,P4_ );
           Radius := InnerRadius( P1_,P2_,P3_,P4_ );
+     end;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleTria3D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TSingleTria3D.GetNorv :TSingle3D;
+begin
+     Result := CrossProduct( Edge2, Edge3 );
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingleTria3D.GetEdge1 :TSingle3D;
+begin
+     Result := Poin2.VectorTo( Poin3 );
+end;
+
+function TSingleTria3D.GetEdge2 :TSingle3D;
+begin
+     Result := Poin3.VectorTo( Poin1 );
+end;
+
+function TSingleTria3D.GetEdge3 :TSingle3D;
+begin
+     Result := Poin1.VectorTo( Poin2 );
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingleTria3D.GetProjXY :TSingleTria2D;
+begin
+     with Poin1 do Result.Poin1 := TSingle2D.Create( X, Y );
+     with Poin2 do Result.Poin2 := TSingle2D.Create( X, Y );
+     with Poin3 do Result.Poin3 := TSingle2D.Create( X, Y );
+end;
+
+function TSingleTria3D.GetProjYZ :TSingleTria2D;
+begin
+     with Poin1 do Result.Poin1 := TSingle2D.Create( Y, Z );
+     with Poin2 do Result.Poin2 := TSingle2D.Create( Y, Z );
+     with Poin3 do Result.Poin3 := TSingle2D.Create( Y, Z );
+end;
+
+function TSingleTria3D.GetProjZX :TSingleTria2D;
+begin
+     with Poin1 do Result.Poin1 := TSingle2D.Create( Z, X );
+     with Poin2 do Result.Poin2 := TSingle2D.Create( Z, X );
+     with Poin3 do Result.Poin3 := TSingle2D.Create( Z, X );
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingleTria3D.GetAABB :TSingleArea3D;
+begin
+     with Result do
+     begin
+          ProjX := TSingleArea.Create( Poin1.X, Poin2.X, Poin3.X );
+          ProjY := TSingleArea.Create( Poin1.Y, Poin2.Y, Poin3.Y );
+          ProjZ := TSingleArea.Create( Poin1.Z, Poin2.Z, Poin3.Z );
+     end;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+///////////////////////////////////////////////////////////////////////// 演算子
+
+class operator TSingleTria3D.Negative( const V_:TSingleTria3D ) :TSingleTria3D;
+begin
+     with Result do
+     begin
+          Poin1 := -V_.Poin1;
+          Poin2 := -V_.Poin2;
+          Poin3 := -V_.Poin3;
+     end;
+end;
+
+class operator TSingleTria3D.Positive( const V_:TSingleTria3D ) :TSingleTria3D;
+begin
+     with Result do
+     begin
+          Poin1 := +V_.Poin1;
+          Poin2 := +V_.Poin2;
+          Poin3 := +V_.Poin3;
+     end;
+end;
+
+class operator TSingleTria3D.Add( const A_,B_:TSingleTria3D ) :TSingleTria3D;
+begin
+     with Result do
+     begin
+          Poin1 := A_.Poin1 + B_.Poin1;
+          Poin2 := A_.Poin2 + B_.Poin2;
+          Poin3 := A_.Poin3 + B_.Poin3;
+     end;
+end;
+
+class operator TSingleTria3D.Subtract( const A_,B_:TSingleTria3D ) :TSingleTria3D;
+begin
+     with Result do
+     begin
+          Poin1 := A_.Poin1 - B_.Poin1;
+          Poin2 := A_.Poin2 - B_.Poin2;
+          Poin3 := A_.Poin3 - B_.Poin3;
+     end;
+end;
+
+class operator TSingleTria3D.Multiply( const A_:TSingleTria3D; const B_:Single ) :TSingleTria3D;
+begin
+     with Result do
+     begin
+          Poin1 := A_.Poin1 * B_;
+          Poin2 := A_.Poin2 * B_;
+          Poin3 := A_.Poin3 * B_;
+     end;
+end;
+
+class operator TSingleTria3D.Multiply( const A_:Single; const B_:TSingleTria3D ) :TSingleTria3D;
+begin
+     with Result do
+     begin
+          Poin1 := A_ * B_.Poin1;
+          Poin2 := A_ * B_.Poin2;
+          Poin3 := A_ * B_.Poin3;
+     end;
+end;
+
+class operator TSingleTria3D.Divide( const A_:TSingleTria3D; const B_:Single ) :TSingleTria3D;
+begin
+     with Result do
+     begin
+          Poin1 := A_.Poin1 / B_;
+          Poin2 := A_.Poin2 / B_;
+          Poin3 := A_.Poin3 / B_;
+     end;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TSingleTria3D.ProjVec( const Vec_:TSingle3D ) :TSingleArea;
+var
+   C1, C2, C3 :Single;
+begin
+     C1 := DotProduct( Vec_, Poin1 );
+     C2 := DotProduct( Vec_, Poin2 );
+     C3 := DotProduct( Vec_, Poin3 );
+
+     Result := TSingleArea.Create( C1, C2, C3 );
+end;
+
+function TSingleTria3D.CollisionPEF( const Area_:TSingleArea3D ) :Boolean;
+//······································
+     function CheckPlane :Boolean;
+     var
+        N, B0, B1, V0, V1 :TSingle3D;
+        I0, I1 :Byte;
+        C0, C1 :Single;
+     begin
+          N := Norv;
+
+          I1 := N.Orthant;
+          I0 := I1 xor 7;
+
+          B0 := Area_.Poin[ I0 ];
+          B1 := Area_.Poin[ I1 ];
+
+          V0 := Poin1.VectorTo( B0 );
+          V1 := Poin1.VectorTo( B1 );
+
+          C0 := DotProduct( N, V0 );
+          C1 := DotProduct( N, V1 );
+
+          Result := ( C0 * C1 ) < 0;
+     end;
+//······································
+begin
+     Result := AABB.Collision( Area_ )
+           and CheckPlane
+           and ProjXY.ColliEdge( Area_.ProjXY )
+           and ProjYZ.ColliEdge( Area_.ProjYZ )
+           and ProjZX.ColliEdge( Area_.ProjZX );
+end;
+
+function TSingleTria3D.CollisionSAT( const Area_:TSingleArea3D ) :Boolean;
+//······································
+     function CheckPlane :Boolean;
+     var
+        N, B0, B1, V0, V1 :TSingle3D;
+        I0, I1 :Byte;
+        C0, C1 :Single;
+     begin
+          N := Norv;
+
+          I1 := N.Orthant;
+          I0 := I1 xor 7;
+
+          B0 := Area_.Poin[ I0 ];
+          B1 := Area_.Poin[ I1 ];
+
+          V0 := Poin1.VectorTo( B0 );
+          V1 := Poin1.VectorTo( B1 );
+
+          C0 := DotProduct( N, V0 );
+          C1 := DotProduct( N, V1 );
+
+          Result := ( C0 * C1 ) < 0;
+     end;
+     //·································
+     function Check( const Vec_:TSingle3D ) :Boolean;
+     begin
+          Result := ProjVec( Vec_ ).Collision( Area_.ProjVec( Vec_ ) );
+     end;
+//······································
+const
+     AX :TSingle3D = ( X:1; Y:0; Z:0 );
+     AY :TSingle3D = ( X:0; Y:1; Z:0 );
+     AZ :TSingle3D = ( X:0; Y:0; Z:1 );
+var
+   E1, E2, E3 :TSingle3D;
+begin
+     E1 := Edge1;
+     E2 := Edge2;
+     E3 := Edge3;
+
+     Result := Check( Norv )
+           and Check( AX )
+           and Check( AY )
+           and Check( AZ )
+           and Check( CrossProduct( AX, E1 ) )
+           and Check( CrossProduct( AX, E2 ) )
+           and Check( CrossProduct( AX, E3 ) )
+           and Check( CrossProduct( AY, E1 ) )
+           and Check( CrossProduct( AY, E2 ) )
+           and Check( CrossProduct( AY, E3 ) )
+           and Check( CrossProduct( AZ, E1 ) )
+           and Check( CrossProduct( AZ, E2 ) )
+           and Check( CrossProduct( AZ, E3 ) );
+end;
+
+//------------------------------------------------------------------------------
+
+class function TSingleTria3D.RandG :TSingleTria3D;
+begin
+     with Result do
+     begin
+          Poin1 := TSingle3D.RandG;
+          Poin2 := TSingle3D.RandG;
+          Poin3 := TSingle3D.RandG;
+     end;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleTria3D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TDoubleTria3D.GetNorv :TDouble3D;
+begin
+     Result := CrossProduct( Edge2, Edge3 );
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleTria3D.GetEdge1 :TDouble3D;
+begin
+     Result := Poin2.VectorTo( Poin3 );
+end;
+
+function TDoubleTria3D.GetEdge2 :TDouble3D;
+begin
+     Result := Poin3.VectorTo( Poin1 );
+end;
+
+function TDoubleTria3D.GetEdge3 :TDouble3D;
+begin
+     Result := Poin1.VectorTo( Poin2 );
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleTria3D.GetProjXY :TDoubleTria2D;
+begin
+     with Poin1 do Result.Poin1 := TDouble2D.Create( X, Y );
+     with Poin2 do Result.Poin2 := TDouble2D.Create( X, Y );
+     with Poin3 do Result.Poin3 := TDouble2D.Create( X, Y );
+end;
+
+function TDoubleTria3D.GetProjYZ :TDoubleTria2D;
+begin
+     with Poin1 do Result.Poin1 := TDouble2D.Create( Y, Z );
+     with Poin2 do Result.Poin2 := TDouble2D.Create( Y, Z );
+     with Poin3 do Result.Poin3 := TDouble2D.Create( Y, Z );
+end;
+
+function TDoubleTria3D.GetProjZX :TDoubleTria2D;
+begin
+     with Poin1 do Result.Poin1 := TDouble2D.Create( Z, X );
+     with Poin2 do Result.Poin2 := TDouble2D.Create( Z, X );
+     with Poin3 do Result.Poin3 := TDouble2D.Create( Z, X );
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleTria3D.GetAABB :TDoubleArea3D;
+begin
+     with Result do
+     begin
+          ProjX := TDoubleArea.Create( Poin1.X, Poin2.X, Poin3.X );
+          ProjY := TDoubleArea.Create( Poin1.Y, Poin2.Y, Poin3.Y );
+          ProjZ := TDoubleArea.Create( Poin1.Z, Poin2.Z, Poin3.Z );
+     end;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+///////////////////////////////////////////////////////////////////////// 演算子
+
+class operator TDoubleTria3D.Negative( const V_:TDoubleTria3D ) :TDoubleTria3D;
+begin
+     with Result do
+     begin
+          Poin1 := -V_.Poin1;
+          Poin2 := -V_.Poin2;
+          Poin3 := -V_.Poin3;
+     end;
+end;
+
+class operator TDoubleTria3D.Positive( const V_:TDoubleTria3D ) :TDoubleTria3D;
+begin
+     with Result do
+     begin
+          Poin1 := +V_.Poin1;
+          Poin2 := +V_.Poin2;
+          Poin3 := +V_.Poin3;
+     end;
+end;
+
+class operator TDoubleTria3D.Add( const A_,B_:TDoubleTria3D ) :TDoubleTria3D;
+begin
+     with Result do
+     begin
+          Poin1 := A_.Poin1 + B_.Poin1;
+          Poin2 := A_.Poin2 + B_.Poin2;
+          Poin3 := A_.Poin3 + B_.Poin3;
+     end;
+end;
+
+class operator TDoubleTria3D.Subtract( const A_,B_:TDoubleTria3D ) :TDoubleTria3D;
+begin
+     with Result do
+     begin
+          Poin1 := A_.Poin1 - B_.Poin1;
+          Poin2 := A_.Poin2 - B_.Poin2;
+          Poin3 := A_.Poin3 - B_.Poin3;
+     end;
+end;
+
+class operator TDoubleTria3D.Multiply( const A_:TDoubleTria3D; const B_:Double ) :TDoubleTria3D;
+begin
+     with Result do
+     begin
+          Poin1 := A_.Poin1 * B_;
+          Poin2 := A_.Poin2 * B_;
+          Poin3 := A_.Poin3 * B_;
+     end;
+end;
+
+class operator TDoubleTria3D.Multiply( const A_:Double; const B_:TDoubleTria3D ) :TDoubleTria3D;
+begin
+     with Result do
+     begin
+          Poin1 := A_ * B_.Poin1;
+          Poin2 := A_ * B_.Poin2;
+          Poin3 := A_ * B_.Poin3;
+     end;
+end;
+
+class operator TDoubleTria3D.Divide( const A_:TDoubleTria3D; const B_:Double ) :TDoubleTria3D;
+begin
+     with Result do
+     begin
+          Poin1 := A_.Poin1 / B_;
+          Poin2 := A_.Poin2 / B_;
+          Poin3 := A_.Poin3 / B_;
+     end;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TDoubleTria3D.ProjVec( const Vec_:TDouble3D ) :TDoubleArea;
+var
+   C1, C2, C3 :Double;
+begin
+     C1 := DotProduct( Vec_, Poin1 );
+     C2 := DotProduct( Vec_, Poin2 );
+     C3 := DotProduct( Vec_, Poin3 );
+
+     Result := TDoubleArea.Create( C1, C2, C3 );
+end;
+
+function TDoubleTria3D.CollisionPEF( const Area_:TDoubleArea3D ) :Boolean;
+//······································
+     function CheckPlane :Boolean;
+     var
+        N, B0, B1, V0, V1 :TDouble3D;
+        I0, I1 :Byte;
+        C0, C1 :Double;
+     begin
+          N := Norv;
+
+          I1 := N.Orthant;
+          I0 := I1 xor 7;
+
+          B0 := Area_.Poin[ I0 ];
+          B1 := Area_.Poin[ I1 ];
+
+          V0 := Poin1.VectorTo( B0 );
+          V1 := Poin1.VectorTo( B1 );
+
+          C0 := DotProduct( N, V0 );
+          C1 := DotProduct( N, V1 );
+
+          Result := ( C0 * C1 ) < 0;
+     end;
+//······································
+begin
+     Result := AABB.Collision( Area_ )
+           and CheckPlane
+           and ProjXY.ColliEdge( Area_.ProjXY )
+           and ProjYZ.ColliEdge( Area_.ProjYZ )
+           and ProjZX.ColliEdge( Area_.ProjZX );
+end;
+
+function TDoubleTria3D.CollisionSAT( const Area_:TDoubleArea3D ) :Boolean;
+//······································
+     function CheckPlane :Boolean;
+     var
+        N, B0, B1, V0, V1 :TDouble3D;
+        I0, I1 :Byte;
+        C0, C1 :Double;
+     begin
+          N := Norv;
+
+          I1 := N.Orthant;
+          I0 := I1 xor 7;
+
+          B0 := Area_.Poin[ I0 ];
+          B1 := Area_.Poin[ I1 ];
+
+          V0 := Poin1.VectorTo( B0 );
+          V1 := Poin1.VectorTo( B1 );
+
+          C0 := DotProduct( N, V0 );
+          C1 := DotProduct( N, V1 );
+
+          Result := ( C0 * C1 ) < 0;
+     end;
+     //·································
+     function Check( const Vec_:TDouble3D ) :Boolean;
+     begin
+          Result := ProjVec( Vec_ ).Collision( Area_.ProjVec( Vec_ ) );
+     end;
+//······································
+const
+     AX :TDouble3D = ( X:1; Y:0; Z:0 );
+     AY :TDouble3D = ( X:0; Y:1; Z:0 );
+     AZ :TDouble3D = ( X:0; Y:0; Z:1 );
+var
+   E1, E2, E3 :TDouble3D;
+begin
+     E1 := Edge1;
+     E2 := Edge2;
+     E3 := Edge3;
+
+     Result := AABB.Collision( Area_ )          // Check( AX ) and Check( AY ) and Check( AZ )
+           and CheckPlane                       // Check( Norv )
+           and Check( CrossProduct( AX, E1 ) )
+           and Check( CrossProduct( AX, E2 ) )
+           and Check( CrossProduct( AX, E3 ) )
+           and Check( CrossProduct( AY, E1 ) )
+           and Check( CrossProduct( AY, E2 ) )
+           and Check( CrossProduct( AY, E3 ) )
+           and Check( CrossProduct( AZ, E1 ) )
+           and Check( CrossProduct( AZ, E2 ) )
+           and Check( CrossProduct( AZ, E3 ) );
+end;
+
+//------------------------------------------------------------------------------
+
+class function TDoubleTria3D.RandG :TDoubleTria3D;
+begin
+     with Result do
+     begin
+          Poin1 := TDouble3D.RandG;
+          Poin2 := TDouble3D.RandG;
+          Poin3 := TDouble3D.RandG;
      end;
 end;
 
