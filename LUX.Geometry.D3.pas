@@ -229,10 +229,13 @@ function Refract( const Ray_,Nor_:TDouble3D; const RaI_:Double; out RaV_:TDouble
 function SolidAngle( const P1_,P2_,P3_:TSingle3D; const P_:TSingle3D ) :Single; overload;
 function SolidAngle( const P1_,P2_,P3_:TDouble3D; const P_:TDouble3D ) :Double; overload;
 
+function BSplin4( const T1_,T2_,T3_,T4_:TSingleTria3D; const T_:Single ) :TSingleTria3D; overload;
+function BSplin4( const T1_,T2_,T3_,T4_:TDoubleTria3D; const T_:Double ) :TDoubleTria3D; overload;
+
 implementation //############################################################### ■
 
 uses System.Math,
-     LUX.M3;
+     LUX.M3, LUX.D4, LUX.Curve.T1.D1;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -1468,6 +1471,26 @@ begin
         + L2 * DotProduct( V3, V1 );
 
      Result := 2 * ArcTan2( A, B );
+end;
+
+//------------------------------------------------------------------------------
+
+function BSplin4( const T1_,T2_,T3_,T4_:TSingleTria3D; const T_:Single ) :TSingleTria3D;
+var
+   Ws :TSingle4D;
+begin
+     BSplin4( T_, Ws );
+
+     Result := T1_ * Ws[ 1 ] + T2_ * Ws[ 2 ] + T3_ * Ws[ 3 ] + T4_ * Ws[ 4 ];
+end;
+
+function BSplin4( const T1_,T2_,T3_,T4_:TDoubleTria3D; const T_:Double ) :TDoubleTria3D;
+var
+   Ws :TDouble4D;
+begin
+     BSplin4( T_, Ws );
+
+     Result := T1_ * Ws[ 1 ] + T2_ * Ws[ 2 ] + T3_ * Ws[ 3 ] + T4_ * Ws[ 4 ];
 end;
 
 //############################################################################## □
