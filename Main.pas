@@ -11,7 +11,8 @@ uses
   LUX.GPU.OpenGL.Scener,
   LUX.GPU.OpenGL.Camera,
   LUX.GPU.OpenGL.Matery.Preset,
-  LUX.GPU.OpenGL.Shaper;
+  LUX.GPU.OpenGL.Shaper,
+  LUX.Collision;
 
 type
   TForm1 = class(TForm)
@@ -34,8 +35,8 @@ type
     { public êÈåæ }
     _Scener  :TGLScener;
     _Camera  :TGLCameraPers;
-    _Shaper1 :TGLShaperFace;
-    _Shaper2 :TGLShaperFace;
+    _Shaper1 :TGLOctree;
+    _Shaper2 :TGLOctree;
   end;
 
 var
@@ -67,8 +68,8 @@ procedure TForm1.FormCreate(Sender: TObject);
 begin
      _Scener  := TGLScener    .Create           ;
      _Camera  := TGLCameraPers.Create( _Scener );
-     _Shaper1 := TGLShaperFace.Create( _Scener );
-     _Shaper2 := TGLShaperFace.Create( _Scener );
+     _Shaper1 := TGLOctree    .Create( _Scener );
+     _Shaper2 := TGLOctree    .Create( _Scener );
 
      with _Camera do
      begin
@@ -91,7 +92,7 @@ begin
           LoadFromFileSTL( '..\..\_DATA\Shaper2.stl' );
      end;
 
-     _MouseA := TSingle2D.Create( -30, +30 );
+     _MouseA := TSingle2D.Create( 0, +30 );
 
      InitCamera;
 end;
