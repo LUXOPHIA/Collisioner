@@ -247,7 +247,7 @@ constructor TGLCameraPers.Create;
 begin
      inherited;
 
-     Angl := 90{°};
+     Angl := DegToRad( 60{°} );
 end;
 
 destructor TGLCameraPers.Destroy;

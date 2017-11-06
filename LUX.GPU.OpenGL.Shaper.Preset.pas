@@ -73,6 +73,44 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Color :TAlphaColorF read GetColor write SetColor;
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLDotCube
+
+     TGLDotCube = class( TGLShaperPoin )
+     private
+       ///// メソッド
+       procedure MakeModel;
+     protected
+       _SizeX :Single;
+       _SizeY :Single;
+       _SizeZ :Single;
+       _DivNX :Integer;
+       _DivNY :Integer;
+       _DivNZ :Integer;
+       ///// アクセス
+       function GetSizeX :Single;
+       procedure SetSizeX( const SizeX_:Single );
+       function GetSizeY :Single;
+       procedure SetSizeY( const SizeY_:Single );
+       function GetSizeZ :Single;
+       procedure SetSizeZ( const SizeZ_:Single );
+       function GetDivNX :Integer;
+       procedure SetDivNX( const DivNX_:Integer );
+       function GetDivNY :Integer;
+       procedure SetDivNY( const DivNY_:Integer );
+       function GetDivNZ :Integer;
+       procedure SetDivNZ( const DivNZ_:Integer );
+     public
+       constructor Create; override;
+       destructor Destroy; override;
+       ///// プロパティ
+       property SizeX :Single  read GetSizeX write SetSizeX;
+       property SizeY :Single  read GetSizeY write SetSizeY;
+       property SizeZ :Single  read GetSizeZ write SetSizeZ;
+       property DivNX :Integer read GetDivNX write SetDivNX;
+       property DivNY :Integer read GetDivNY write SetDivNY;
+       property DivNZ :Integer read GetDivNZ write SetDivNZ;
+     end;
+
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
 
 //var //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【変数】
@@ -278,6 +316,126 @@ begin
 end;
 
 destructor TGLShaperLineCube.Destroy;
+begin
+
+     inherited;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLDotCube
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLDotCube.MakeModel;
+var
+   X, Y, Z, I :Integer;
+   P :TSingle3D;
+begin
+     PosBuf.Count := ( _DivNZ + 1 ) * ( _DivNY + 1 ) * ( _DivNX + 1 );
+
+     I := 0;
+     for Z := 0 to _DivNZ do
+     begin
+          P.Z := _SizeZ / _DivNZ * Z - _SizeZ / 2;
+
+          for Y := 0 to _DivNY do
+          begin
+               P.Y := _SizeY / _DivNY * Y - _SizeY / 2;
+
+               for X := 0 to _DivNX do
+               begin
+                    P.X := _SizeX / _DivNX * X - _SizeX / 2;
+
+                    PosBuf[ I ] := P;  Inc( I );
+               end;
+          end;
+     end;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLDotCube.GetSizeX :Single;
+begin
+     Result := _SizeX;
+end;
+
+procedure TGLDotCube.SetSizeX( const SizeX_:Single );
+begin
+     _SizeX := SizeX_;  MakeModel;
+end;
+
+function TGLDotCube.GetSizeY :Single;
+begin
+     Result := _SizeY;
+end;
+
+procedure TGLDotCube.SetSizeY( const SizeY_:Single );
+begin
+     _SizeY := SizeY_;  MakeModel;
+end;
+
+function TGLDotCube.GetSizeZ :Single;
+begin
+     Result := _SizeZ;
+end;
+
+procedure TGLDotCube.SetSizeZ( const SizeZ_:Single );
+begin
+     _SizeZ := SizeZ_;  MakeModel;
+end;
+
+//------------------------------------------------------------------------------
+
+function TGLDotCube.GetDivNX :Integer;
+begin
+     Result := _DivNX;
+end;
+
+procedure TGLDotCube.SetDivNX( const DivNX_:Integer );
+begin
+     _DivNX := DivNX_;  MakeModel;
+end;
+
+function TGLDotCube.GetDivNY :Integer;
+begin
+     Result := _DivNY;
+end;
+
+procedure TGLDotCube.SetDivNY( const DivNY_:Integer );
+begin
+     _DivNY := DivNY_;  MakeModel;
+end;
+
+function TGLDotCube.GetDivNZ :Integer;
+begin
+     Result := _DivNZ;
+end;
+
+procedure TGLDotCube.SetDivNZ( const DivNZ_:Integer );
+begin
+     _DivNZ := DivNZ_;  MakeModel;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLDotCube.Create;
+begin
+     inherited;
+
+     _Matery := TGLMateryColor.Create;
+
+     SizeX := 10;
+     SizeY := 10;
+     SizeZ := 10;
+     DivNX := 10;
+     DivNY := 10;
+     DivNZ := 10;
+end;
+
+destructor TGLDotCube.Destroy;
 begin
 
      inherited;
