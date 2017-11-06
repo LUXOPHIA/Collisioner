@@ -354,7 +354,7 @@ function TSingleTria2D.ColliEdge( const Area_:TSingleArea2D ) :Boolean;
 
           V := P.VectorTo( B );
 
-          Result := DotProduct( N, V ) > 0;
+          Result := DotProduct( N, V ) >= 0;
      end;
 //······································
 begin
