@@ -752,7 +752,7 @@ end;
 
 function TSingleArea.Collision( const Area_:TSingleArea ) :Boolean;
 begin
-     Result := ( Area_.Min < Max ) and ( Min < Area_.Max );
+     Result := ( Area_.Min <= Max ) and ( Min <= Area_.Max );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea
