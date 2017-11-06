@@ -124,14 +124,25 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSize( const Size_:Single ); inline;
        function GetUnitor :TSingle3D; inline;
        procedure SetUnitor( const Unitor_:TSingle3D ); inline;
+       function GetOrthant :Byte;
+       function GetProjXY :TSingle2D; inline;
+       procedure SetProjXY( const ProjXY_:TSingle2D ); inline;
+       function GetProjYZ :TSingle2D; inline;
+       procedure SetProjYZ( const ProjYZ_:TSingle2D ); inline;
+       function GetProjZX :TSingle2D; inline;
+       procedure SetProjZX( const ProjZX_:TSingle2D ); inline;
      public
        constructor Create( const V_:Single ); overload;
        constructor Create( const X_,Y_,Z_:Single ); overload;
        ///// プロパティ
-       property _s[ const I_:Integer ] :Single    read GetV      write SetV     ; default;
-       property Siz2                   :Single    read GetSiz2   write SetSiz2  ;
-       property Size                   :Single    read GetSize   write SetSize  ;
-       property Unitor                 :TSingle3D read GetUnitor write SetUnitor;
+       property _s[ const I_:Integer ] :Single    read GetV       write SetV     ; default;
+       property Siz2                   :Single    read GetSiz2    write SetSiz2  ;
+       property Size                   :Single    read GetSize    write SetSize  ;
+       property Unitor                 :TSingle3D read GetUnitor  write SetUnitor;
+       property Orthant                :Byte      read GetOrthant                ;
+       property ProjXY                 :TSingle2D read GetProjXY  write SetProjXY;
+       property ProjYZ                 :TSingle2D read GetProjYZ  write SetProjYZ;
+       property ProjZX                 :TSingle2D read GetProjZX  write SetProjZX;
        ///// 演算子
        class operator Negative( const V_:TSingle3D ) :TSingle3D; inline;
        class operator Positive( const V_:TSingle3D ) :TSingle3D; inline;
@@ -185,14 +196,25 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSize( const Size_:Double ); inline;
        function GetUnitor :TDouble3D; inline;
        procedure SetUnitor( const Unitor_:TDouble3D ); inline;
+       function GetOrthant :Byte;
+       function GetProjXY :TDouble2D; inline;
+       procedure SetProjXY( const ProjXY_:TDouble2D ); inline;
+       function GetProjYZ :TDouble2D; inline;
+       procedure SetProjYZ( const ProjYZ_:TDouble2D ); inline;
+       function GetProjZX :TDouble2D; inline;
+       procedure SetProjZX( const ProjZX_:TDouble2D ); inline;
      public
        constructor Create( const V_:Double ); overload;
        constructor Create( const X_,Y_,Z_:Double ); overload;
        ///// プロパティ
-       property _s[ const I_:Integer ] :Double    read GetV      write SetV     ; default;
-       property Siz2                   :Double    read GetSiz2   write SetSiz2  ;
-       property Size                   :Double    read GetSize   write SetSize  ;
-       property Unitor                 :TDouble3D read GetUnitor write SetUnitor;
+       property _s[ const I_:Integer ] :Double    read GetV       write SetV     ; default;
+       property Siz2                   :Double    read GetSiz2    write SetSiz2  ;
+       property Size                   :Double    read GetSize    write SetSize  ;
+       property Unitor                 :TDouble3D read GetUnitor  write SetUnitor;
+       property Orthant                :Byte      read GetOrthant                ;
+       property ProjXY                 :TDouble2D read GetProjXY  write SetProjXY;
+       property ProjYZ                 :TDouble2D read GetProjYZ  write SetProjYZ;
+       property ProjZX                 :TDouble2D read GetProjZX  write SetProjZX;
        ///// 演算子
        class operator Negative( const V_:TDouble3D ) :TDouble3D; inline;
        class operator Positive( const V_:TDouble3D ) :TDouble3D; inline;
@@ -397,6 +419,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetSizeX :Single;
        function GetSizeY :Single;
        function GetSizeZ :Single;
+       function GetProjX :TSingleArea;
+       procedure SetProjX( const ProjX_:TSingleArea );
+       function GetProjY :TSingleArea;
+       procedure SetProjY( const ProjY_:TSingleArea );
+       function GetProjZ :TSingleArea;
+       procedure SetProjZ( const ProjZ_:TSingleArea );
+       function GetCenter :TSingle3D;
+       function GetProjXY :TSingleArea2D;
+       function GetProjYZ :TSingleArea2D;
+       function GetProjZX :TSingleArea2D;
      public
        Min :TSingle3D;
        Max :TSingle3D;
@@ -406,18 +438,27 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                                  MaxX_,MaxY_,MaxZ_:Single ); overload;
        constructor Create( const Min_,Max_:TSingle3D ); overload;
        ///// プロパティ
-       property Poin[ const I_:Integer ] :TSingle3D read GetPoin ;
-       property Sign                     :ShortInt  read GetSign ;
-       property SizeX                    :Single    read GetSizeX;
-       property SizeY                    :Single    read GetSizeY;
-       property SizeZ                    :Single    read GetSizeZ;
-
+       property Poin[ const I_:Integer ] :TSingle3D     read GetPoin                ;
+       property Sign                     :ShortInt      read GetSign                ;
+       property SizeX                    :Single        read GetSizeX               ;
+       property SizeY                    :Single        read GetSizeY               ;
+       property SizeZ                    :Single        read GetSizeZ               ;
+       property ProjX                    :TSingleArea   read GetProjX write SetProjX;
+       property ProjY                    :TSingleArea   read GetProjY write SetProjY;
+       property ProjZ                    :TSingleArea   read GetProjZ write SetProjZ;
+       property Center                   :TSingle3D     read GetCenter              ;
+       property ProjXY                   :TSingleArea2D read GetProjXY              ;
+       property ProjYZ                   :TSingleArea2D read GetProjYZ              ;
+       property ProjZX                   :TSingleArea2D read GetProjZX              ;
        ///// 定数
        class function NeInf :TSingleArea3D; static;
        class function NeMax :TSingleArea3D; static;
        class function Zero  :TSingleArea3D; static;
        class function PoMax :TSingleArea3D; static;
        class function PoInf :TSingleArea3D; static;
+       ///// メソッド
+       function ProjVec( const Vec_:TSingle3D ) :TSingleArea;
+       function Collision( const Area_:TSingleArea3D ) :Boolean;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea3D
@@ -430,6 +471,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetSizeX :Double;
        function GetSizeY :Double;
        function GetSizeZ :Double;
+       function GetProjX :TDoubleArea;
+       procedure SetProjX( const ProjX_:TDoubleArea );
+       function GetProjY :TDoubleArea;
+       procedure SetProjY( const ProjY_:TDoubleArea );
+       function GetProjZ :TDoubleArea;
+       procedure SetProjZ( const ProjZ_:TDoubleArea );
+       function GetCenter :TDouble3D;
+       function GetProjXY :TDoubleArea2D;
+       function GetProjYZ :TDoubleArea2D;
+       function GetProjZX :TDoubleArea2D;
      public
        Min :TDouble3D;
        Max :TDouble3D;
@@ -439,17 +490,27 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                                  MaxX_,MaxY_,MaxZ_:Double ); overload;
        constructor Create( const Min_,Max_:TDouble3D ); overload;
        ///// プロパティ
-       property Poin[ const I_:Integer ] :TDouble3D read GetPoin ;
-       property Sign                     :ShortInt  read GetSign ;
-       property SizeX                    :Double    read GetSizeX;
-       property SizeY                    :Double    read GetSizeY;
-       property SizeZ                    :Double    read GetSizeZ;
+       property Poin[ const I_:Integer ] :TDouble3D     read GetPoin                ;
+       property Sign                     :ShortInt      read GetSign                ;
+       property SizeX                    :Double        read GetSizeX               ;
+       property SizeY                    :Double        read GetSizeY               ;
+       property SizeZ                    :Double        read GetSizeZ               ;
+       property ProjX                    :TDoubleArea   read GetProjX write SetProjX;
+       property ProjY                    :TDoubleArea   read GetProjY write SetProjY;
+       property ProjZ                    :TDoubleArea   read GetProjZ write SetProjZ;
+       property Center                   :TDouble3D     read GetCenter              ;
+       property ProjXY                   :TDoubleArea2D read GetProjXY              ;
+       property ProjYZ                   :TDoubleArea2D read GetProjYZ              ;
+       property ProjZX                   :TDoubleArea2D read GetProjZX              ;
        ///// 定数
        class function NeInf :TDoubleArea3D; static;
        class function NeMax :TDoubleArea3D; static;
        class function Zero  :TDoubleArea3D; static;
        class function PoMax :TDoubleArea3D; static;
        class function PoInf :TDoubleArea3D; static;
+       ///// メソッド
+       function ProjVec( const Vec_:TDouble3D ) :TDoubleArea;
+       function Collision( const Area_:TDoubleArea3D ) :Boolean;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleRay3D
@@ -712,6 +773,54 @@ end;
 procedure TSingle3D.SetUnitor( const Unitor_:TSingle3D );
 begin
      Self := Size * Unitor_;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingle3D.GetOrthant :Byte;
+begin
+     Result := 0;
+     if X >= 0 then Result := Result or 1;
+     if Y >= 0 then Result := Result or 2;
+     if Z >= 0 then Result := Result or 4;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingle3D.GetProjXY :TSingle2D;
+begin
+     Result.X := X;
+     Result.Y := Y;
+end;
+
+procedure TSingle3D.SetProjXY( const ProjXY_:TSingle2D );
+begin
+     X := ProjXY_.X;
+     Y := ProjXY_.Y;
+end;
+
+function TSingle3D.GetProjYZ :TSingle2D;
+begin
+     Result.X := Y;
+     Result.Y := Z;
+end;
+
+procedure TSingle3D.SetProjYZ( const ProjYZ_:TSingle2D );
+begin
+     Y := ProjYZ_.X;
+     Z := ProjYZ_.Y;
+end;
+
+function TSingle3D.GetProjZX :TSingle2D;
+begin
+     Result.X := Z;
+     Result.Y := X;
+end;
+
+procedure TSingle3D.SetProjZX( const ProjZX_:TSingle2D );
+begin
+     Z := ProjZX_.X;
+     X := ProjZX_.Y;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -992,6 +1101,54 @@ end;
 procedure TDouble3D.SetUnitor( const Unitor_:TDouble3D );
 begin
      Self := Size * Unitor_;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDouble3D.GetOrthant :Byte;
+begin
+     Result := 0;
+     if X >= 0 then Result := Result or 1;
+     if Y >= 0 then Result := Result or 2;
+     if Z >= 0 then Result := Result or 4;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDouble3D.GetProjXY :TDouble2D;
+begin
+     Result.X := X;
+     Result.Y := Y;
+end;
+
+procedure TDouble3D.SetProjXY( const ProjXY_:TDouble2D );
+begin
+     X := ProjXY_.X;
+     Y := ProjXY_.Y;
+end;
+
+function TDouble3D.GetProjYZ :TDouble2D;
+begin
+     Result.X := Y;
+     Result.Y := Z;
+end;
+
+procedure TDouble3D.SetProjYZ( const ProjYZ_:TDouble2D );
+begin
+     Y := ProjYZ_.X;
+     Z := ProjYZ_.Y;
+end;
+
+function TDouble3D.GetProjZX :TDouble2D;
+begin
+     Result.X := Z;
+     Result.Y := X;
+end;
+
+procedure TDouble3D.SetProjZX( const ProjZX_:TDouble2D );
+begin
+     Z := ProjZX_.X;
+     X := ProjZX_.Y;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -1905,6 +2062,73 @@ begin
      Result := Max.Z - Min.Z;
 end;
 
+//------------------------------------------------------------------------------
+
+function TSingleArea3D.GetProjX :TSingleArea;
+begin
+     Result := TSingleArea.Create( Min.X, Max.X );
+end;
+
+procedure TSingleArea3D.SetProjX( const ProjX_:TSingleArea );
+begin
+     Min.X := ProjX_.Min;
+     Max.X := ProjX_.Max;
+end;
+
+function TSingleArea3D.GetProjY :TSingleArea;
+begin
+     Result := TSingleArea.Create( Min.Y, Max.Y );
+end;
+
+procedure TSingleArea3D.SetProjY( const ProjY_:TSingleArea );
+begin
+     Min.Y := ProjY_.Min;
+     Max.Y := ProjY_.Max;
+end;
+
+function TSingleArea3D.GetProjZ :TSingleArea;
+begin
+     Result := TSingleArea.Create( Min.Z, Max.Z );
+end;
+
+procedure TSingleArea3D.SetProjZ( const ProjZ_:TSingleArea );
+begin
+     Min.Z := ProjZ_.Min;
+     Max.Z := ProjZ_.Max;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingleArea3D.GetCenter :TSingle3D;
+begin
+     with Result do
+     begin
+          X := ( Min.X + Max.X ) / 2;
+          Y := ( Min.Y + Max.Y ) / 2;
+          Z := ( Min.Z + Max.Z ) / 2;
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingleArea3D.GetProjXY :TSingleArea2D;
+begin
+     Result := TSingleArea2D.Create( Min.X, Min.Y,
+                                     Max.X, Max.Y );
+end;
+
+function TSingleArea3D.GetProjYZ :TSingleArea2D;
+begin
+     Result := TSingleArea2D.Create( Min.Y, Min.Z,
+                                     Max.Y, Max.Z );
+end;
+
+function TSingleArea3D.GetProjZX :TSingleArea2D;
+begin
+     Result := TSingleArea2D.Create( Min.Z, Min.X,
+                                     Max.Z, Max.X );
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TSingleArea3D.Create( const Min_,Max_:Single );
@@ -1968,6 +2192,31 @@ begin
                                      Single.PositiveInfinity );
 end;
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TSingleArea3D.ProjVec( const Vec_:TSingle3D ) :TSingleArea;
+var
+   I0, I1 :Byte;
+begin
+     I1 := Vec_.Orthant;
+     I0 := I1 xor 7;
+
+     with Result do
+     begin
+          Min := DotProduct( Vec_, Poin[ I0 ] );
+          Max := DotProduct( Vec_, Poin[ I1 ] );
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingleArea3D.Collision( const Area_:TSingleArea3D ) :Boolean;
+begin
+     Result := ProjX.Collision( Area_.ProjX )
+           and ProjY.Collision( Area_.ProjY )
+           and ProjZ.Collision( Area_.ProjZ );
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -2021,6 +2270,73 @@ end;
 function TDoubleArea3D.GetSizeZ :Double;
 begin
      Result := Max.Z - Min.Z;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleArea3D.GetProjX :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( Min.X, Max.X );
+end;
+
+procedure TDoubleArea3D.SetProjX( const ProjX_:TDoubleArea );
+begin
+     Min.X := ProjX_.Min;
+     Max.X := ProjX_.Max;
+end;
+
+function TDoubleArea3D.GetProjY :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( Min.Y, Max.Y );
+end;
+
+procedure TDoubleArea3D.SetProjY( const ProjY_:TDoubleArea );
+begin
+     Min.Y := ProjY_.Min;
+     Max.Y := ProjY_.Max;
+end;
+
+function TDoubleArea3D.GetProjZ :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( Min.Z, Max.Z );
+end;
+
+procedure TDoubleArea3D.SetProjZ( const ProjZ_:TDoubleArea );
+begin
+     Min.Z := ProjZ_.Min;
+     Max.Z := ProjZ_.Max;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleArea3D.GetCenter :TDouble3D;
+begin
+     with Result do
+     begin
+          X := ( Min.X + Max.X ) / 2;
+          Y := ( Min.Y + Max.Y ) / 2;
+          Z := ( Min.Z + Max.Z ) / 2;
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleArea3D.GetProjXY :TDoubleArea2D;
+begin
+     Result := TDoubleArea2D.Create( Min.X, Min.Y,
+                                     Max.X, Max.Y );
+end;
+
+function TDoubleArea3D.GetProjYZ :TDoubleArea2D;
+begin
+     Result := TDoubleArea2D.Create( Min.Y, Min.Z,
+                                     Max.Y, Max.Z );
+end;
+
+function TDoubleArea3D.GetProjZX :TDoubleArea2D;
+begin
+     Result := TDoubleArea2D.Create( Min.Z, Min.X,
+                                     Max.Z, Max.X );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -2084,6 +2400,31 @@ class function TDoubleArea3D.PoInf :TDoubleArea3D;
 begin
      Result := TDoubleArea3D.Create( Double.NegativeInfinity,
                                      Double.PositiveInfinity );
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TDoubleArea3D.ProjVec( const Vec_:TDouble3D ) :TDoubleArea;
+var
+   I0, I1 :Byte;
+begin
+     I1 := Vec_.Orthant;
+     I0 := I1 xor 7;
+
+     with Result do
+     begin
+          Min := DotProduct( Vec_, Poin[ I0 ] );
+          Max := DotProduct( Vec_, Poin[ I1 ] );
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleArea3D.Collision( const Area_:TDoubleArea3D ) :Boolean;
+begin
+     Result := ProjX.Collision( Area_.ProjX )
+           and ProjY.Collision( Area_.ProjY )
+           and ProjZ.Collision( Area_.ProjZ );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleRay3D

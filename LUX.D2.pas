@@ -122,13 +122,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSize( const Size_:Single ); inline;
        function GetUnitor :TSingle2D; inline;
        procedure SetUnitor( const Unitor_:TSingle2D ); inline;
+       function GetOrthant :Byte;
      public
        constructor Create( const X_,Y_:Single );
        ///// プロパティ
-       property _s[ const I_:Integer ] :Single    read GetV      write SetV     ; default;
-       property Siz2                   :Single    read GetSiz2   write SetSiz2  ;
-       property Size                   :Single    read GetSize   write SetSize  ;
-       property Unitor                 :TSingle2D read GetUnitor write SetUnitor;
+       property _s[ const I_:Integer ] :Single    read GetV       write SetV     ; default;
+       property Siz2                   :Single    read GetSiz2    write SetSiz2  ;
+       property Size                   :Single    read GetSize    write SetSize  ;
+       property Unitor                 :TSingle2D read GetUnitor  write SetUnitor;
+       property Orthant                :Byte      read GetOrthant                ;
        ///// 演算子
        class operator Negative( const V_:TSingle2D ) :TSingle2D; inline;
        class operator Positive( const V_:TSingle2D ) :TSingle2D; inline;
@@ -180,13 +182,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSize( const Size_:Double ); inline;
        function GetUnitor :TDouble2D; inline;
        procedure SetUnitor( const Unitor_:TDouble2D ); inline;
+       function GetOrthant :Byte;
      public
        constructor Create( const X_,Y_:Double );
        ///// プロパティ
-       property _s[ const I_:Integer ] :Double    read GetV      write SetV     ; default;
-       property Siz2                   :Double    read GetSiz2   write SetSiz2  ;
-       property Size                   :Double    read GetSize   write SetSize  ;
-       property Unitor                 :TDouble2D read GetUnitor write SetUnitor;
+       property _s[ const I_:Integer ] :Double    read GetV       write SetV     ; default;
+       property Siz2                   :Double    read GetSiz2    write SetSiz2  ;
+       property Size                   :Double    read GetSize    write SetSize  ;
+       property Unitor                 :TDouble2D read GetUnitor  write SetUnitor;
+       property Orthant                :Byte      read GetOrthant                ;
        ///// 演算子
        class operator Negative( const V_:TDouble2D ) :TDouble2D; inline;
        class operator Positive( const V_:TDouble2D ) :TDouble2D; inline;
@@ -551,6 +555,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSizeX( const SizeX_:Single );
        function GetSizeY :Single;
        procedure SetSizeY( const SizeY_:Single );
+       function GetProjX :TSingleArea;
+       procedure SetProjX( const ProjX_:TSingleArea );
+       function GetProjY :TSingleArea;
+       procedure SetProjY( const ProjY_:TSingleArea );
      public
        Min :TSingle2D;
        Max :TSingle2D;
@@ -560,15 +568,19 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                                  MaxX_,MaxY_:Single ); overload;
        constructor Create( const Min_,Max_:TSingle2D ); overload;
        ///// プロパティ
-       property Poin[ const I_:Integer ] :TSingle2D read GetPoin                ;
-       property SizeX                    :Single    read GetSizeX write SetSizeX;
-       property SizeY                    :Single    read GetSizeY write SetSizeY;
+       property Poin[ const I_:Integer ] :TSingle2D   read GetPoin                ;
+       property SizeX                    :Single      read GetSizeX write SetSizeX;
+       property SizeY                    :Single      read GetSizeY write SetSizeY;
+       property ProjX                    :TSingleArea read GetProjX write SetProjX;
+       property ProjY                    :TSingleArea read GetProjY write SetProjY;
        ///// 定数
        class function NeInf :TSingleArea2D; inline; static;
        class function NeMax :TSingleArea2D; inline; static;
        class function Zero  :TSingleArea2D; inline; static;
        class function PoMax :TSingleArea2D; inline; static;
        class function PoInf :TSingleArea2D; inline; static;
+       ///// メソッド
+       function Collision( const Area_:TSingleArea2D ) :Boolean;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea2D
@@ -581,6 +593,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSizeX( const SizeX_:Double );
        function GetSizeY :Double;
        procedure SetSizeY( const SizeY_:Double );
+       function GetProjX :TDoubleArea;
+       procedure SetProjX( const ProjX_:TDoubleArea );
+       function GetProjY :TDoubleArea;
+       procedure SetProjY( const ProjY_:TDoubleArea );
      public
        Min :TDouble2D;
        Max :TDouble2D;
@@ -590,15 +606,19 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                                  MaxX_,MaxY_:Double ); overload;
        constructor Create( const Min_,Max_:TDouble2D ); overload;
        ///// プロパティ
-       property Poin[ const I_:Integer ] :TDouble2D read GetPoin                ;
-       property SizeX                    :Double    read GetSizeX write SetSizeX;
-       property SizeY                    :Double    read GetSizeY write SetSizeY;
+       property Poin[ const I_:Integer ] :TDouble2D   read GetPoin                ;
+       property SizeX                    :Double      read GetSizeX write SetSizeX;
+       property SizeY                    :Double      read GetSizeY write SetSizeY;
+       property ProjX                    :TDoubleArea read GetProjX write SetProjX;
+       property ProjY                    :TDoubleArea read GetProjY write SetProjY;
        ///// 定数
        class function NeInf :TDoubleArea2D; inline; static;
        class function NeMax :TDoubleArea2D; inline; static;
        class function Zero  :TDoubleArea2D; inline; static;
        class function PoMax :TDoubleArea2D; inline; static;
        class function PoInf :TDoubleArea2D; inline; static;
+       ///// メソッド
+       function Collision( const Area_:TDoubleArea2D ) :Boolean;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -826,6 +846,15 @@ end;
 procedure TSingle2D.SetUnitor( const Unitor_:TSingle2D );
 begin
      Self := Size * Unitor_;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingle2D.GetOrthant :Byte;
+begin
+     Result := 0;
+     if X >= 0 then Result := Result or 1;
+     if Y >= 0 then Result := Result or 2;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -1066,6 +1095,15 @@ end;
 procedure TDouble2D.SetUnitor( const Unitor_:TDouble2D );
 begin
      Self := Size * Unitor_;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDouble2D.GetOrthant :Byte;
+begin
+     Result := 0;
+     if X >= 0 then Result := Result or 1;
+     if Y >= 0 then Result := Result or 2;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -2306,6 +2344,30 @@ begin
      Max.Y := C + S;
 end;
 
+//------------------------------------------------------------------------------
+
+function TSingleArea2D.GetProjX :TSingleArea;
+begin
+     Result := TSingleArea.Create( Min.X, Max.X );
+end;
+
+procedure TSingleArea2D.SetProjX( const ProjX_:TSingleArea );
+begin
+     Min.X := ProjX_.Min;
+     Max.X := ProjX_.Max;
+end;
+
+function TSingleArea2D.GetProjY :TSingleArea;
+begin
+     Result := TSingleArea.Create( Min.Y, Max.Y );
+end;
+
+procedure TSingleArea2D.SetProjY( const ProjY_:TSingleArea );
+begin
+     Min.Y := ProjY_.Min;
+     Max.Y := ProjY_.Max;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TSingleArea2D.Create( const Min_,Max_:Single );
@@ -2367,6 +2429,14 @@ begin
                                      Single.PositiveInfinity );
 end;
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TSingleArea2D.Collision( const Area_:TSingleArea2D ) :Boolean;
+begin
+     Result := ProjX.Collision( Area_.ProjX )
+           and ProjY.Collision( Area_.ProjY );
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleArea2D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -2417,6 +2487,30 @@ begin
 
      Min.Y := C - S;
      Max.Y := C + S;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleArea2D.GetProjX :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( Min.X, Max.X );
+end;
+
+procedure TDoubleArea2D.SetProjX( const ProjX_:TDoubleArea );
+begin
+     Min.X := ProjX_.Min;
+     Max.X := ProjX_.Max;
+end;
+
+function TDoubleArea2D.GetProjY :TDoubleArea;
+begin
+     Result := TDoubleArea.Create( Min.Y, Max.Y );
+end;
+
+procedure TDoubleArea2D.SetProjY( const ProjY_:TDoubleArea );
+begin
+     Min.Y := ProjY_.Min;
+     Max.Y := ProjY_.Max;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -2478,6 +2572,14 @@ class function TDoubleArea2D.PoInf :TDoubleArea2D;
 begin
      Result := TDoubleArea2D.Create( Double.NegativeInfinity,
                                      Double.PositiveInfinity );
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TDoubleArea2D.Collision( const Area_:TDoubleArea2D ) :Boolean;
+begin
+     Result := ProjX.Collision( Area_.ProjX )
+           and ProjY.Collision( Area_.ProjY );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
