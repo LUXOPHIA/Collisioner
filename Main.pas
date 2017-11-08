@@ -84,6 +84,8 @@ begin
 
           LoadFromFileSTL( '..\..\_DATA\ShaperA.stl' );
 
+          Reso := 0.05;
+
           Generate;
           MakeGrid;
      end;
@@ -93,6 +95,8 @@ begin
           Matery := _Matery0;
 
           LoadFromFileSTL( '..\..\_DATA\ShaperB.stl' );
+
+          Reso := 0.05;
 
           Generate;
           MakeGrid;
