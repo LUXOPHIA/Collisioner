@@ -18,7 +18,20 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryColor
 
-     TGLMateryColor = class( TGLMatery )
+     IGLMateryColor = interface( IGLMatery )
+     ['{F155A433-8EE7-45D5-A550-CA8E75677E0F}']
+     {protected}
+       ///// アクセス
+       function GetColor :TAlphaColorF;
+       procedure SetColor( const Color_:TAlphaColorF );
+     {public}
+       ///// プロパティ
+       property Color :TAlphaColorF read GetColor write SetColor;
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLMateryColor = class( TGLMatery, IGLMateryColor )
      private
      protected
        _Color :TGLUnifor<TAlphaColorF>;
@@ -37,7 +50,20 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryRGB
 
-     TGLMateryRGB = class( TGLMateryNor )
+     IGLMateryRGB = interface( IGLMateryNor )
+     ['{5729E984-EB08-43A2-A1DD-86A0A569D79C}']
+     {protected}
+       ///// アクセス
+       function GetAmbient :TAlphaColorF;
+       procedure SetAmbient( const Ambient_:TAlphaColorF );
+     {public}
+       ///// プロパティ
+       property Ambient :TAlphaColorF read GetAmbient write SetAmbient;
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLMateryRGB = class( TGLMateryNor, IGLMateryRGB )
      private
      protected
        _Ambient :TGLUnifor<TAlphaColorF>;
@@ -56,7 +82,26 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryPlastic
 
-     TGLMateryPlastic = class( TGLMateryImag )
+     IGLMateryPlastic = interface( IGLMateryImag )
+     ['{6BFC6C55-3773-424E-8140-EAB4F4812101}']
+     {protected}
+       ///// アクセス
+       function GetAmbient :TAlphaColorF;
+       procedure SetAmbient( const Ambient_:TAlphaColorF );
+       function GetDiffuse :TAlphaColorF;
+       procedure SetDiffuse( const Diffuse_:TAlphaColorF );
+       function GetRefI :Single;
+       procedure SetRefI( const RefI_:Single );
+     {public}
+       ///// プロパティ
+       property Ambient :TAlphaColorF read GetAmbient write SetAmbient;
+       property Diffuse :TAlphaColorF read GetDiffuse write SetDiffuse;
+       property RefI    :Single       read GetRefI    write SetRefI   ;
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLMateryPlastic = class( TGLMateryImag, IGLMateryPlastic )
      private
      protected
        _Ambient :TGLUnifor<TAlphaColorF>;
@@ -83,7 +128,20 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryMirror
 
-     TGLMateryMirror = class( TGLMateryImag )
+     IGLMateryMirror = interface( IGLMateryImag )
+     ['{2B1DD157-1296-4201-8285-8063CCF6CD03}']
+     {protected}
+       ///// アクセス
+       function GetColor :TAlphaColorF;
+       procedure SetColor( const Color_:TAlphaColorF );
+     {public}
+       ///// プロパティ
+       property Color :TAlphaColorF read GetColor write SetColor;
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLMateryMirror = class( TGLMateryImag, IGLMateryMirror )
      private
      protected
        _Color :TGLUnifor<TAlphaColorF>;
@@ -102,7 +160,20 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryGlass
 
-     TGLMateryGlass = class( TGLMateryImag )
+     IGLMateryGlass = interface( IGLMateryImag )
+     ['{960FE1E6-E27F-499A-BFB3-EA2C72DA09A5}']
+     {protected}
+       ///// アクセス
+       function GetRefI :Single;
+       procedure SetRefI( const RefI_:Single );
+     {public}
+       ///// プロパティ
+       property RefI :Single read GetRefI write SetRefI;
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLMateryGlass = class( TGLMateryImag, IGLMateryGlass )
      private
      protected
        _RefI :TGLUnifor<Single>;
