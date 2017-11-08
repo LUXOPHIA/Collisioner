@@ -361,7 +361,11 @@
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\» ATOM\LUX.GPU.OpenGL.Atom.Shader.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\» ATOM\LUX.GPU.OpenGL.Atom.Buffer.Elemer.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\» ATOM\LUX.GPU.OpenGL.Atom.Buffer.pas"/>
-        <DCCReference Include="_LIBRARY\LUX.Collision.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.Geometry\LUX.Geometry.D2.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.Geometry\LUX.Geometry.D3.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.Geometry\LUX.Geometry.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\LUX.GPU.OpenGL.Shaper.Octree.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\LUX.GPU.OpenGL.Shaper.Voxels.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

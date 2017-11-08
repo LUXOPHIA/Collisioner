@@ -12,7 +12,7 @@ uses
   LUX.GPU.OpenGL.Camera,
   LUX.GPU.OpenGL.Matery.Preset,
   LUX.GPU.OpenGL.Shaper,
-  LUX.Collision;
+  LUX.GPU.OpenGL.Shaper.Octree;
 
 type
   TForm1 = class(TForm)
@@ -35,8 +35,10 @@ type
     { public êÈåæ }
     _Scener  :TGLScener;
     _Camera  :TGLCameraPers;
-    _Shaper1 :TGLOctree;
-    _Shaper2 :TGLOctree;
+    _Matery0 :IGLMateryRGB;
+    _Matery1 :IGLMateryColor;
+    _ShaperA :TGLShaperOctree;
+    _ShaperB :TGLShaperOctree;
   end;
 
 var
@@ -46,7 +48,8 @@ implementation //###############################################################
 
 {$R *.fmx}
 
-uses System.Math;
+uses System.Math,
+     Winapi.Windows;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -66,30 +69,33 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-     _Scener  := TGLScener    .Create           ;
-     _Camera  := TGLCameraPers.Create( _Scener );
-     _Shaper1 := TGLOctree    .Create( _Scener );
-     _Shaper2 := TGLOctree    .Create( _Scener );
-
-     with _Camera do
-     begin
-          Angl := DegToRad( 60 );
-     end;
+     _Scener  := TGLScener      .Create           ;
+     _Camera  := TGLCameraPers  .Create( _Scener );
+     _Matery0 := TGLMateryRGB   .Create           ;
+     _Matery1 := TGLMateryColor .Create           ;
+     _ShaperA := TGLShaperOctree.Create( _Scener );
+     _ShaperB := TGLShaperOctree.Create( _Scener );
 
      GLViewer1.Camera := _Camera;
 
-     with _Shaper1 do
+     with _ShaperA do
      begin
-          Matery := TGLMateryRGB.Create;
+          Matery := _Matery0;
 
-          LoadFromFileSTL( '..\..\_DATA\Shaper1.stl' );
+          LoadFromFileSTL( '..\..\_DATA\ShaperA.stl' );
+
+          Generate;
+          MakeGrid;
      end;
 
-     with _Shaper2 do
+     with _ShaperB do
      begin
-          Matery := TGLMateryRGB.Create;
+          Matery := _Matery0;
 
-          LoadFromFileSTL( '..\..\_DATA\Shaper2.stl' );
+          LoadFromFileSTL( '..\..\_DATA\ShaperB.stl' );
+
+          Generate;
+          MakeGrid;
      end;
 
      _MouseA := TSingle2D.Create( 0, +30 );
@@ -106,8 +112,19 @@ end;
 
 procedure TForm1.Timer1Timer(Sender: TObject);
 begin
-     with _Shaper1 do Pose := Pose * TSingleM4.RotateX( DegToRad( -0.5 ) );
-     with _Shaper2 do Pose := Pose * TSingleM4.RotateX( DegToRad( +0.5 ) );
+     with _ShaperA do Pose := Pose * TSingleM4.RotateX( DegToRad( -0.5 ) );
+     with _ShaperB do Pose := Pose * TSingleM4.RotateX( DegToRad( +0.5 ) );
+
+     if _ShaperA.Collision( _ShaperB ) then
+     begin
+          _ShaperA.Matery := _Matery1;
+          _ShaperB.Matery := _Matery1;
+     end
+     else
+     begin
+          _ShaperA.Matery := _Matery0;
+          _ShaperB.Matery := _Matery0;
+     end;
 
      GLViewer1.Repaint;
 end;
