@@ -61,7 +61,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryNor
 
-     TGLMateryNor = class( TGLMatery )
+     IGLMateryNor = interface( IGLMatery )
+     ['{ED6DC429-C600-4FDC-83CB-0EADFDDAEE99}']
+     {protected}
+     {public}
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLMateryNor = class( TGLMatery, IGLMateryNor )
      private
      protected
      public
@@ -71,7 +79,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryNorTex
 
-     TGLMateryNorTex = class( TGLMateryNor )
+     IGLMateryNorTex = interface( IGLMateryNor )
+     ['{DB8D6DAD-059F-45D5-BF48-7AEFFD2E7A71}']
+     {protected}
+     {public}
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLMateryNorTex = class( TGLMateryNor, IGLMateryNorTex )
      private
      protected
      public
@@ -108,7 +124,19 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryNorTexG
 
-     TGLMateryNorTexG = class( TGLMateryNorTex, IGLMateryG )
+     IGLMateryNorTexG = interface( IGLMateryNorTex )
+     ['{ED414C59-0A0B-493C-B497-A7D18A1487F4}']
+     {protected}
+       ///// アクセス
+       function GetShaderG :TGLShaderG;
+     {public}
+       ///// プロパティ
+       property ShaderG :TGLShaderG read GetShaderG;
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLMateryNorTexG = class( TGLMateryNorTex, IGLMateryNorTexG )
      private
      protected
        _ShaderG :TGLShaderG;
