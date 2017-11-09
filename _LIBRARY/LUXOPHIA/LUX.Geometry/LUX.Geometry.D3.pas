@@ -585,7 +585,7 @@ function TSingleTria3D.CollisionSAT( const Area_:TSingleArea3D ) :Boolean;
           C0 := DotProduct( N, V0 );
           C1 := DotProduct( N, V1 );
 
-          Result := ( C0 * C1 ) < 0;
+          Result := ( C0 * C1 ) <= 0;
      end;
      //·································
      function Check( const Vec_:TSingle3D ) :Boolean;
@@ -604,10 +604,8 @@ begin
      E2 := Edge2;
      E3 := Edge3;
 
-     Result := Check( Norv )
-           and Check( AX )
-           and Check( AY )
-           and Check( AZ )
+     Result := AABB.Collision( Area_ )          // Check( AX ) and Check( AY ) and Check( AZ )
+           and CheckPlane                       // Check( Norv )
            and Check( CrossProduct( AX, E1 ) )
            and Check( CrossProduct( AX, E2 ) )
            and Check( CrossProduct( AX, E3 ) )
@@ -803,7 +801,7 @@ function TDoubleTria3D.CollisionPEF( const Area_:TDoubleArea3D ) :Boolean;
           C0 := DotProduct( N, V0 );
           C1 := DotProduct( N, V1 );
 
-          Result := ( C0 * C1 ) < 0;
+          Result := ( C0 * C1 ) <= 0;
      end;
 //······································
 begin
@@ -836,7 +834,7 @@ function TDoubleTria3D.CollisionSAT( const Area_:TDoubleArea3D ) :Boolean;
           C0 := DotProduct( N, V0 );
           C1 := DotProduct( N, V1 );
 
-          Result := ( C0 * C1 ) < 0;
+          Result := ( C0 * C1 ) <= 0;
      end;
      //·································
      function Check( const Vec_:TDouble3D ) :Boolean;
