@@ -955,4 +955,16 @@
 </li>
 <li value=509><a href="extensions/NV/NV_texture_rectangle_compressed.txt">GL_NV_texture_rectangle_compressed</a>
 </li>
+<li value=510><a href="extensions/NV/NV_blend_minmax_factor.txt">GL_NV_blend_minmax_factor</a>
+</li>
+<li value=511><a href="extensions/NV/NV_query_resource.txt">GL_NV_query_resource</a>
+</li>
+<li value=512><a href="extensions/NV/NV_query_resource_tag.txt">GL_NV_query_resource_tag</a>
+</li>
+<li value=513><a href="extensions/AMD/AMD_shader_image_load_store_lod.txt">GL_AMD_shader_image_load_store_lod</a>
+</li>
+<li value=514><a href="extensions/MESA/GLX_MESA_swap_control.txt">GLX_MESA_swap_control</a>
+</li>
+<li value=515><a href="extensions/MESA/MESA_tile_raster_order.txt">GL_MESA_tile_raster_order</a>
+</li>
 </ol>
