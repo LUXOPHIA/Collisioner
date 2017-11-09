@@ -145,13 +145,13 @@
 </li>
 <li value=71><a href="extensions/OES/OES_vertex_array_object.txt">GL_OES_vertex_array_object</a>
 </li>
-<li value=72><a href="../EGL-Registry/extensions/NV/EGL_NV_coverage_sample.txt">GL_NV_coverage_sample</a>
+<li value=72><a href="../EGL/extensions/NV/EGL_NV_coverage_sample.txt">GL_NV_coverage_sample</a>
 </li>
-<li value=73><a href="../EGL-Registry/extensions/NV/EGL_NV_depth_nonlinear.txt">GL_NV_depth_nonlinear</a>
+<li value=73><a href="../EGL/extensions/NV/EGL_NV_depth_nonlinear.txt">GL_NV_depth_nonlinear</a>
 </li>
 <li value=74><a href="extensions/IMG/IMG_multisampled_render_to_texture.txt">GL_IMG_multisampled_render_to_texture</a>
 </li>
-<li value=75><a href="../EGL-Registry/extensions/KHR/EGL_KHR_fence_sync.txt">GL_OES_EGL_sync</a>
+<li value=75><a href="../EGL/extensions/KHR/EGL_KHR_fence_sync.txt">GL_OES_EGL_sync</a>
 </li>
 <li value=76><a href="extensions/APPLE/APPLE_rgb_422.txt">GL_APPLE_rgb_422</a>
 </li>
@@ -590,5 +590,23 @@
 <li value=283><a href="extensions/EXT/EXT_win32_keyed_mutex.txt">GL_EXT_win32_keyed_mutex</a>
 </li>
 <li value=284><a href="extensions/EXT/EXT_external_buffer.txt">GL_EXT_external_buffer</a>
+</li>
+<li value=285><a href="extensions/NV/NV_blend_minmax_factor.txt">GL_NV_blend_minmax_factor</a>
+</li>
+<li value=286><a href="extensions/EXT/EXT_texture_compression_rgtc.txt">GL_EXT_texture_compression_rgtc</a>
+</li>
+<li value=287><a href="extensions/EXT/EXT_texture_compression_bptc.txt">GL_EXT_texture_compression_bptc</a>
+</li>
+<li value=288><a href="extensions/KHR/KHR_parallel_shader_compile.txt">GL_KHR_parallel_shader_compile</a>
+</li>
+<li value=289><a href="extensions/EXT/EXT_texture_compression_s3tc_srgb.txt">GL_EXT_texture_compression_s3tc_srgb</a>
+</li>
+<li value=290><a href="extensions/EXT/EXT_clip_control.txt">GL_EXT_clip_control</a>
+</li>
+<li value=291><a href="extensions/EXT/EXT_texture_mirror_clamp_to_edge.txt">GL_EXT_texture_mirror_clamp_to_edge</a>
+</li>
+<li value=292><a href="extensions/MESA/MESA_tile_raster_order.txt">GL_MESA_tile_raster_order</a>
+</li>
+<li value=293><a href="extensions/QCOM/QCOM_texture_foveated.txt">GL_QCOM_texture_foveated</a>
 </li>
 </ol>
