@@ -9,6 +9,33 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% T1Bit3D
+
+     T1Bit3D = record
+     private
+       ///// アクセス
+       function Get_( const I_:Byte ) :Byte;
+       procedure Set_( const I_:Byte; const o_:Byte );
+       function GetX :Byte;
+       procedure SetX( const X_:Byte );
+       function GetY :Byte;
+       procedure SetY( const Y_:Byte );
+       function GetZ :Byte;
+       procedure SetZ( const Z_:Byte );
+     public
+       o :Byte;
+       constructor Create( const V_:Byte ); overload;
+       constructor Create( const X_,Y_,Z_:Byte ); overload;
+       ///// プロパティ
+       property _[ const I_:Byte ] :Byte read Get_ write Set_;
+       property  X                 :Byte read GetX write SetX;
+       property  Y                 :Byte read GetY write SetY;
+       property  Z                 :Byte read GetZ write SetZ;
+       property _1                 :Byte read GetX write SetX;
+       property _2                 :Byte read GetY write SetY;
+       property _3                 :Byte read GetZ write SetZ;
+     end;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TByte3D
 
      TByte3D = record
@@ -81,9 +108,40 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TCardinal3D = record
      private
+       ///// アクセス
+       function GetLSB :T1Bit3D;
+       function GetMSB :T1Bit3D;
      public
        constructor Create( const V_:Cardinal ); overload;
        constructor Create( const X_,Y_,Z_:Cardinal ); overload;
+       ///// プロパティ
+       property LSB :T1Bit3D read GetLSB;
+       property MSB :T1Bit3D read GetMSB;
+       ///// 演算子
+       class operator Negative( const V_:TCardinal3D ) :TCardinal3D; inline;
+       class operator Positive( const V_:TCardinal3D ) :TCardinal3D; inline;
+       class operator Add( const A_,B_:TCardinal3D ) :TCardinal3D; inline;
+       class operator Subtract( const A_,B_:TCardinal3D ) :TCardinal3D; inline;
+       class operator Multiply( const A_:TCardinal3D; const B_:Cardinal ) :TCardinal3D; inline;
+       class operator Multiply( const A_:Cardinal; const B_:TCardinal3D ) :TCardinal3D; inline;
+       class operator IntDivide( const A_:TCardinal3D; const B_:Cardinal ) :TCardinal3D; inline;
+       class operator Modulus( const A_:TCardinal3D; const B_:Cardinal ) :TCardinal3D; inline;
+       class operator LeftShift( const A_:TCardinal3D; const B_:Integer ) :TCardinal3D; inline;
+       class operator RightShift( const A_:TCardinal3D; const B_:Integer ) :TCardinal3D; inline;
+       class operator Equal( const A_,B_:TCardinal3D ) :Boolean; inline;
+       class operator NotEqual( const A_,B_:TCardinal3D ) :Boolean; inline;
+       class operator BitwiseAnd( const A_:TCardinal3D; const B_:Cardinal ) :TCardinal3D; inline;
+       class operator BitwiseOr( const A_:TCardinal3D; const B_:Cardinal ) :TCardinal3D; inline;
+       class operator BitwiseXor( const A_:TCardinal3D; const B_:Cardinal ) :TCardinal3D; inline;
+       ///// 型変換
+       class operator Explicit( const V_:TCardinal3D ) :TByte3D; inline;
+       class operator Explicit( const V_:TByte3D ) :TCardinal3D; inline;
+       class operator Explicit( const V_:TCardinal3D ) :TShortint3D; inline;
+       class operator Explicit( const V_:TShortint3D ) :TCardinal3D; inline;
+       class operator Explicit( const V_:TCardinal3D ) :TWord3D; inline;
+       class operator Explicit( const V_:TWord3D ) :TCardinal3D; inline;
+       class operator Explicit( const V_:TCardinal3D ) :TSmallint3D; inline;
+       class operator Explicit( const V_:TSmallint3D ) :TCardinal3D; inline;
      case Byte of
       0:( _ :array [ 1..3 ] of Cardinal; );
       1:(  X :Cardinal;
@@ -98,9 +156,40 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TInteger3D = record
      private
+       ///// アクセス
+       function GetLSB :T1Bit3D;
+       function GetMSB :T1Bit3D;
      public
        constructor Create( const V_:Integer ); overload;
        constructor Create( const X_,Y_,Z_:Integer ); overload;
+       ///// プロパティ
+       property LSB :T1Bit3D read GetLSB;
+       property MSB :T1Bit3D read GetMSB;
+       ///// 演算子
+       class operator Negative( const V_:TInteger3D ) :TInteger3D; inline;
+       class operator Positive( const V_:TInteger3D ) :TInteger3D; inline;
+       class operator Add( const A_,B_:TInteger3D ) :TInteger3D; inline;
+       class operator Subtract( const A_,B_:TInteger3D ) :TInteger3D; inline;
+       class operator Multiply( const A_:TInteger3D; const B_:Integer ) :TInteger3D; inline;
+       class operator Multiply( const A_:Integer; const B_:TInteger3D ) :TInteger3D; inline;
+       class operator IntDivide( const A_:TInteger3D; const B_:Integer ) :TInteger3D; inline;
+       class operator Modulus( const A_:TInteger3D; const B_:Integer ) :TInteger3D; inline;
+       class operator LeftShift( const A_:TInteger3D; const B_:Integer ) :TInteger3D; inline;
+       class operator RightShift( const A_:TInteger3D; const B_:Integer ) :TInteger3D; inline;
+       class operator Equal( const A_,B_:TInteger3D ) :Boolean; inline;
+       class operator NotEqual( const A_,B_:TInteger3D ) :Boolean; inline;
+       class operator BitwiseAnd( const A_:TInteger3D; const B_:Integer ) :TInteger3D; inline;
+       class operator BitwiseOr( const A_:TInteger3D; const B_:Integer ) :TInteger3D; inline;
+       class operator BitwiseXor( const A_:TInteger3D; const B_:Integer ) :TInteger3D; inline;
+       ///// 型変換
+       class operator Explicit( const V_:TInteger3D ) :TByte3D; inline;
+       class operator Explicit( const V_:TByte3D ) :TInteger3D; inline;
+       class operator Explicit( const V_:TInteger3D ) :TShortint3D; inline;
+       class operator Explicit( const V_:TShortint3D ) :TInteger3D; inline;
+       class operator Explicit( const V_:TInteger3D ) :TWord3D; inline;
+       class operator Explicit( const V_:TWord3D ) :TInteger3D; inline;
+       class operator Explicit( const V_:TInteger3D ) :TSmallint3D; inline;
+       class operator Explicit( const V_:TSmallint3D ) :TInteger3D; inline;
      case Byte of
       0:( _ :array [ 1..3 ] of Integer; );
       1:(  X :Integer;
@@ -607,6 +696,64 @@ uses System.SysUtils;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% T1Bit3D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function T1Bit3D.Get_( const I_:Byte ) :Byte;
+begin
+     Result := ( o shr I_ ) and $01;
+end;
+
+procedure T1Bit3D.Set_( const I_:Byte; const o_:Byte );
+begin
+     o := ( o and ( not ( $01 shl I_ ) ) ) or ( o_ shl I_ );
+end;
+
+function T1Bit3D.GetX :Byte;
+begin
+     Result := o and $01;
+end;
+
+procedure T1Bit3D.SetX( const X_:Byte );
+begin
+     o := ( o and $FE ) or X_;
+end;
+
+function T1Bit3D.GetY :Byte;
+begin
+     Result := ( o shr 1 ) and $01;
+end;
+
+procedure T1Bit3D.SetY( const Y_:Byte );
+begin
+     o := ( o and $FD ) or ( Y_ shl 1 );
+end;
+
+function T1Bit3D.GetZ :Byte;
+begin
+     Result := ( o shr 2 ) and $01;
+end;
+
+procedure T1Bit3D.SetZ( const Z_:Byte );
+begin
+     o := ( o and $FB ) or ( Z_ shl 2 );
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor T1Bit3D.Create( const V_:Byte );
+begin
+     Create( V_, V_, V_ );
+end;
+
+constructor T1Bit3D.Create( const X_,Y_,Z_:Byte );
+begin
+     o := ( Z_ shl 2 ) or ( Y_ shl 1 ) or X_;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TByte3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -691,6 +838,22 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TCardinal3D.GetLSB :T1Bit3D;
+begin
+     Result.X := X and $00000001;
+     Result.Y := Y and $00000001;
+     Result.Z := Z and $00000001;
+end;
+
+function TCardinal3D.GetMSB :T1Bit3D;
+begin
+     Result.X := X and $80000000;
+     Result.Y := Y and $80000000;
+     Result.Z := Z and $80000000;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TCardinal3D.Create( const V_:Cardinal );
@@ -707,9 +870,249 @@ begin
      Z := Z_;
 end;
 
+///////////////////////////////////////////////////////////////////////// 演算子
+
+class operator TCardinal3D.Negative( const V_:TCardinal3D ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := -V_.X;
+          Y := -V_.Y;
+          Z := -V_.Z;
+     end;
+end;
+
+class operator TCardinal3D.Positive( const V_:TCardinal3D ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := +V_.X;
+          Y := +V_.Y;
+          Z := +V_.Z;
+     end;
+end;
+
+class operator TCardinal3D.Add( const A_,B_:TCardinal3D ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := A_.X + B_.X;
+          Y := A_.Y + B_.Y;
+          Z := A_.Z + B_.Z;
+     end;
+end;
+
+class operator TCardinal3D.Subtract( const A_,B_:TCardinal3D ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := A_.X - B_.X;
+          Y := A_.Y - B_.Y;
+          Z := A_.Z - B_.Z;
+     end;
+end;
+
+class operator TCardinal3D.Multiply( const A_:TCardinal3D; const B_:Cardinal ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := A_.X * B_;
+          Y := A_.Y * B_;
+          Z := A_.Z * B_;
+     end;
+end;
+
+class operator TCardinal3D.Multiply( const A_:Cardinal; const B_:TCardinal3D ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := A_ * B_.X;
+          Y := A_ * B_.Y;
+          Z := A_ * B_.Z;
+     end;
+end;
+
+class operator TCardinal3D.IntDivide( const A_:TCardinal3D; const B_:Cardinal ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := A_.X div B_;
+          Y := A_.Y div B_;
+          Z := A_.Z div B_;
+     end;
+end;
+
+class operator TCardinal3D.Modulus( const A_:TCardinal3D; const B_:Cardinal ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := A_.X mod B_;
+          Y := A_.Y mod B_;
+          Z := A_.Z mod B_;
+     end;
+end;
+
+class operator TCardinal3D.LeftShift( const A_:TCardinal3D; const B_:Integer ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := A_.X shl B_;
+          Y := A_.Y shl B_;
+          Z := A_.Z shl B_;
+     end;
+end;
+
+class operator TCardinal3D.RightShift( const A_:TCardinal3D; const B_:Integer ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := A_.X shr B_;
+          Y := A_.Y shr B_;
+          Z := A_.Z shr B_;
+     end;
+end;
+
+class operator TCardinal3D.Equal( const A_,B_:TCardinal3D ) :Boolean;
+begin
+     Result := ( A_.X = B_.X ) and ( A_.Y = B_.Y ) and ( A_.Z = B_.Z );
+end;
+
+class operator TCardinal3D.NotEqual( const A_,B_:TCardinal3D ) :Boolean;
+begin
+     Result := not ( A_ = B_ );
+end;
+
+class operator TCardinal3D.BitwiseAnd( const A_:TCardinal3D; const B_:Cardinal ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := A_.X and B_;
+          Y := A_.Y and B_;
+          Z := A_.Z and B_;
+     end;
+end;
+
+class operator TCardinal3D.BitwiseOr( const A_:TCardinal3D; const B_:Cardinal ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := A_.X or B_;
+          Y := A_.Y or B_;
+          Z := A_.Z or B_;
+     end;
+end;
+
+class operator TCardinal3D.BitwiseXor( const A_:TCardinal3D; const B_:Cardinal ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := A_.X or B_;
+          Y := A_.Y or B_;
+          Z := A_.Z or B_;
+     end;
+end;
+
+///////////////////////////////////////////////////////////////////////// 型変換
+
+class operator TCardinal3D.Explicit( const V_:TCardinal3D ) :TByte3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
+
+class operator TCardinal3D.Explicit( const V_:TByte3D ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
+
+class operator TCardinal3D.Explicit( const V_:TCardinal3D ) :TShortint3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
+
+class operator TCardinal3D.Explicit( const V_:TShortint3D ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
+
+class operator TCardinal3D.Explicit( const V_:TCardinal3D ) :TWord3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
+
+class operator TCardinal3D.Explicit( const V_:TWord3D ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
+
+class operator TCardinal3D.Explicit( const V_:TCardinal3D ) :TSmallint3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
+
+class operator TCardinal3D.Explicit( const V_:TSmallint3D ) :TCardinal3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TInteger3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TInteger3D.GetLSB :T1Bit3D;
+begin
+     Result.X := X and $00000001;
+     Result.Y := Y and $00000001;
+     Result.Z := Z and $00000001;
+end;
+
+function TInteger3D.GetMSB :T1Bit3D;
+begin
+     Result.X := X and $80000000;
+     Result.Y := Y and $80000000;
+     Result.Z := Z and $80000000;
+end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
@@ -725,6 +1128,230 @@ begin
      X := X_;
      Y := Y_;
      Z := Z_;
+end;
+
+///////////////////////////////////////////////////////////////////////// 演算子
+
+class operator TInteger3D.Negative( const V_:TInteger3D ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := -V_.X;
+          Y := -V_.Y;
+          Z := -V_.Z;
+     end;
+end;
+
+class operator TInteger3D.Positive( const V_:TInteger3D ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := +V_.X;
+          Y := +V_.Y;
+          Z := +V_.Z;
+     end;
+end;
+
+class operator TInteger3D.Add( const A_,B_:TInteger3D ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := A_.X + B_.X;
+          Y := A_.Y + B_.Y;
+          Z := A_.Z + B_.Z;
+     end;
+end;
+
+class operator TInteger3D.Subtract( const A_,B_:TInteger3D ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := A_.X - B_.X;
+          Y := A_.Y - B_.Y;
+          Z := A_.Z - B_.Z;
+     end;
+end;
+
+class operator TInteger3D.Multiply( const A_:TInteger3D; const B_:Integer ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := A_.X * B_;
+          Y := A_.Y * B_;
+          Z := A_.Z * B_;
+     end;
+end;
+
+class operator TInteger3D.Multiply( const A_:Integer; const B_:TInteger3D ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := A_ * B_.X;
+          Y := A_ * B_.Y;
+          Z := A_ * B_.Z;
+     end;
+end;
+
+class operator TInteger3D.IntDivide( const A_:TInteger3D; const B_:Integer ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := A_.X div B_;
+          Y := A_.Y div B_;
+          Z := A_.Z div B_;
+     end;
+end;
+
+class operator TInteger3D.Modulus( const A_:TInteger3D; const B_:Integer ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := A_.X mod B_;
+          Y := A_.Y mod B_;
+          Z := A_.Z mod B_;
+     end;
+end;
+
+class operator TInteger3D.LeftShift( const A_:TInteger3D; const B_:Integer ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := A_.X shl B_;
+          Y := A_.Y shl B_;
+          Z := A_.Z shl B_;
+     end;
+end;
+
+class operator TInteger3D.RightShift( const A_:TInteger3D; const B_:Integer ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := A_.X shr B_;
+          Y := A_.Y shr B_;
+          Z := A_.Z shr B_;
+     end;
+end;
+
+class operator TInteger3D.Equal( const A_,B_:TInteger3D ) :Boolean;
+begin
+     Result := ( A_.X = B_.X ) and ( A_.Y = B_.Y ) and ( A_.Z = B_.Z );
+end;
+
+class operator TInteger3D.NotEqual( const A_,B_:TInteger3D ) :Boolean;
+begin
+     Result := not ( A_ = B_ );
+end;
+
+class operator TInteger3D.BitwiseAnd( const A_:TInteger3D; const B_:Integer ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := A_.X and B_;
+          Y := A_.Y and B_;
+          Z := A_.Z and B_;
+     end;
+end;
+
+class operator TInteger3D.BitwiseOr( const A_:TInteger3D; const B_:Integer ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := A_.X or B_;
+          Y := A_.Y or B_;
+          Z := A_.Z or B_;
+     end;
+end;
+
+class operator TInteger3D.BitwiseXor( const A_:TInteger3D; const B_:Integer ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := A_.X or B_;
+          Y := A_.Y or B_;
+          Z := A_.Z or B_;
+     end;
+end;
+
+///////////////////////////////////////////////////////////////////////// 型変換
+
+class operator TInteger3D.Explicit( const V_:TInteger3D ) :TByte3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
+
+class operator TInteger3D.Explicit( const V_:TByte3D ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
+
+class operator TInteger3D.Explicit( const V_:TInteger3D ) :TShortint3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
+
+class operator TInteger3D.Explicit( const V_:TShortint3D ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
+
+class operator TInteger3D.Explicit( const V_:TInteger3D ) :TWord3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
+
+class operator TInteger3D.Explicit( const V_:TWord3D ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
+
+class operator TInteger3D.Explicit( const V_:TInteger3D ) :TSmallint3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
+
+class operator TInteger3D.Explicit( const V_:TSmallint3D ) :TInteger3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingle3D
