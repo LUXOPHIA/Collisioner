@@ -842,7 +842,7 @@ end;
 
 function TDoubleArea.Collision( const Area_:TDoubleArea ) :Boolean;
 begin
-     Result := ( Area_.Min < Max ) and ( Min < Area_.Max );
+     Result := ( Area_.Min <= Max ) and ( Min <= Area_.Max );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
