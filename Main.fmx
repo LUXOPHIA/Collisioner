@@ -2,8 +2,8 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Collisioner'
-  ClientHeight = 620
-  ClientWidth = 820
+  ClientHeight = 1080
+  ClientWidth = 1920
   Position = ScreenCenter
   FormFactor.Width = 320
   FormFactor.Height = 480
@@ -13,12 +13,8 @@ object Form1: TForm1
   DesignerMasterStyle = 0
   inline GLViewer1: TGLViewer
     Align = Client
-    Margins.Left = 10.000000000000000000
-    Margins.Top = 10.000000000000000000
-    Margins.Right = 10.000000000000000000
-    Margins.Bottom = 10.000000000000000000
-    Size.Width = 800.000000000000000000
-    Size.Height = 600.000000000000000000
+    Size.Width = 1920.000000000000000000
+    Size.Height = 1080.000000000000000000
     Size.PlatformDefault = False
     OnMouseDown = GLViewer1MouseDown
     OnMouseMove = GLViewer1MouseMove

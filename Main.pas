@@ -38,6 +38,8 @@ type
     _Camera  :TGLCameraPers;
     _Matery0 :IGLMateryRGB;
     _Matery1 :IGLMateryColor;
+    _ShaperA0 :TGLShaperFace;
+    _ShaperB0 :TGLShaperFace;
     _ShaperA :TGLShaperOctree;
     _ShaperB :TGLShaperOctree;
   end;
@@ -74,20 +76,49 @@ begin
      _Camera  := TGLCameraPers  .Create( _Scener );
      _Matery0 := TGLMateryRGB   .Create           ;
      _Matery1 := TGLMateryColor .Create           ;
+
+     _ShaperA0 := TGLShaperFace.Create( _Scener );
+     _ShaperB0 := TGLShaperFace.Create( _Scener );
+
      _ShaperA := TGLShaperOctree.Create( _Scener );
      _ShaperB := TGLShaperOctree.Create( _Scener );
 
+
      GLViewer1.Camera := _Camera;
+
+     with _ShaperA0 do
+     begin
+          Inform.Visible := False;
+
+          Matery := _Matery0;
+
+          LoadFromFileSTL( '..\..\_DATA\ShaperA.stl' );
+
+          Pose := TSingleM4.Translate( -1, 0, 0 );
+     end;
+
+     with _ShaperB0 do
+     begin
+          Inform.Visible := False;
+
+          Matery := _Matery0;
+
+          LoadFromFileSTL( '..\..\_DATA\ShaperB.stl' );
+
+          Pose := TSingleM4.Translate( +1, 0, 0 );
+     end;
 
      with _ShaperA do
      begin
+          Inform.Visible := False;
+
           Matery := _Matery0;
 
           LoadFromFileSTL( '..\..\_DATA\ShaperA.stl' );
 
           Pose := TSingleM4.Translate( -1, 0, 0 );
 
-          Reso := 0.05;
+          Reso := 1/20;
 
           Generate;
           MakeGrid;
@@ -95,13 +126,15 @@ begin
 
      with _ShaperB do
      begin
+          Inform.Visible := False;
+
           Matery := _Matery0;
 
           LoadFromFileSTL( '..\..\_DATA\ShaperB.stl' );
 
           Pose := TSingleM4.Translate( +1, 0, 0 );
 
-          Reso := 0.05;
+          Reso := 1/20;
 
           Generate;
           MakeGrid;
@@ -120,24 +153,55 @@ end;
 ////////////////////////////////////////////////////////////////////////////////
 
 procedure TForm1.Timer1Timer(Sender: TObject);
+var
+   F, T :Single;
 begin
+     F := _FrameI / 3600;
+
+     T := ( 1 - Cos( Pi * F ) ) / 2;
+
+     with _ShaperA0 do Pose := TSingleM4.Translate( -1, 0, 0 )
+                             * TSingleM4.RotateY( DegToRad( 7 * 360 * T ) );
+     with _ShaperB0 do Pose := TSingleM4.Translate( +1, 0, 0 )
+                             * TSingleM4.RotateZ( DegToRad( 7 * 360 * T ) );
+
      with _ShaperA do Pose := TSingleM4.Translate( -1, 0, 0 )
-                            * TSingleM4.RotateY( DegToRad( _FrameI ) );
+                            * TSingleM4.RotateY( DegToRad( 7 * 360 * T ) );
      with _ShaperB do Pose := TSingleM4.Translate( +1, 0, 0 )
-                            * TSingleM4.RotateZ( DegToRad( _FrameI ) );
+                            * TSingleM4.RotateZ( DegToRad( 7 * 360 * T ) );
 
      if _ShaperA.Collision( _ShaperB ) then
      begin
+          _ShaperA0.Matery := _Matery1;
+          _ShaperB0.Matery := _Matery1;
+
           _ShaperA.Matery := _Matery1;
           _ShaperB.Matery := _Matery1;
      end
      else
      begin
+          _ShaperA0.Matery := _Matery0;
+          _ShaperB0.Matery := _Matery0;
+
           _ShaperA.Matery := _Matery0;
           _ShaperB.Matery := _Matery0;
      end;
 
+     _MouseA.X := -5 * 360 * T;
+     _MouseA.Y := 45 * Sin( 3 * Pi2 * T );
+
+     InitCamera;
+
      GLViewer1.Repaint;
+
+     with GLViewer1.MakeScreenShot do
+     begin
+          SaveToFile( 'X:\_FRAMES\001\' + _FrameI.ToString + '.bmp' );
+
+          Free;
+     end;
+
+     if _FrameI = 3600 then Timer1.Enabled := False;
 
      Inc( _FrameI );
 end;
