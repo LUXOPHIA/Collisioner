@@ -224,7 +224,7 @@ begin
 
                  Add( 'void main()' );
                  Add( '{' );
-                 Add( '  _ResultCol = vec4( 1, 1, 1, 1 );' );
+                 Add( '  _ResultCol = vec4( 1, 1, 1, 0.5 );' );
                  Add( '}' );
 
                EndUpdate;
