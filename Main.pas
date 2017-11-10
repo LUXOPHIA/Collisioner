@@ -1,6 +1,6 @@
-unit Main;
+Ôªøunit Main;
 
-interface //#################################################################### Å°
+interface //#################################################################### ‚ñ†
 
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
@@ -25,14 +25,15 @@ type
     procedure GLViewer1MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
     procedure GLViewer1MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
   private
-    { private êÈåæ }
+    { private ÂÆ£Ë®Ä }
     _MouseS :TShiftState;
     _MouseP :TSingle2D;
     _MouseA :TSingle2D;
-    ///// ÉÅÉ\ÉbÉh
+    _FrameI :Integer;
+    ///// „É°„ÇΩ„ÉÉ„Éâ
     procedure InitCamera;
   public
-    { public êÈåæ }
+    { public ÂÆ£Ë®Ä }
     _Scener  :TGLScener;
     _Camera  :TGLCameraPers;
     _Matery0 :IGLMateryRGB;
@@ -44,7 +45,7 @@ type
 var
   Form1: TForm1;
 
-implementation //############################################################### Å°
+implementation //############################################################### ‚ñ†
 
 {$R *.fmx}
 
@@ -84,6 +85,8 @@ begin
 
           LoadFromFileSTL( '..\..\_DATA\ShaperA.stl' );
 
+          Pose := TSingleM4.Translate( -1, 0, 0 );
+
           Reso := 0.05;
 
           Generate;
@@ -95,6 +98,8 @@ begin
           Matery := _Matery0;
 
           LoadFromFileSTL( '..\..\_DATA\ShaperB.stl' );
+
+          Pose := TSingleM4.Translate( +1, 0, 0 );
 
           Reso := 0.05;
 
@@ -116,8 +121,10 @@ end;
 
 procedure TForm1.Timer1Timer(Sender: TObject);
 begin
-     with _ShaperA do Pose := Pose * TSingleM4.RotateX( DegToRad( -0.5 ) );
-     with _ShaperB do Pose := Pose * TSingleM4.RotateX( DegToRad( +0.5 ) );
+     with _ShaperA do Pose := TSingleM4.Translate( -1, 0, 0 )
+                            * TSingleM4.RotateY( DegToRad( _FrameI ) );
+     with _ShaperB do Pose := TSingleM4.Translate( +1, 0, 0 )
+                            * TSingleM4.RotateZ( DegToRad( _FrameI ) );
 
      if _ShaperA.Collision( _ShaperB ) then
      begin
@@ -131,6 +138,8 @@ begin
      end;
 
      GLViewer1.Repaint;
+
+     Inc( _FrameI );
 end;
 
 //------------------------------------------------------------------------------
@@ -164,4 +173,4 @@ begin
      _MouseS := [];
 end;
 
-end. //######################################################################### Å°
+end. //######################################################################### ‚ñ†
