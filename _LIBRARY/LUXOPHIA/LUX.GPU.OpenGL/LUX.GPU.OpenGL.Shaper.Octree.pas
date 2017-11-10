@@ -612,9 +612,11 @@ begin
 
      DeleteChilds;
 
-     for L := 0 to _DivL do
+     for L := _DivL downto 0 do
      begin
           V := TGLShaperVoxels.Create( Self );
+
+          V.Color := TAlphaColorF.Create( 1, 1, 1, 0.5 );
 
           S := _Size / ( 1 shl L );
 
