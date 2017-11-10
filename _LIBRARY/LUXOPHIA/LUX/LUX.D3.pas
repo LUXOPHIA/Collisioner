@@ -719,7 +719,7 @@ end;
 
 procedure T1Bit3D.SetX( const X_:Byte );
 begin
-     o := ( o and $FE ) or X_;
+     o := ( o and $06 ) or X_;
 end;
 
 function T1Bit3D.GetY :Byte;
@@ -729,7 +729,7 @@ end;
 
 procedure T1Bit3D.SetY( const Y_:Byte );
 begin
-     o := ( o and $FD ) or ( Y_ shl 1 );
+     o := ( o and $05 ) or ( Y_ shl 1 );
 end;
 
 function T1Bit3D.GetZ :Byte;
@@ -739,7 +739,7 @@ end;
 
 procedure T1Bit3D.SetZ( const Z_:Byte );
 begin
-     o := ( o and $FB ) or ( Z_ shl 2 );
+     o := ( o and $03 ) or ( Z_ shl 2 );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
