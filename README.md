@@ -6,6 +6,7 @@
 
 ゲームレベルで利用されるローポリゴン同士の衝突であれば、[ミンコフスキー差（Minkowski Difference）](https://en.wikipedia.org/wiki/Minkowski_addition)を利用した [GJK：Gilbert-Johnson-Keerthi distance algorithm](https://en.wikipedia.org/wiki/Gilbert–Johnson–Keerthi_distance_algorithm) を用いることで高速に判定可能であるが、CADレベルで利用される大規模ポリゴンモデルに対しては非常に効率が悪い。
 
+> [![](http://capture.heartrails.com/400x300?https://graphics.stanford.edu/courses/cs448b-00-winter/papers/gilbert.pdf)](https://graphics.stanford.edu/courses/cs448b-00-winter/papers/gilbert.pdf)  
 > \* [A fast procedure for computing the distance between complex objects in three-dimensional space](https://graphics.stanford.edu/courses/cs448b-00-winter/papers/gilbert.pdf)
 
 > [**[SlidePlayer]**](http://slideplayer.com)  
