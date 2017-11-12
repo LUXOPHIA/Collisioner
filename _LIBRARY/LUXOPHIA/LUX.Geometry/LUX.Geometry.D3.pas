@@ -2,7 +2,7 @@
 
 interface //#################################################################### ■
 
-uses LUX, LUX.D1, LUX.D2, LUX.D3,
+uses LUX, LUX.D1, LUX.D2, LUX.D3, LUX.M4,
      LUX.Geometry, LUX.Geometry.D2;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
@@ -48,6 +48,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Implicit( const Sphere_:TSingleSphere ) :TSingleSpher2;
        ///// メソッド
        class function Inner( const P1_,P2_,P3_,P4_:TSingle3D ) :TSingleSphere; static;
+       function Collision( const Ball_:TSingleSphere ) :Boolean;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleSphere
@@ -65,6 +66,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Implicit( const Sphere_:TDoubleSphere ) :TDoubleSpher2;
        ///// メソッド
        class function Inner( const P1_,P2_,P3_,P4_:TDouble3D ) :TDoubleSphere; static;
+       function Collision( const Ball_:TDoubleSphere ) :Boolean;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleTria3D
@@ -159,6 +161,46 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function CollisionPEF( const Area_:TDoubleArea3D ) :Boolean;
        function CollisionSAT( const Area_:TDoubleArea3D ) :Boolean;
        class function RandG :TDoubleTria3D; static;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleCubo3D
+
+     TSingleCubo3D = record
+     private
+       ///// アクセス
+       function GetNorvX :TSingle3D;
+       function GetNorvY :TSingle3D;
+       function GetNorvZ :TSingle3D;
+     public
+       Area :TSingleArea3D;
+       Pose :TSingleM4;
+       ///// プロパティ
+       property NorvX :TSingle3D read GetNorvX;
+       property NorvY :TSingle3D read GetNorvY;
+       property NorvZ :TSingle3D read GetNorvZ;
+       ///// メソッド
+       function ProjSup( const Vec_:TSingle3D ) :TSingleArea;
+       function Collision( const Cubo_:TSingleCubo3D ) :Boolean;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleCubo3D
+
+     TDoubleCubo3D = record
+     private
+       ///// アクセス
+       function GetNorvX :TDouble3D;
+       function GetNorvY :TDouble3D;
+       function GetNorvZ :TDouble3D;
+     public
+       Area :TDoubleArea3D;
+       Pose :TDoubleM4;
+       ///// プロパティ
+       property NorvX :TDouble3D read GetNorvX;
+       property NorvY :TDouble3D read GetNorvY;
+       property NorvZ :TDouble3D read GetNorvZ;
+       ///// メソッド
+       function ProjSup( const Vec_:TDouble3D ) :TDoubleArea;
+       function Collision( const Cubo_:TDoubleCubo3D ) :Boolean;
      end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
@@ -333,6 +375,13 @@ begin
      end;
 end;
 
+//------------------------------------------------------------------------------
+
+function TSingleSphere.Collision( const Ball_:TSingleSphere ) :Boolean;
+begin
+     Result := Distan( Center, Ball_.Center ) <= ( Radius + Ball_.Radius );
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleSphere
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -378,6 +427,13 @@ begin
           Center :=InnerCenter( P1_,P2_,P3_,P4_ );
           Radius := InnerRadius( P1_,P2_,P3_,P4_ );
      end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleSphere.Collision( const Ball_:TDoubleSphere ) :Boolean;
+begin
+     Result := Distan( Center, Ball_.Center ) <= ( Radius + Ball_.Radius );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleTria3D
@@ -876,6 +932,170 @@ begin
           Poin2 := TDouble3D.RandG;
           Poin3 := TDouble3D.RandG;
      end;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingleCubo3D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TSingleCubo3D.GetNorvX :TSingle3D;
+begin
+     Result := Pose.MultVec( TSingle3D.IdentityX );
+end;
+
+function TSingleCubo3D.GetNorvY :TSingle3D;
+begin
+     Result := Pose.MultVec( TSingle3D.IdentityY );
+end;
+
+function TSingleCubo3D.GetNorvZ :TSingle3D;
+begin
+     Result := Pose.MultVec( TSingle3D.IdentityZ );
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TSingleCubo3D.ProjSup( const Vec_:TSingle3D ) :TSingleArea;
+var
+   V :TSingle3D;
+   I0, I1 :Byte;
+begin
+     V := Pose.Inverse.MultVec( Vec_ );
+
+     I1 := V.Orthant;
+     I0 := I1 xor 7;
+
+     with Result do
+     begin
+          Min := DotProduct( Vec_, Pose.MultPos( Area.Poin[ I0 ] ) );
+          Max := DotProduct( Vec_, Pose.MultPos( Area.Poin[ I1 ] ) );
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingleCubo3D.Collision( const Cubo_:TSingleCubo3D ) :Boolean;
+//······································
+     function Check( const Vec_:TSingle3D ) :Boolean;
+     begin
+          Result := ProjSup( Vec_ ).Collision( Cubo_.ProjSup( Vec_ ) )
+     end;
+//······································
+var
+   NX0, NY0, NZ0,
+   NX1, NY1, NZ1 :TSingle3D;
+begin
+     with Self do
+     begin
+          NX0 := NorvX;
+          NY0 := NorvY;
+          NZ0 := NorvZ;
+     end;
+
+     with Cubo_ do
+     begin
+          NX1 := NorvX;
+          NY1 := NorvY;
+          NZ1 := NorvZ;
+     end;
+
+     Result := Check( NX0 ) and Check( NY0 ) and Check( NZ0 )
+           and Check( NX1 ) and Check( NY1 ) and Check( NZ1 )
+           and Check( CrossProduct( NX0, NX1 ) )
+           and Check( CrossProduct( NX0, NY1 ) )
+           and Check( CrossProduct( NX0, NZ1 ) )
+           and Check( CrossProduct( NY0, NX1 ) )
+           and Check( CrossProduct( NY0, NY1 ) )
+           and Check( CrossProduct( NY0, NZ1 ) )
+           and Check( CrossProduct( NZ0, NX1 ) )
+           and Check( CrossProduct( NZ0, NY1 ) )
+           and Check( CrossProduct( NZ0, NZ1 ) );
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDoubleCubo3D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TDoubleCubo3D.GetNorvX :TDouble3D;
+begin
+     Result := Pose.MultVec( TDouble3D.IdentityX );
+end;
+
+function TDoubleCubo3D.GetNorvY :TDouble3D;
+begin
+     Result := Pose.MultVec( TDouble3D.IdentityY );
+end;
+
+function TDoubleCubo3D.GetNorvZ :TDouble3D;
+begin
+     Result := Pose.MultVec( TDouble3D.IdentityZ );
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TDoubleCubo3D.ProjSup( const Vec_:TDouble3D ) :TDoubleArea;
+var
+   V :TDouble3D;
+   I0, I1 :Byte;
+begin
+     V := Pose.Inverse.MultVec( Vec_ );
+
+     I1 := V.Orthant;
+     I0 := I1 xor 7;
+
+     with Result do
+     begin
+          Min := DotProduct( Vec_, Pose.MultPos( Area.Poin[ I0 ] ) );
+          Max := DotProduct( Vec_, Pose.MultPos( Area.Poin[ I1 ] ) );
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TDoubleCubo3D.Collision( const Cubo_:TDoubleCubo3D ) :Boolean;
+//······································
+     function Check( const Vec_:TDouble3D ) :Boolean;
+     begin
+          Result := ProjSup( Vec_ ).Collision( Cubo_.ProjSup( Vec_ ) )
+     end;
+//······································
+var
+   NX0, NY0, NZ0,
+   NX1, NY1, NZ1 :TDouble3D;
+begin
+     with Self do
+     begin
+          NX0 := NorvX;
+          NY0 := NorvY;
+          NZ0 := NorvZ;
+     end;
+
+     with Cubo_ do
+     begin
+          NX1 := NorvX;
+          NY1 := NorvY;
+          NZ1 := NorvZ;
+     end;
+
+     Result := Check( NX0 ) and Check( NY0 ) and Check( NZ0 )
+           and Check( NX1 ) and Check( NY1 ) and Check( NZ1 )
+           and Check( CrossProduct( NX0, NX1 ) )
+           and Check( CrossProduct( NX0, NY1 ) )
+           and Check( CrossProduct( NX0, NZ1 ) )
+           and Check( CrossProduct( NY0, NX1 ) )
+           and Check( CrossProduct( NY0, NY1 ) )
+           and Check( CrossProduct( NY0, NZ1 ) )
+           and Check( CrossProduct( NZ0, NX1 ) )
+           and Check( CrossProduct( NZ0, NY1 ) )
+           and Check( CrossProduct( NZ0, NZ1 ) );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
