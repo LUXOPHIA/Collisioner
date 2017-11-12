@@ -1,5 +1,5 @@
 ﻿# Collisioner
-任意のポリゴンモデル同士の衝突判定を、オクトツリーの空間分割で高速化する方法。
+任意のポリゴンモデル同士の衝突判定を、[Octree（八分木）](https://ja.wikipedia.org/wiki/八分木)による[空間分割](https://en.wikipedia.org/wiki/Space_partitioning)によって高速化する方法。
 
 [**[YouTube]**](https://youtu.be/Z5qbxQI6dgw) [**[Vimeo]**](https://vimeo.com/242276066)  
 [![](https://media.githubusercontent.com/media/LUXOPHIA/Collisioner/movie/--------/_MOVIE/Collisioner_640x360.gif)](https://youtu.be/Z5qbxQI6dgw)
@@ -20,7 +20,7 @@
 > ![](https://www.researchgate.net/profile/Khaled_Mamou/publication/221129055/figure/fig3/AS:305611066626072@1449874764261/Fig-4-Segmentation-results-and-generated-convex-hulls.png)
 > \* [A simple and efficient approach for 3D mesh approximate convex decomposition](https://www.researchgate.net/publication/221129055_A_simple_and_efficient_approach_for_3D_mesh_approximate_convex_decomposition)：[ResearchGate](https://www.researchgate.net)
 
-そこで、実装上の煩雑さを避けつつ、任意の大規模モデルを扱うために、ポリゴンモデルを一旦ボクセル化し、ボクセル同士の衝突判定問題へ還元する。もちろんポリゴン同士の接触を厳密に計算していないので、判定精度はボクセルの空間解像度に依存してしまうが、[Octree：八分木](https://ja.wikipedia.org/wiki/八分木)による階層的な[空間分割](https://en.wikipedia.org/wiki/Space_partitioning)によって検索を効率化できるので、大規模モデルに対しても効率が良い。
+そこで、実装上の煩雑さを避けつつ、任意の大規模モデルを扱うために、ポリゴンモデルを一旦ボクセル化し、ボクセル同士の衝突判定問題へ還元する。もちろんポリゴン同士の接触を厳密に計算していないので、判定精度はボクセルの空間解像度に依存してしまうが、[Octree（八分木）](https://ja.wikipedia.org/wiki/八分木)による階層的な[空間分割](https://en.wikipedia.org/wiki/Space_partitioning)によって検索を効率化できるので、大規模モデルに対しても効率が良い。
 
 > ![](https://upload.wikimedia.org/wikipedia/commons/3/35/Octree2.png)  
 > \* [八分木](https://ja.wikipedia.org/wiki/八分木)：[Wikipedia](https://ja.wikipedia.org)
