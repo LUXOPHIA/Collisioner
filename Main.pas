@@ -83,6 +83,8 @@ begin
      begin
           Matery := _Matery0;
 
+          Inform.Visible := False;
+
           LoadFromFileSTL( '..\..\_DATA\ShaperA.stl' );
 
           Pose := TSingleM4.Translate( -1, 0, 0 );
@@ -96,6 +98,8 @@ begin
      with _ShaperB do
      begin
           Matery := _Matery0;
+
+          Inform.Visible := False;
 
           LoadFromFileSTL( '..\..\_DATA\ShaperB.stl' );
 
