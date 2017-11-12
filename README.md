@@ -17,7 +17,7 @@
 
 特に、[ミンコフスキー差（Minkowski Difference）](https://en.wikipedia.org/wiki/Minkowski_addition)を利用しているため、[凸多面体](https://ja.wikipedia.org/wiki/凸多面体)であることが前提であり、任意の形状を汎用的に扱うためには、予め[凹多面体](https://ja.wikipedia.org/wiki/凹多面体)を凸多面体へ分割する前処理が必要となる。
 
-> ![](https://www.researchgate.net/profile/Khaled_Mamou/publication/221129055/figure/fig3/AS:305611066626072@1449874764261/Fig-4-Segmentation-results-and-generated-convex-hulls.png)
+> ![](https://www.researchgate.net/profile/Khaled_Mamou/publication/221129055/figure/fig3/AS:305611066626072@1449874764261/Fig-4-Segmentation-results-and-generated-convex-hulls.png)  
 > \* [A simple and efficient approach for 3D mesh approximate convex decomposition](https://www.researchgate.net/publication/221129055_A_simple_and_efficient_approach_for_3D_mesh_approximate_convex_decomposition)：[ResearchGate](https://www.researchgate.net)
 
 そこで、実装上の煩雑さを避けつつ、任意の大規模モデルを扱うために、ポリゴンモデルを一旦ボクセル化し、ボクセル同士の衝突判定問題へ還元する。もちろんポリゴン同士の接触を厳密に計算していないので、判定精度はボクセルの空間解像度に依存してしまうが、[Octree（八分木）](https://ja.wikipedia.org/wiki/八分木)による階層的な[空間分割](https://en.wikipedia.org/wiki/Space_partitioning)によって検索を効率化できるので、大規模モデルに対しても効率が良い。
