@@ -52,12 +52,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        procedure Clear; virtual; abstract;
        procedure ForFamily( const Proc_:TConstProc<Cardinal,TCardinal3D> ); virtual; abstract;
-       class function Collision( const Node0_:TOcNode; const Node1_:TOcNode ) :Boolean; overload;
-       class function Collision( const Node0_:TOcKnot; const Node1_:TOcKnot ) :Boolean; overload;
-       class function Collision( const Node0_:TOcNode; const Node1_:TOcLeaf ) :Boolean; overload;
-       class function Collision( const Node0_:TOcKnot; const Node1_:TOcLeaf ) :Boolean; overload;
-       class function Collision( const Node0_:TOcLeaf; const Node1_:TOcKnot ) :Boolean; overload;
-       class function Collision( const Node0_:TOcLeaf; const Node1_:TOcLeaf ) :Boolean; overload;
+       function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean; virtual; abstract;
+       class function ForChildPairs( const Node0_,Node1_:TOcNode; const Func_:TConstFunc<TOcNode,TOcNode,Boolean> ) :Boolean;
+       class function Collision( const Node0_,Node1_:TOcNode ) :Boolean;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcKnot
@@ -76,6 +73,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        procedure Clear; override;
        procedure ForFamily( const Proc_:TConstProc<Cardinal,TCardinal3D> ); override;
+       function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean; override;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcLeaf
@@ -93,6 +91,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        procedure Clear; override;
        procedure ForFamily( const Proc_:TConstProc<Cardinal,TCardinal3D> ); override;
+       function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean; override;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperOctree
@@ -124,7 +123,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Add( const Ind_:TCardinal3D );
        procedure Generate;
        procedure MakeGrid;
-       function Collision( const Octree_:TGLShaperOctree ) :Boolean;
+       function Collision( const Octree_:TGLShaperOctree ) :Boolean; overload;
+       class function Collision( const Octree0_,Octree1_:TGLShaperOctree ) :Boolean; overload;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -204,113 +204,18 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-class function TOcNode.Collision( const Node0_:TOcNode; const Node1_:TOcNode ) :Boolean;
+class function TOcNode.ForChildPairs( const Node0_,Node1_:TOcNode; const Func_:TConstFunc<TOcNode,TOcNode,Boolean> ) :Boolean;
 begin
-     if Node0_ is TOcKnot then
+     Result := Node0_.ForChilds( function( const N0:TOcNode ) :Boolean
      begin
-          if Node1_ is TOcKnot then
+          Result := Node1_.ForChilds( function( const N1:TOcNode ) :Boolean
           begin
-               Result := TOcNode.Collision( Node0_ as TOcKnot,
-                                            Node1_ as TOcKnot );
-          end
-          else
-          begin
-               Result := TOcNode.Collision( Node0_ as TOcKnot,
-                                            Node1_ as TOcLeaf );
-          end;
-     end
-     else
-     begin
-          if Node1_ is TOcKnot then
-          begin
-               Result := TOcNode.Collision( Node0_ as TOcLeaf,
-                                            Node1_ as TOcKnot );
-          end
-          else
-          begin
-               Result := TOcNode.Collision( Node0_ as TOcLeaf,
-                                            Node1_ as TOcLeaf );
-          end;
-     end;
+               Result := Func_( N0, N1 );
+          end );
+     end );
 end;
 
-class function TOcNode.Collision( const Node0_:TOcKnot; const Node1_:TOcKnot ) :Boolean;
-var
-   B0, B1 :TSingleSphere;
-   I0, I1 :Byte;
-   C0, C1 :TOcNode;
-begin
-     B0 := Node0_.BouBal;
-     B1 := Node1_.BouBal;
-
-     Result := Distan( B0.Center, B1.Center ) <= ( B0.Radius + B1.Radius );
-
-     if Result then
-     begin
-          for I0 := 0 to 7 do
-          begin
-               C0 := Node0_.Childs[ I0 ];
-               if Assigned( C0 ) then
-               begin
-                    for I1 := 0 to 7 do
-                    begin
-                         C1 := Node1_.Childs[ I1 ];
-                         if Assigned( C1 ) then
-                         begin
-                              if Collision( C0, C1 ) then Exit;
-                         end;
-                    end;
-               end;
-          end;
-
-          Result := False;
-     end;
-end;
-
-class function TOcNode.Collision( const Node0_:TOcNode; const Node1_:TOcLeaf ) :Boolean;
-begin
-     if Node0_ is TOcKnot then
-     begin
-          Result := Collision( Node0_ as TOcKnot, Node1_ );
-     end
-     else
-     begin
-          Result := Collision( Node0_ as TOcLeaf, Node1_ );
-     end;
-end;
-
-class function TOcNode.Collision( const Node0_:TOcKnot; const Node1_:TOcLeaf ) :Boolean;
-var
-   B0, B1 :TSingleSphere;
-   I0 :Byte;
-   C0 :TOcNode;
-begin
-     B0 := Node0_.BouBal;
-     B1 := Node1_.BouBal;
-
-     Result := Distan( B0.Center, B1.Center ) <= ( B0.Radius + B1.Radius );
-
-     if Result then
-     begin
-          for I0 := 0 to 7 do
-          begin
-               C0 := Node0_.Childs[ I0 ];
-               if Assigned( C0 ) then
-               begin
-                    if Collision( C0, Node1_ ) then Exit;
-               end;
-          end;
-
-          Result := False;
-     end;
-end;
-
-class function TOcNode.Collision( const Node0_:TOcLeaf; const Node1_:TOcKnot ) :Boolean;
-begin
-     Result := Collision( Node1_, Node0_ );
-end;
-
-class function TOcNode.Collision( const Node0_:TOcLeaf; const Node1_:TOcLeaf ) :Boolean;
+class function TOcNode.Collision( const Node0_,Node1_:TOcNode ) :Boolean;
 var
    B0, B1 :TSingleSphere;
 begin
@@ -318,6 +223,11 @@ begin
      B1 := Node1_.BouBal;
 
      Result := Distan( B0.Center, B1.Center ) <= ( B0.Radius + B1.Radius );
+
+     if Result and not( ( Node0_ is TOcLeaf ) and ( Node1_ is TOcLeaf ) ) then
+     begin
+          Result := ForChildPairs( Node0_, Node1_, TOcNode.Collision );
+     end;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcKnot
@@ -381,6 +291,21 @@ begin
      end;
 end;
 
+function TOcKnot.ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean;
+var
+   I :Byte;
+   C :TOcNode;
+begin
+     for I := 0 to 7 do
+     begin
+          C := _Childs[ I ];
+
+          if Assigned( C ) and Func_( C ) then Exit( True );
+     end;
+
+     Result := False;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcLeaf
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -425,6 +350,11 @@ end;
 procedure TOcLeaf.ForFamily( const Proc_:TConstProc<Cardinal,TCardinal3D> );
 begin
      Proc_( _Lev, _Ind );
+end;
+
+function TOcLeaf.ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean;
+begin
+     Result := Func_( Self );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperOctree
@@ -635,6 +565,11 @@ end;
 function TGLShaperOctree.Collision( const Octree_:TGLShaperOctree ) :Boolean;
 begin
      Result := TOcNode.Collision( Root, Octree_.Root );
+end;
+
+class function TGLShaperOctree.Collision( const Octree0_,Octree1_:TGLShaperOctree ) :Boolean;
+begin
+     Result := TOcNode.Collision( Octree0_.Root, Octree1_.Root );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
