@@ -39,7 +39,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetParen( const Paren_:TOcNode );
        function GetChilds( const I_:Byte ) :TOcNode; virtual; abstract;
        procedure SetChilds( const I_:Byte; const Child_:TOcNode ); virtual; abstract;
-       function GetBouBal :TSingleSphere;
+       function GetBouBall :TSingleSphere;
+       function GetBouCubo :TSingleCubo3D;
      public
        constructor Create( const Octree_:TGLShaperOctree; const Paren_:TOcNode; const Lev_:Cardinal; const Ind_:TCardinal3D );
        destructor Destroy; override;
@@ -48,7 +49,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Lev                     :Cardinal      read   _Lev    write   _Lev   ;
        property Ind                     :TCardinal3D   read   _Ind    write   _Ind   ;
        property Childs[ const I_:Byte ] :TOcNode       read GetChilds write SetChilds;
-       property BouBal                  :TSingleSphere read GetBouBal                ;
+       property BouBall                 :TSingleSphere read GetBouBall               ;
+       property BouCubo                 :TSingleCubo3D read GetBouCubo               ;
        ///// メソッド
        procedure Clear; virtual; abstract;
        procedure ForFamily( const Proc_:TConstProc<Cardinal,TCardinal3D> ); virtual; abstract;
@@ -165,7 +167,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TOcNode.GetBouBal :TSingleSphere;
+function TOcNode.GetBouBall :TSingleSphere;
 var
    S :Single;
 begin
@@ -180,6 +182,35 @@ begin
           Center := _Octree.AbsoPose.MultPos( Center );
 
           Radius := S * Roo2(3) / 2;
+     end;
+end;
+
+function TOcNode.GetBouCubo :TSingleCubo3D;
+var
+   S :Single;
+begin
+     S := _Octree.Size / ( 1 shl _Lev );
+
+     with Result do
+     begin
+          with Area do
+          begin
+               with Min do
+               begin
+                    X := _Octree.Cent.X - _Octree.Size/2 + S * _Ind.X;
+                    Y := _Octree.Cent.Y - _Octree.Size/2 + S * _Ind.Y;
+                    Z := _Octree.Cent.Z - _Octree.Size/2 + S * _Ind.Z;
+               end;
+
+               with Max do
+               begin
+                    X := Min.X + S;
+                    Y := Min.Y + S;
+                    Z := Min.Z + S;
+               end;
+          end;
+
+          Pose := _Octree.AbsoPose;
      end;
 end;
 
@@ -216,13 +247,8 @@ begin
 end;
 
 class function TOcNode.Collision( const Node0_,Node1_:TOcNode ) :Boolean;
-var
-   B0, B1 :TSingleSphere;
 begin
-     B0 := Node0_.BouBal;
-     B1 := Node1_.BouBal;
-
-     Result := Distan( B0.Center, B1.Center ) <= ( B0.Radius + B1.Radius );
+     Result := Node0_.BouBall.Collision( Node1_.BouBall );
 
      if Result and not( ( Node0_ is TOcLeaf ) and ( Node1_ is TOcLeaf ) ) then
      begin
