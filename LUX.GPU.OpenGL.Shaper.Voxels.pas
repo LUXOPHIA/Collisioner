@@ -36,6 +36,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        _Size :TGLUnifor<Single>;
+       _Color :TGLUnifor<TAlphaColorF>;
        ///// アクセス
        function GetCount :Integer;
        function GetSizeX :Single;
@@ -44,14 +45,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSizeY( const SizeY_:Single );
        function GetSizeZ :Single;
        procedure SetSizeZ( const SizeZ_:Single );
+       function GetColor :TAlphaColorF;
+       procedure SetColor( const Color_:TAlphaColorF );
      public
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
-       property Count :Integer read GetCount               ;
-       property SizeX :Single  read GetSizeX write SetSizeX;
-       property SizeY :Single  read GetSizeY write SetSizeY;
-       property SizeZ :Single  read GetSizeZ write SetSizeZ;
+       property Count :Integer      read GetCount               ;
+       property SizeX :Single       read GetSizeX write SetSizeX;
+       property SizeY :Single       read GetSizeY write SetSizeY;
+       property SizeZ :Single       read GetSizeZ write SetSizeZ;
+       property Color :TAlphaColorF read GetColor write SetColor;
        ///// メソッド
        procedure BeginDraw; override;
        procedure EndDraw; override;
@@ -66,7 +70,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 implementation //############################################################### ■
 
 uses System.Math,
-     Winapi.OpenGLext,
+     Winapi.OpenGL, Winapi.OpenGLext,
      LUX.GPU.OpenGL.Matery.Preset;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
@@ -214,6 +218,8 @@ begin
                  Add( 'layout( std140 ) uniform TCameraPose{ layout( row_major ) mat4 _CameraPose; };' );
                  Add( 'layout( std140 ) uniform TShaperPose{ layout( row_major ) mat4 _ShaperPose; };' );
 
+                 Add( 'layout( std140 ) uniform TColor{ vec4 _Color; };' );
+
                  Add( 'in TSenderGF' );
                  Add( '{' );
                  Add( '  vec4 Pos;' );
@@ -224,7 +230,7 @@ begin
 
                  Add( 'void main()' );
                  Add( '{' );
-                 Add( '  _ResultCol = vec4( 1, 1, 1, 1 );' );
+                 Add( '  _ResultCol = _Color;' );
                  Add( '}' );
 
                EndUpdate;
@@ -238,6 +244,7 @@ begin
           with Unifors do
           begin
                Add( 4, 'TSize' );
+               Add( 5, 'TColor' );
           end;
 
           Assert( Status, Errors.Text );
@@ -295,6 +302,18 @@ begin
      _Size[ 2 ] := SizeZ_;
 end;
 
+//------------------------------------------------------------------------------
+
+function TGLShaperVoxels.GetColor :TAlphaColorF;
+begin
+     Result := _Color[ 0 ];
+end;
+
+procedure TGLShaperVoxels.SetColor( const Color_:TAlphaColorF );
+begin
+     _Color[ 0 ] := Color_;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TGLShaperVoxels.Create;
@@ -306,14 +325,20 @@ begin
      _Size := TGLUnifor<Single>.Create( GL_STATIC_DRAW );
      _Size.Count := 3;
 
+     _Color := TGLUnifor<TAlphaColorF>.Create( GL_STATIC_DRAW );
+     _Color.Count := 1;
+
      SizeX := 0.05;
      SizeY := 0.05;
      SizeZ := 0.05;
+
+     Color := TAlphaColorF.Create( 1, 1, 1, 0.5 );
 end;
 
 destructor TGLShaperVoxels.Destroy;
 begin
-     _Size.DisposeOf;
+     _Size .DisposeOf;
+     _Color.DisposeOf;
 
      inherited;
 end;
@@ -324,12 +349,14 @@ procedure TGLShaperVoxels.BeginDraw;
 begin
      inherited;
 
-     _Size.Use( 4 );
+     _Size .Use( 4 );
+     _Color.Use( 5 );
 end;
 
 procedure TGLShaperVoxels.EndDraw;
 begin
-     _Size.Unuse( 4 );
+     _Size .Unuse( 4 );
+     _Color.Unuse( 5 );
 
      inherited;
 end;

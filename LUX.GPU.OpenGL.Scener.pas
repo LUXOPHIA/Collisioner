@@ -4,7 +4,7 @@ interface //####################################################################
 
 uses System.Generics.Collections,
      Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.D1, LUX.D2, LUX.D3, LUX.M4, LUX.Tree,
+     LUX, LUX.D1, LUX.D2, LUX.D3, LUX.M4, LUX.Data.Tree,
      LUX.GPU.OpenGL,
      LUX.GPU.OpenGL.Atom.Buffer,
      LUX.GPU.OpenGL.Atom.Buffer.Unifor,

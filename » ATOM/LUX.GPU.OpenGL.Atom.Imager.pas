@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.Lattice.T1, LUX.Lattice.T2, LUX.Lattice.T3,
+     LUX, LUX.Data.Lattice.T1, LUX.Data.Lattice.T2, LUX.Data.Lattice.T3,
      LUX.GPU.OpenGL.Atom;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
