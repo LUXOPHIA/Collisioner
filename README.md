@@ -25,10 +25,8 @@
 > ![](https://upload.wikimedia.org/wikipedia/commons/3/35/Octree2.png)  
 > \* [八分木](https://ja.wikipedia.org/wiki/八分木)：[Wikipedia](https://ja.wikipedia.org)
 
-なお、ボクセルモデルは[軸平行](https://en.wikipedia.org/wiki/Axis-aligned_object)に生成されるが、各オブジェクトのローカル座標系に基づいているので、オブジェクトが回転すると、姿勢の異なるボクセル同士の衝突判定が必要となり計算効率が悪くなる。そこで、ボクセル同士の接触を厳密に判定するのではなく、ボクセルに**外接する球体**に対して衝突判定を行う。もちろんボクセルと同様に、球体自体の内包関係も八分木の階層構造を保つので、効率的な検索が可能である。
+なおボクセルは最初、[軸平行](https://en.wikipedia.org/wiki/Axis-aligned_object)な立方体として生成されるが、各オブジェクトのローカル座標系に基づいているので、オブジェクトが回転したりスケーリングしたりすると、ボクセル自体も任意の姿勢とサイズの直方体として扱う必要がある。
 
-> ![](https://www.researchgate.net/profile/Costas_Tzafestas/publication/3681383/figure/fig1/AS:279795217780736@1443719786044/Figure-1-Spherical-Object-Centered-Octree-Decompo-sition.png)  
-> \* [Real-time collision detection using spherical octrees: virtual reality application](https://www.researchgate.net/publication/3681383_Real-time_collision_detection_using_spherical_octrees_virtual_reality_application)：[ResearchGate](https://www.researchgate.net)
 ----
 
 [![Delphi Starter](http://img.en25.com/EloquaImages/clients/Embarcadero/%7B063f1eec-64a6-4c19-840f-9b59d407c914%7D_dx-starter-bn159.png)](https://www.embarcadero.com/jp/products/delphi/starter)
