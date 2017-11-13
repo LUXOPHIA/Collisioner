@@ -6,10 +6,10 @@ uses LUX, LUX.D3;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
-     IOcNode = interface;
+     IOcNode   = interface;
        IOcKnot = interface;
-         IOctree = interface;
        IOcLeaf = interface;
+       IOctree = interface;
 
      TOcNode   = class;
        TOcKnot = class;
@@ -72,6 +72,35 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function ForChildPairs( const Node0_,Node1_:TOcNode; const Func_:TConstFunc<TOcNode,TOcNode,Boolean> ) :Boolean;
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcLeaf
+
+     IOcLeaf = interface( IOcNode )
+     ['{D3D3C428-50D3-48B5-B1DD-0FD69EB041AA}']
+     {protected}
+     {public}
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TOcLeaf = class( TOcNode, IOcLeaf )
+     private
+     protected
+       _Paren :TOcNode;
+       _Id    :T1Bit3D;
+       ///// アクセス
+       function GetInd :TCardinal3D;  override;
+       function GetParen :TOcNode; override;
+       procedure SetParen( const Paren_:TOcNode ); override;
+       function GetChilds( const I_:Byte ) :TOcNode; override;
+       procedure SetChilds( const I_:Byte; const Child_:TOcNode ); override;
+     public
+       constructor Create;
+       destructor Destroy; override;
+       ///// プロパティ
+       ///// メソッド
+       function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean; override;
+     end;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcKnot
 
      IOcKnot = interface( IOcNode )
@@ -88,35 +117,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _Paren  :TOcNode;
        _Id     :T1Bit3D;
        _Childs :array [ 0..7 ] of TOcNode;
-       ///// アクセス
-       function GetInd :TCardinal3D;  override;
-       function GetParen :TOcNode; override;
-       procedure SetParen( const Paren_:TOcNode ); override;
-       function GetChilds( const I_:Byte ) :TOcNode; override;
-       procedure SetChilds( const I_:Byte; const Child_:TOcNode ); override;
-     public
-       constructor Create;
-       destructor Destroy; override;
-       ///// プロパティ
-       ///// メソッド
-       function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean; override;
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcLeaf
-
-     IOcLeaf = interface( IOcNode )
-     ['{D3D3C428-50D3-48B5-B1DD-0FD69EB041AA}']
-     {protected}
-     {public}
-     end;
-
-     //-------------------------------------------------------------------------
-
-     TOcLeaf = class( TOcNode, IOcLeaf )
-     private
-     protected
-       _Paren :TOcNode;
-       _Id    :T1Bit3D;
        ///// アクセス
        function GetInd :TCardinal3D;  override;
        function GetParen :TOcNode; override;
@@ -261,6 +261,69 @@ begin
      end );
 end;
 
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcLeaf
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TOcLeaf.GetInd :TCardinal3D;
+begin
+     with Paren.Ind do
+     begin
+          Result.X := ( X shl 1 ) or _Id.X;
+          Result.Y := ( Y shl 1 ) or _Id.Y;
+          Result.Z := ( Z shl 1 ) or _Id.Z;
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TOcLeaf.GetParen :TOcNode;
+begin
+     Result := _Paren;
+end;
+
+procedure TOcLeaf.SetParen( const Paren_:TOcNode );
+begin
+     _Paren := Paren_;
+end;
+
+//------------------------------------------------------------------------------
+
+function TOcLeaf.GetChilds( const I_:Byte ) :TOcNode;
+begin
+     Result := nil;
+end;
+
+procedure TOcLeaf.SetChilds( const I_:Byte; const Child_:TOcNode );
+begin
+
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TOcLeaf.Create;
+begin
+     inherited;
+
+end;
+
+destructor TOcLeaf.Destroy;
+begin
+
+     inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TOcLeaf.ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean;
+begin
+     Result := Func_( Self );
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcKnot
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -336,69 +399,6 @@ begin
      end;
 
      Result := False;
-end;
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcLeaf
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-/////////////////////////////////////////////////////////////////////// アクセス
-
-function TOcLeaf.GetInd :TCardinal3D;
-begin
-     with Paren.Ind do
-     begin
-          Result.X := ( X shl 1 ) or _Id.X;
-          Result.Y := ( Y shl 1 ) or _Id.Y;
-          Result.Z := ( Z shl 1 ) or _Id.Z;
-     end;
-end;
-
-//------------------------------------------------------------------------------
-
-function TOcLeaf.GetParen :TOcNode;
-begin
-     Result := _Paren;
-end;
-
-procedure TOcLeaf.SetParen( const Paren_:TOcNode );
-begin
-     _Paren := Paren_;
-end;
-
-//------------------------------------------------------------------------------
-
-function TOcLeaf.GetChilds( const I_:Byte ) :TOcNode;
-begin
-     Result := nil;
-end;
-
-procedure TOcLeaf.SetChilds( const I_:Byte; const Child_:TOcNode );
-begin
-
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TOcLeaf.Create;
-begin
-     inherited;
-
-end;
-
-destructor TOcLeaf.Destroy;
-begin
-
-     inherited;
-end;
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-function TOcLeaf.ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean;
-begin
-     Result := Func_( Self );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOctree<_TOcKnot_,_TOcLeaf_>
