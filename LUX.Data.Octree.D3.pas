@@ -41,6 +41,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Cubo                    :TSingleCubo3D read GetCubo                  ;
        ///// メソッド
        function ForChilds( const Func_:TConstFunc<IOcNode3D,Boolean> ) :Boolean;
+       procedure ForFamily( const Proc_:TConstProc<IOcNode3D> );
        function Collision( const Node_:IOcNode3D ) :Boolean;
      end;
 
@@ -74,6 +75,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Cubo                    :TSingleCubo3D read GetCubo                  ;
        ///// メソッド
        function ForChilds( const Func_:TConstFunc<IOcNode3D,Boolean> ) :Boolean; reintroduce;
+       procedure ForFamily( const Proc_:TConstProc<IOcNode3D> ); reintroduce;
        function Collision( const Node_:IOcNode3D ) :Boolean;
      end;
 
@@ -107,6 +109,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Cubo                    :TSingleCubo3D read GetCubo                  ;
        ///// メソッド
        function ForChilds( const Func_:TConstFunc<IOcNode3D,Boolean> ) :Boolean; reintroduce;
+       procedure ForFamily( const Proc_:TConstProc<IOcNode3D> ); reintroduce;
        function Collision( const Node_:IOcNode3D ) :Boolean;
      end;
 
@@ -146,6 +149,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Pose                    :TSingleM4     read   _Pose   write   _Pose  ;
        ///// メソッド
        function ForChilds( const Func_:TConstFunc<IOcNode3D,Boolean> ) :Boolean; reintroduce;
+       procedure ForFamily( const Proc_:TConstProc<IOcNode3D> ); reintroduce;
        function GetCubo( const Lev_:Cardinal; const Ind_:TCardinal3D ) :TSingleCubo3D; overload;
        function Collision( const Node_:IOcNode3D ) :Boolean;
      end;
@@ -229,6 +233,14 @@ begin
      Result := inherited ForChilds( function( const Child_:TOcNode ) :Boolean
      begin
           Result := Func_( Child_ as IOcNode3D );
+     end );
+end;
+
+procedure TOcLeaf3D.ForFamily( const Proc_:TConstProc<IOcNode3D> );
+begin
+     inherited ForFamily( procedure( const Node_:TOcNode )
+     begin
+          Proc_( Node_ as IOcNode3D );
      end );
 end;
 
@@ -316,6 +328,14 @@ begin
      end );
 end;
 
+procedure TOcKnot3D.ForFamily( const Proc_:TConstProc<IOcNode3D> );
+begin
+     inherited ForFamily( procedure( const Node_:TOcNode )
+     begin
+          Proc_( Node_ as IOcNode3D );
+     end );
+end;
+
 //------------------------------------------------------------------------------
 
 function TOcKnot3D.Collision( const Node_:IOcNode3D ) :Boolean;
@@ -397,6 +417,14 @@ begin
      Result := inherited ForChilds( function( const Child_:TOcNode ) :Boolean
      begin
           Result := Func_( Child_ as IOcNode3D );
+     end );
+end;
+
+procedure TOctree3D.ForFamily( const Proc_:TConstProc<IOcNode3D> );
+begin
+     inherited ForFamily( procedure( const Node_:TOcNode )
+     begin
+          Proc_( Node_ as IOcNode3D );
      end );
 end;
 
