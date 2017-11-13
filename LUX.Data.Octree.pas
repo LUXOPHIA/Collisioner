@@ -46,7 +46,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TOcNode = class( TInterfacedObject, IOcNode )
+     TOcNode = class( TInterfacedBase, IOcNode )
      private
      protected
        ///// アクセス
@@ -82,7 +82,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TOcLeaf = class( TOcNode, IOcLeaf )
+     TOcLeaf = class( TOcNode, IOcLeaf, IOcNode )
      private
      protected
        _Paren :TOcNode;
@@ -111,7 +111,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TOcKnot = class( TOcNode, IOcKnot )
+     TOcKnot = class( TOcNode, IOcKnot, IOcNode )
      private
      protected
        _Paren  :TOcNode;
@@ -156,7 +156,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TOctree<_INode_:IOcNode;
              _TKnot_:TOcKnot,constructor;
-             _TLeaf_:TOcLeaf,constructor> = class( TOcNode, IOctree )
+             _TLeaf_:TOcLeaf,constructor> = class( TOcNode, IOctree, IOcNode )
      private
      protected
        _Childs :array [ 0..7 ] of TOcNode;
