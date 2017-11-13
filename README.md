@@ -25,7 +25,7 @@
 > ![](https://upload.wikimedia.org/wikipedia/commons/3/35/Octree2.png)  
 > \* [八分木](https://ja.wikipedia.org/wiki/八分木)：[Wikipedia](https://ja.wikipedia.org)
 
-なおボクセルは最初、[軸平行](https://en.wikipedia.org/wiki/Axis-aligned_object)な立方体として生成されるが、各オブジェクトのローカル座標系に基づいているので、オブジェクトが回転したりスケーリングしたりすると、ボクセル自体も任意の姿勢とサイズの直方体として扱う必要がある。
+なおボクセルは最初、[軸平行](https://en.wikipedia.org/wiki/Axis-aligned_object)な**立方体**として生成されるが、各オブジェクトのローカル座標系に基づいているので、オブジェクトと共に回転やスケーリングの影響を受ける。つまりボクセル同士の衝突判定も、**任意の姿勢とサイズの直方体**として扱う必要がある。
 
 ----
 
