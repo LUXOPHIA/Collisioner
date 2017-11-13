@@ -36,17 +36,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function ForChilds( const Func_:TConstFunc<IOcNode3D,Boolean> ) :Boolean;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcKnot3D
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcLeaf3D
 
-     IOcKnot3D = interface( IOcNode3D )
-     ['{824043A9-14C2-4FD2-8C8E-06C2E0EA0E6C}']
+     IOcLeaf3D = interface( IOcNode3D )
+     ['{A362526F-11E9-4521-B64B-F565A261DD50}']
      {protected}
      {public}
      end;
 
      //-------------------------------------------------------------------------
 
-     TOcKnot3D = class( TOcKnot, IOcKnot3D )
+     TOcLeaf3D = class( TOcLeaf, IOcLeaf3D )
      private
      protected
        ///// アクセス
@@ -63,17 +63,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function ForChilds( const Func_:TConstFunc<IOcNode3D,Boolean> ) :Boolean; reintroduce;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcLeaf3D
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcKnot3D
 
-     IOcLeaf3D = interface( IOcNode3D )
-     ['{A362526F-11E9-4521-B64B-F565A261DD50}']
+     IOcKnot3D = interface( IOcNode3D )
+     ['{824043A9-14C2-4FD2-8C8E-06C2E0EA0E6C}']
      {protected}
      {public}
      end;
 
      //-------------------------------------------------------------------------
 
-     TOcLeaf3D = class( TOcLeaf, IOcLeaf3D )
+     TOcKnot3D = class( TOcKnot, IOcKnot3D )
      private
      protected
        ///// アクセス
@@ -142,65 +142,6 @@ uses System.SysUtils, System.Math;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcNode3D
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcKnot3D
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-/////////////////////////////////////////////////////////////////////// アクセス
-
-function TOcKnot3D.GetParen :IOcNode3D;
-begin
-     Result := inherited GetParen as IOcNode3D;
-end;
-
-procedure TOcKnot3D.SetParen( const Paren_:IOcNode3D );
-begin
-     inherited SetParen( Paren_ as TOcNode );
-end;
-
-function TOcKnot3D.GetChilds( const I_:Byte ) :IOcNode3D;
-begin
-     Result := inherited GetChilds( I_ ) as IOcNode3D;
-end;
-
-procedure TOcKnot3D.SetChilds( const I_:Byte; const Child_:IOcNode3D );
-begin
-     inherited SetChilds( I_, Child_ as TOcNode );
-end;
-
-//------------------------------------------------------------------------------
-
-function TOcKnot3D.GetCubo :TSingleCubo3D;
-begin
-     Result := ( Root as IOctree3D ).GetCubo( Lev, Ind );
-end;
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TOcKnot3D.Create;
-begin
-     inherited;
-
-end;
-
-destructor TOcKnot3D.Destroy;
-begin
-
-     inherited;
-end;
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-function TOcKnot3D.ForChilds( const Func_:TConstFunc<IOcNode3D,Boolean> ) :Boolean;
-begin
-     Result := inherited ForChilds( function( const Child_:TOcNode ) :Boolean
-     begin
-          Result := Func_( Child_ as IOcNode3D );
-     end );
-end;
-
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcLeaf3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -253,6 +194,65 @@ end;
 /////////////////////////////////////////////////////////////////////// メソッド
 
 function TOcLeaf3D.ForChilds( const Func_:TConstFunc<IOcNode3D,Boolean> ) :Boolean;
+begin
+     Result := inherited ForChilds( function( const Child_:TOcNode ) :Boolean
+     begin
+          Result := Func_( Child_ as IOcNode3D );
+     end );
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcKnot3D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TOcKnot3D.GetParen :IOcNode3D;
+begin
+     Result := inherited GetParen as IOcNode3D;
+end;
+
+procedure TOcKnot3D.SetParen( const Paren_:IOcNode3D );
+begin
+     inherited SetParen( Paren_ as TOcNode );
+end;
+
+function TOcKnot3D.GetChilds( const I_:Byte ) :IOcNode3D;
+begin
+     Result := inherited GetChilds( I_ ) as IOcNode3D;
+end;
+
+procedure TOcKnot3D.SetChilds( const I_:Byte; const Child_:IOcNode3D );
+begin
+     inherited SetChilds( I_, Child_ as TOcNode );
+end;
+
+//------------------------------------------------------------------------------
+
+function TOcKnot3D.GetCubo :TSingleCubo3D;
+begin
+     Result := ( Root as IOctree3D ).GetCubo( Lev, Ind );
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TOcKnot3D.Create;
+begin
+     inherited;
+
+end;
+
+destructor TOcKnot3D.Destroy;
+begin
+
+     inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TOcKnot3D.ForChilds( const Func_:TConstFunc<IOcNode3D,Boolean> ) :Boolean;
 begin
      Result := inherited ForChilds( function( const Child_:TOcNode ) :Boolean
      begin
