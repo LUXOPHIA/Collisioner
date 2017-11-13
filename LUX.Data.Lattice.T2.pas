@@ -1,4 +1,4 @@
-﻿unit LUX.Lattice.T2;
+﻿unit LUX.Data.Lattice.T2;
 
 interface //#################################################################### ■
 
