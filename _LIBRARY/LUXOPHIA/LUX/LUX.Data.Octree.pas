@@ -40,6 +40,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Paren                   :TOcNode     read GetParen  write SetParen ;
        property Childs[ const I_:Byte ] :TOcNode     read GetChilds write SetChilds;
        ///// メソッド
+       procedure Clear;
        function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean;
      end;
 
@@ -48,14 +49,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TOcNode = class( TInterfacedObject, IOcNode )
      private
      protected
-       _Paren :TOcNode;
-       _Id    :T1Bit3D;
        ///// アクセス
        function GetRoot :TOcNode; virtual;
        function GetLev :Cardinal; virtual;
-       function GetInd :TCardinal3D; virtual;
-       function GetParen :TOcNode;
-       procedure SetParen( const Paren_:TOcNode );
+       function GetInd :TCardinal3D;  virtual; abstract;
+       function GetParen :TOcNode; virtual; abstract;
+       procedure SetParen( const Paren_:TOcNode ); virtual; abstract;
        function GetChilds( const I_:Byte ) :TOcNode; virtual; abstract;
        procedure SetChilds( const I_:Byte; const Child_:TOcNode ); virtual; abstract;
      public
@@ -68,6 +67,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Paren                   :TOcNode     read GetParen  write SetParen ;
        property Childs[ const I_:Byte ] :TOcNode     read GetChilds write SetChilds;
        ///// メソッド
+       procedure Clear;
        function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean; virtual; abstract;
        class function ForChildPairs( const Node0_,Node1_:TOcNode; const Func_:TConstFunc<TOcNode,TOcNode,Boolean> ) :Boolean;
      end;
@@ -85,8 +85,13 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TOcKnot = class( TOcNode, IOcKnot )
      private
      protected
+       _Paren  :TOcNode;
+       _Id     :T1Bit3D;
        _Childs :array [ 0..7 ] of TOcNode;
        ///// アクセス
+       function GetInd :TCardinal3D;  override;
+       function GetParen :TOcNode; override;
+       procedure SetParen( const Paren_:TOcNode ); override;
        function GetChilds( const I_:Byte ) :TOcNode; override;
        procedure SetChilds( const I_:Byte; const Child_:TOcNode ); override;
      public
@@ -94,7 +99,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        destructor Destroy; override;
        ///// プロパティ
        ///// メソッド
-       procedure Clear;
        function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean; override;
      end;
 
@@ -111,7 +115,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TOcLeaf = class( TOcNode, IOcLeaf )
      private
      protected
+       _Paren :TOcNode;
+       _Id    :T1Bit3D;
        ///// アクセス
+       function GetInd :TCardinal3D;  override;
+       function GetParen :TOcNode; override;
+       procedure SetParen( const Paren_:TOcNode ); override;
        function GetChilds( const I_:Byte ) :TOcNode; override;
        procedure SetChilds( const I_:Byte; const Child_:TOcNode ); override;
      public
@@ -124,7 +133,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOctree<_TOcKnot_,_TOcLeaf_>
 
-     IOctree = interface( IOcKnot )
+     IOctree = interface( IOcNode )
      ['{C4E87A83-EA71-4145-913A-E856DC00B6B1}']
      {protected}
        ///// アクセス
@@ -145,14 +154,21 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TOctree<_TOcKnot_,_TOcLeaf_:TOcNode,constructor> = class( TOcKnot, IOctree )
+     TOctree<_INode_:IOcNode;
+             _TKnot_:TOcKnot,constructor;
+             _TLeaf_:TOcLeaf,constructor> = class( TOcNode, IOctree )
      private
      protected
-       _DivL :Integer;
+       _Childs :array [ 0..7 ] of TOcNode;
+       _DivL   :Integer;
        ///// アクセス
        function GetRoot :TOcNode; override;
        function GetLev :Cardinal; override;
        function GetInd :TCardinal3D; override;
+       function GetParen :TOcNode; override;
+       procedure SetParen( const Paren_:TOcNode ); override;
+       function GetChilds( const I_:Byte ) :TOcNode; override;
+       procedure SetChilds( const I_:Byte; const Child_:TOcNode ); override;
        function GetDivL :Integer;
        procedure SetDivL( const DivL_:Integer );
        function GetDivN :Integer;
@@ -166,9 +182,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        class function DivLtoN( const DivL_:Cardinal ) :Cardinal;
        class function DivNtoL( const DivN_:Cardinal ) :Cardinal;
-       function Add( const Ind_:TCardinal3D ) :_TOcLeaf_;
+       function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean; override;
+       function Add( const Ind_:TCardinal3D ) :_TLeaf_;
        function GetNode( const Lev_:cardinal; const Ind_:TCardinal3D ) :IOcNode;
-       function GetLeaf( const Ind_:TCardinal3D ) :_TOcLeaf_;
+       function GetLeaf( const Ind_:TCardinal3D ) :_TLeaf_;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -195,36 +212,14 @@ uses System.SysUtils, System.Math;
 
 function TOcNode.GetRoot :TOcNode;
 begin
-     Result := _Paren.Root;
+     Result := Paren.Root;
 end;
 
 //------------------------------------------------------------------------------
 
 function TOcNode.GetLev :Cardinal;
 begin
-     Result := _Paren.Lev + 1;
-end;
-
-function TOcNode.GetInd :TCardinal3D;
-begin
-     with _Paren.Ind do
-     begin
-          Result.X := ( X shl 1 ) or _Id.X;
-          Result.Y := ( Y shl 1 ) or _Id.Y;
-          Result.Z := ( Z shl 1 ) or _Id.Z;
-     end;
-end;
-
-//------------------------------------------------------------------------------
-
-function TOcNode.GetParen :TOcNode;
-begin
-     Result := _Paren;
-end;
-
-procedure TOcNode.SetParen( const Paren_:TOcNode );
-begin
-     _Paren := Paren_;
+     Result := Paren.Lev + 1;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -242,6 +237,18 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TOcNode.Clear;
+var
+   I :Byte;
+begin
+     for I := 0 to 7 do
+     begin
+          if Assigned( Childs[ I ] ) then Childs[ I ].DisposeOf;
+     end;
+end;
+
+//------------------------------------------------------------------------------
 
 class function TOcNode.ForChildPairs( const Node0_,Node1_:TOcNode; const Func_:TConstFunc<TOcNode,TOcNode,Boolean> ) :Boolean;
 begin
@@ -261,6 +268,30 @@ end;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
 /////////////////////////////////////////////////////////////////////// アクセス
+
+function TOcKnot.GetInd :TCardinal3D;
+begin
+     with Paren.Ind do
+     begin
+          Result.X := ( X shl 1 ) or _Id.X;
+          Result.Y := ( Y shl 1 ) or _Id.Y;
+          Result.Z := ( Z shl 1 ) or _Id.Z;
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TOcKnot.GetParen :TOcNode;
+begin
+     Result := _Paren;
+end;
+
+procedure TOcKnot.SetParen( const Paren_:TOcNode );
+begin
+     _Paren := Paren_;
+end;
+
+//------------------------------------------------------------------------------
 
 function TOcKnot.GetChilds( const I_:Byte ) :TOcNode;
 begin
@@ -292,18 +323,6 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TOcKnot.Clear;
-var
-   I :Byte;
-begin
-     for I := 0 to 7 do
-     begin
-          if Assigned( _Childs[ I ] ) then _Childs[ I ].DisposeOf;
-     end;
-end;
-
-//------------------------------------------------------------------------------
-
 function TOcKnot.ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean;
 var
    I :Byte;
@@ -326,6 +345,30 @@ end;
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
 /////////////////////////////////////////////////////////////////////// アクセス
+
+function TOcLeaf.GetInd :TCardinal3D;
+begin
+     with Paren.Ind do
+     begin
+          Result.X := ( X shl 1 ) or _Id.X;
+          Result.Y := ( Y shl 1 ) or _Id.Y;
+          Result.Z := ( Z shl 1 ) or _Id.Z;
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TOcLeaf.GetParen :TOcNode;
+begin
+     Result := _Paren;
+end;
+
+procedure TOcLeaf.SetParen( const Paren_:TOcNode );
+begin
+     _Paren := Paren_;
+end;
+
+//------------------------------------------------------------------------------
 
 function TOcLeaf.GetChilds( const I_:Byte ) :TOcNode;
 begin
@@ -366,57 +409,81 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TOctree<_TOcKnot_,_TOcLeaf_>.GetRoot :TOcNode;
+function TOctree<_INode_,_TKnot_,_TLeaf_>.GetRoot :TOcNode;
 begin
      Result := Self;
 end;
 
 //------------------------------------------------------------------------------
 
-function TOctree<_TOcKnot_,_TOcLeaf_>.GetLev :Cardinal;
+function TOctree<_INode_,_TKnot_,_TLeaf_>.GetLev :Cardinal;
 begin
      Result := 0;
 end;
 
-function TOctree<_TOcKnot_,_TOcLeaf_>.GetInd :TCardinal3D;
+function TOctree<_INode_,_TKnot_,_TLeaf_>.GetInd :TCardinal3D;
 begin
      Result := TCardinal3D.Create( 0, 0, 0 );
 end;
 
 //------------------------------------------------------------------------------
 
-function TOctree<_TOcKnot_,_TOcLeaf_>.GetDivL :Integer;
+function TOctree<_INode_,_TKnot_,_TLeaf_>.GetParen :TOcNode;
+begin
+     Result := nil;
+end;
+
+procedure TOctree<_INode_,_TKnot_,_TLeaf_>.SetParen( const Paren_:TOcNode );
+begin
+
+end;
+
+//------------------------------------------------------------------------------
+
+function TOctree<_INode_,_TKnot_,_TLeaf_>.GetChilds( const I_:Byte ) :TOcNode;
+begin
+     Result := _Childs[ I_ ];
+end;
+
+procedure TOctree<_INode_,_TKnot_,_TLeaf_>.SetChilds( const I_:Byte; const Child_:TOcNode );
+begin
+     _Childs[ I_ ] := Child_;
+end;
+
+//------------------------------------------------------------------------------
+
+function TOctree<_INode_,_TKnot_,_TLeaf_>.GetDivL :Integer;
 begin
      Result := _DivL;
 end;
 
-procedure TOctree<_TOcKnot_,_TOcLeaf_>.SetDivL( const DivL_:Integer );
+procedure TOctree<_INode_,_TKnot_,_TLeaf_>.SetDivL( const DivL_:Integer );
 begin
      _DivL := DivL_;
 
      Clear;
 end;
 
-function TOctree<_TOcKnot_,_TOcLeaf_>.GetDivN :Integer;
+function TOctree<_INode_,_TKnot_,_TLeaf_>.GetDivN :Integer;
 begin
      Result := DivLtoN( _DivL );
 end;
 
-procedure TOctree<_TOcKnot_,_TOcLeaf_>.SetDivN( const DivN_:Integer );
+procedure TOctree<_INode_,_TKnot_,_TLeaf_>.SetDivN( const DivN_:Integer );
 begin
      DivL := DivNtoL( DivN_ );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TOctree<_TOcKnot_,_TOcLeaf_>.Create;
+constructor TOctree<_INode_,_TKnot_,_TLeaf_>.Create;
 begin
      inherited;
 
      _DivL := 0;
 end;
 
-destructor TOctree<_TOcKnot_,_TOcLeaf_>.Destroy;
+destructor TOctree<_INode_,_TKnot_,_TLeaf_>.Destroy;
 begin
 
      inherited;
@@ -424,19 +491,36 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-class function TOctree<_TOcKnot_,_TOcLeaf_>.DivLtoN( const DivL_:Cardinal ) :Cardinal;
+class function TOctree<_INode_,_TKnot_,_TLeaf_>.DivLtoN( const DivL_:Cardinal ) :Cardinal;
 begin
      Result := 1 shl DivL_;
 end;
 
-class function TOctree<_TOcKnot_,_TOcLeaf_>.DivNtoL( const DivN_:Cardinal ) :Cardinal;
+class function TOctree<_INode_,_TKnot_,_TLeaf_>.DivNtoL( const DivN_:Cardinal ) :Cardinal;
 begin
      Result := Ceil( Log2( DivN_ ) );
 end;
 
 //------------------------------------------------------------------------------
 
-function TOctree<_TOcKnot_,_TOcLeaf_>.Add( const Ind_:TCardinal3D ) :_TOcLeaf_;
+function TOctree<_INode_,_TKnot_,_TLeaf_>.ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean;
+var
+   I :Byte;
+   C :TOcNode;
+begin
+     for I := 0 to 7 do
+     begin
+          C := _Childs[ I ];
+
+          if Assigned( C ) and Func_( C ) then Exit( True );
+     end;
+
+     Result := False;
+end;
+
+//------------------------------------------------------------------------------
+
+function TOctree<_INode_,_TKnot_,_TLeaf_>.Add( const Ind_:TCardinal3D ) :_TLeaf_;
 var
    P, C :TOcNode;
    L :Integer;
@@ -453,9 +537,9 @@ begin
 
           if not Assigned( C ) then
           begin
-               C := _TOcKnot_.Create;
+               C := _TKnot_.Create;
 
-               with C do
+               with C as TOcKnot do
                begin
                     _Paren := P;
                     _Id    := Id;
@@ -473,9 +557,9 @@ begin
 
      if not Assigned( C ) then
      begin
-          C := _TOcLeaf_.Create;
+          C := _TLeaf_.Create;
 
-          with C do
+          with C as TOcLeaf do
           begin
                _Paren := P;
                _Id    := Id;
@@ -484,12 +568,12 @@ begin
           P.Childs[ Id.o ] := C;
      end;
 
-     Result := C as _TOcLeaf_;
+     Result := C as _TLeaf_;
 end;
 
 //------------------------------------------------------------------------------
 
-function TOctree<_TOcKnot_,_TOcLeaf_>.GetNode( const Lev_:cardinal; const Ind_:TCardinal3D ) :IOcNode;
+function TOctree<_INode_,_TKnot_,_TLeaf_>.GetNode( const Lev_:cardinal; const Ind_:TCardinal3D ) :IOcNode;
 var
    L :Integer;
    I :TCardinal3D;
@@ -508,9 +592,9 @@ begin
      end;
 end;
 
-function TOctree<_TOcKnot_,_TOcLeaf_>.GetLeaf( const Ind_:TCardinal3D ) :_TOcLeaf_;
+function TOctree<_INode_,_TKnot_,_TLeaf_>.GetLeaf( const Ind_:TCardinal3D ) :_TLeaf_;
 begin
-     Result := GetNode( _DivL, Ind_ ) as _TOcLeaf_;
+     Result := GetNode( _DivL, Ind_ ) as _TLeaf_;
 end;
 
 //------------------------------------------------------------------------------
