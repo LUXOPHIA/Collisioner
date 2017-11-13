@@ -42,6 +42,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        procedure Clear;
        function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean;
+       procedure ForFamily( const Proc_:TConstProc<TOcNode> );
      end;
 
      //-------------------------------------------------------------------------
@@ -69,6 +70,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        procedure Clear;
        function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean; virtual; abstract;
+       procedure ForFamily( const Proc_:TConstProc<TOcNode> ); virtual; abstract;
        class function ForChildPairs( const Node0_,Node1_:TOcNode; const Func_:TConstFunc<TOcNode,TOcNode,Boolean> ) :Boolean;
      end;
 
@@ -99,6 +101,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        ///// メソッド
        function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean; override;
+       procedure ForFamily( const Proc_:TConstProc<TOcNode> ); override;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcKnot
@@ -129,6 +132,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        ///// メソッド
        function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean; override;
+       procedure ForFamily( const Proc_:TConstProc<TOcNode> ); override;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOctree<_TOcKnot_,_TOcLeaf_>
@@ -183,6 +187,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class function DivLtoN( const DivL_:Cardinal ) :Cardinal;
        class function DivNtoL( const DivN_:Cardinal ) :Cardinal;
        function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean; override;
+       procedure ForFamily( const Proc_:TConstProc<TOcNode> ); override;
        function Add( const Ind_:TCardinal3D ) :_TLeaf_;
        function GetNode( const Lev_:cardinal; const Ind_:TCardinal3D ) :IOcNode;
        function GetLeaf( const Ind_:TCardinal3D ) :_TLeaf_;
@@ -324,6 +329,11 @@ begin
      Result := Func_( Self );
 end;
 
+procedure TOcLeaf.ForFamily( const Proc_:TConstProc<TOcNode> );
+begin
+     Proc_( Self );
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcKnot
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -399,6 +409,21 @@ begin
      end;
 
      Result := False;
+end;
+
+procedure TOcKnot.ForFamily( const Proc_:TConstProc<TOcNode> );
+var
+   I :Byte;
+   C :TOcNode;
+begin
+     Proc_( Self );
+
+     for I := 0 to 7 do
+     begin
+          C := _Childs[ I ];
+
+          if Assigned( C ) then C.ForFamily( Proc_ );
+     end;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOctree<_TOcKnot_,_TOcLeaf_>
@@ -516,6 +541,21 @@ begin
      end;
 
      Result := False;
+end;
+
+procedure TOctree<_INode_,_TKnot_,_TLeaf_>.ForFamily( const Proc_:TConstProc<TOcNode> );
+var
+   I :Byte;
+   C :TOcNode;
+begin
+     Proc_( Self );
+
+     for I := 0 to 7 do
+     begin
+          C := _Childs[ I ];
+
+          if Assigned( C ) then C.ForFamily( Proc_ );
+     end;
 end;
 
 //------------------------------------------------------------------------------
