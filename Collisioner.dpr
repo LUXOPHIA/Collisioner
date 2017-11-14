@@ -53,8 +53,8 @@ uses
   LUX.Geometry in '_LIBRARY\LUXOPHIA\LUX.Geometry\LUX.Geometry.pas',
   LUX.GPU.OpenGL.Shaper.Octree in '_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\LUX.GPU.OpenGL.Shaper.Octree.pas',
   LUX.GPU.OpenGL.Shaper.Voxels in '_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\LUX.GPU.OpenGL.Shaper.Voxels.pas',
-  LUX.Data.Octree.D3 in '_LIBRARY\LUXOPHIA\LUX\LUX.Data.Octree.D3.pas',
-  LUX.Data.Octree in '_LIBRARY\LUXOPHIA\LUX\LUX.Data.Octree.pas';
+  LUX.Data.Octree in '_LIBRARY\LUXOPHIA\LUX\LUX.Data.Octree.pas',
+  LUX.Data.Octree.D3 in '_LIBRARY\LUXOPHIA\LUX.Geometry\LUX.Data.Octree.D3.pas';
 
 {$R *.res}
 
