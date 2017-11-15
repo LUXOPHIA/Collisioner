@@ -248,18 +248,15 @@ end;
 
 function TOcLeaf3D.Collision( const Node_:IOcNode3D ) :Boolean;
 begin
-     Result := Cubo.Collision( Node_.Cubo );
-
-     if Result and not( Node_ is TOcLeaf ) then
-     begin
-          Result := ForChilds( function( const N0:IOcNode3D ) :Boolean
-          begin
-               Result := Node_.ForChilds( function( const N1:IOcNode3D ) :Boolean
-               begin
-                    Result := N0.Collision( N1 );
-               end );
-          end );
-     end;
+     Result := Cubo.Collision( Node_.Cubo )
+           and ( Node_ is TOcLeaf
+              or ForChilds( function( const N0:IOcNode3D ) :Boolean
+                            begin
+                                 Result := Node_.ForChilds( function( const N1:IOcNode3D ) :Boolean
+                                 begin
+                                      Result := N0.Collision( N1 );
+                                 end );
+                            end ) );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcKnot3D
@@ -340,18 +337,14 @@ end;
 
 function TOcKnot3D.Collision( const Node_:IOcNode3D ) :Boolean;
 begin
-     Result := Cubo.Collision( Node_.Cubo );
-
-     if Result then
-     begin
-          Result := ForChilds( function( const N0:IOcNode3D ) :Boolean
-          begin
-               Result := Node_.ForChilds( function( const N1:IOcNode3D ) :Boolean
-               begin
-                    Result := N0.Collision( N1 );
-               end );
-          end );
-     end;
+     Result := Cubo.Collision( Node_.Cubo )
+           and ForChilds( function( const N0:IOcNode3D ) :Boolean
+                          begin
+                               Result := Node_.ForChilds( function( const N1:IOcNode3D ) :Boolean
+                                                          begin
+                                                               Result := N0.Collision( N1 );
+                                                          end );
+                          end );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOctree3D
@@ -468,18 +461,14 @@ end;
 
 function TOctree3D.Collision( const Node_:IOcNode3D ) :Boolean;
 begin
-     Result := Cubo.Collision( Node_.Cubo );
-
-     if Result then
-     begin
-          Result := ForChilds( function( const N0:IOcNode3D ) :Boolean
-          begin
-               Result := Node_.ForChilds( function( const N1:IOcNode3D ) :Boolean
+     Result := Cubo.Collision( Node_.Cubo )
+           and ForChilds( function( const N0:IOcNode3D ) :Boolean
                begin
-                    Result := N0.Collision( N1 );
+                    Result := Node_.ForChilds( function( const N1:IOcNode3D ) :Boolean
+                                    begin
+                                         Result := N0.Collision( N1 );
+                                    end );
                end );
-          end );
-     end;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
