@@ -43,6 +43,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Clear;
        function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean;
        procedure ForFamily( const Proc_:TConstProc<TOcNode> );
+       function ForChildPairs( const Node_:TOcNode; const Func_:TConstFunc<TOcNode,TOcNode,Boolean> ) :Boolean;
      end;
 
      //-------------------------------------------------------------------------
@@ -71,7 +72,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Clear;
        function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean; virtual; abstract;
        procedure ForFamily( const Proc_:TConstProc<TOcNode> ); virtual; abstract;
-       class function ForChildPairs( const Node0_,Node1_:TOcNode; const Func_:TConstFunc<TOcNode,TOcNode,Boolean> ) :Boolean;
+       function ForChildPairs( const Node_:TOcNode; const Func_:TConstFunc<TOcNode,TOcNode,Boolean> ) :Boolean;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcLeaf
@@ -255,11 +256,11 @@ end;
 
 //------------------------------------------------------------------------------
 
-class function TOcNode.ForChildPairs( const Node0_,Node1_:TOcNode; const Func_:TConstFunc<TOcNode,TOcNode,Boolean> ) :Boolean;
+function TOcNode.ForChildPairs( const Node_:TOcNode; const Func_:TConstFunc<TOcNode,TOcNode,Boolean> ) :Boolean;
 begin
-     Result := Node0_.ForChilds( function( const N0:TOcNode ) :Boolean
+     Result := ForChilds( function( const N0:TOcNode ) :Boolean
      begin
-          Result := Node1_.ForChilds( function( const N1:TOcNode ) :Boolean
+          Result := Node_.ForChilds( function( const N1:TOcNode ) :Boolean
           begin
                Result := Func_( N0, N1 );
           end );
