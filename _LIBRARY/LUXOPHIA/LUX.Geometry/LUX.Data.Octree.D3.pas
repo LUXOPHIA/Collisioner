@@ -234,7 +234,7 @@ end;
 
 function TOcLeaf3D.ForChilds( const Func_:TConstFunc<IOcNode3D,Boolean> ) :Boolean;
 begin
-     Result := inherited ForChilds( function( const Child_:TOcNode ) :Boolean
+     Result := inherited ForChilds( function( const Child_:IOcNode ) :Boolean
                          begin
                               Result := Func_( Child_ as IOcNode3D );
                          end );
@@ -242,7 +242,7 @@ end;
 
 procedure TOcLeaf3D.ForFamily( const Proc_:TConstProc<IOcNode3D> );
 begin
-     inherited ForFamily( procedure( const Node_:TOcNode )
+     inherited ForFamily( procedure( const Node_:IOcNode )
                begin
                     Proc_( Node_ as IOcNode3D );
                end );
@@ -250,7 +250,7 @@ end;
 
 function TOcLeaf3D.ForChildPairs( const Node_:IOcNode3D; const Func_:TConstFunc<IOcNode3D,IOcNode3D,Boolean> ) :Boolean;
 begin
-     Result := inherited ForChildPairs( Node_ as TOcNode, function( const N0,N1:TOcNode ) :Boolean
+     Result := inherited ForChildPairs( Node_ as TOcNode, function( const N0,N1:IOcNode ) :Boolean
                          begin
                               Result := Func_( N0 as IOcNode3D,
                                                N1 as IOcNode3D );
@@ -328,7 +328,7 @@ end;
 
 function TOcKnot3D.ForChilds( const Func_:TConstFunc<IOcNode3D,Boolean> ) :Boolean;
 begin
-     Result := inherited ForChilds( function( const Child_:TOcNode ) :Boolean
+     Result := inherited ForChilds( function( const Child_:IOcNode ) :Boolean
                          begin
                               Result := Func_( Child_ as IOcNode3D );
                          end );
@@ -336,7 +336,7 @@ end;
 
 procedure TOcKnot3D.ForFamily( const Proc_:TConstProc<IOcNode3D> );
 begin
-     inherited ForFamily( procedure( const Node_:TOcNode )
+     inherited ForFamily( procedure( const Node_:IOcNode )
                begin
                     Proc_( Node_ as IOcNode3D );
                end );
@@ -344,7 +344,7 @@ end;
 
 function TOcKnot3D.ForChildPairs( const Node_:IOcNode3D; const Func_:TConstFunc<IOcNode3D,IOcNode3D,Boolean> ) :Boolean;
 begin
-     Result := inherited ForChildPairs( Node_ as TOcNode, function( const N0,N1:TOcNode ) :Boolean
+     Result := inherited ForChildPairs( Node_ as TOcNode, function( const N0,N1:IOcNode ) :Boolean
                          begin
                               Result := Func_( N0 as IOcNode3D,
                                                N1 as IOcNode3D );
@@ -422,7 +422,7 @@ end;
 
 function TOctree3D.ForChilds( const Func_:TConstFunc<IOcNode3D,Boolean> ) :Boolean;
 begin
-     Result := inherited ForChilds( function( const Child_:TOcNode ) :Boolean
+     Result := inherited ForChilds( function( const Child_:IOcNode ) :Boolean
                          begin
                               Result := Func_( Child_ as IOcNode3D );
                          end );
@@ -430,7 +430,7 @@ end;
 
 procedure TOctree3D.ForFamily( const Proc_:TConstProc<IOcNode3D> );
 begin
-     inherited ForFamily( procedure( const Node_:TOcNode )
+     inherited ForFamily( procedure( const Node_:IOcNode )
                begin
                     Proc_( Node_ as IOcNode3D );
                end );
@@ -438,7 +438,7 @@ end;
 
 function TOctree3D.ForChildPairs( const Node_:IOcNode3D; const Func_:TConstFunc<IOcNode3D,IOcNode3D,Boolean> ) :Boolean;
 begin
-     Result := inherited ForChildPairs( Node_ as TOcNode, function( const N0,N1:TOcNode ) :Boolean
+     Result := inherited ForChildPairs( Node_ as TOcNode, function( const N0,N1:IOcNode ) :Boolean
                          begin
                               Result := Func_( N0 as IOcNode3D,
                                                N1 as IOcNode3D );
