@@ -82,6 +82,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// アクセス
        function GetCubo :TSingleCubo3D;
      public
+       class constructor Create;
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
@@ -98,6 +99,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// アクセス
        function GetCubo :TSingleCubo3D;
      public
+       class constructor Create;
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
@@ -116,6 +118,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// アクセス
        function GetCubo :TSingleCubo3D; overload;
      public
+       class constructor Create;
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
@@ -158,7 +161,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TOcLeaf3D.Create;
+class constructor TOcLeaf3D.Create;
 begin
      inherited;
 
@@ -167,6 +170,12 @@ begin
 
      _CastRoot := function( const Root_:IOctree ) :IOctree3D
                   begin Result := Root_ as IOctree3D; end;
+end;
+
+constructor TOcLeaf3D.Create;
+begin
+     inherited;
+
 end;
 
 destructor TOcLeaf3D.Destroy;
@@ -201,7 +210,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TOcKnot3D.Create;
+class constructor TOcKnot3D.Create;
 begin
      inherited;
 
@@ -210,6 +219,12 @@ begin
 
      _CastRoot := function( const Root_:IOctree ) :IOctree3D
                   begin Result := Root_ as IOctree3D; end;
+end;
+
+constructor TOcKnot3D.Create;
+begin
+     inherited;
+
 end;
 
 destructor TOcKnot3D.Destroy;
@@ -244,7 +259,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TOctree3D.Create;
+class constructor TOctree3D.Create;
 begin
      inherited;
 
@@ -253,6 +268,12 @@ begin
 
      _CastRoot := function( const Root_:IOctree ) :IOctree3D
                   begin Result := Root_ as IOctree3D; end;
+end;
+
+constructor TOctree3D.Create;
+begin
+     inherited;
+
 end;
 
 destructor TOctree3D.Destroy;
