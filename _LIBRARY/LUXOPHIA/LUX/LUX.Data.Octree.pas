@@ -196,6 +196,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TOcLeaf<_INode_:IOcNode;
              _IRoot_:IOctree> = class( TOcLeaf, IOcLeaf, IOcNode )
      private
+     protected {本来不要なキャスト関数}
+       _CastNode :TConstFunc<IOcNode,_INode_>;
+       _CastRoot :TConstFunc<IOctree,_IRoot_>;
      protected
        ///// アクセス
        function GetRoot :_IRoot_; reintroduce;
@@ -219,8 +222,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcKnot<_INode_,_IRoot_>
 
      TOcKnot<_INode_:IOcNode;
-             _IRoot_:IOcNode> = class( TOcKnot, IOcKnot, IOcNode )
+             _IRoot_:IOctree> = class( TOcKnot, IOcKnot, IOcNode )
      private
+     protected {本来不要なキャスト関数}
+       _CastNode :TConstFunc<IOcNode,_INode_>;
+       _CastRoot :TConstFunc<IOctree,_IRoot_>;
      protected
        ///// アクセス
        function GetRoot :_IRoot_; reintroduce;
@@ -248,6 +254,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
              _TKnot_:TOcKnot<_INode_,_IRoot_>,constructor;
              _TLeaf_:TOcLeaf<_INode_,_IRoot_>,constructor> = class( TOctree<_TKnot_,_TLeaf_>, IOctree, IOcNode )
      private
+     protected {本来不要なキャスト関数}
+       _CastNode :TConstFunc<IOcNode,_INode_>;
+       _CastRoot :TConstFunc<IOctree,_IRoot_>;
      protected
        ///// アクセス
        function GetRoot :_IRoot_; reintroduce;
@@ -793,14 +802,14 @@ end;
 
 function TOcLeaf<_INode_,_IRoot_>.GetRoot :_IRoot_;
 begin
-     Result := inherited GetRoot;
+     Result := _CastRoot( inherited GetRoot );
 end;
 
 //------------------------------------------------------------------------------
 
 function TOcLeaf<_INode_,_IRoot_>.GetParen :_INode_;
 begin
-     Result := inherited GetParen;
+     Result := _CastNode( inherited GetParen );
 end;
 
 procedure TOcLeaf<_INode_,_IRoot_>.SetParen( const Paren_:_INode_ );
@@ -810,7 +819,7 @@ end;
 
 function TOcLeaf<_INode_,_IRoot_>.GetChilds( const I_:Byte ) :_INode_;
 begin
-     Result := inherited GetChilds( I_ );
+     Result := _CastNode( inherited GetChilds( I_ ) );
 end;
 
 procedure TOcLeaf<_INode_,_IRoot_>.SetChilds( const I_:Byte; const Child_:_INode_ );
@@ -838,7 +847,7 @@ function TOcLeaf<_INode_,_IRoot_>.ForChilds( const Func_:TConstFunc<_INode_,Bool
 begin
      Result := inherited ForChilds( function( const Child_:IOcNode ) :Boolean
                          begin
-                              Result := Func_( Child_ );
+                              Result := Func_( _CastNode( Child_ ) );
                          end );
 end;
 
@@ -846,7 +855,7 @@ procedure TOcLeaf<_INode_,_IRoot_>.ForFamily( const Proc_:TConstProc<_INode_> );
 begin
      inherited ForFamily( procedure( const Node_:IOcNode )
                begin
-                    Proc_( Node_ );
+                    Proc_( _CastNode( Node_ ) );
                end );
 end;
 
@@ -854,7 +863,8 @@ function TOcLeaf<_INode_,_IRoot_>.ForChildPairs( const Node_:_INode_; const Func
 begin
      Result := inherited ForChildPairs( Node_, function( const N0,N1:IOcNode ) :Boolean
                          begin
-                              Result := Func_( N0, N1 );
+                              Result := Func_( _CastNode( N0 ),
+                                               _CastNode( N1 ) );
                          end );
 end;
 
@@ -868,14 +878,14 @@ end;
 
 function TOcKnot<_INode_,_IRoot_>.GetRoot :_IRoot_;
 begin
-     Result := inherited GetRoot;
+     Result := _CastRoot( inherited GetRoot );
 end;
 
 //------------------------------------------------------------------------------
 
 function TOcKnot<_INode_,_IRoot_>.GetParen :_INode_;
 begin
-     Result := inherited GetParen;
+     Result := _CastNode( inherited GetParen );
 end;
 
 procedure TOcKnot<_INode_,_IRoot_>.SetParen( const Paren_:_INode_ );
@@ -885,7 +895,7 @@ end;
 
 function TOcKnot<_INode_,_IRoot_>.GetChilds( const I_:Byte ) :_INode_;
 begin
-     Result := inherited GetChilds( I_ );
+     Result := _CastNode( inherited GetChilds( I_ ) );
 end;
 
 procedure TOcKnot<_INode_,_IRoot_>.SetChilds( const I_:Byte; const Child_:_INode_ );
@@ -913,7 +923,7 @@ function TOcKnot<_INode_,_IRoot_>.ForChilds( const Func_:TConstFunc<_INode_,Bool
 begin
      Result := inherited ForChilds( function( const Child_:IOcNode ) :Boolean
                          begin
-                              Result := Func_( Child_ );
+                              Result := Func_( _CastNode( Child_ ) );
                          end );
 end;
 
@@ -921,7 +931,7 @@ procedure TOcKnot<_INode_,_IRoot_>.ForFamily( const Proc_:TConstProc<_INode_> );
 begin
      inherited ForFamily( procedure( const Node_:IOcNode )
                begin
-                    Proc_( Node_ );
+                    Proc_( _CastNode( Node_ ) );
                end );
 end;
 
@@ -929,7 +939,8 @@ function TOcKnot<_INode_,_IRoot_>.ForChildPairs( const Node_:_INode_; const Func
 begin
      Result := inherited ForChildPairs( Node_, function( const N0,N1:IOcNode ) :Boolean
                          begin
-                              Result := Func_( N0, N1 );
+                              Result := Func_( _CastNode( N0 ),
+                                               _CastNode( N1 ) );
                          end );
 end;
 
@@ -943,14 +954,14 @@ end;
 
 function TOctree<_INode_,_IRoot_,_TKnot_,_TLeaf_>.GetRoot :_IRoot_;
 begin
-     Result := inherited GetRoot;
+     Result := _CastRoot( inherited GetRoot );
 end;
 
 //------------------------------------------------------------------------------
 
 function TOctree<_INode_,_IRoot_,_TKnot_,_TLeaf_>.GetParen :_INode_;
 begin
-     Result := inherited GetParen;
+     Result := _CastNode( inherited GetParen );
 end;
 
 procedure TOctree<_INode_,_IRoot_,_TKnot_,_TLeaf_>.SetParen( const Paren_:_INode_ );
@@ -960,7 +971,7 @@ end;
 
 function TOctree<_INode_,_IRoot_,_TKnot_,_TLeaf_>.GetChilds( const I_:Byte ) :_INode_;
 begin
-     Result := inherited GetChilds( I_ );
+     Result := _CastNode( inherited GetChilds( I_ ) );
 end;
 
 procedure TOctree<_INode_,_IRoot_,_TKnot_,_TLeaf_>.SetChilds( const I_:Byte; const Child_:_INode_ );
@@ -988,7 +999,7 @@ function TOctree<_INode_,_IRoot_,_TKnot_,_TLeaf_>.ForChilds( const Func_:TConstF
 begin
      Result := inherited ForChilds( function( const Child_:IOcNode ) :Boolean
                          begin
-                              Result := Func_( Child_ );
+                              Result := Func_( _CastNode( Child_ ) );
                          end );
 end;
 
@@ -996,7 +1007,7 @@ procedure TOctree<_INode_,_IRoot_,_TKnot_,_TLeaf_>.ForFamily( const Proc_:TConst
 begin
      inherited ForFamily( procedure( const Node_:IOcNode )
                begin
-                    Proc_( Node_ );
+                    Proc_( _CastNode( Node_ ) );
                end );
 end;
 
@@ -1004,7 +1015,8 @@ function TOctree<_INode_,_IRoot_,_TKnot_,_TLeaf_>.ForChildPairs( const Node_:_IN
 begin
      Result := inherited ForChildPairs( Node_, function( const N0,N1:IOcNode ) :Boolean
                          begin
-                              Result := Func_( N0, N1 );
+                              Result := Func_( _CastNode( N0 ),
+                                               _CastNode( N1 ) );
                          end );
 end;
 
