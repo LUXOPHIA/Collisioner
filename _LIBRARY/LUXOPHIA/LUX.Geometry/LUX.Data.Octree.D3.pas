@@ -128,7 +128,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TOctree3D = class( TOctree<IOcNode3D,TOcKnot3D,TOcLeaf3D>, IOctree3D, IOcNode3D )
+     TOctree3D = class( TOctree<TOcKnot3D,TOcLeaf3D>, IOctree3D, IOcNode3D )
      private
      protected
        _Area :TSingleArea3D;
