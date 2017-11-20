@@ -262,11 +262,10 @@ end;
 function TOcLeaf3D.Collision( const Node_:IOcNode3D ) :Boolean;
 begin
      Result := Cubo.Collision( Node_.Cubo )
-           and ( Node_ is TOcLeaf
-              or ForChildPairs( Node_, function( const N0,N1:IOcNode3D ) :Boolean
-                 begin
-                      Result := N0.Collision( N1 );
-                 end ) );
+           and ForChildPairs( Node_, function( const N0,N1:IOcNode3D ) :Boolean
+               begin
+                    Result := N0.Collision( N1 );
+               end );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcKnot3D
