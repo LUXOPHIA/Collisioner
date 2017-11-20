@@ -157,8 +157,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TOctree<_INode_:IOcNode;
-             _TKnot_:TOcKnot,constructor;
+     TOctree<_TKnot_:TOcKnot,constructor;
              _TLeaf_:TOcLeaf,constructor> = class( TOcNode, IOctree, IOcNode )
      private
      protected
@@ -439,81 +438,81 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TOctree<_INode_,_TKnot_,_TLeaf_>.GetRoot :IOctree;
+function TOctree<_TKnot_,_TLeaf_>.GetRoot :IOctree;
 begin
      Result := Self;
 end;
 
 //------------------------------------------------------------------------------
 
-function TOctree<_INode_,_TKnot_,_TLeaf_>.GetLev :Cardinal;
+function TOctree<_TKnot_,_TLeaf_>.GetLev :Cardinal;
 begin
      Result := 0;
 end;
 
-function TOctree<_INode_,_TKnot_,_TLeaf_>.GetInd :TCardinal3D;
+function TOctree<_TKnot_,_TLeaf_>.GetInd :TCardinal3D;
 begin
      Result := TCardinal3D.Create( 0, 0, 0 );
 end;
 
 //------------------------------------------------------------------------------
 
-function TOctree<_INode_,_TKnot_,_TLeaf_>.GetParen :IOcNode;
+function TOctree<_TKnot_,_TLeaf_>.GetParen :IOcNode;
 begin
      Result := nil;
 end;
 
-procedure TOctree<_INode_,_TKnot_,_TLeaf_>.SetParen( const Paren_:IOcNode );
+procedure TOctree<_TKnot_,_TLeaf_>.SetParen( const Paren_:IOcNode );
 begin
 
 end;
 
 //------------------------------------------------------------------------------
 
-function TOctree<_INode_,_TKnot_,_TLeaf_>.GetChilds( const I_:Byte ) :IOcNode;
+function TOctree<_TKnot_,_TLeaf_>.GetChilds( const I_:Byte ) :IOcNode;
 begin
      Result := _Childs[ I_ ];
 end;
 
-procedure TOctree<_INode_,_TKnot_,_TLeaf_>.SetChilds( const I_:Byte; const Child_:IOcNode );
+procedure TOctree<_TKnot_,_TLeaf_>.SetChilds( const I_:Byte; const Child_:IOcNode );
 begin
      _Childs[ I_ ] := Child_;
 end;
 
 //------------------------------------------------------------------------------
 
-function TOctree<_INode_,_TKnot_,_TLeaf_>.GetDivL :Integer;
+function TOctree<_TKnot_,_TLeaf_>.GetDivL :Integer;
 begin
      Result := _DivL;
 end;
 
-procedure TOctree<_INode_,_TKnot_,_TLeaf_>.SetDivL( const DivL_:Integer );
+procedure TOctree<_TKnot_,_TLeaf_>.SetDivL( const DivL_:Integer );
 begin
      _DivL := DivL_;
 
      Clear;
 end;
 
-function TOctree<_INode_,_TKnot_,_TLeaf_>.GetDivN :Integer;
+function TOctree<_TKnot_,_TLeaf_>.GetDivN :Integer;
 begin
      Result := DivLtoN( _DivL );
 end;
 
-procedure TOctree<_INode_,_TKnot_,_TLeaf_>.SetDivN( const DivN_:Integer );
+procedure TOctree<_TKnot_,_TLeaf_>.SetDivN( const DivN_:Integer );
 begin
      DivL := DivNtoL( DivN_ );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TOctree<_INode_,_TKnot_,_TLeaf_>.Create;
+constructor TOctree<_TKnot_,_TLeaf_>.Create;
 begin
      inherited;
 
      _DivL := 0;
 end;
 
-destructor TOctree<_INode_,_TKnot_,_TLeaf_>.Destroy;
+destructor TOctree<_TKnot_,_TLeaf_>.Destroy;
 begin
 
      inherited;
@@ -521,19 +520,19 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-class function TOctree<_INode_,_TKnot_,_TLeaf_>.DivLtoN( const DivL_:Cardinal ) :Cardinal;
+class function TOctree<_TKnot_,_TLeaf_>.DivLtoN( const DivL_:Cardinal ) :Cardinal;
 begin
      Result := 1 shl DivL_;
 end;
 
-class function TOctree<_INode_,_TKnot_,_TLeaf_>.DivNtoL( const DivN_:Cardinal ) :Cardinal;
+class function TOctree<_TKnot_,_TLeaf_>.DivNtoL( const DivN_:Cardinal ) :Cardinal;
 begin
      Result := Ceil( Log2( DivN_ ) );
 end;
 
 //------------------------------------------------------------------------------
 
-function TOctree<_INode_,_TKnot_,_TLeaf_>.ForChilds( const Func_:TConstFunc<IOcNode,Boolean> ) :Boolean;
+function TOctree<_TKnot_,_TLeaf_>.ForChilds( const Func_:TConstFunc<IOcNode,Boolean> ) :Boolean;
 var
    I :Byte;
    C :IOcNode;
@@ -548,7 +547,7 @@ begin
      Result := False;
 end;
 
-procedure TOctree<_INode_,_TKnot_,_TLeaf_>.ForFamily( const Proc_:TConstProc<IOcNode> );
+procedure TOctree<_TKnot_,_TLeaf_>.ForFamily( const Proc_:TConstProc<IOcNode> );
 var
    I :Byte;
    C :IOcNode;
@@ -565,7 +564,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TOctree<_INode_,_TKnot_,_TLeaf_>.Add( const Ind_:TCardinal3D ) :_TLeaf_;
+function TOctree<_TKnot_,_TLeaf_>.Add( const Ind_:TCardinal3D ) :_TLeaf_;
 var
    P, C :IOcNode;
    L :Integer;
@@ -618,7 +617,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TOctree<_INode_,_TKnot_,_TLeaf_>.GetNode( const Lev_:cardinal; const Ind_:TCardinal3D ) :IOcNode;
+function TOctree<_TKnot_,_TLeaf_>.GetNode( const Lev_:cardinal; const Ind_:TCardinal3D ) :IOcNode;
 var
    L :Integer;
    I :TCardinal3D;
@@ -637,7 +636,7 @@ begin
      end;
 end;
 
-function TOctree<_INode_,_TKnot_,_TLeaf_>.GetLeaf( const Ind_:TCardinal3D ) :_TLeaf_;
+function TOctree<_TKnot_,_TLeaf_>.GetLeaf( const Ind_:TCardinal3D ) :_TLeaf_;
 begin
      Result := GetNode( _DivL, Ind_ ) as _TLeaf_;
 end;
