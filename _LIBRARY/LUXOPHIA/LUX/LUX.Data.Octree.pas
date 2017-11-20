@@ -25,7 +25,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      ['{2330A1DE-B3EC-4072-8F50-CEAB5A583E02}']
      {protected}
        ///// アクセス
-       function GetRoot :IOcNode;
+       function GetRoot :IOctree;
        function GetLev :Cardinal;
        function GetInd :TCardinal3D;
        function GetParen :IOcNode;
@@ -34,7 +34,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetChilds( const I_:Byte; const Child_:IOcNode );
      {public}
        ///// プロパティ
-       property Root                    :IOcNode     read GetRoot                  ;
+       property Root                    :IOctree     read GetRoot                  ;
        property Lev                     :Cardinal    read GetLev                   ;
        property Ind                     :TCardinal3D read GetInd                   ;
        property Paren                   :IOcNode     read GetParen  write SetParen ;
@@ -52,7 +52,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        ///// アクセス
-       function GetRoot :IOcNode; virtual;
+       function GetRoot :IOctree; virtual;
        function GetLev :Cardinal; virtual;
        function GetInd :TCardinal3D;  virtual; abstract;
        function GetParen :IOcNode; virtual; abstract;
@@ -63,7 +63,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property Root                    :IOcNode     read GetRoot                  ;
+       property Root                    :IOctree     read GetRoot                  ;
        property Lev                     :Cardinal    read GetLev                   ;
        property Ind                     :TCardinal3D read GetInd                   ;
        property Paren                   :IOcNode     read GetParen  write SetParen ;
@@ -143,9 +143,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      ['{C4E87A83-EA71-4145-913A-E856DC00B6B1}']
      {protected}
        ///// アクセス
-       function GetRoot :IOcNode;
-       function GetLev :Cardinal;
-       function GetInd :TCardinal3D;
        function GetDivL :Integer;
        procedure SetDivL( const DivL_:Integer );
        function GetDivN :Integer;
@@ -168,7 +165,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _Childs :array [ 0..7 ] of IOcNode;
        _DivL   :Integer;
        ///// アクセス
-       function GetRoot :IOcNode; override;
+       function GetRoot :IOctree; override;
        function GetLev :Cardinal; override;
        function GetInd :TCardinal3D; override;
        function GetParen :IOcNode; override;
@@ -217,7 +214,7 @@ uses System.SysUtils, System.Math;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TOcNode.GetRoot :IOcNode;
+function TOcNode.GetRoot :IOctree;
 begin
      Result := Paren.Root;
 end;
@@ -442,7 +439,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TOctree<_INode_,_TKnot_,_TLeaf_>.GetRoot :IOcNode;
+function TOctree<_INode_,_TKnot_,_TLeaf_>.GetRoot :IOctree;
 begin
      Result := Self;
 end;
