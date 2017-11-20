@@ -25,7 +25,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      ['{2330A1DE-B3EC-4072-8F50-CEAB5A583E02}']
      {protected}
        ///// アクセス
-       function GetRoot :TOcNode;
+       function GetRoot :IOcNode;
        function GetLev :Cardinal;
        function GetInd :TCardinal3D;
        function GetParen :TOcNode;
@@ -34,7 +34,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetChilds( const I_:Byte; const Child_:TOcNode );
      {public}
        ///// プロパティ
-       property Root                    :TOcNode     read GetRoot                  ;
+       property Root                    :IOcNode     read GetRoot                  ;
        property Lev                     :Cardinal    read GetLev                   ;
        property Ind                     :TCardinal3D read GetInd                   ;
        property Paren                   :TOcNode     read GetParen  write SetParen ;
@@ -52,7 +52,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        ///// アクセス
-       function GetRoot :TOcNode; virtual;
+       function GetRoot :IOcNode; virtual;
        function GetLev :Cardinal; virtual;
        function GetInd :TCardinal3D;  virtual; abstract;
        function GetParen :TOcNode; virtual; abstract;
@@ -63,7 +63,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property Root                    :TOcNode     read GetRoot                  ;
+       property Root                    :IOcNode     read GetRoot                  ;
        property Lev                     :Cardinal    read GetLev                   ;
        property Ind                     :TCardinal3D read GetInd                   ;
        property Paren                   :TOcNode     read GetParen  write SetParen ;
@@ -72,7 +72,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Clear;
        function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean; virtual; abstract;
        procedure ForFamily( const Proc_:TConstProc<TOcNode> ); virtual; abstract;
-       function ForChildPairs( const Node_:TOcNode; const Func_:TConstFunc<TOcNode,TOcNode,Boolean> ) :Boolean;
+       function ForChildPairs( const Node_:TOcNode; const Func_:TConstFunc<TOcNode,TOcNode,Boolean> ) :Boolean; virtual;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcLeaf
@@ -103,6 +103,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        function ForChilds( const Func_:TConstFunc<TOcNode,Boolean> ) :Boolean; override;
        procedure ForFamily( const Proc_:TConstProc<TOcNode> ); override;
+       function ForChildPairs( const Node_:TOcNode; const Func_:TConstFunc<TOcNode,TOcNode,Boolean> ) :Boolean; override;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcKnot
@@ -142,7 +143,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      ['{C4E87A83-EA71-4145-913A-E856DC00B6B1}']
      {protected}
        ///// アクセス
-       function GetRoot :TOcNode;
+       function GetRoot :IOcNode;
        function GetLev :Cardinal;
        function GetInd :TCardinal3D;
        function GetDivL :Integer;
@@ -167,7 +168,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _Childs :array [ 0..7 ] of TOcNode;
        _DivL   :Integer;
        ///// アクセス
-       function GetRoot :TOcNode; override;
+       function GetRoot :IOcNode; override;
        function GetLev :Cardinal; override;
        function GetInd :TCardinal3D; override;
        function GetParen :TOcNode; override;
@@ -216,7 +217,7 @@ uses System.SysUtils, System.Math;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TOcNode.GetRoot :TOcNode;
+function TOcNode.GetRoot :IOcNode;
 begin
      Result := Paren.Root;
 end;
@@ -335,6 +336,15 @@ begin
      Proc_( Self );
 end;
 
+function TOcLeaf.ForChildPairs( const Node_:TOcNode; const Func_:TConstFunc<TOcNode,TOcNode,Boolean> ) :Boolean;
+begin
+     Result := Node_ is TOcLeaf
+            or Node_.ForChilds( function( const N1:TOcNode ) :Boolean
+               begin
+                    Result := Func_( Self, N1 );
+               end );
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TOcKnot
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -435,7 +445,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TOctree<_INode_,_TKnot_,_TLeaf_>.GetRoot :TOcNode;
+function TOctree<_INode_,_TKnot_,_TLeaf_>.GetRoot :IOcNode;
 begin
      Result := Self;
 end;
