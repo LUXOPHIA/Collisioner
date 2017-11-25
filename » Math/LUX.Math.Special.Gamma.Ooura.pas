@@ -1,10 +1,8 @@
-﻿unit LUX.Math.Gamma.Ooura;
+﻿unit LUX.Math.Special.Gamma.Ooura;
 
 { http://www.kurims.kyoto-u.ac.jp/~ooura/gamerf-j.html }
 
 interface //#################################################################### ■
-
-uses LUX.Math.Gamma;
 
 //type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 

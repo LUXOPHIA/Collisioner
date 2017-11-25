@@ -1,8 +1,6 @@
-﻿unit LUX.Math.Gamma.Lanczos;
+﻿unit LUX.Math.Special.Gamma.Lanczos;
 
 interface //#################################################################### ■
-
-uses LUX.Math.Gamma;
 
 //type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -148,6 +146,8 @@ implementation //###############################################################
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
 function LnGammaP( X_:Single; const LCg_:Single; const LCs_:array of Single ) :Single;
+const
+     LR2P :Single = 0.91893853320467274178032973640561763986139747363778;  //= Ln( Pi2 ) / 2
 var
    B, A :Single;
    I :Integer;
@@ -159,10 +159,12 @@ begin
 
      B := X_ + LCg_ + 0.5;
 
-     Result := LNROOT2PI + Ln( A ) - B + Ln( B ) * ( X_ + 0.5 );
+     Result := LR2P + Ln( A ) - B + Ln( B ) * ( X_ + 0.5 );
 end;
 
 function LnGammaP( X_:Double; const LCg_:Double; const LCs_:array of Double ) :Double;
+const
+     LR2P :Double = 0.91893853320467274178032973640561763986139747363778;  //= Ln( Pi2 ) / 2
 var
    B, A :Double;
    I :Integer;
@@ -174,7 +176,7 @@ begin
 
      B := X_ + LCg_ + 0.5;
 
-     Result := LNROOT2PI + Ln( A ) - B + Ln( B ) * ( X_ + 0.5 );
+     Result := LR2P + Ln( A ) - B + Ln( B ) * ( X_ + 0.5 );
 end;
 
 //------------------------------------------------------------------------------
