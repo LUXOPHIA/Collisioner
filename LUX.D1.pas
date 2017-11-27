@@ -311,6 +311,15 @@ function Max( const A_,B_,C_:TdDouble ) :TdDouble; overload;
 function Gauss( const X_,SD_:Single ) :Single; overload;
 function Gauss( const X_,SD_:Double ) :Double; overload;
 
+function Exp( const X_:TdSingle ) :TdSingle; overload;
+function Exp( const X_:TdDouble ) :TdDouble; overload;
+
+function Ln( const X_:TdSingle ) :TdSingle; overload;
+function Ln( const X_:TdDouble ) :TdDouble; overload;
+
+function Power( const X_,N_:TdSingle ) :TdSingle; overload;
+function Power( const X_,N_:TdDouble ) :TdDouble; overload;
+
 implementation //############################################################### ■
 
 uses System.SysUtils, System.Math;
@@ -1490,6 +1499,66 @@ begin
      V := Pow2( SD_ );
 
      Result := Exp( -Pow2( X_ ) / ( 2 * V ) ) / Roo2( Pi2 * V );
+end;
+
+//------------------------------------------------------------------------------
+
+function Exp( const X_:TdSingle ) :TdSingle;
+begin
+     with X_ do
+     begin
+          Result.o :=     Exp( o );
+          Result.d := d * Exp( o );
+     end;
+end;
+
+function Exp( const X_:TdDouble ) :TdDouble;
+begin
+     with X_ do
+     begin
+          Result.o :=     Exp( o );
+          Result.d := d * Exp( o );
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function Ln( const X_:TdSingle ) :TdSingle;
+begin
+     with X_ do
+     begin
+          Result.o := Ln( o );
+          Result.d := d / o  ;
+     end;
+end;
+
+function Ln( const X_:TdDouble ) :TdDouble;
+begin
+     with X_ do
+     begin
+          Result.o := Ln( o );
+          Result.d := d / o  ;
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function Power( const X_,N_:TdSingle ) :TdSingle;
+begin
+     with Result do
+     begin
+          o :=               Power( X_.o, N_.o     );
+          d := X_.d * N_.o * Power( X_.o, N_.o - 1 );
+     end;
+end;
+
+function Power( const X_,N_:TdDouble ) :TdDouble;
+begin
+     with Result do
+     begin
+          o :=               Power( X_.o, N_.o     );
+          d := X_.d * N_.o * Power( X_.o, N_.o - 1 );
+     end;
 end;
 
 //############################################################################## □
