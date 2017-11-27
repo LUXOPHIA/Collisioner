@@ -2,6 +2,8 @@
 
 interface //#################################################################### ■
 
+uses LUX, LUX.D1, LUX.Math.Special;
+
 //type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
@@ -75,6 +77,8 @@ const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 // X_ > 0
 function LnGammaP( X_:Single; const LCg_:Single; const LCs_:array of Single ) :Single; overload;
 function LnGammaP( X_:Double; const LCg_:Double; const LCs_:array of Double ) :Double; overload;
+function LnGammaP( X_:TdSingle; const LCg_:Single; const LCs_:array of Single ) :TdSingle; overload;
+function LnGammaP( X_:TdDouble; const LCg_:Double; const LCs_:array of Double ) :TdDouble; overload;
 
 function LnGammaP7( const X_:Single ) :Single; overload;
 function LnGammaP7( const X_:Double ) :Double; overload;
@@ -88,6 +92,8 @@ function LnGammaP15( const X_:Double ) :Double; overload;
 // LnGamma > 0
 function LnGamma( X_:Single; const LCg_:Single; const LCs_:array of Single ) :Single; overload;
 function LnGamma( X_:Double; const LCg_:Double; const LCs_:array of Double ) :Double; overload;
+function LnGamma( X_:TdSingle; const LCg_:Single; const LCs_:array of Single ) :TdSingle; overload;
+function LnGamma( X_:TdDouble; const LCg_:Double; const LCs_:array of Double ) :TdDouble; overload;
 
 function LnGamma7( const X_:Single ) :Single; overload;
 function LnGamma7( const X_:Double ) :Double; overload;
@@ -101,6 +107,8 @@ function LnGamma15( const X_:Double ) :Double; overload;
 // X_ > 0
 function GammaP( const X_:Single; const LCg_:Single; const LCs_:array of Single ) :Single; overload;
 function GammaP( const X_:Double; const LCg_:Double; const LCs_:array of Double ) :Double; overload;
+function GammaP( const X_:TdSingle; const LCg_:Single; const LCs_:array of Single ) :TdSingle; overload;
+function GammaP( const X_:TdDouble; const LCg_:Double; const LCs_:array of Double ) :TdDouble; overload;
 
 function GammaP7( const X_:Single ) :Single; overload;
 function GammaP7( const X_:Double ) :Double; overload;
@@ -113,6 +121,8 @@ function GammaP15( const X_:Double ) :Double; overload;
 
 function Gamma( const X_:Single; const LCg_:Single; const LCs_:array of Single ) :Single; overload;
 function Gamma( const X_:Double; const LCg_:Double; const LCs_:array of Double ) :Double; overload;
+function Gamma( const X_:TdSingle; const LCg_:Single; const LCs_:array of Single ) :TdSingle; overload;
+function Gamma( const X_:TdDouble; const LCg_:Double; const LCs_:array of Double ) :TdDouble; overload;
 
 function Gamma7( const X_:Single ) :Single; overload;
 function Gamma7( const X_:Double ) :Double; overload;
@@ -167,6 +177,40 @@ const
      LR2P :Double = 0.91893853320467274178032973640561763986139747363778;  //= Ln( Pi2 ) / 2
 var
    B, A :Double;
+   I :Integer;
+begin
+     X_ := X_ - 1;
+
+     A := LCs_[ 0 ];
+     for I := 1 to High( LCs_ ) do A := A + LCs_[ I ] / ( X_ + I );
+
+     B := X_ + LCg_ + 0.5;
+
+     Result := LR2P + Ln( A ) - B + Ln( B ) * ( X_ + 0.5 );
+end;
+
+function LnGammaP( X_:TdSingle; const LCg_:Single; const LCs_:array of Single ) :TdSingle;
+const
+     LR2P :Single = 0.91893853320467274178032973640561763986139747363778;  //= Ln( Pi2 ) / 2
+var
+   B, A :TdSingle;
+   I :Integer;
+begin
+     X_ := X_ - 1;
+
+     A := LCs_[ 0 ];
+     for I := 1 to High( LCs_ ) do A := A + LCs_[ I ] / ( X_ + I );
+
+     B := X_ + LCg_ + 0.5;
+
+     Result := LR2P + Ln( A ) - B + Ln( B ) * ( X_ + 0.5 );
+end;
+
+function LnGammaP( X_:TdDouble; const LCg_:Double; const LCs_:array of Double ) :TdDouble;
+const
+     LR2P :Double = 0.91893853320467274178032973640561763986139747363778;  //= Ln( Pi2 ) / 2
+var
+   B, A :TdDouble;
    I :Integer;
 begin
      X_ := X_ - 1;
@@ -235,6 +279,18 @@ begin
                  else Result :=                             LnGammaP(       X_, LCg_, LCs_ );
 end;
 
+function LnGamma( X_:TdSingle; const LCg_:Single; const LCs_:array of Single ) :TdSingle;
+begin
+     if X_ < 0.5 then Result := Ln( Pi / Sin( Pi * X_ ) ) - LnGammaP( 1.0 - X_, LCg_, LCs_ )
+                 else Result :=                             LnGammaP(       X_, LCg_, LCs_ );
+end;
+
+function LnGamma( X_:TdDouble; const LCg_:Double; const LCs_:array of Double ) :TdDouble;
+begin
+     if X_ < 0.5 then Result := Ln( Pi / Sin( Pi * X_ ) ) - LnGammaP( 1.0 - X_, LCg_, LCs_ )
+                 else Result :=                             LnGammaP(       X_, LCg_, LCs_ );
+end;
+
 //------------------------------------------------------------------------------
 
 function LnGamma7( const X_:Single ) :Single;
@@ -285,6 +341,16 @@ begin
 end;
 
 function GammaP( const X_:Double; const LCg_:Double; const LCs_:array of Double ) :Double;
+begin
+     Result := Exp( LnGammaP( X_, LCg_, LCs_ ) );
+end;
+
+function GammaP( const X_:TdSingle; const LCg_:Single; const LCs_:array of Single ) :TdSingle;
+begin
+     Result := Exp( LnGammaP( X_, LCg_, LCs_ ) );
+end;
+
+function GammaP( const X_:TdDouble; const LCg_:Double; const LCs_:array of Double ) :TdDouble;
 begin
      Result := Exp( LnGammaP( X_, LCg_, LCs_ ) );
 end;
@@ -340,6 +406,18 @@ begin
 end;
 
 function Gamma( const X_:Double; const LCg_:Double; const LCs_:array of Double ) :Double;
+begin
+     if X_ < 0.5 then Result := Pi / ( Sin( Pi * X_ ) * GammaP( 1.0 - X_, LCg_, LCs_ ) )
+                 else Result :=                         GammaP(       X_, LCg_, LCs_ );
+end;
+
+function Gamma( const X_:TdSingle; const LCg_:Single; const LCs_:array of Single ) :TdSingle;
+begin
+     if X_ < 0.5 then Result := Pi / ( Sin( Pi * X_ ) * GammaP( 1.0 - X_, LCg_, LCs_ ) )
+                 else Result :=                         GammaP(       X_, LCg_, LCs_ );
+end;
+
+function Gamma( const X_:TdDouble; const LCg_:Double; const LCs_:array of Double ) :TdDouble;
 begin
      if X_ < 0.5 then Result := Pi / ( Sin( Pi * X_ ) * GammaP( 1.0 - X_, LCg_, LCs_ ) )
                  else Result :=                         GammaP(       X_, LCg_, LCs_ );
