@@ -201,7 +201,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Divide( const A_:TDouble2D; const B_:Double ) :TDouble2D; inline;
        ///// 型変換
        class operator Implicit( const V_:TPointF ) :TDouble2D; inline;
-       class operator Implicit( const V_:TDouble2D ) :TPointF; inline;
+       class operator Explicit( const V_:TDouble2D ) :TPointF; inline;
+       class operator Implicit( const V_:TSingle2D ) :TDouble2D; inline;
+       class operator Explicit( const V_:TDouble2D ) :TSingle2D; inline;
        ///// 定数
        class function IdentityX :TDouble2D; inline; static;
        class function IdentityY :TDouble2D; inline; static;
@@ -1190,12 +1192,32 @@ begin
      end;
 end;
 
-class operator TDouble2D.Implicit( const V_:TDouble2D ) :TPointF;
+class operator TDouble2D.Explicit( const V_:TDouble2D ) :TPointF;
 begin
      with Result do
      begin
           X := +V_.X;
           Y := -V_.Y;
+     end;
+end;
+
+//------------------------------------------------------------------------------
+
+class operator TDouble2D.Implicit( const V_:TSingle2D ) :TDouble2D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+     end;
+end;
+
+class operator TDouble2D.Explicit( const V_:TDouble2D ) :TSingle2D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
      end;
 end;
 
