@@ -142,7 +142,7 @@ begin
 
            X.o := X.o - Xd;
 
-     until Abs( Xd ) < SINGLE_EPS3;
+     until Abs( Xd ) < SINGLE_EPS4;
 
      Result := X.o;
 end;
@@ -161,7 +161,7 @@ begin
 
            X.o := X.o - Xd;
 
-     until Abs( Xd ) < DOUBLE_EPS3;
+     until Abs( Xd ) < DOUBLE_EPS4;
 
      Result := X.o;
 end;
