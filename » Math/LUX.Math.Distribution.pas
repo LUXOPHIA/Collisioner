@@ -90,8 +90,8 @@ var
 begin
      X2 := Pow2( X_ );
 
-     if N_ < 2 * Pow2( X_ ) then Result :=       RegIncBeta( N_ / ( X2 + N_ ), N_ / 2, 1  / 2 )   / 2
-                            else Result := ( 1 - RegIncBeta( X2 / ( N_ + X2 ), 1  / 2, N_ / 2 ) ) / 2;
+     if N_ < 2 * X2 then Result :=       RegIncBeta( N_ / ( X2 + N_ ), N_ / 2, 1  / 2 )   / 2
+                    else Result := ( 1 - RegIncBeta( X2 / ( N_ + X2 ), 1  / 2, N_ / 2 ) ) / 2;
 
      if X_ > 0 then Result := 1 - Result;
 end;
@@ -102,8 +102,8 @@ var
 begin
      X2 := Pow2( X_ );
 
-     if N_ < 2 * Pow2( X_ ) then Result :=       RegIncBeta( N_ / ( X2 + N_ ), N_ / 2, 1  / 2 )   / 2
-                            else Result := ( 1 - RegIncBeta( X2 / ( N_ + X2 ), 1  / 2, N_ / 2 ) ) / 2;
+     if N_ < 2 * X2 then Result :=       RegIncBeta( N_ / ( X2 + N_ ), N_ / 2, 1  / 2 )   / 2
+                    else Result := ( 1 - RegIncBeta( X2 / ( N_ + X2 ), 1  / 2, N_ / 2 ) ) / 2;
 
      if X_ > 0 then Result := 1 - Result;
 end;
