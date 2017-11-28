@@ -130,38 +130,38 @@ end;
 
 function InvCumDistT( const P_:Single; const N_:Cardinal ) :Single;
 var
-   X, F :TdSingle;
-   Xd :Single;
+   X, P :TdSingle;
+   Pd :Single;
 begin
      X := TdSingle.Create( 0, 1 );
 
      repeat
-           F := CumDistT( X, N_ );
+           P := CumDistT( X, N_ );
 
-           Xd := ( F.o - P_ ) / F.d;
+           Pd := P.o - P_;
 
-           X.o := X.o - Xd;
+           X.o := X.o - Pd / P.d;
 
-     until Abs( Xd ) < SINGLE_EPS4;
+     until Abs( Pd ) < SINGLE_EPS3;
 
      Result := X.o;
 end;
 
 function InvCumDistT( const P_:Double; const N_:Cardinal ) :Double;
 var
-   X, F :TdDouble;
-   Xd :Double;
+   X, P :TdDouble;
+   Pd :Double;
 begin
      X := TdDouble.Create( 0, 1 );
 
      repeat
-           F := CumDistT( X, N_ );
+           P := CumDistT( X, N_ );
 
-           Xd := ( F.o - P_ ) / F.d;
+           Pd := P.o - P_;
 
-           X.o := X.o - Xd;
+           X.o := X.o - Pd / P.d;
 
-     until Abs( Xd ) < DOUBLE_EPS4;
+     until Abs( Pd ) < DOUBLE_EPS3;
 
      Result := X.o;
 end;
