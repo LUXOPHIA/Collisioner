@@ -110,24 +110,31 @@ end;
 
 //------------------------------------------------------------------------------
 
+//   Result := Power(     X_, A_ ) / A_
+//                                 * HypGeo21( A_, 1 - B_, A_ + 1, X_ );
+
 function IncBeta( const X_,A_,B_:Single ) :Single;
 begin
-     Result := Power( X_, A_ ) / A_ * HypGeo21( A_, 1 - B_, A_ + 1, X_ );
+     Result := Power(     X_, A_ ) / A_
+             * Power( 1 - X_, B_ ) * HypGeo21( 1, A_ + B_, A_ + 1, X_ );
 end;
 
 function IncBeta( const X_,A_,B_:Double ) :Double;
 begin
-     Result := Power( X_, A_ ) / A_ * HypGeo21( A_, 1 - B_, A_ + 1, X_ );
+     Result := Power(     X_, A_ ) / A_
+             * Power( 1 - X_, B_ ) * HypGeo21( 1, A_ + B_, A_ + 1, X_ );
 end;
 
 function IncBeta( const X_,A_,B_:TdSingle ) :TdSingle;
 begin
-     Result := Power( X_, A_ ) / A_ * HypGeo21( A_, 1 - B_, A_ + 1, X_ );
+     Result := Power(     X_, A_ ) / A_
+             * Power( 1 - X_, B_ ) * HypGeo21( 1, A_ + B_, A_ + 1, X_ );
 end;
 
 function IncBeta( const X_,A_,B_:TdDouble ) :TdDouble;
 begin
-     Result := Power( X_, A_ ) / A_ * HypGeo21( A_, 1 - B_, A_ + 1, X_ );
+     Result := Power(     X_, A_ ) / A_
+             * Power( 1 - X_, B_ ) * HypGeo21( 1, A_ + B_, A_ + 1, X_ );
 end;
 
 //------------------------------------------------------------------------------
