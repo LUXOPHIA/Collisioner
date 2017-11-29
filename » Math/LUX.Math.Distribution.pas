@@ -92,8 +92,8 @@ begin
 
      //  I( x a, b ) = 1 - I( 1 - x b, a )
 
-     if X2 < 17.62 then B := 1 - RegIncBeta( X2 / ( X2 + V_ ), 1  / 2, V_ / 2 )
-                   else B :=     RegIncBeta( V_ / ( X2 + V_ ), V_ / 2, 1  / 2 );
+     if 100 * X2 < V_ then B := 1 - RegIncBeta( X2 / ( X2 + V_ ), 1  / 2, V_ / 2 )
+                      else B :=     RegIncBeta( V_ / ( X2 + V_ ), V_ / 2, 1  / 2 );
 
      if X_ < 0 then Result :=     B / 2
                else Result := 1 - B / 2;
@@ -107,8 +107,8 @@ begin
 
      //  I( x a, b ) = 1 - I( 1 - x b, a )
 
-     if X2 < 17.62 then B := 1 - RegIncBeta( X2 / ( X2 + V_ ), 1  / 2, V_ / 2 )
-                   else B :=     RegIncBeta( V_ / ( X2 + V_ ), V_ / 2, 1  / 2 );
+     if 100 * X2 < V_ then B := 1 - RegIncBeta( X2 / ( X2 + V_ ), 1  / 2, V_ / 2 )
+                      else B :=     RegIncBeta( V_ / ( X2 + V_ ), V_ / 2, 1  / 2 );
 
      if X_ < 0 then Result :=     B / 2
                else Result := 1 - B / 2;
