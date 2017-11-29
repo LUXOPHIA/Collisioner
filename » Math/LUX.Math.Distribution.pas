@@ -86,26 +86,32 @@ end;
 
 function CumDistT( const X_:Single; const V_:Cardinal ) :Single;
 var
-   X2 :Single;
+   X2, B :Double;
 begin
      X2 := Pow2( X_ );
 
-     if V_ < 2 * X2 then Result :=       RegIncBeta( V_ / ( X2 + V_ ), V_ / 2, 1  / 2 )   / 2
-                    else Result := ( 1 - RegIncBeta( X2 / ( V_ + X2 ), 1  / 2, V_ / 2 ) ) / 2;
+     //  I( x a, b ) = 1 - I( 1 - x b, a )
 
-     if X_ > 0 then Result := 1 - Result;
+     if X2 < 17.62 then B := 1 - RegIncBeta( X2 / ( X2 + V_ ), 1  / 2, V_ / 2 )
+                   else B :=     RegIncBeta( V_ / ( X2 + V_ ), V_ / 2, 1  / 2 );
+
+     if X_ < 0 then Result :=     B / 2
+               else Result := 1 - B / 2;
 end;
 
 function CumDistT( const X_:Double; const V_:Cardinal ) :Double;
 var
-   X2 :Double;
+   X2, B :Double;
 begin
      X2 := Pow2( X_ );
 
-     if V_ < 2 * X2 then Result :=       RegIncBeta( V_ / ( X2 + V_ ), V_ / 2, 1  / 2 )   / 2
-                    else Result := ( 1 - RegIncBeta( X2 / ( V_ + X2 ), 1  / 2, V_ / 2 ) ) / 2;
+     //  I( x a, b ) = 1 - I( 1 - x b, a )
 
-     if X_ > 0 then Result := 1 - Result;
+     if X2 < 17.62 then B := 1 - RegIncBeta( X2 / ( X2 + V_ ), 1  / 2, V_ / 2 )
+                   else B :=     RegIncBeta( V_ / ( X2 + V_ ), V_ / 2, 1  / 2 );
+
+     if X_ < 0 then Result :=     B / 2
+               else Result := 1 - B / 2;
 end;
 
 function CumDistT( const X_:TdSingle; const V_:Cardinal ) :TdSingle;
