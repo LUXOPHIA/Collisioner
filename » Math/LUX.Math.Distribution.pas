@@ -84,13 +84,16 @@ end;
 
 //------------------------------------------------------------------------------
 
+//   Result := RegIncBeta( ( X_ + Roo2( X2 + V_ ) )
+//                       / ( 2  * Roo2( X2 + V_ ) ), V_ / 2, V_ / 2 );
+
+//   RegIncBeta( x a, b ) = 1 - RegIncBeta( 1 - x b, a )
+
 function CumDistT( const X_,V_:Single ) :Single;
 var
    X2, B :Double;
 begin
      X2 := Pow2( X_ );
-
-     //  I( x a, b ) = 1 - I( 1 - x b, a )
 
      if 100 * X2 < V_ then B := 1 - RegIncBeta( X2 / ( X2 + V_ ), 1  / 2, V_ / 2 )
                       else B :=     RegIncBeta( V_ / ( X2 + V_ ), V_ / 2, 1  / 2 );
@@ -104,8 +107,6 @@ var
    X2, B :Double;
 begin
      X2 := Pow2( X_ );
-
-     //  I( x a, b ) = 1 - I( 1 - x b, a )
 
      if 100 * X2 < V_ then B := 1 - RegIncBeta( X2 / ( X2 + V_ ), 1  / 2, V_ / 2 )
                       else B :=     RegIncBeta( V_ / ( X2 + V_ ), V_ / 2, 1  / 2 );
