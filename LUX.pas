@@ -371,6 +371,9 @@ function BinPowN( const N_:Cardinal ) :Cardinal; overload;
 function BinPowN( const N_:Int64 ) :Int64; overload;
 function BinPowN( const N_:UInt64 ) :UInt64; overload;
 
+function IntToStr( const Value_:Integer; const N_:Integer; const C_:Char = '0' ) :String; overload;
+function IntToStr( const Value_:Int64; const N_:Integer; const C_:Char = '0' ) :String; overload;
+
 function FloatToStr( const Value_:Single; const N_:Integer ) :String; overload;
 function FloatToStr( const Value_:Double; const N_:Integer ) :String; overload;
 function FloatToStrP( const Value_:Single; const N_:Integer ) :String; overload;
@@ -1754,6 +1757,32 @@ end;
 function BinPowN( const N_:UInt64 ) :UInt64;
 begin
      Result := 1 shl N_;
+end;
+
+//------------------------------------------------------------------------------
+
+function IntToStr( const Value_:Integer; const N_:Integer; const C_:Char = '0' ) :String;
+var
+   I :Integer;
+begin
+     Result := IntToStr( Value_ );
+
+     if Value_ < 0 then I := 1
+                   else I := 0;
+
+     Result := Result.Insert( I, StringOfChar( C_, N_ + I - Length( Result ) ) );
+end;
+
+function IntToStr( const Value_:Int64; const N_:Integer; const C_:Char = '0' ) :String;
+var
+   I :Integer;
+begin
+     Result := IntToStr( Value_ );
+
+     if Value_ < 0 then I := 1
+                   else I := 0;
+
+     Result := Result.Insert( I, StringOfChar( C_, N_ + I - Length( Result ) ) );
 end;
 
 //------------------------------------------------------------------------------
