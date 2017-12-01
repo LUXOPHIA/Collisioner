@@ -373,6 +373,10 @@ function BinPow( const N_:UInt64 ) :UInt64; overload;
 
 function IntToStr( const Value_:Integer; const N_:Integer; const C_:Char = '0' ) :String; overload;
 function IntToStr( const Value_:Int64; const N_:Integer; const C_:Char = '0' ) :String; overload;
+function IntToStrP( const Value_:Integer; const N_:Integer; const C_:Char = '0' ) :String; overload;
+function IntToStrP( const Value_:Int64; const N_:Integer; const C_:Char = '0' ) :String; overload;
+
+function DeciN( const Value_:String ) :Integer; overload;
 
 function FloatToStr( const Value_:Single; const N_:Integer ) :String; overload;
 function FloatToStr( const Value_:Double; const N_:Integer ) :String; overload;
@@ -1785,44 +1789,62 @@ begin
      Result := Result.Insert( I, StringOfChar( C_, N_ + I - Length( Result ) ) );
 end;
 
+function IntToStrP( const Value_:Integer; const N_:Integer; const C_:Char = '0' ) :String;
+begin
+     Result := IntToStr( Value_, N_, C_ );
+
+     if Value_ > 0 then Result := '+' + Result;
+end;
+
+function IntToStrP( const Value_:Int64; const N_:Integer; const C_:Char = '0' ) :String;
+begin
+     Result := IntToStr( Value_, N_, C_ );
+
+     if Value_ > 0 then Result := '+' + Result;
+end;
+
+//------------------------------------------------------------------------------
+
+function DeciN( const Value_:String ) :Integer;
+var
+   SM, SE :String;
+   I, NM, NE :Integer;
+begin
+     I := Value_.IndexOf( 'E' );
+
+     SM := Value_.Substring( 0, I ).TrimRight( [ '0' ] );
+     SE := Value_.Substring( I+1 );
+
+     if SM.Chars[ 0 ] = '-' then NM := SM.Length - 3
+                            else NM := SM.Length - 2;
+
+     NE := SE.ToInteger;
+
+     Result := NM - NE;  if Result < 0 then Result := 0;
+end;
+
 //------------------------------------------------------------------------------
 
 function FloatToStr( const Value_:Single; const N_:Integer ) :String;
 var
-   A :Single;
-   L :Integer;
+   N :Integer;
 begin
-     A := Abs( Value_ );
+     Result := FloatToStrF( Value_, TFloatFormat.ffExponent, N_, 0 );
 
-     if ( 0 < A ) and ( A < 1 ) then
-     begin
-          Result := FloatToStrF( A + 1, TFloatFormat.ffGeneral, 7, 0 );
+     N := DeciN( Result );
 
-          L := Length( Result );
-
-          if L <= N_+1 then Exit( FloatToStrF( Value_, TFloatFormat.ffFixed, N_, L-2 ) );
-     end;
-
-     Result := FloatToStrF( Value_, TFloatFormat.ffGeneral, N_, 0 );
+     if N <= N_ then Result := FloatToStrF( Value_, TFloatFormat.ffFixed, N_, N );
 end;
 
 function FloatToStr( const Value_:Double; const N_:Integer ) :String;
 var
-   A :Double;
-   L :Integer;
+   N :Integer;
 begin
-     A := Abs( Value_ );
+     Result := FloatToStrF( Value_, TFloatFormat.ffExponent, N_, 0 );
 
-     if ( 0 < A ) and ( A < 1 ) then
-     begin
-          Result := FloatToStrF( A + 1, TFloatFormat.ffGeneral, 15, 0 );
+     N := DeciN( Result );
 
-          L := Length( Result );
-
-          if L <= N_+1 then Exit( FloatToStrF( Value_, TFloatFormat.ffFixed, N_, L-2 ) );
-     end;
-
-     Result := FloatToStrF( Value_, TFloatFormat.ffGeneral, N_, 0 );
+     if N <= N_ then Result := FloatToStrF( Value_, TFloatFormat.ffFixed, N_, N );
 end;
 
 function FloatToStrP( const Value_:Single; const N_:Integer ) :String;
