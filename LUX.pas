@@ -371,6 +371,11 @@ function BinPowN( const N_:Cardinal ) :Cardinal; overload;
 function BinPowN( const N_:Int64 ) :Int64; overload;
 function BinPowN( const N_:UInt64 ) :UInt64; overload;
 
+function FloatToStr( const Value_:Single; const N_:Integer ) :String; overload;
+function FloatToStr( const Value_:Double; const N_:Integer ) :String; overload;
+function FloatToStrP( const Value_:Single; const N_:Integer ) :String; overload;
+function FloatToStrP( const Value_:Double; const N_:Integer ) :String; overload;
+
 implementation //############################################################### ■
 
 uses System.Math;
@@ -1749,6 +1754,60 @@ end;
 function BinPowN( const N_:UInt64 ) :UInt64;
 begin
      Result := 1 shl N_;
+end;
+
+//------------------------------------------------------------------------------
+
+function FloatToStr( const Value_:Single; const N_:Integer ) :String;
+var
+   A :Single;
+   L :Integer;
+begin
+     A := Abs( Value_ );
+
+     if ( 0 < A ) and ( A < 1 ) then
+     begin
+          Result := FloatToStrF( A + 1, TFloatFormat.ffGeneral, 7, 0 );
+
+          L := Length( Result );
+
+          if L <= N_+1 then Exit( FloatToStrF( Value_, TFloatFormat.ffFixed, N_, L-2 ) );
+     end;
+
+     Result := FloatToStrF( Value_, TFloatFormat.ffGeneral, N_, 0 );
+end;
+
+function FloatToStr( const Value_:Double; const N_:Integer ) :String;
+var
+   A :Double;
+   L :Integer;
+begin
+     A := Abs( Value_ );
+
+     if ( 0 < A ) and ( A < 1 ) then
+     begin
+          Result := FloatToStrF( A + 1, TFloatFormat.ffGeneral, 15, 0 );
+
+          L := Length( Result );
+
+          if L <= N_+1 then Exit( FloatToStrF( Value_, TFloatFormat.ffFixed, N_, L-2 ) );
+     end;
+
+     Result := FloatToStrF( Value_, TFloatFormat.ffGeneral, N_, 0 );
+end;
+
+function FloatToStrP( const Value_:Single; const N_:Integer ) :String;
+begin
+     Result := FloatToStr( Value_, N_ );
+
+     if Value_ > 0 then Result := '+' + Result;
+end;
+
+function FloatToStrP( const Value_:Double; const N_:Integer ) :String;
+begin
+     Result := FloatToStr( Value_, N_ );
+
+     if Value_ > 0 then Result := '+' + Result;
 end;
 
 //############################################################################## □
