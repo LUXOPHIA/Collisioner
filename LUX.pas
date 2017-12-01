@@ -366,10 +366,10 @@ function FileToBytes( const FileName_:string ) :TBytes;
 
 function Comb( N_,K_:Cardinal ) :UInt64;
 
-function BinPowN( const N_:Integer ) :Integer; overload;
-function BinPowN( const N_:Cardinal ) :Cardinal; overload;
-function BinPowN( const N_:Int64 ) :Int64; overload;
-function BinPowN( const N_:UInt64 ) :UInt64; overload;
+function BinPow( const N_:Integer ) :Integer; overload;
+function BinPow( const N_:Cardinal ) :Cardinal; overload;
+function BinPow( const N_:Int64 ) :Int64; overload;
+function BinPow( const N_:UInt64 ) :UInt64; overload;
 
 function IntToStr( const Value_:Integer; const N_:Integer; const C_:Char = '0' ) :String; overload;
 function IntToStr( const Value_:Int64; const N_:Integer; const C_:Char = '0' ) :String; overload;
@@ -1739,22 +1739,22 @@ end;
 
 //------------------------------------------------------------------------------
 
-function BinPowN( const N_:Integer ) :Integer;
+function BinPow( const N_:Integer ) :Integer;
 begin
      Result := 1 shl N_;
 end;
 
-function BinPowN( const N_:Cardinal ) :Cardinal;
+function BinPow( const N_:Cardinal ) :Cardinal;
 begin
      Result := 1 shl N_;
 end;
 
-function BinPowN( const N_:Int64 ) :Int64;
+function BinPow( const N_:Int64 ) :Int64;
 begin
      Result := 1 shl N_;
 end;
 
-function BinPowN( const N_:UInt64 ) :UInt64;
+function BinPow( const N_:UInt64 ) :UInt64;
 begin
      Result := 1 shl N_;
 end;
