@@ -310,6 +310,14 @@ function Clamp( const X_,Min_,Max_:Integer ) :Integer; inline; overload;
 function Clamp( const X_,Min_,Max_:Single ) :Single; inline; overload;
 function Clamp( const X_,Min_,Max_:Double ) :Double; inline; overload;
 
+function ClampMin( const X_,Min_:Integer ) :Integer; inline; overload;
+function ClampMin( const X_,Min_:Single ) :Single; inline; overload;
+function ClampMin( const X_,Min_:Double ) :Double; inline; overload;
+
+function ClampMax( const X_,Max_:Integer ) :Integer; inline; overload;
+function ClampMax( const X_,Max_:Single ) :Single; inline; overload;
+function ClampMax( const X_,Max_:Double ) :Double; inline; overload;
+
 function Min( const A_,B_,C_:Integer ) :Integer; overload;
 function Min( const A_,B_,C_:Single ) :Single; overload;
 function Min( const A_,B_,C_:Double ) :Double; overload;
@@ -376,7 +384,14 @@ function IntToStr( const Value_:Int64; const N_:Integer; const C_:Char = '0' ) :
 function IntToStrP( const Value_:Integer; const N_:Integer; const C_:Char = '0' ) :String; overload;
 function IntToStrP( const Value_:Int64; const N_:Integer; const C_:Char = '0' ) :String; overload;
 
-function DeciN( const Value_:String ) :Integer; overload;
+procedure FloatToStr( const Value_:Single; const N_:Integer; out Man_,Exp_:String ); overload;
+procedure FloatToStr( const Value_:Double; const N_:Integer; out Man_,Exp_:String ); overload;
+
+function _TestFloatToStr_Single( const Value_:String; const N_:Integer ) :String;
+function _TestFloatToStr_Double( const Value_:String; const N_:Integer ) :String;
+
+procedure FloatToStr( const Value_:Single; const N_:Integer; out Man_,Exp_:String; out DecN_:Integer ); overload;
+procedure FloatToStr( const Value_:Double; const N_:Integer; out Man_,Exp_:String; out DecN_:Integer ); overload;
 
 function FloatToStr( const Value_:Single; const N_:Integer ) :String; overload;
 function FloatToStr( const Value_:Double; const N_:Integer ) :String; overload;
@@ -1234,7 +1249,7 @@ function Clamp( const X_,Min_,Max_:Integer ) :Integer;
 begin
      if X_ < Min_ then Result := Min_
                   else
-     if X_ > Max_ then Result := Max_
+     if Max_ < X_ then Result := Max_
                   else Result := X_;
 end;
 
@@ -1242,7 +1257,7 @@ function Clamp( const X_,Min_,Max_:Single ) :Single;
 begin
      if X_ < Min_ then Result := Min_
                   else
-     if X_ > Max_ then Result := Max_
+     if Max_ < X_ then Result := Max_
                   else Result := X_;
 end;
 
@@ -1250,7 +1265,47 @@ function Clamp( const X_,Min_,Max_:Double ) :Double;
 begin
      if X_ < Min_ then Result := Min_
                   else
-     if X_ > Max_ then Result := Max_
+     if Max_ < X_ then Result := Max_
+                  else Result := X_;
+end;
+
+//------------------------------------------------------------------------------
+
+function ClampMin( const X_,Min_:Integer ) :Integer;
+begin
+     if X_ < Min_ then Result := Min_
+                  else Result := X_;
+end;
+
+function ClampMin( const X_,Min_:Single ) :Single;
+begin
+     if X_ < Min_ then Result := Min_
+                  else Result := X_;
+end;
+
+function ClampMin( const X_,Min_:Double ) :Double;
+begin
+     if X_ < Min_ then Result := Min_
+                  else Result := X_;
+end;
+
+//------------------------------------------------------------------------------
+
+function ClampMax( const X_,Max_:Integer ) :Integer;
+begin
+     if Max_ < X_ then Result := Max_
+                  else Result := X_;
+end;
+
+function ClampMax( const X_,Max_:Single ) :Single;
+begin
+     if Max_ < X_ then Result := Max_
+                  else Result := X_;
+end;
+
+function ClampMax( const X_,Max_:Double ) :Double;
+begin
+     if Max_ < X_ then Result := Max_
                   else Result := X_;
 end;
 
@@ -1805,46 +1860,114 @@ end;
 
 //------------------------------------------------------------------------------
 
-function DeciN( const Value_:String ) :Integer;
+procedure _SplitME( const Value_:String; out Man_,Exp_:String );
 var
-   SM, SE :String;
-   I, NM, NE :Integer;
+   I :Integer;
 begin
      I := Value_.IndexOf( 'E' );
 
-     SM := Value_.Substring( 0, I ).TrimRight( [ '0' ] );
-     SE := Value_.Substring( I+1 );
+     Man_ := Value_.Substring( 0, I ).TrimRight( [ '0' ] );
+     Exp_ := Value_.Substring( I+1 );
+end;
 
-     if SM.Chars[ 0 ] = '-' then NM := SM.Length - 3
-                            else NM := SM.Length - 2;
+procedure FloatToStr( const Value_:Single; const N_:Integer; out Man_,Exp_:String );
+begin
+     _SplitME( FloatToStrF( Value_, TFloatFormat.ffExponent, N_, 0 ), Man_,Exp_ );
+end;
 
-     NE := SE.ToInteger;
+procedure FloatToStr( const Value_:Double; const N_:Integer; out Man_,Exp_:String );
+begin
+     _SplitME( FloatToStrF( Value_, TFloatFormat.ffExponent, N_, 0 ), Man_,Exp_ );
+end;
 
-     Result := NM - NE;  if Result < 0 then Result := 0;
+//------------------------------------------------------------------------------
+
+function _DecN( const Man_,Exp_:String ) :Integer;
+var
+   M, E :Integer;
+begin
+     if Man_.Chars[ 0 ] = '-' then M := Man_.Length - 3
+                              else M := Man_.Length - 2;
+
+     E := Exp_.ToInteger;
+
+     Result := M - E;
+
+     if Result <= 0 then Result := -E-1;
+end;
+
+procedure FloatToStr( const Value_:Single; const N_:Integer; out Man_,Exp_:String; out DecN_:Integer );
+begin
+     FloatToStr( Value_, N_, Man_, Exp_ );
+
+     DecN_ := _DecN( Man_, Exp_ );
+end;
+
+procedure FloatToStr( const Value_:Double; const N_:Integer; out Man_,Exp_:String; out DecN_:Integer );
+begin
+     FloatToStr( Value_, N_, Man_, Exp_ );
+
+     DecN_ := _DecN( Man_, Exp_ );
+end;
+
+//------------------------------------------------------------------------------
+
+function _TestFloatToStr_Single( const Value_:String; const N_:Integer ) :String;
+var
+   Zs, S0, S :String;
+   I :Integer;
+begin
+     Zs := StringOfChar( '0', N_+1 );
+
+     S0 := Zs + Value_ + Zs;
+
+     for I := 1 to Length( S0 )-1 do
+     begin
+          S := S0;  S.Insert( I, '.' );
+
+          Result := Result + S + '	' + FloatToStr( S.ToSingle, N_ ) + CRLF;
+     end;
+end;
+
+function _TestFloatToStr_Double( const Value_:String; const N_:Integer ) :String;
+var
+   Zs, S0, S :String;
+   I :Integer;
+begin
+     Zs := StringOfChar( '0', N_+1 );
+
+     S0 := Zs + Value_ + Zs;
+
+     for I := 1 to Length( S0 )-1 do
+     begin
+          S := S0;  S.Insert( I, '.' );
+
+          Result := Result + S + '	' + FloatToStr( S.ToDouble, N_ ) + CRLF;
+     end;
 end;
 
 //------------------------------------------------------------------------------
 
 function FloatToStr( const Value_:Single; const N_:Integer ) :String;
 var
-   N :Integer;
+   M, E :String;
+   D :Integer;
 begin
-     Result := FloatToStrF( Value_, TFloatFormat.ffExponent, N_, 0 );
+     FloatToStr( Value_, N_, M, E, D );
 
-     N := DeciN( Result );
-
-     if N <= N_ then Result := FloatToStrF( Value_, TFloatFormat.ffFixed, N_, N );
+     if Abs( D ) <= N_ then Result := FloatToStrF( Value_, TFloatFormat.ffFixed, N_, ClampMin( D, 0 ) )
+                       else Result := M + 'e' + E;
 end;
 
 function FloatToStr( const Value_:Double; const N_:Integer ) :String;
 var
-   N :Integer;
+   M, E :String;
+   D :Integer;
 begin
-     Result := FloatToStrF( Value_, TFloatFormat.ffExponent, N_, 0 );
+     FloatToStr( Value_, N_, M, E, D );
 
-     N := DeciN( Result );
-
-     if N <= N_ then Result := FloatToStrF( Value_, TFloatFormat.ffFixed, N_, N );
+     if Abs( D ) <= N_ then Result := FloatToStrF( Value_, TFloatFormat.ffFixed, N_, ClampMin( D, 0 ) )
+                       else Result := M + 'e' + E;
 end;
 
 function FloatToStrP( const Value_:Single; const N_:Integer ) :String;
