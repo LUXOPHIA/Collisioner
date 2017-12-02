@@ -25,6 +25,9 @@ function DistT( const X_,V_:Double ) :Double; overload;
 function DistT( const X_,V_:TdSingle ) :TdSingle; overload;
 function DistT( const X_,V_:TdDouble ) :TdDouble; overload;
 
+function Cum2DistT( const X_,V_:Single ) :Single; overload;
+function Cum2DistT( const X_,V_:Double ) :Double; overload;
+
 function CumDistT( const X_,V_:Single ) :Single; overload;
 function CumDistT( const X_,V_:Double ) :Double; overload;
 function CumDistT( const X_:TdSingle; const V_:Single ) :TdSingle; overload;
@@ -84,35 +87,51 @@ end;
 
 //------------------------------------------------------------------------------
 
-//   Result := RegIncBeta( ( X_ + Roo2( X2 + V_ ) )
-//                       / ( 2  * Roo2( X2 + V_ ) ), V_ / 2, V_ / 2 );
-
 //   RegIncBeta( x a, b ) = 1 - RegIncBeta( 1 - x b, a )
 
-function CumDistT( const X_,V_:Single ) :Single;
+function Cum2DistT( const X_,V_:Single ) :Single;
 var
-   X2, B :Double;
+   X2 :Double;
 begin
      X2 := Pow2( X_ );
 
-     if 100 * X2 < V_ then B := 1 - RegIncBeta( X2 / ( X2 + V_ ), 1  / 2, V_ / 2 )
-                      else B :=     RegIncBeta( V_ / ( X2 + V_ ), V_ / 2, 1  / 2 );
+     if 100 * X2 < V_ then Result := 1 - RegIncBeta( X2 / ( X2 + V_ ), 1  / 2, V_ / 2 )
+                      else Result :=     RegIncBeta( V_ / ( X2 + V_ ), V_ / 2, 1  / 2 );
+end;
 
-     if X_ < 0 then Result :=     B / 2
-               else Result := 1 - B / 2;
+function Cum2DistT( const X_,V_:Double ) :Double;
+var
+   X2 :Double;
+begin
+     X2 := Pow2( X_ );
+
+     if 100 * X2 < V_ then Result := 1 - RegIncBeta( X2 / ( X2 + V_ ), 1  / 2, V_ / 2 )
+                      else Result :=     RegIncBeta( V_ / ( X2 + V_ ), V_ / 2, 1  / 2 );
+end;
+
+//------------------------------------------------------------------------------
+
+//   Result := RegIncBeta( ( X_ + Roo2( X2 + V_ ) )
+//                       / ( 2  * Roo2( X2 + V_ ) ), V_ / 2, V_ / 2 );
+
+function CumDistT( const X_,V_:Single ) :Single;
+var
+   C :Double;
+begin
+     C := Cum2DistT( X_, V_ );
+
+     if X_ < 0 then Result :=     C / 2
+               else Result := 1 - C / 2;
 end;
 
 function CumDistT( const X_,V_:Double ) :Double;
 var
-   X2, B :Double;
+   C :Double;
 begin
-     X2 := Pow2( X_ );
+     C := Cum2DistT( X_, V_ );
 
-     if 100 * X2 < V_ then B := 1 - RegIncBeta( X2 / ( X2 + V_ ), 1  / 2, V_ / 2 )
-                      else B :=     RegIncBeta( V_ / ( X2 + V_ ), V_ / 2, 1  / 2 );
-
-     if X_ < 0 then Result :=     B / 2
-               else Result := 1 - B / 2;
+     if X_ < 0 then Result :=     C / 2
+               else Result := 1 - C / 2;
 end;
 
 function CumDistT( const X_:TdSingle; const V_:Single ) :TdSingle;
