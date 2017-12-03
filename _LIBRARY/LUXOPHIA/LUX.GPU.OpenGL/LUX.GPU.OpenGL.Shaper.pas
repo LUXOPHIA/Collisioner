@@ -210,7 +210,6 @@ end;
 
 procedure TGLShaperPoin.CalcBouBox;
 var
-   P :TGLBufferData<TSingle3D>;
    B :TSingleArea3D;
    I :Integer;
 begin
@@ -220,11 +219,9 @@ begin
 
      with _PosBuf do
      begin
-          P := Map( GL_READ_ONLY );
-
           for I := 0 to Count-1 do
           begin
-               with P[ I ] do
+               with _PosBuf[ I ] do
                begin
                     if X < B.Min.X then B.Min.X := X
                                    else
@@ -239,8 +236,6 @@ begin
                     if B.Max.Z < Z then B.Max.Z := Z;
                end;
           end;
-
-          Unmap;
      end;
 
      _Inform.BouBox := B;
@@ -257,8 +252,6 @@ procedure TGLShaperPoin.LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle
 //··································
 var
    C, X, Y, I :Integer;
-   Ps, Ns :TGLBufferData<TSingle3D>;
-   Ts :TGLBufferData<TSingle2D>;
    T :TSingle2D;
    M :TSingleM4;
 begin
@@ -267,10 +260,6 @@ begin
      _PosBuf.Count := C;
      _NorBuf.Count := C;
      _TexBuf.Count := C;
-
-     Ps := _PosBuf.Map( GL_WRITE_ONLY );
-     Ns := _NorBuf.Map( GL_WRITE_ONLY );
-     Ts := _TexBuf.Map( GL_WRITE_ONLY );
 
      for Y := 0 to DivV_ do
      begin
@@ -281,18 +270,14 @@ begin
 
                I := XYtoI( X, Y );
 
-               Ts[ I ] := T;
+               _TexBuf[ I ] := T;
 
                M := Tensor( T, Func_ );
 
-               Ps[ I ] := M.AxisP;
-               Ns[ I ] := M.AxisZ;
+               _PosBuf[ I ] := M.AxisP;
+               _NorBuf[ I ] := M.AxisZ;
           end;
      end;
-
-     _PosBuf.Unmap;
-     _NorBuf.Unmap;
-     _TexBuf.Unmap;
 
      CalcBouBox;
 end;
@@ -312,7 +297,6 @@ var
                   _    :Word;
                 end;
    E :TCardinal3D;
-   Ps, Ns :TGLBufferData<TSingle3D>;
 begin
      F := TFileStream.Create( FileName_, fmOpenRead );
      try
@@ -330,9 +314,6 @@ begin
      _PosBuf.Count := 3 * FsN;
      _NorBuf.Count := 3 * FsN;
 
-     Ps := _PosBuf.Map( GL_WRITE_ONLY );
-     Ns := _NorBuf.Map( GL_WRITE_ONLY );
-
      E.X := 0;
      E.Y := 1;
      E.Z := 2;
@@ -340,22 +321,19 @@ begin
      begin
           with Fs[ I ] do
           begin
-               Ps.Items[ E.X ] := Pos1;
-               Ps.Items[ E.Y ] := Pos2;
-               Ps.Items[ E.Z ] := Pos3;
+               _PosBuf[ E.X ] := Pos1;
+               _PosBuf[ E.Y ] := Pos2;
+               _PosBuf[ E.Z ] := Pos3;
 
-               Ns.Items[ E.X ] := Nor;
-               Ns.Items[ E.Y ] := Nor;
-               Ns.Items[ E.Z ] := Nor;
+               _NorBuf[ E.X ] := Nor;
+               _NorBuf[ E.Y ] := Nor;
+               _NorBuf[ E.Z ] := Nor;
           end;
 
           Inc( E.X, 3 );
           Inc( E.Y, 3 );
           Inc( E.Z, 3 );
      end;
-
-     _PosBuf.Unmap;
-     _NorBuf.Unmap;
 
      CalcBouBox;
 end;
@@ -474,12 +452,7 @@ begin
           begin
                Count := Vs.Count;
 
-               with Map( GL_WRITE_ONLY ) do
-               begin
-                    for V in Vs do Items[ V.Value ] := Ps[ V.Key.P ];
-               end;
-
-               Unmap;
+               for V in Vs do Items[ V.Value ] := Ps[ V.Key.P ];
           end;
      end;
 
@@ -489,12 +462,7 @@ begin
           begin
                Count := Vs.Count;
 
-               with Map( GL_WRITE_ONLY ) do
-               begin
-                    for V in Vs do Items[ V.Value ] := Ns[ V.Key.N ];
-               end;
-
-               Unmap;
+               for V in Vs do Items[ V.Value ] := Ns[ V.Key.N ];
           end;
      end;
 
@@ -504,12 +472,7 @@ begin
           begin
                Count := Vs.Count;
 
-               with Map( GL_WRITE_ONLY ) do
-               begin
-                    for V in Vs do Items[ V.Value ] := Ts[ V.Key.T ];
-               end;
-
-               Unmap;
+               for V in Vs do Items[ V.Value ] := Ts[ V.Key.T ];
           end;
      end;
 
@@ -573,13 +536,10 @@ procedure TGLShaperLine.LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle
 //··································
 var
    X, Y, I, I0, I1 :Integer;
-   Es :TGLBufferData<TCardinal2D>;
 begin
      inherited;
 
      _EleBuf.Count := DivV_ * ( DivU_+1 ) + ( DivV_+1 ) * DivU_;
-
-     Es := _EleBuf.Map( GL_WRITE_ONLY );
 
      I := 0;
 
@@ -590,7 +550,7 @@ begin
                I0 := XYtoI( X+0, Y );
                I1 := XYtoI( X+1, Y );
 
-               Es[ I ] := TCardinal2D.Create( I0, I1 );  Inc( I );
+               _EleBuf[ I ] := TCardinal2D.Create( I0, I1 );  Inc( I );
           end;
      end;
 
@@ -601,11 +561,9 @@ begin
                I0 := XYtoI( X, Y+0 );
                I1 := XYtoI( X, Y+1 );
 
-               Es[ I ] := TCardinal2D.Create( I0, I1 );  Inc( I );
+               _EleBuf[ I ] := TCardinal2D.Create( I0, I1 );  Inc( I );
           end;
      end;
-
-     _EleBuf.Unmap;
 end;
 
 //------------------------------------------------------------------------------
@@ -623,8 +581,6 @@ var
                   _    :Word;
                 end;
    E :TCardinal3D;
-   Ps, Ns :TGLBufferData<TSingle3D>;
-   Es :TGLBufferData<TCardinal2D>;
 begin
      F := TFileStream.Create( FileName_, fmOpenRead );
      try
@@ -643,10 +599,6 @@ begin
      _NorBuf.Count := 3 * FsN;
      _EleBuf.Count := 3 * FsN;
 
-     Ps := _PosBuf.Map( GL_WRITE_ONLY );
-     Ns := _NorBuf.Map( GL_WRITE_ONLY );
-     Es := _EleBuf.Map( GL_WRITE_ONLY );
-
      E.X := 0;
      E.Y := 1;
      E.Z := 2;
@@ -654,27 +606,23 @@ begin
      begin
           with Fs[ I ] do
           begin
-               Ps.Items[ E.X ] := Pos1;
-               Ps.Items[ E.Y ] := Pos2;
-               Ps.Items[ E.Z ] := Pos3;
+               _PosBuf[ E.X ] := Pos1;
+               _PosBuf[ E.Y ] := Pos2;
+               _PosBuf[ E.Z ] := Pos3;
 
-               Ns.Items[ E.X ] := Nor;
-               Ns.Items[ E.Y ] := Nor;
-               Ns.Items[ E.Z ] := Nor;
+               _NorBuf[ E.X ] := Nor;
+               _NorBuf[ E.Y ] := Nor;
+               _NorBuf[ E.Z ] := Nor;
           end;
 
-          Es.Items[ I*3+0 ] := TCardinal2D.Create( E.X, E.Y );
-          Es.Items[ I*3+1 ] := TCardinal2D.Create( E.Y, E.Z );
-          Es.Items[ I*3+2 ] := TCardinal2D.Create( E.Z, E.X );
+          _EleBuf[ I*3+0 ] := TCardinal2D.Create( E.X, E.Y );
+          _EleBuf[ I*3+1 ] := TCardinal2D.Create( E.Y, E.Z );
+          _EleBuf[ I*3+2 ] := TCardinal2D.Create( E.Z, E.X );
 
           Inc( E.X, 3 );
           Inc( E.Y, 3 );
           Inc( E.Z, 3 );
      end;
-
-     _PosBuf.Unmap;
-     _NorBuf.Unmap;
-     _EleBuf.Unmap;
 
      CalcBouBox;
 end;
@@ -806,12 +754,7 @@ begin
           begin
                Count := Vs.Count;
 
-               with Map( GL_WRITE_ONLY ) do
-               begin
-                    for V in Vs do Items[ V.Value ] := Ps[ V.Key.P ];
-               end;
-
-               Unmap;
+               for V in Vs do Items[ V.Value ] := Ps[ V.Key.P ];
           end;
      end;
 
@@ -821,12 +764,7 @@ begin
           begin
                Count := Vs.Count;
 
-               with Map( GL_WRITE_ONLY ) do
-               begin
-                    for V in Vs do Items[ V.Value ] := Ns[ V.Key.N ];
-               end;
-
-               Unmap;
+               for V in Vs do Items[ V.Value ] := Ns[ V.Key.N ];
           end;
      end;
 
@@ -836,12 +774,7 @@ begin
           begin
                Count := Vs.Count;
 
-               with Map( GL_WRITE_ONLY ) do
-               begin
-                    for V in Vs do Items[ V.Value ] := Ts[ V.Key.T ];
-               end;
-
-               Unmap;
+               for V in Vs do Items[ V.Value ] := Ts[ V.Key.T ];
           end;
      end;
 
@@ -892,13 +825,10 @@ procedure TGLShaperFace.LoadFromFunc( const Func_:TConstFunc<TdSingle2D,TdSingle
 //··································
 var
    X0, Y0, X1, Y1, I, I00, I01, I10, I11 :Integer;
-   Es :TGLBufferData<TCardinal3D>;
 begin
      inherited;
 
      _EleBuf.Count := 2 * DivV_ * DivU_;
-
-     Es := _EleBuf.Map( GL_WRITE_ONLY );
 
      I := 0;
      for Y0 := 0 to DivV_-1 do
@@ -917,12 +847,10 @@ begin
                //  │      │
                //  10───11
 
-               Es[ I ] := TCardinal3D.Create( I00, I10, I11 );  Inc( I );
-               Es[ I ] := TCardinal3D.Create( I11, I01, I00 );  Inc( I );
+               _EleBuf[ I ] := TCardinal3D.Create( I00, I10, I11 );  Inc( I );
+               _EleBuf[ I ] := TCardinal3D.Create( I11, I01, I00 );  Inc( I );
           end;
      end;
-
-     _EleBuf.Unmap;
 end;
 
 //------------------------------------------------------------------------------
@@ -940,8 +868,6 @@ var
                   _    :Word;
                 end;
    E :TCardinal3D;
-   Ps, Ns :TGLBufferData<TSingle3D>;
-   Es :TGLBufferData<TCardinal3D>;
 begin
      F := TFileStream.Create( FileName_, fmOpenRead );
      try
@@ -960,10 +886,6 @@ begin
      _NorBuf.Count := 3 * FsN;
      _EleBuf.Count :=     FsN;
 
-     Ps := _PosBuf.Map( GL_WRITE_ONLY );
-     Ns := _NorBuf.Map( GL_WRITE_ONLY );
-     Es := _EleBuf.Map( GL_WRITE_ONLY );
-
      E.X := 0;
      E.Y := 1;
      E.Z := 2;
@@ -971,25 +893,21 @@ begin
      begin
           with Fs[ I ] do
           begin
-               Ps.Items[ E.X ] := Pos1;
-               Ps.Items[ E.Y ] := Pos2;
-               Ps.Items[ E.Z ] := Pos3;
+               _PosBuf[ E.X ] := Pos1;
+               _PosBuf[ E.Y ] := Pos2;
+               _PosBuf[ E.Z ] := Pos3;
 
-               Ns.Items[ E.X ] := Nor;
-               Ns.Items[ E.Y ] := Nor;
-               Ns.Items[ E.Z ] := Nor;
+               _NorBuf[ E.X ] := Nor;
+               _NorBuf[ E.Y ] := Nor;
+               _NorBuf[ E.Z ] := Nor;
           end;
 
-          Es.Items[ I ] := E;
+          _EleBuf[ I ] := E;
 
           Inc( E.X, 3 );
           Inc( E.Y, 3 );
           Inc( E.Z, 3 );
      end;
-
-     _PosBuf.Unmap;
-     _NorBuf.Unmap;
-     _EleBuf.Unmap;
 
      CalcBouBox;
 end;
@@ -1122,12 +1040,7 @@ begin
           begin
                Count := Vs.Count;
 
-               with Map( GL_WRITE_ONLY ) do
-               begin
-                    for V in Vs do Items[ V.Value ] := Ps[ V.Key.P ];
-               end;
-
-               Unmap;
+               for V in Vs do Items[ V.Value ] := Ps[ V.Key.P ];
           end;
      end;
 
@@ -1137,12 +1050,7 @@ begin
           begin
                Count := Vs.Count;
 
-               with Map( GL_WRITE_ONLY ) do
-               begin
-                    for V in Vs do Items[ V.Value ] := Ns[ V.Key.N ];
-               end;
-
-               Unmap;
+               for V in Vs do Items[ V.Value ] := Ns[ V.Key.N ];
           end;
      end;
 
@@ -1152,12 +1060,7 @@ begin
           begin
                Count := Vs.Count;
 
-               with Map( GL_WRITE_ONLY ) do
-               begin
-                    for V in Vs do Items[ V.Value ] := Ts[ V.Key.T ];
-               end;
-
-               Unmap;
+               for V in Vs do Items[ V.Value ] := Ts[ V.Key.T ];
           end;
      end;
 

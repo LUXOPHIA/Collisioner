@@ -27,7 +27,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure MakeModel;
      protected
        _BouBox  :TSingleArea3D;
-       _Matery  :TGLMateryColor;
+       _Matery  :IGLMateryColor;
        _PosBuf  :TGLVerterS<TSingle3D>;
        _EleBuf  :TGLElemerLine32;
        _Visible :Boolean;
@@ -43,7 +43,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        destructor Destroy; override;
        ///// プロパティ
        property BouBox  :TSingleArea3D  read GetBouBox  write SetBouBox ;
-       property Matery  :TGLMateryColor read   _Matery                  ;
+       property Matery  :IGLMateryColor read   _Matery                  ;
        property Visible :Boolean        read   _Visible write   _Visible;
        ///// メソッド
        procedure Draw;
@@ -160,8 +160,6 @@ end;
 destructor TGLInform.Destroy;
 begin
      _PosBuf.DisposeOf;
-
-     _Matery.DisposeOf;
 
      inherited;
 end;

@@ -143,11 +143,11 @@ end;
 
 procedure TGLElemerFace<_TYPE_>.Draw;
 begin
-     Bind;
+     inherited Use;
 
        glDrawElements( GL_TRIANGLES, GetElemN * _Count, GetElemT, nil );
 
-     Unbind;
+     inherited Unuse;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLElemerLine<_TYPE_>
@@ -179,11 +179,11 @@ end;
 
 procedure TGLElemerLine<_TYPE_>.Draw;
 begin
-     Bind;
+     inherited Use;
 
        glDrawElements( GL_LINES, GetElemN * _Count, GetElemT, nil );
 
-     Unbind;
+     inherited Unuse;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】

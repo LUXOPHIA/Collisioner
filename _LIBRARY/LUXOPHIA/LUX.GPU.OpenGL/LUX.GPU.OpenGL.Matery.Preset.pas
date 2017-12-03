@@ -80,6 +80,42 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Unuse; override;
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryDiffuse
+
+     IGLMateryDiffuse = interface( IGLMateryNor )
+     ['{8724B083-6A8B-43CA-8368-B60A28E26522}']
+     {protected}
+       ///// アクセス
+       function GetAmbient :TAlphaColorF;
+       procedure SetAmbient( const Ambient_:TAlphaColorF );
+     {public}
+       ///// プロパティ
+       property Ambient :TAlphaColorF read GetAmbient write SetAmbient;
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLMateryDiffuse = class( TGLMateryNor, IGLMateryDiffuse )
+     private
+     protected
+       _Ambient :TGLUnifor<TAlphaColorF>;
+       _Diffuse :TGLUnifor<TAlphaColorF>;
+       ///// アクセス
+       function GetAmbient :TAlphaColorF;
+       procedure SetAmbient( const Ambient_:TAlphaColorF );
+       function GetDiffuse :TAlphaColorF;
+       procedure SetDiffuse( const Diffuse_:TAlphaColorF );
+     public
+       constructor Create;
+       destructor Destroy; override;
+       ///// プロパティ
+       property Ambient :TAlphaColorF read GetAmbient write SetAmbient;
+       property Diffuse :TAlphaColorF read GetDiffuse write SetDiffuse;
+       ///// メソッド
+       procedure Use; override;
+       procedure Unuse; override;
+     end;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryPlastic
 
      IGLMateryPlastic = interface( IGLMateryImag )
@@ -378,6 +414,118 @@ end;
 procedure TGLMateryRGB.Unuse;
 begin
      _Ambient.Unuse( 4 );
+
+     inherited;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryDiffuse
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLMateryDiffuse.GetAmbient :TAlphaColorF;
+begin
+     Result := _Ambient[ 0 ];
+end;
+
+procedure TGLMateryDiffuse.SetAmbient( const Ambient_:TAlphaColorF );
+begin
+     _Ambient[ 0 ] := Ambient_;
+end;
+
+function TGLMateryDiffuse.GetDiffuse :TAlphaColorF;
+begin
+     Result := _Diffuse[ 0 ];
+end;
+
+procedure TGLMateryDiffuse.SetDiffuse( const Diffuse_:TAlphaColorF );
+begin
+     _Diffuse[ 0 ] := Diffuse_;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLMateryDiffuse.Create;
+begin
+     inherited;
+
+     _Ambient := TGLUnifor<TAlphaColorF>.Create( GL_STATIC_DRAW );
+     _Diffuse := TGLUnifor<TAlphaColorF>.Create( GL_STATIC_DRAW );
+     _Ambient.Count := 1;
+     _Diffuse.Count := 1;
+
+     with _ShaderF do
+     begin
+          with Source do
+          begin
+               BeginUpdate;
+                 Clear;
+
+                 Add( '#version 430' );
+
+                 Add( 'layout( std140 ) uniform TAmbient{ vec4 _Ambient; };' );
+                 Add( 'layout( std140 ) uniform TDiffuse{ vec4 _Diffuse; };' );
+
+                 Add( 'in TSenderVF' );
+                 Add( '{' );
+                 Add( '  vec4 Pos;' );
+                 Add( '  vec4 Nor;' );
+                 Add( '}' );
+                 Add( '_Sender;' );
+
+                 Add( 'out vec4 _ResultCol;' );
+
+                 Add( 'void main()' );
+                 Add( '{' );
+                 Add( '  vec3 L = normalize( vec3( 0, 1, 1 ) );' );
+                 Add( '  vec3 N = normalize( _Sender.Nor.xyz );' );
+                 Add( '  _ResultCol = vec4( _Ambient.rgb + _Diffuse.rgb * max( dot( L, N ), 0 ), 1 );' );
+                 Add( '}' );
+
+               EndUpdate;
+          end;
+
+          Assert( Status, Errors.Text );
+     end;
+
+     with _Engine do
+     begin
+          with Unifors do
+          begin
+               Add( 4{BinP}, 'TAmbient'{Name} );
+               Add( 5{BinP}, 'TDiffuse'{Name} );
+          end;
+     end;
+
+     Ambient := TAlphaColorF.Create( 0, 0, 0 );
+     Diffuse := TAlphaColorF.Create( 1, 1, 1 );
+end;
+
+destructor TGLMateryDiffuse.Destroy;
+begin
+     inherited;
+
+     _Ambient.DisposeOf;
+     _Diffuse.DisposeOf;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLMateryDiffuse.Use;
+begin
+     inherited;
+
+     _Ambient.Use( 4 );
+     _Diffuse.Use( 5 );
+end;
+
+procedure TGLMateryDiffuse.Unuse;
+begin
+     _Ambient.Unuse( 4 );
+     _Diffuse.Unuse( 5 );
 
      inherited;
 end;
