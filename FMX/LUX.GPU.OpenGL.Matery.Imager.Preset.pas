@@ -27,9 +27,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property Sample :TGLSample        read GetSample;
        property Imager :TGLImager2D_RGBA read GetImager;
-       ///// メソッド
-       procedure Use;
-       procedure Unuse;
      end;
 
      //-------------------------------------------------------------------------
@@ -55,7 +52,21 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLMateryImagG
 
-     TGLMateryImagG = class( TGLMateryNorTexG, IGLMateryImag )
+     IGLMateryImagG = interface( IGLMatery )
+     ['{A3108C6C-0E37-467C-94DF-F99E30B528FA}']
+     {protected}
+       ///// アクセス
+       function GetSample :TGLSample;
+       function GetImager :TGLImager2D_RGBA;
+     {public}
+       ///// プロパティ
+       property Sample :TGLSample        read GetSample;
+       property Imager :TGLImager2D_RGBA read GetImager;
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLMateryImagG = class( TGLMateryNorTexG, IGLMateryImagG )
      private
      protected
        _Sample :TGLSample;
