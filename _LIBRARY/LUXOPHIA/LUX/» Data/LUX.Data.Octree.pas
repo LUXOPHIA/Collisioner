@@ -196,7 +196,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TOcLeaf<_INode_:IOcNode;
              _IRoot_:IOctree> = class( TOcLeaf, IOcLeaf, IOcNode )
      private
-     protected {本来不要なキャスト関数}
+     protected class var {本来不要なキャスト関数}
        _CastNode :TConstFunc<IOcNode,_INode_>;
        _CastRoot :TConstFunc<IOctree,_IRoot_>;
      protected
@@ -224,7 +224,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TOcKnot<_INode_:IOcNode;
              _IRoot_:IOctree> = class( TOcKnot, IOcKnot, IOcNode )
      private
-     protected {本来不要なキャスト関数}
+     protected class var {本来不要なキャスト関数}
        _CastNode :TConstFunc<IOcNode,_INode_>;
        _CastRoot :TConstFunc<IOctree,_IRoot_>;
      protected
@@ -254,7 +254,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
              _TKnot_:TOcKnot<_INode_,_IRoot_>,constructor;
              _TLeaf_:TOcLeaf<_INode_,_IRoot_>,constructor> = class( TOctree<_TKnot_,_TLeaf_>, IOctree, IOcNode )
      private
-     protected {本来不要なキャスト関数}
+     protected class var {本来不要なキャスト関数}
        _CastNode :TConstFunc<IOcNode,_INode_>;
        _CastRoot :TConstFunc<IOctree,_IRoot_>;
      protected
