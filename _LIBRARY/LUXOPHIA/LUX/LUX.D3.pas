@@ -1563,9 +1563,9 @@ class operator TSingle3D.Implicit( const V_:TPoint3D ) :TSingle3D;
 begin
      with Result do
      begin
-          X := +V_.X;
-          Y := -V_.Y;
-          Z := -V_.Z;
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
      end;
 end;
 
@@ -1573,9 +1573,9 @@ class operator TSingle3D.Implicit( const V_:TSingle3D ) :TPoint3D;
 begin
      with Result do
      begin
-          X := +V_.X;
-          Y := -V_.Y;
-          Z := -V_.Z;
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
      end;
 end;
 
@@ -1891,9 +1891,9 @@ class operator TDouble3D.Implicit( const V_:TPoint3D ) :TDouble3D;
 begin
      with Result do
      begin
-          X := +V_.X;
-          Y := -V_.Y;
-          Z := -V_.Z;
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
      end;
 end;
 
@@ -1901,9 +1901,9 @@ class operator TDouble3D.Implicit( const V_:TDouble3D ) :TPoint3D;
 begin
      with Result do
      begin
-          X := +V_.X;
-          Y := -V_.Y;
-          Z := -V_.Z;
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
      end;
 end;
 
