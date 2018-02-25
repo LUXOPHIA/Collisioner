@@ -39,6 +39,66 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure EndDraw; override;
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperZeroPoins
+
+     TGLShaperZeroPoins = class( TGLShaper )
+     private
+     protected
+       _PoinsN :Integer;
+       ///// アクセス
+       function GetPoinsN :Integer;
+       procedure SetPoinsN( const PoinsN_:Integer );
+     public
+       constructor Create; override;
+       destructor Destroy; override;
+       ///// プロパティ
+       property PoinsN :Integer read GetPoinsN write SetPoinsN;
+       ///// メソッド
+       procedure BeginDraw; override;
+       procedure DrawMain; override;
+       procedure EndDraw; override;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperZeroLines
+
+     TGLShaperZeroLines = class( TGLShaper )
+     private
+     protected
+       _LinesN :Integer;
+       ///// アクセス
+       function GetLinesN :Integer;
+       procedure SetLinesN( const LinesN_:Integer );
+     public
+       constructor Create; override;
+       destructor Destroy; override;
+       ///// プロパティ
+       property LinesN :Integer read GetLinesN write SetLinesN;
+       ///// メソッド
+       procedure BeginDraw; override;
+       procedure DrawMain; override;
+       procedure EndDraw; override;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperZeroTrias
+
+     TGLShaperZeroTrias = class( TGLShaper )
+     private
+     protected
+       _TriasN :Integer;
+       ///// アクセス
+       function GetTriasN :Integer;
+       procedure SetTriasN( const TriasN_:Integer );
+     public
+       constructor Create; override;
+       destructor Destroy; override;
+       ///// プロパティ
+       property TriasN :Integer read GetTriasN write SetTriasN;
+       ///// メソッド
+       procedure BeginDraw; override;
+       procedure DrawMain; override;
+       procedure EndDraw; override;
+     end;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperPoin
 
      TGLShaperPoin = class( TGLShaper )
@@ -155,6 +215,162 @@ begin
      inherited;
 end;
 
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperZeroPoins
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLShaperZeroPoins.GetPoinsN :Integer;
+begin
+     Result := _PoinsN;
+end;
+
+procedure TGLShaperZeroPoins.SetPoinsN( const PoinsN_:Integer );
+begin
+     _PoinsN := PoinsN_;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLShaperZeroPoins.Create;
+begin
+     inherited;
+
+     _PoinsN := 0;
+end;
+
+destructor TGLShaperZeroPoins.Destroy;
+begin
+
+     inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLShaperZeroPoins.BeginDraw;
+begin
+     inherited;
+
+end;
+
+procedure TGLShaperZeroPoins.DrawMain;
+begin
+     glDrawArrays( GL_POINTS, 0, _PoinsN );
+end;
+
+procedure TGLShaperZeroPoins.EndDraw;
+begin
+
+     inherited;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperZeroLines
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLShaperZeroLines.GetLinesN :Integer;
+begin
+     Result := _LinesN;
+end;
+
+procedure TGLShaperZeroLines.SetLinesN( const LinesN_:Integer );
+begin
+     _LinesN := LinesN_;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLShaperZeroLines.Create;
+begin
+     inherited;
+
+     _LinesN := 0;
+end;
+
+destructor TGLShaperZeroLines.Destroy;
+begin
+
+     inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLShaperZeroLines.BeginDraw;
+begin
+     inherited;
+
+end;
+
+procedure TGLShaperZeroLines.DrawMain;
+begin
+     glDrawArrays( GL_LINES, 0, _LinesN );
+end;
+
+procedure TGLShaperZeroLines.EndDraw;
+begin
+
+     inherited;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperZeroTrias
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLShaperZeroTrias.GetTriasN :Integer;
+begin
+     Result := _TriasN;
+end;
+
+procedure TGLShaperZeroTrias.SetTriasN( const TriasN_:Integer );
+begin
+     _TriasN := TriasN_;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLShaperZeroTrias.Create;
+begin
+     inherited;
+
+     _TriasN := 0;
+end;
+
+destructor TGLShaperZeroTrias.Destroy;
+begin
+
+     inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLShaperZeroTrias.BeginDraw;
+begin
+     inherited;
+
+end;
+
+procedure TGLShaperZeroTrias.DrawMain;
+begin
+     glDrawArrays( GL_TRIANGLES, 0, _TriasN );
+end;
+
+procedure TGLShaperZeroTrias.EndDraw;
+begin
+
+     inherited;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperPoin
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -223,16 +439,13 @@ begin
           begin
                with _PosBuf[ I ] do
                begin
-                    if X < B.Min.X then B.Min.X := X
-                                   else
+                    if X < B.Min.X then B.Min.X := X;
                     if B.Max.X < X then B.Max.X := X;
 
-                    if Y < B.Min.Y then B.Min.Y := Y
-                                   else
+                    if Y < B.Min.Y then B.Min.Y := Y;
                     if B.Max.Y < Y then B.Max.Y := Y;
 
-                    if Z < B.Min.Z then B.Min.Z := Z
-                                   else
+                    if Z < B.Min.Z then B.Min.Z := Z;
                     if B.Max.Z < Z then B.Max.Z := Z;
                end;
           end;
