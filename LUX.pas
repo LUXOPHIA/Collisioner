@@ -6,7 +6,8 @@ uses System.Types, System.SysUtils, System.Classes, System.Math.Vectors, System.
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
-     PPByte = ^PByte;
+     PPByte    = ^PByte;
+     PPLongint = ^PLongint;
 
      //-------------------------------------------------------------------------
 
@@ -384,14 +385,14 @@ function IntToStr( const Value_:Int64; const N_:Integer; const C_:Char = '0' ) :
 function IntToStrP( const Value_:Integer; const N_:Integer; const C_:Char = '0' ) :String; overload;
 function IntToStrP( const Value_:Int64; const N_:Integer; const C_:Char = '0' ) :String; overload;
 
-procedure FloatToStr( const Value_:Single; const N_:Integer; out Man_,Exp_:String ); overload;
-procedure FloatToStr( const Value_:Double; const N_:Integer; out Man_,Exp_:String ); overload;
+function FloatToStr( const Value_:Single; const N_:Integer; out Man_,Exp_:String ) :Boolean; overload;
+function FloatToStr( const Value_:Double; const N_:Integer; out Man_,Exp_:String ) :Boolean; overload;
 
 function _TestFloatToStr_Single( const Value_:String; const N_:Integer ) :String;
 function _TestFloatToStr_Double( const Value_:String; const N_:Integer ) :String;
 
-procedure FloatToStr( const Value_:Single; const N_:Integer; out Man_,Exp_:String; out DecN_:Integer ); overload;
-procedure FloatToStr( const Value_:Double; const N_:Integer; out Man_,Exp_:String; out DecN_:Integer ); overload;
+function FloatToStr( const Value_:Single; const N_:Integer; out Man_,Exp_:String; out DecN_:Integer ) :Boolean; overload;
+function FloatToStr( const Value_:Double; const N_:Integer; out Man_,Exp_:String; out DecN_:Integer ) :Boolean; overload;
 
 function FloatToStr( const Value_:Single; const N_:Integer ) :String; overload;
 function FloatToStr( const Value_:Double; const N_:Integer ) :String; overload;
@@ -1870,14 +1871,18 @@ begin
      Exp_ := Value_.Substring( I+1 );
 end;
 
-procedure FloatToStr( const Value_:Single; const N_:Integer; out Man_,Exp_:String );
+function FloatToStr( const Value_:Single; const N_:Integer; out Man_,Exp_:String ) :Boolean;
 begin
-     _SplitME( FloatToStrF( Value_, TFloatFormat.ffExponent, N_, 0 ), Man_,Exp_ );
+     Result := not ( Value_.IsNan or Value_.IsInfinity );
+
+     if Result then _SplitME( FloatToStrF( Value_, TFloatFormat.ffExponent, N_, 0 ), Man_,Exp_ );
 end;
 
-procedure FloatToStr( const Value_:Double; const N_:Integer; out Man_,Exp_:String );
+function FloatToStr( const Value_:Double; const N_:Integer; out Man_,Exp_:String ) :Boolean;
 begin
-     _SplitME( FloatToStrF( Value_, TFloatFormat.ffExponent, N_, 0 ), Man_,Exp_ );
+     Result := not ( Value_.IsNan or Value_.IsInfinity );
+
+     if Result then _SplitME( FloatToStrF( Value_, TFloatFormat.ffExponent, N_, 0 ), Man_,Exp_ );
 end;
 
 //------------------------------------------------------------------------------
@@ -1896,18 +1901,18 @@ begin
      if Result <= 0 then Result := -E-1;
 end;
 
-procedure FloatToStr( const Value_:Single; const N_:Integer; out Man_,Exp_:String; out DecN_:Integer );
+function FloatToStr( const Value_:Single; const N_:Integer; out Man_,Exp_:String; out DecN_:Integer ) :Boolean;
 begin
-     FloatToStr( Value_, N_, Man_, Exp_ );
+     Result := FloatToStr( Value_, N_, Man_, Exp_ );
 
-     DecN_ := _DecN( Man_, Exp_ );
+     if Result then DecN_ := _DecN( Man_, Exp_ );
 end;
 
-procedure FloatToStr( const Value_:Double; const N_:Integer; out Man_,Exp_:String; out DecN_:Integer );
+function FloatToStr( const Value_:Double; const N_:Integer; out Man_,Exp_:String; out DecN_:Integer ) :Boolean;
 begin
-     FloatToStr( Value_, N_, Man_, Exp_ );
+     Result := FloatToStr( Value_, N_, Man_, Exp_ );
 
-     DecN_ := _DecN( Man_, Exp_ );
+     if Result then DecN_ := _DecN( Man_, Exp_ );
 end;
 
 //------------------------------------------------------------------------------
@@ -1953,10 +1958,17 @@ var
    M, E :String;
    D :Integer;
 begin
-     FloatToStr( Value_, N_, M, E, D );
-
-     if Abs( D ) <= N_ then Result := FloatToStrF( Value_, TFloatFormat.ffFixed, N_, ClampMin( D, 0 ) )
-                       else Result := M + 'e' + E;
+     if FloatToStr( Value_, N_, M, E, D ) then
+     begin
+          if Abs( D ) <= N_ then Result := FloatToStrF( Value_, TFloatFormat.ffFixed, N_, ClampMin( D, 0 ) )
+                            else Result := M + 'e' + E;
+     end
+     else
+     if Value_.IsNan              then Result :=  'NAN'
+                                  else
+     if Value_.IsNegativeInfinity then Result := '-INF'
+                                  else
+     if Value_.IsPositiveInfinity then Result := '+INF';
 end;
 
 function FloatToStr( const Value_:Double; const N_:Integer ) :String;
@@ -1964,10 +1976,17 @@ var
    M, E :String;
    D :Integer;
 begin
-     FloatToStr( Value_, N_, M, E, D );
-
-     if Abs( D ) <= N_ then Result := FloatToStrF( Value_, TFloatFormat.ffFixed, N_, ClampMin( D, 0 ) )
-                       else Result := M + 'e' + E;
+     if FloatToStr( Value_, N_, M, E, D ) then
+     begin
+          if Abs( D ) <= N_ then Result := FloatToStrF( Value_, TFloatFormat.ffFixed, N_, ClampMin( D, 0 ) )
+                            else Result := M + 'e' + E;
+     end
+     else
+     if Value_.IsNan              then Result :=  'NAN'
+                                  else
+     if Value_.IsNegativeInfinity then Result := '-INF'
+                                  else
+     if Value_.IsPositiveInfinity then Result := '+INF';
 end;
 
 function FloatToStrP( const Value_:Single; const N_:Integer ) :String;

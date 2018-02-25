@@ -938,8 +938,8 @@ class operator TSingle2D.Implicit( const V_:TPointF ) :TSingle2D;
 begin
      with Result do
      begin
-          X := +V_.X;
-          Y := -V_.Y;
+          X := V_.X;
+          Y := V_.Y;
      end;
 end;
 
@@ -947,8 +947,8 @@ class operator TSingle2D.Implicit( const V_:TSingle2D ) :TPointF;
 begin
      with Result do
      begin
-          X := +V_.X;
-          Y := -V_.Y;
+          X := V_.X;
+          Y := V_.Y;
      end;
 end;
 
@@ -1187,8 +1187,8 @@ class operator TDouble2D.Implicit( const V_:TPointF ) :TDouble2D;
 begin
      with Result do
      begin
-          X := +V_.X;
-          Y := -V_.Y;
+          X := V_.X;
+          Y := V_.Y;
      end;
 end;
 
@@ -1196,8 +1196,8 @@ class operator TDouble2D.Explicit( const V_:TDouble2D ) :TPointF;
 begin
      with Result do
      begin
-          X := +V_.X;
-          Y := -V_.Y;
+          X := V_.X;
+          Y := V_.Y;
      end;
 end;
 
