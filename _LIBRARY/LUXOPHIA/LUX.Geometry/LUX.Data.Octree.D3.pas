@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses LUX, LUX.D3, LUX.M4,
-     LUX.Data.Octree,
+     LUX.Data.Octree, LUX.Data.Octree.Atom,
      LUX.Geometry.D3;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
