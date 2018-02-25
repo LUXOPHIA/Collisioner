@@ -5,9 +5,8 @@ interface //####################################################################
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Platform.Win,
-  Winapi.Windows, Winapi.OpenGL, Winapi.OpenGLext,
-  LUX, LUX.D3, LUX.D4, LUX.M4, LUX.FMX.Forms,
+  System.Messaging,
+  LUX, LUX.D3, LUX.D4, LUX.M4,
   LUX.GPU.OpenGL,
   LUX.GPU.OpenGL.Window,
   LUX.GPU.OpenGL.Atom.Buffer.Unifor,
@@ -18,50 +17,47 @@ type
   TGLViewer = class(TFrame)
   private
     { private 宣言 }
+    ///// イベント
     procedure GoMouseClick( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single );
     procedure GoMouseDown( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single ); inline;
     procedure GoMouseMove( Sender_:TObject; Shift_:TShiftState; X_,Y_:Single ); inline;
     procedure GoMouseUp( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single ); inline;
     procedure GoMouseWheel( Sender_:TObject; Shift_:TShiftState; WheelDelta_:Integer; var Handled_:Boolean ); inline;
+    ///// メソッド
+    procedure OnCreateAnyWND( const Sender_:TObject; const Message_:TMessage );
+    procedure OnDestroAnyWND( const Sender_:TObject; const Message_:TMessage );
   protected
-    _Form   :TCommonCustomForm;
-    _WND    :HWND;
-    _DC     :HDC;
-    _Viewer :TGLUnifor<TSingleM4>;
-    _Camera :TGLCamera;
+    _RootForm :FMX.Forms.TCommonCustomForm;
+    _Form     :TGLViewerForm;
+    _Viewer   :TGLUnifor<TSingleM4>;
+    _Camera   :TGLCamera;
     ///// イベント
     _OnPaint :TProc;
     ///// アクセス
+    class function GetScreenScale :Single;
     function GetRootForm :TForm;
-    function GetRootWND :HWND;
-    function GetPixSiz :System.Types.TSize;
+    function GetPxSize :System.Types.TSize;
     ///// メソッド
     procedure DoAbsoluteChanged; override;
     procedure ParentChanged; override;
     procedure Paint; override;
     procedure Resize; override;
     procedure AncestorVisibleChanged( const Visible_: Boolean ); override;
-    procedure FitWindow;
+    procedure AncestorParentChanged; override;
     procedure CreateWindow;
-    procedure CreateDC;
-    procedure DestroyDC;
+    procedure DestroWindow;
+    procedure FitWindow;
   public
     { public 宣言 }
     constructor Create( AOwner_:TComponent ); override;
     destructor Destroy; override;
     ///// プロパティ
-    property Form   :TCommonCustomForm  read   _Form                ;
-    property WND    :HWND               read   _WND                 ;
-    property DC     :HDC                read   _DC                  ;
-    property PixSiz :System.Types.TSize read GetPixSiz              ;
+    property PxSize :System.Types.TSize read GetPxSize              ;
     property Camera :TGLCamera          read   _Camera write _Camera;
     ///// イベント
     property OnPaint :TProc read _OnPaint write _OnPaint;
     ///// メソッド
     procedure Repaint;
-    procedure RecreateDC;
-    procedure BeginGL;
-    procedure EndGL;
     procedure BeginRender;
     procedure EndRender;
     function MakeScreenShot :FMX.Graphics.TBitmap;
@@ -73,9 +69,12 @@ implementation //###############################################################
 
 {$R *.fmx}
 
+uses FMX.Platform,
+     Winapi.OpenGL, Winapi.OpenGLext;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
-/////////////////////////////////////////////////////////////////////// メソッド
+/////////////////////////////////////////////////////////////////////// イベント
 
 procedure TGLViewer.GoMouseClick( Sender_:TObject; Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single );
 begin
@@ -106,30 +105,62 @@ begin
      MouseWheel( Shift_, WheelDelta_, Handled_ );
 end;
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLViewer.OnCreateAnyWND( const Sender_:TObject; const Message_:TMessage );
+begin
+    if Sender_ = _RootForm then
+    begin
+         Assert( not Assigned( _Form ), 'Failed! _Form is not nil. @ TGLViewer.OnCreateAnyWND' );
+
+         CreateWindow;
+
+         _Form.Parent := Self;
+
+         FitWindow;
+    end;
+end;
+
+procedure TGLViewer.OnDestroAnyWND( const Sender_:TObject; const Message_:TMessage );
+begin
+    if Sender_ = _RootForm then
+     begin
+          DestroWindow;
+     end;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
+class function TGLViewer.GetScreenScale :Single;
+var
+   S :IFMXScreenService;
+begin
+     if TPlatformServices.Current.SupportsPlatformService( IFMXScreenService, IInterface( S ) )
+     then Result := S.GetScreenScale
+     else Result := 1;
+end;
+
+//------------------------------------------------------------------------------
+
 function TGLViewer.GetRootForm :TForm;
 begin
-     Result := Self.Root.GetObject as TForm;
-
-     Assert( Assigned( Result ), 'Failed! TGLViewer.GetRootWND' );
+     if Assigned( Root ) and ( Root.GetObject is TForm ) then
+     begin
+          Result := Root.GetObject as TForm;
+     end
+     else Result := nil;
 end;
 
-function TGLViewer.GetRootWND :HWND;
-begin
-     Result := WindowHandleToPlatform( GetRootForm.Handle ).Wnd;
+//------------------------------------------------------------------------------
 
-     Assert( Result > 0, 'Failed! TGLViewer.GetRootWND' );
-end;
-
-function TGLViewer.GetPixSiz :System.Types.TSize;
+function TGLViewer.GetPxSize :System.Types.TSize;
 begin
      with Result do
      begin
-          Width  := Round( _Form.Width  * Scene.GetSceneScale );
-          Height := Round( _Form.Height * Scene.GetSceneScale );
+          Width  := Round( _Form.Width  * GetScreenScale );
+          Height := Round( _Form.Height * GetScreenScale );
      end;
 end;
 
@@ -146,16 +177,16 @@ procedure TGLViewer.ParentChanged;
 begin
      inherited;
 
-     Assert( Winapi.Windows.SetParent( _WND, GetRootWND ) > 0, 'Failed! SetParent @ TGLViewer.ParentChanged' );
+     _RootForm := GetRootForm;
 
-     _Form.Visible := Self.ParentedVisible;
+     _Form.Parent := Self;
 end;
 
 procedure TGLViewer.Paint;
 begin
      BeginRender;
 
-       with GetPixSiz do glViewport( 0, 0, Width, Height );
+       with GetPxSize do glViewport( 0, 0, Width, Height );
 
        if Assigned( _Camera ) then _Camera.Render;
 
@@ -168,45 +199,53 @@ procedure TGLViewer.Resize;
 begin
      inherited;
 
-     if not ( csLoading in Self.ComponentState ) then FitWindow;
+     if Assigned( Parent ) then FitWindow;
 end;
 
 procedure TGLViewer.AncestorVisibleChanged( const Visible_: Boolean );
 begin
      inherited;
 
-     _Form.Visible := Visible_;
+     _Form.Visible := ParentedVisible;
+end;
+
+procedure TGLViewer.AncestorParentChanged;
+begin
+     inherited;
+
+     _RootForm := GetRootForm;
+
+     _Form.Parent := Self;
 end;
 
 //------------------------------------------------------------------------------
 
 procedure TGLViewer.CreateWindow;
 begin
-     _Form := TCommonCustomForm.CreateNew( Self );
+     _Form := TGLViewerForm.CreateNew( Self );
 
      with _Form do
      begin
-          BorderStyle := TFmxFormBorderStyle.None;
-
           OnMouseClick := GoMouseClick;
           OnMouseDown  := GoMouseDown ;
           OnMouseMove  := GoMouseMove ;
           OnMouseUp    := GoMouseUp   ;
           OnMouseWheel := GoMouseWheel;
-
-          HandleNeeded;
-
-          _WND := WindowHandleToPlatform( Handle ).Wnd;
      end;
-
-     SetWindowLong( _WND, GWL_STYLE, WS_CHILD or WS_CLIPSIBLINGS );
 end;
+
+procedure TGLViewer.DestroWindow;
+begin
+     FreeAndNil( _Form );
+end;
+
+//------------------------------------------------------------------------------
 
 procedure TGLViewer.FitWindow;
 var
    R :TRectF;
 begin
-     R := TRectF.Create( LocalToAbsolute( TPointF.Zero ) * Scene.GetSceneScale, Width, Height );
+     R := TRectF.Create( LocalToAbsolute( TPointF.Zero ) * GetScreenScale, Width, Height );
 
      _Form.Bounds := R.Round;
 
@@ -214,23 +253,6 @@ begin
                        else
      if Width < Height then _Viewer[ 0 ] := TSingleM4.Scale( 1, Width / Height, 1 )
                        else _Viewer[ 0 ] := TSingleM4.Identity;
-
-end;
-
-//------------------------------------------------------------------------------
-
-procedure TGLViewer.CreateDC;
-begin
-     _DC := GetDC( _WND );
-
-     Assert( _DC > 0, 'Failed! TGLViewer.CreateDC' );
-
-     _OpenGL_.ApplyPixelFormat( _DC );
-end;
-
-procedure TGLViewer.DestroyDC;
-begin
-     ReleaseDC( _WND, _DC );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -241,11 +263,17 @@ begin
 
      HitTest := False;
 
+     _RootForm := nil;
+
      _OnPaint := procedure begin end;
 
      CreateWindow;
 
-     CreateDC;
+     if not ( csDesigning in ComponentState ) then
+     begin
+          TMessageManager.DefaultManager.SubscribeToMessage( TAfterCreateFormHandle  , OnCreateAnyWND );
+          TMessageManager.DefaultManager.SubscribeToMessage( TBeforeDestroyFormHandle, OnDestroAnyWND );
+     end;
 
      _Viewer := TGLUnifor<TSingleM4>.Create( GL_DYNAMIC_DRAW );
      _Viewer.Count := 1;
@@ -255,7 +283,11 @@ destructor TGLViewer.Destroy;
 begin
      _Viewer.DisposeOf;
 
-     DestroyDC;
+     if not ( csDesigning in ComponentState ) then
+     begin
+          TMessageManager.DefaultManager.Unsubscribe( TBeforeDestroyFormHandle, OnDestroAnyWND );
+          TMessageManager.DefaultManager.Unsubscribe( TAfterCreateFormHandle  , OnCreateAnyWND );
+     end;
 
      inherited;
 end;
@@ -269,36 +301,9 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLViewer.RecreateDC;
-begin
-     DestroyDC;
-
-     _Form.RecreateResources;
-
-     CreateDC;
-end;
-
-//------------------------------------------------------------------------------
-
-procedure TGLViewer.BeginGL;
-begin
-     _OpenGL_.EndGL;
-
-       Assert( wglMakeCurrent( _DC, _OpenGL_.RC ), 'Failed! TGLViewer.BeginGL' );
-end;
-
-procedure TGLViewer.EndGL;
-begin
-       Assert( wglMakeCurrent( _DC, 0 ), 'Failed! TGLViewer.EndGL' );
-
-     _OpenGL_.BeginGL;
-end;
-
-//------------------------------------------------------------------------------
-
 procedure TGLViewer.BeginRender;
 begin
-     BeginGL;
+     _Form.BeginGL;
 
        glClearColor( 0, 0, 0, 0 );
 
@@ -313,9 +318,9 @@ begin
 
        glFlush;
 
-     EndGL;
+     _Form.EndGL;
 
-     SwapBuffers( _DC );
+     _Form.SwapBuffers;
 end;
 
 //------------------------------------------------------------------------------
@@ -331,16 +336,19 @@ begin
 
      with Result do
      begin
-          SetSize( GetPixSiz );
+          SetSize( GetPxSize );
 
           SetLength( Cs, Height * Width );
 
           C := @Cs[ 0 ];
 
-          BeginGL;
-            glReadBuffer( GL_FRONT );
-            glReadPixels( 0, 0, Width, Height, GL_BGRA, GL_UNSIGNED_BYTE, C );
-          EndGL;
+          with _Form do
+          begin
+               BeginGL;
+                 glReadBuffer( GL_FRONT );
+                 glReadPixels( 0, 0, Width, Height, GL_BGRA, GL_UNSIGNED_BYTE, C );
+               EndGL;
+          end;
 
           Map( TMapAccess.Write, Bs );
 
@@ -368,7 +376,7 @@ var
 begin
      M := _Camera.AbsoPose * _Camera.Proj.Inverse * _Viewer[ 0 ].Inverse;
 
-     with GetPixSiz do
+     with GetPxSize do
      begin
           S.X :=     X_ / Width  * 2 - 1;
           S.Y := 1 - Y_ / Height * 2    ;
