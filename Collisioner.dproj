@@ -368,6 +368,7 @@
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\» Data\LUX.Data.Octree.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\» Data\LUX.Data.Tree.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\» Data\LUX.Data.Lattice.T1.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\» Data\LUX.Data.Octree.Atom.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
