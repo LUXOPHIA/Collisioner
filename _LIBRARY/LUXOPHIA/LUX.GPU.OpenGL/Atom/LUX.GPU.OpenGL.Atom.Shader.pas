@@ -48,6 +48,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        procedure Attach( const Progra_:IGLProgra );
        procedure Detach( const Progra_:IGLProgra );
+       procedure LoadFromResource( const Name_:String );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaderV
@@ -84,6 +85,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
 implementation //############################################################### ■
+
+uses System.Types;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -208,6 +211,21 @@ end;
 procedure TGLShader.Detach( const Progra_:IGLProgra );
 begin
      _Progra := nil;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TGLShader.LoadFromResource( const Name_:String );
+var
+   RS :TResourceStream;
+begin
+     RS := TResourceStream.Create( hInstance, Name_, RT_RCDATA );
+     try
+        Source.LoadFromStream( RS );
+
+     finally
+            RS.DisposeOf;
+     end;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaderV
