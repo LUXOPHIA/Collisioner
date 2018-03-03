@@ -27,12 +27,6 @@ uses
   LUX.M4 in '_LIBRARY\LUXOPHIA\LUX\LUX.M4.pas',
   LUX in '_LIBRARY\LUXOPHIA\LUX\LUX.pas',
   LUX.D1 in '_LIBRARY\LUXOPHIA\LUX\LUX.D1.pas',
-  LUX.Data.Lattice.T2 in '_LIBRARY\LUXOPHIA\LUX\» Data\LUX.Data.Lattice.T2.pas',
-  LUX.Data.Lattice.T3 in '_LIBRARY\LUXOPHIA\LUX\» Data\LUX.Data.Lattice.T3.pas',
-  LUX.Data.Octree in '_LIBRARY\LUXOPHIA\LUX\» Data\LUX.Data.Octree.pas',
-  LUX.Data.Tree in '_LIBRARY\LUXOPHIA\LUX\» Data\LUX.Data.Tree.pas',
-  LUX.Data.Lattice.T1 in '_LIBRARY\LUXOPHIA\LUX\» Data\LUX.Data.Lattice.T1.pas',
-  LUX.Data.Octree.Atom in '_LIBRARY\LUXOPHIA\LUX\» Data\LUX.Data.Octree.Atom.pas',
   LUX.GPU.OpenGL.Camera in '_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\LUX.GPU.OpenGL.Camera.pas',
   LUX.GPU.OpenGL.Inform in '_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\LUX.GPU.OpenGL.Inform.pas',
   LUX.GPU.OpenGL.Matery in '_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\LUX.GPU.OpenGL.Matery.pas',
@@ -60,7 +54,14 @@ uses
   LUX.GPU.OpenGL.Matery.Imager.Preset in '_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\Matery\Imager\_FMX\LUX.GPU.OpenGL.Matery.Imager.Preset.pas',
   LUX.GPU.OpenGL.Atom.Imager.D1.Preset in '_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\Atom\Imager\D1\_FMX\LUX.GPU.OpenGL.Atom.Imager.D1.Preset.pas',
   LUX.GPU.OpenGL.Atom.Imager.D2.Preset in '_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\Atom\Imager\D2\_FMX\LUX.GPU.OpenGL.Atom.Imager.D2.Preset.pas',
-  LUX.GPU.OpenGL.Atom.Imager.D3.Preset in '_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\Atom\Imager\D3\_FMX\LUX.GPU.OpenGL.Atom.Imager.D3.Preset.pas';
+  LUX.GPU.OpenGL.Atom.Imager.D3.Preset in '_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\Atom\Imager\D3\_FMX\LUX.GPU.OpenGL.Atom.Imager.D3.Preset.pas',
+  LUX.Data.Octree in '_LIBRARY\LUXOPHIA\LUX\Data\LUX.Data.Octree.pas',
+  LUX.Data.Tree in '_LIBRARY\LUXOPHIA\LUX\Data\LUX.Data.Tree.pas',
+  LUX.Data.Octree.Atom in '_LIBRARY\LUXOPHIA\LUX\Data\LUX.Data.Octree.Atom.pas',
+  LUX.Data.Lattice.T3 in '_LIBRARY\LUXOPHIA\LUX\Data\Lattice\LUX.Data.Lattice.T3.pas',
+  LUX.Data.Lattice.T1 in '_LIBRARY\LUXOPHIA\LUX\Data\Lattice\LUX.Data.Lattice.T1.pas',
+  LUX.Data.Lattice.T2 in '_LIBRARY\LUXOPHIA\LUX\Data\Lattice\LUX.Data.Lattice.T2.pas',
+  LUX.Data.Lattice.T3.D3 in '_LIBRARY\LUXOPHIA\LUX\Data\Lattice\T3\LUX.Data.Lattice.T3.D3.pas';
 
 {$R *.res}
 

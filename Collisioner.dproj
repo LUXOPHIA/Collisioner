@@ -339,12 +339,6 @@
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\LUX.M4.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\LUX.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\LUX.D1.pas"/>
-        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\» Data\LUX.Data.Lattice.T2.pas"/>
-        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\» Data\LUX.Data.Lattice.T3.pas"/>
-        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\» Data\LUX.Data.Octree.pas"/>
-        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\» Data\LUX.Data.Tree.pas"/>
-        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\» Data\LUX.Data.Lattice.T1.pas"/>
-        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\» Data\LUX.Data.Octree.Atom.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\LUX.GPU.OpenGL.Camera.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\LUX.GPU.OpenGL.Inform.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\LUX.GPU.OpenGL.Matery.pas"/>
@@ -373,6 +367,13 @@
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\Atom\Imager\D1\_FMX\LUX.GPU.OpenGL.Atom.Imager.D1.Preset.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\Atom\Imager\D2\_FMX\LUX.GPU.OpenGL.Atom.Imager.D2.Preset.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\Atom\Imager\D3\_FMX\LUX.GPU.OpenGL.Atom.Imager.D3.Preset.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Data\LUX.Data.Octree.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Data\LUX.Data.Tree.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Data\LUX.Data.Octree.Atom.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Data\Lattice\LUX.Data.Lattice.T3.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Data\Lattice\LUX.Data.Lattice.T1.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Data\Lattice\LUX.Data.Lattice.T2.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Data\Lattice\T3\LUX.Data.Lattice.T3.D3.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
