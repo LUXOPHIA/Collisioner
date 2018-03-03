@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses System.SysUtils, System.Classes,
-     LUX, LUX.D3, LUX.Data.Lattice.T3;
+     LUX, LUX.D1, LUX.D3, LUX.Data.Lattice.T3;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -67,8 +67,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
      public
        ///// メソッド
-       function FracInterp( const Xd_,Yd_,Zd_:Single ) :Single; override;
-       function Grad( const X_,Y_,Z_:Single ) :TSingle3D;
+       function Interp( const Xd_,Yd_,Zd_:Single ) :Single; override;
+       function FracGrad( const Xd_,Yd_,Zd_:Single ) :TSingle3D; overload;
+       function Grad( const d_:TSingle3D ) :TSingle3D; overload;
+       function AbsoGrad( const X_,Y_,Z_:Single ) :TSingle3D;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -145,32 +147,63 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function TSingleBricIterGridArray3D.FracInterp( const Xd_,Yd_,Zd_:Single ) :Single;
+function TSingleBricIterGridArray3D.Interp( const Xd_,Yd_,Zd_:Single ) :Single;
 var
-   Z, Y :Integer;
-   Ys :array [ -1..+2, -1..+2 ] of Single;
-   Zs :array [ -1..+2 ] of Single;
+   Y00, Y01, Y10, Y11, Z0, Z1 :Single;
 begin
-     for Z := 0 to 1 do
-     begin
-          for Y := 0 to 1 do Ys[ Z, Y ] := ( Grids[ 1, Y, Z ] - Grids[ 0, Y, Z ] ) * Xd_ + Grids[ 0, Y, Z ];
-     end;
+     Y00 := ( Grids[ 1, 0, 0 ] - Grids[ 0, 0, 0 ] ) * Xd_ + Grids[ 0, 0, 0 ];
+     Y01 := ( Grids[ 1, 1, 0 ] - Grids[ 0, 1, 0 ] ) * Xd_ + Grids[ 0, 1, 0 ];
+     Y10 := ( Grids[ 1, 0, 1 ] - Grids[ 0, 0, 1 ] ) * Xd_ + Grids[ 0, 0, 1 ];
+     Y11 := ( Grids[ 1, 1, 1 ] - Grids[ 0, 1, 1 ] ) * Xd_ + Grids[ 0, 1, 1 ];
 
-     for Z := 0 to 1 do Zs[ Z ] := ( Ys[ Z, 1 ] - Ys[ Z, 0 ] ) * Yd_ + Ys[ Z, 0 ];
+     Z0 := ( Y01 - Y00 ) * Yd_ + Y00;
+     Z1 := ( Y11 - Y10 ) * Yd_ + Y10;
 
-     Result := ( Zs[ 1 ] - Zs[ 0 ] ) * Zd_ + Zs[ 0 ];
+     Result := ( Z1 - Z0 ) * Zd_ + Z0;
 end;
 
 //------------------------------------------------------------------------------
 
-function TSingleBricIterGridArray3D.Grad( const X_,Y_,Z_:Single ) :TSingle3D;
+function TSingleBricIterGridArray3D.FracGrad( const Xd_,Yd_,Zd_:Single ) :TSingle3D;
+//······································
+     function GetInterp( const X,Y,Z:Shortint ) :Single;
+     var
+        Y00, Y01, Y10, Y11, Z0, Z1 :Single;
+     begin
+          Y00 := ( Grids[ X+1, Y+0, Z+0 ] - Grids[ X+0, Y+0, Z+0 ] ) * Xd_ + Grids[ X+0, Y+0, Z+0 ];
+          Y01 := ( Grids[ X+1, Y+1, Z+0 ] - Grids[ X+0, Y+1, Z+0 ] ) * Xd_ + Grids[ X+0, Y+1, Z+0 ];
+          Y10 := ( Grids[ X+1, Y+0, Z+1 ] - Grids[ X+0, Y+0, Z+1 ] ) * Xd_ + Grids[ X+0, Y+0, Z+1 ];
+          Y11 := ( Grids[ X+1, Y+1, Z+1 ] - Grids[ X+0, Y+1, Z+1 ] ) * Xd_ + Grids[ X+0, Y+1, Z+1 ];
+
+          Z0 := ( Y01 - Y00 ) * Yd_ + Y00;
+          Z1 := ( Y11 - Y10 ) * Yd_ + Y10;
+
+          Result := ( Z1 - Z0 ) * Zd_ + Z0;
+     end;
+//······································
 begin
      with Result do
      begin
-          X := ( Interp( X_+1, Y_  , Z_   ) - Interp( X_-1, Y_  , Z_   ) ) / 2;
-          Y := ( Interp( X_  , Y_+1, Z_   ) - Interp( X_  , Y_-1, Z_   ) ) / 2;
-          Z := ( Interp( X_  , Y_  , Z_+1 ) - Interp( X_  , Y_  , Z_-1 ) ) / 2;
+          X := ( GetInterp( +1,  0,  0 ) - GetInterp( -1,  0,  0 ) ) / 2;
+          Y := ( GetInterp(  0, +1,  0 ) - GetInterp(  0, -1,  0 ) ) / 2;
+          Z := ( GetInterp(  0,  0, +1 ) - GetInterp(  0,  0, -1 ) ) / 2;
      end;
+end;
+
+function TSingleBricIterGridArray3D.Grad( const d_:TSingle3D ) :TSingle3D;
+begin
+     Result := FracGrad( d_.X, d_.Y, d_.Z );
+end;
+
+function TSingleBricIterGridArray3D.AbsoGrad( const X_,Y_,Z_:Single ) :TSingle3D;
+var
+   Xd, Yd, Zd :Single;
+begin
+     PosZ := Floor( Z_ );  Zd := Z_ - PosZ;
+     PosY := Floor( Y_ );  Yd := Y_ - PosY;
+     PosX := Floor( X_ );  Xd := X_ - PosX;
+
+     Result := FracGrad( Xd, Yd, Zd );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】

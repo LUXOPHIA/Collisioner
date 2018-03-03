@@ -22,6 +22,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      ['{2ED01C38-BB77-4958-83DE-E4F723A74774}']
        ///// アクセス
        function GetItemByte :Integer;
+       function GetElemsP0 :Pointer;
        function GetElemsX :Integer;
        function GetElemsY :Integer;
        function GetElemsZ :Integer;
@@ -47,6 +48,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetByteStepZ :Integer;
        ///// プロパティ
        property ItemByte  :Integer read GetItemByte                 ;
+       property ElemsP0   :Pointer read GetElemsP0                  ;
        property ElemsX    :Integer read GetElemsX                   ;
        property ElemsY    :Integer read GetElemsY                   ;
        property ElemsZ    :Integer read GetElemsZ                   ;
@@ -91,6 +93,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _OnChange :TNotifyEvent;
        ///// アクセス
        function GetItemByte :Integer;
+       function GetElemsP0 :Pointer;
        function GetElems( const X_,Y_,Z_:Integer ) :_TItem_;
        procedure SetElems( const X_,Y_,Z_:Integer; const Elem_:_TItem_ );
        function GetElemP( const X_,Y_,Z_:Integer ) :_PItem_;
@@ -131,6 +134,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        destructor Destroy; override;
        ///// プロパティ
        property ItemByte                        :Integer    read GetItemByte                ;
+       property ElemsP0                         :Pointer    read GetElemsP0                 ;
        property Elems[ const X_,Y_,Z_:Integer ] :_TItem_    read GetElems    write SetElems ;
        property ElemP[ const X_,Y_,Z_:Integer ] :_PItem_    read GetElemP                   ;
        property ElemsX                          :Integer    read GetElemsX                  ;
@@ -289,8 +293,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure GoNextY( const N_:Integer ); overload;
        procedure GoPrevZ( const N_:Integer ); overload;
        procedure GoNextZ( const N_:Integer ); overload;
-       function FracInterp( const Xd_,Yd_,Zd_:Single ) :_TItem_;
-       function Interp( const X_,Y_,Z_:Single ) :_TItem_;
+       function Interp( const Xd_,Yd_,Zd_:Single ) :_TItem_;
+       function AbsoInterp( const X_,Y_,Z_:Single ) :_TItem_;
      end;
 
      //-------------------------------------------------------------------------
@@ -348,8 +352,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure GoNextY( const N_:Integer ); overload;
        procedure GoPrevZ( const N_:Integer ); overload;
        procedure GoNextZ( const N_:Integer ); overload;
-       function FracInterp( const Xd_,Yd_,Zd_:Single ) :_TItem_; virtual;
-       function Interp( const X_,Y_,Z_:Single ) :_TItem_; virtual;
+       function Interp( const Xd_,Yd_,Zd_:Single ) :_TItem_; virtual;
+       function AbsoInterp( const X_,Y_,Z_:Single ) :_TItem_; virtual;
        procedure ForBrics( const Proc_:TProc );
        procedure ForEdgesX( const Proc_:TProc );
        procedure ForEdgesY( const Proc_:TProc );
@@ -402,6 +406,13 @@ end;
 function TArray3D<_TItem_>.GetItemByte :Integer;
 begin
      Result := SizeOf( _TItem_ );
+end;
+
+//------------------------------------------------------------------------------
+
+function TArray3D<_TItem_>.GetElemsP0 :Pointer;
+begin
+     Result := @_Elems[ 0 ];
 end;
 
 //------------------------------------------------------------------------------
@@ -1134,12 +1145,12 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TBricIterGridArray3D<_TItem_>.FracInterp( const Xd_,Yd_,Zd_:Single ) :_TItem_;
+function TBricIterGridArray3D<_TItem_>.Interp( const Xd_,Yd_,Zd_:Single ) :_TItem_;
 begin
      Result := Grids[ Round( Xd_ ), Round( Yd_ ), Round( Zd_ ) ];
 end;
 
-function TBricIterGridArray3D<_TItem_>.Interp( const X_,Y_,Z_:Single ) :_TItem_;
+function TBricIterGridArray3D<_TItem_>.AbsoInterp( const X_,Y_,Z_:Single ) :_TItem_;
 var
    Xd, Yd, Zd :Single;
 begin
@@ -1147,7 +1158,7 @@ begin
      PosY := Floor( Y_ );  Yd := Y_ - PosY;
      PosX := Floor( X_ );  Xd := X_ - PosX;
 
-     Result := FracInterp( Xd, Yd, Zd );
+     Result := Interp( Xd, Yd, Zd );
 end;
 
 //------------------------------------------------------------------------------

@@ -17,6 +17,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      {protected}
        ///// アクセス
        function GetItemByte :Integer;
+       function GetElemsP0 :Pointer;
        function GetElemsX :Integer;
        function GetElemsY :Integer;
        function GetElemsN :Integer;
@@ -32,6 +33,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      {public}
        ///// プロパティ
        property ItemByte  :Integer read GetItemByte                 ;
+       property ElemsP0   :Pointer read GetElemsP0                  ;
        property ElemsX    :Integer read GetElemsX                   ;
        property ElemsY    :Integer read GetElemsY                   ;
        property ElemsN    :Integer read GetElemsN                   ;
@@ -61,6 +63,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _MargsY :Integer;
        ///// アクセス
        function GetItemByte :Integer;
+       function GetElemsP0 :Pointer;
        function GetElemsX :Integer;
        function GetElemsY :Integer;
        function GetElemsN :Integer;
@@ -85,6 +88,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        destructor Destroy; override;
        ///// プロパティ
        property ItemByte                     :Integer read GetItemByte                 ;
+       property ElemsP0                      :Pointer read GetElemsP0                  ;
        property ElemsX                       :Integer read GetElemsX                   ;
        property ElemsY                       :Integer read GetElemsY                   ;
        property ElemsN                       :Integer read GetElemsN                   ;
@@ -210,6 +214,13 @@ end;
 function TArray2D<_TItem_>.GetItemByte :Integer;
 begin
      Result := SizeOf( _TItem_ );
+end;
+
+//------------------------------------------------------------------------------
+
+function TArray2D<_TItem_>.GetElemsP0 :Pointer;
+begin
+     Result := @_Elems[ 0 ];
 end;
 
 //------------------------------------------------------------------------------
