@@ -190,6 +190,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Explicit( const V_:TWord3D ) :TInteger3D; inline;
        class operator Explicit( const V_:TInteger3D ) :TSmallint3D; inline;
        class operator Explicit( const V_:TSmallint3D ) :TInteger3D; inline;
+       class operator Implicit( const V_:TInteger3D ) :TPoint3D; inline;
      case Byte of
       0:( _ :array [ 1..3 ] of Integer; );
       1:(  X :Integer;
@@ -241,6 +242,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_:Single; const B_:TSingle3D ) :TSingle3D; inline;
        class operator Divide( const A_:TSingle3D; const B_:Single ) :TSingle3D; inline;
        ///// 型変換
+       class operator Implicit( const V_:TInteger3D ) :TSingle3D; inline;
        class operator Implicit( const V_:TSingle2D ) :TSingle3D; inline;
        class operator Explicit( const V_:TSingle3D ) :TSingle2D; inline;
        class operator Implicit( const V_:TPoint3D ) :TSingle3D; inline;
@@ -313,6 +315,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Multiply( const A_:Double; const B_:TDouble3D ) :TDouble3D; inline;
        class operator Divide( const A_:TDouble3D; const B_:Double ) :TDouble3D; inline;
        ///// 型変換
+       class operator Implicit( const V_:TInteger3D ) :TDouble3D; inline;
        class operator Implicit( const V_:TDouble2D ) :TDouble3D; inline;
        class operator Explicit( const V_:TDouble3D ) :TDouble2D; inline;
        class operator Implicit( const V_:TPoint3D ) :TDouble3D; inline;
@@ -1354,6 +1357,16 @@ begin
      end;
 end;
 
+class operator TInteger3D.Implicit( const V_:TInteger3D ) :TPoint3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingle3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -1539,6 +1552,16 @@ begin
 end;
 
 ///////////////////////////////////////////////////////////////////////// 型変換
+
+class operator TSingle3D.Implicit( const V_:TInteger3D ) :TSingle3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
 
 class operator TSingle3D.Implicit( const V_:TSingle2D ) :TSingle3D;
 begin
@@ -1867,6 +1890,16 @@ begin
 end;
 
 ///////////////////////////////////////////////////////////////////////// 型変換
+
+class operator TDouble3D.Implicit( const V_:TInteger3D ) :TDouble3D;
+begin
+     with Result do
+     begin
+          X := V_.X;
+          Y := V_.Y;
+          Z := V_.Z;
+     end;
+end;
 
 class operator TDouble3D.Implicit( const V_:TDouble2D ) :TDouble3D;
 begin

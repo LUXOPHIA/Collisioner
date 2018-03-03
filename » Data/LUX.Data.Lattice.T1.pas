@@ -28,6 +28,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      ['{7BF64031-75DC-4CD8-9220-78D0F556C4CB}']
        ///// アクセス
        function GetItemByte :Integer;
+       function GetElemsP0 :Pointer;
        function GetElemsX :Integer;
        function GetElemsN :Integer;
        function GetElemsByte :Integer;
@@ -37,6 +38,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetMargsX( const MargsX_:Integer );
        ///// プロパティ
        property ItemByte  :Integer read GetItemByte                 ;
+       property ElemsP0   :Pointer read GetElemsP0                  ;
        property ElemsX    :Integer read GetElemsX                   ;
        property ElemsN    :Integer read GetElemsN                   ;
        property ElemsByte :Integer read GetElemsByte                ;
@@ -60,6 +62,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _MargsX :Integer;
        ///// アクセス
        function GetItemByte :Integer;
+       function GetElemsP0 :Pointer;
        function GetElemsX :Integer;
        function GetElemsN :Integer;
        function GetElemsByte :Integer;
@@ -81,6 +84,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        destructor Destroy; override;
        ///// プロパティ
        property ItemByte                  :Integer read GetItemByte                 ;
+       property ElemsP0                   :Pointer read GetElemsP0                  ;
        property ElemsX                    :Integer read GetElemsX                   ;
        property ElemsN                    :Integer read GetElemsN                   ;
        property ElemsByte                 :Integer read GetElemsByte                ;
@@ -250,6 +254,13 @@ end;
 function TArray1D<_TItem_>.GetItemByte :Integer;
 begin
      Result := SizeOf( _TItem_ );
+end;
+
+//------------------------------------------------------------------------------
+
+function TArray1D<_TItem_>.GetElemsP0 :Pointer;
+begin
+     Result := @_Elems[ 0 ];
 end;
 
 //------------------------------------------------------------------------------
