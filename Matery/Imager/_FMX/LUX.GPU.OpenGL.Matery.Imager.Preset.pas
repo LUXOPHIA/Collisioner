@@ -6,7 +6,7 @@ uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX,
      LUX.GPU.OpenGL,
      LUX.GPU.OpenGL.Atom.Imager,
-     LUX.GPU.OpenGL.Atom.Imager.Preset,
+     LUX.GPU.OpenGL.Atom.Imager.D2.Preset,
      LUX.GPU.OpenGL.Matery;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
@@ -21,12 +21,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      ['{426B4B0E-FDA1-44B2-9B2A-0B7371E2E7D0}']
      {protected}
        ///// アクセス
-       function GetSample :TGLSample;
-       function GetImager :TGLImager2D_RGBA;
+       function GetImager :TGLBricer2D_TAlphaColorF;
      {public}
        ///// プロパティ
-       property Sample :TGLSample        read GetSample;
-       property Imager :TGLImager2D_RGBA read GetImager;
+       property Imager :TGLBricer2D_TAlphaColorF read GetImager;
      end;
 
      //-------------------------------------------------------------------------
@@ -34,17 +32,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLMateryImag = class( TGLMateryNorTex, IGLMateryImag )
      private
      protected
-       _Sample :TGLSample;
-       _Imager :TGLImager2D_RGBA;
+       _Imager :TGLBricer2D_TAlphaColorF;
        ///// アクセス
-       function GetSample :TGLSample;
-       function GetImager :TGLImager2D_RGBA;
+       function GetImager :TGLBricer2D_TAlphaColorF;
      public
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property Sample :TGLSample        read GetSample;
-       property Imager :TGLImager2D_RGBA read GetImager;
+       property Imager :TGLBricer2D_TAlphaColorF read GetImager;
        ///// メソッド
        procedure Use; override;
        procedure Unuse; override;
@@ -56,12 +51,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      ['{A3108C6C-0E37-467C-94DF-F99E30B528FA}']
      {protected}
        ///// アクセス
-       function GetSample :TGLSample;
-       function GetImager :TGLImager2D_RGBA;
+       function GetImager :TGLBricer2D_TAlphaColorF;
      {public}
        ///// プロパティ
-       property Sample :TGLSample        read GetSample;
-       property Imager :TGLImager2D_RGBA read GetImager;
+       property Imager :TGLBricer2D_TAlphaColorF read GetImager;
      end;
 
      //-------------------------------------------------------------------------
@@ -69,17 +62,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLMateryImagG = class( TGLMateryNorTexG, IGLMateryImagG )
      private
      protected
-       _Sample :TGLSample;
-       _Imager :TGLImager2D_RGBA;
+       _Imager :TGLBricer2D_TAlphaColorF;
        ///// アクセス
-       function GetSample :TGLSample;
-       function GetImager :TGLImager2D_RGBA;
+       function GetImager :TGLBricer2D_TAlphaColorF;
      public
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property Sample :TGLSample        read GetSample;
-       property Imager :TGLImager2D_RGBA read GetImager;
+       property Imager :TGLBricer2D_TAlphaColorF read GetImager;
        ///// メソッド
        procedure Use; override;
        procedure Unuse; override;
@@ -105,12 +95,7 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLMateryImag.GetSample :TGLSample;
-begin
-     Result := _Sample;
-end;
-
-function TGLMateryImag.GetImager :TGLImager2D_RGBA;
+function TGLMateryImag.GetImager :TGLBricer2D_TAlphaColorF;
 begin
      Result := _Imager;
 end;
@@ -129,13 +114,11 @@ begin
           end;
      end;
 
-     _Sample := TGLSample       .Create;
-     _Imager := TGLImager2D_RGBA.Create;
+     _Imager := TGLBricer2D_TAlphaColorF.Create;
 end;
 
 destructor TGLMateryImag.Destroy;
 begin
-     _Sample.DisposeOf;
      _Imager.DisposeOf;
 
      inherited;
@@ -147,13 +130,11 @@ procedure TGLMateryImag.Use;
 begin
      inherited;
 
-     _Sample.Use( 0 );
      _Imager.Use( 0 );
 end;
 
 procedure TGLMateryImag.Unuse;
 begin
-     _Sample.Unuse( 0 );
      _Imager.Unuse( 0 );
 
      inherited;
@@ -167,12 +148,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLMateryImagG.GetSample :TGLSample;
-begin
-     Result := _Sample;
-end;
-
-function TGLMateryImagG.GetImager :TGLImager2D_RGBA;
+function TGLMateryImagG.GetImager :TGLBricer2D_TAlphaColorF;
 begin
      Result := _Imager;
 end;
@@ -191,13 +167,11 @@ begin
           end;
      end;
 
-     _Sample := TGLSample       .Create;
-     _Imager := TGLImager2D_RGBA.Create;
+     _Imager := TGLBricer2D_TAlphaColorF.Create;
 end;
 
 destructor TGLMateryImagG.Destroy;
 begin
-     _Sample.DisposeOf;
      _Imager.DisposeOf;
 
      inherited;
@@ -209,13 +183,11 @@ procedure TGLMateryImagG.Use;
 begin
      inherited;
 
-     _Sample.Use( 0 );
      _Imager.Use( 0 );
 end;
 
 procedure TGLMateryImagG.Unuse;
 begin
-     _Sample.Unuse( 0 );
      _Imager.Unuse( 0 );
 
      inherited;
