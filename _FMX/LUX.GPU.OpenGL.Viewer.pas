@@ -342,13 +342,12 @@ begin
 
           C := @Cs[ 0 ];
 
-          with _Form do
-          begin
-               BeginGL;
-                 glReadBuffer( GL_FRONT );
-                 glReadPixels( 0, 0, Width, Height, GL_BGRA, GL_UNSIGNED_BYTE, C );
-               EndGL;
-          end;
+          _Form.BeginGL;
+
+            glReadBuffer( GL_FRONT );
+            glReadPixels( 0, 0, Width, Height, GL_BGRA, GL_UNSIGNED_BYTE, C );
+
+          _Form.EndGL;
 
           Map( TMapAccess.Write, Bs );
 

@@ -83,8 +83,6 @@ begin
      inherited Create( GL_TEXTURE_1D );
 
      _Texels := _TTexels_.Create;
-
-     _Texels.MargsX := 1;
 end;
 
 destructor TGLImager1D<_TTexel_,_TTexels_>.Destroy;
