@@ -22,18 +22,45 @@ layout( std140 ) uniform TShaperPose
   layout( row_major ) mat4 _ShaperPose;
 };
 
-layout( std140 ) uniform TBricS
+layout( std140 ) uniform TGriderS
 {
-  vec3 _BricS;
+  vec3 _GriderS;
 };
 
 //------------------------------------------------------------------------------
 
-uniform sampler3D _Grids;
+uniform sampler3D _Grider;
 
-const ivec3 _ElemGridsN = textureSize( _Grids, 0 );
+/*
+ -1     0    +1    +2    +3    +4    +5 = ItemGrids Coordinate
+  +-----+-----+-----+-----+-----+-----+
+  |     |     |     |     |     |     |
+  1     2     3     4     5     6     7 = ElemGridsN
+  +-----o-----o-----o-----o-----o-----+
+  |  1  |  2  |  3  |  4  |  5  |  6  | = ElemBricsN = ElemGridsN-1
+  |     |     |     |     |     |     |
+  +-----o-----o-----o-----o-----o-----+
+  |     |     |     |     |     |     |
+  |     |     |     |     |     |     |    + : ElemGrid
+  +-----o-----o-----o-----o-----o-----+
+  |     |     |     |     |     |     |    o : ItemGrid
+  |     |     |     |     |     |     |
+  +-----o-----o-----o-----o-----o-----+
+  |     |     |     |     |     |     |
+  |     1     2     3     4     5     | = ItemGridsN = ElemBricsN-1
+  +-----o-----o-----o-----o-----o-----+
+  |     |  1  |  2  |  3  |  4  |     | = ItemBricsN = ItemGridsN-1
+  |     |     |     |     |     |     |
+  +-----+-----+-----+-----+-----+-----+
+  0    1/6   2/6   3/6   4/6   5/6    1 = Texture Coordinate
+*/
+
+const ivec3 _ElemGridsN = textureSize( _Grider, 0 );
 const ivec3 _ElemBricsN = _ElemGridsN - ivec3( 1 );
-const ivec3 _BricsN     = _ElemBricsN - ivec3( 2 );
+const ivec3 _ItemGridsN = _ElemBricsN - ivec3( 1 );
+const ivec3 _ItemBricsN = _ItemGridsN - ivec3( 1 );
+
+const vec3 _BricS = _GriderS / _ItemBricsN;
 
 //############################################################################## ■
 
@@ -63,16 +90,14 @@ _Result;
 
 float GetGrids( int X, int Y, int Z )
 {
-  return texelFetch( _Grids, ivec3( 1 ) + ivec3( X, Y, Z ), 0 ).x;
+  return texelFetch( _Grider, ivec3( 1 ) + ivec3( X, Y, Z ), 0 ).x;
 }
 
 //------------------------------------------------------------------------------
 
-void AddPoin( vec3 Pos_ )
+void AddPoin( vec3 Pos )
 {
-  vec3 Sd = _BricS / _BricsN;
-
-  _Result.Pos = _ShaperPose * vec4( Pos_ * Sd - _BricS / 2, 1 );
+  _Result.Pos = _ShaperPose * vec4( Pos * _BricS - _GriderS / 2, 1 );
 
   gl_Position = _ViewerScal * _CameraProj * inverse( _CameraPose ) * _Result.Pos;
 
@@ -81,10 +106,10 @@ void AddPoin( vec3 Pos_ )
 
 //------------------------------------------------------------------------------
 
-void AddEdge( vec3 Pos1_, vec3 Pos2_ )
+void AddEdge( vec3 Pos1, vec3 Pos2 )
 {
-  AddPoin( Pos1_ );
-  AddPoin( Pos2_ );
+  AddPoin( Pos1 );
+  AddPoin( Pos2 );
 
   EndPrimitive();
 }

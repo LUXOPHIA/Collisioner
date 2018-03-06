@@ -127,10 +127,20 @@ begin
                Del( 2{BinP} );
           end;
 
+          with Unifors do
+          begin
+               Add( 4{BinP}, 'TGriderS'{Name} );
+          end;
+
           with Imagers do
           begin
+               Add( 0{BinP}, '_Grider'{Name} );
                Add( 1{BinP}, '_Imager'{Name} );
           end;
+
+          ShaderV.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_FacesV_glsl' );
+          ShaderG.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_FacesG_glsl' );
+          ShaderF.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_FacesF_glsl' );
      end;
 
      _Imager := TGLBricer2D_TAlphaColorF.Create;
@@ -181,6 +191,20 @@ begin
                Del( 1{BinP} );
                Del( 2{BinP} );
           end;
+
+          with Unifors do
+          begin
+               Add( 4{BinP}, 'TGriderS'{Name} );
+          end;
+
+          with Imagers do
+          begin
+               Add( 0{BinP}, '_Grider'{Name} );
+          end;
+
+          ShaderV.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_CellsV_glsl' );
+          ShaderG.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_CellsG_glsl' );
+          ShaderF.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_CellsF_glsl' );
      end;
 end;
 
@@ -238,46 +262,6 @@ begin
 
      _Matery := TMarcubesMateryFaces.Create;
      _MaterC := TMarcubesMateryCells.Create;
-
-     with _Matery as TMarcubesMateryFaces do
-     begin
-          with Engine do
-          begin
-               with Imagers do
-               begin
-                    Add( 0{BinP}, '_Grids'{Name} );
-               end;
-
-               with Unifors do
-               begin
-                    Add( 4{BinP}, 'TBricS'{Name} );
-               end;
-          end;
-
-          ShaderV.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_FacesV_glsl' );
-          ShaderG.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_FacesG_glsl' );
-          ShaderF.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_FacesF_glsl' );
-     end;
-
-     with _MaterC do
-     begin
-          with Engine do
-          begin
-               with Imagers do
-               begin
-                    Add( 0{BinP}, '_Grids'{Name} );
-               end;
-
-               with Unifors do
-               begin
-                    Add( 4{BinP}, 'TBricS'{Name} );
-               end;
-          end;
-
-          ShaderV.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_CellsV_glsl' );
-          ShaderG.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_CellsG_glsl' );
-          ShaderF.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_CellsF_glsl' );
-     end;
 
      with Grider.Texels do
      begin
