@@ -22,18 +22,47 @@ layout( std140 ) uniform TShaperPose
   layout( row_major ) mat4 _ShaperPose;
 };
 
-layout( std140 ) uniform TBricS
+layout( std140 ) uniform TGriderS
 {
-  vec3 _BricS;
+  vec3 _GriderS;
 };
 
 //------------------------------------------------------------------------------
 
-uniform sampler3D _Grids;
+uniform sampler3D _Grider;
 
-const ivec3 _ElemGridsN = textureSize( _Grids, 0 );
+/*
+ -1     0    +1    +2    +3    +4    +5 = ItemGrids Coordinate
+  +-----+-----+-----+-----+-----+-----+
+  |     |     |     |     |     |     |
+  1     2     3     4     5     6     7 = ElemGridsN
+  +-----o-----o-----o-----o-----o-----+
+  |  1  |  2  |  3  |  4  |  5  |  6  | = ElemBricsN = ElemGridsN-1
+  |     |     |     |     |     |     |
+  +-----o-----o-----o-----o-----o-----+
+  |     |     |     |     |     |     |
+  |     |     |     |     |     |     |    + : ElemGrid
+  +-----o-----o-----o-----o-----o-----+
+  |     |     |     |     |     |     |    o : ItemGrid
+  |     |     |     |     |     |     |
+  +-----o-----o-----o-----o-----o-----+
+  |     |     |     |     |     |     |
+  |     1     2     3     4     5     | = ItemGridsN = ElemBricsN-1
+  +-----o-----o-----o-----o-----o-----+
+  |     |  1  |  2  |  3  |  4  |     | = ItemBricsN = ItemGridsN-1
+  |     |     |     |     |     |     |
+  +-----+-----+-----+-----+-----+-----+
+  0    1/6   2/6   3/6   4/6   5/6    1 = Texture Coordinate
+*/
+
+const ivec3 _ElemGridsN = textureSize( _Grider, 0 );
 const ivec3 _ElemBricsN = _ElemGridsN - ivec3( 1 );
-const ivec3 _BricsN     = _ElemBricsN - ivec3( 2 );
+const ivec3 _ItemGridsN = _ElemBricsN - ivec3( 1 );
+const ivec3 _ItemBricsN = _ItemGridsN - ivec3( 1 );
+
+const vec3 _BricS = _GriderS / _ItemBricsN;
+
+//------------------------------------------------------------------------------
 
 uniform sampler2D _Imager;
 
@@ -341,14 +370,14 @@ const TTrias TRIASTABLE[ 256 ] = TTrias[ 256 ](
 
 float GetGrids( int X, int Y, int Z )
 {
-  return texelFetch( _Grids, ivec3( 1 ) + ivec3( X, Y, Z ), 0 ).x;
+  return texelFetch( _Grider, ivec3( 1 ) + ivec3( X, Y, Z ), 0 ).x;
 }
 
 //------------------------------------------------------------------------------
 
 float GetInterp( float X, float Y, float Z )
 {
-  return texture( _Grids, ( vec3( 1 ) + vec3( X, Y, Z ) ) / _ElemBricsN ).x;
+  return texture( _Grider, ( vec3( 1 ) + vec3( X, Y, Z ) ) / _ElemBricsN ).x;
 }
 
 //------------------------------------------------------------------------------
@@ -366,10 +395,10 @@ vec3 GetGrad( vec3 P )
 
 //------------------------------------------------------------------------------
 
-void AddPoin( TPoin Poin_ )
+void AddPoin( TPoin Poin )
 {
-  _Result.Pos =                     _ShaperPose     * Poin_.Pos;
-  _Result.Nor = transpose( inverse( _ShaperPose ) ) * Poin_.Nor;
+  _Result.Pos =                     _ShaperPose     * Poin.Pos;
+  _Result.Nor = transpose( inverse( _ShaperPose ) ) * Poin.Nor;
 
   gl_Position = _ViewerScal * _CameraProj * inverse( _CameraPose ) * _Result.Pos;
 
@@ -378,11 +407,11 @@ void AddPoin( TPoin Poin_ )
 
 //------------------------------------------------------------------------------
 
-void AddFace( TPoin P1_, TPoin P2_, TPoin P3_ )
+void AddFace( TPoin P1, TPoin P2, TPoin P3 )
 {
-  AddPoin( P1_ );
-  AddPoin( P2_ );
-  AddPoin( P3_ );
+  AddPoin( P1 );
+  AddPoin( P2 );
+  AddPoin( P3 );
 
   EndPrimitive();
 }
@@ -416,14 +445,14 @@ int CubeKind()
 
 //------------------------------------------------------------------------------
 
-TPoin MakePoin( int I_ )
+TPoin MakePoin( int I )
 {
   TPoin Result;
 
   vec3 P;
 
   float T;
-  switch ( I_ )
+  switch ( I )
   {
     case  0:
       T = G000 / ( G000 - G001 );  P = vec3( X0+T, Y0, Z0 );  break;
@@ -451,10 +480,8 @@ TPoin MakePoin( int I_ )
       T = G011 / ( G011 - G111 );  P = vec3( X1, Y1, Z0+T );  break;
   }
 
-  vec3 Sd = _BricS / _BricsN;
-
-  Result.Pos = vec4( P * Sd - _BricS / 2, 1 );
-  Result.Nor = vec4( GetGrad( P ) / Sd  , 0 );
+  Result.Pos = vec4( P * _BricS - _GriderS / 2, 1 );
+  Result.Nor = vec4( GetGrad( P ) / _BricS  , 0 );
 
   return Result;
 }
@@ -465,15 +492,13 @@ void main()
 {
   const int K = CubeKind();
 
-  TPoin P1, P2, P3;
-
   for( int I = 0; I < TRIASTABLE[ K ].TsN; I++ )
   {
     ivec3 P = TRIASTABLE[ K ].Ts[ I ];
 
-    P1 = MakePoin( P.x );
-    P2 = MakePoin( P.y );
-    P3 = MakePoin( P.z );
+    TPoin P1 = MakePoin( P.x );
+    TPoin P2 = MakePoin( P.y );
+    TPoin P3 = MakePoin( P.z );
 
     AddFace( P1, P2, P3 );
   }
