@@ -19,9 +19,27 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMarcubesMateryFaces
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMarcubesMateryFacesRGB
 
-     IMarcubesMateryFaces = interface( IGLMateryNorTexG )
+     IMarcubesMateryFacesRGB = interface( IGLMateryNorTexG )
+     ['{48DD7893-831C-4F39-ACA3-AFBC9F37DD73}']
+     {protected}
+     {public}
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TMarcubesMateryFacesRGB = class( TGLMateryNorTexG, IMarcubesMateryFacesRGB )
+     private
+     protected
+     public
+       constructor Create;
+       destructor Destroy; override;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMarcubesMateryFacesMIR
+
+     IMarcubesMateryFacesMIR = interface( IGLMateryNorTexG )
      ['{1FD800E2-12D5-4021-825F-368CEFFEFAA5}']
      {protected}
      {public}
@@ -29,7 +47,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TMarcubesMateryFaces = class( TGLMateryNorTexG, IMarcubesMateryFaces )
+     TMarcubesMateryFacesMIR = class( TGLMateryNorTexG, IMarcubesMateryFacesMIR )
      private
      protected
        _Imager :TGLBricer2D_TAlphaColorF;
@@ -43,9 +61,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Unuse; override;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMarcubesMateryCells
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMarcubesMateryCubes
 
-     IMarcubesMateryCells = interface( IGLMateryNorTexG )
+     IMarcubesMateryCubes = interface( IGLMateryNorTexG )
      ['{9FD0E274-E7F3-4B90-85A5-21B0C52FC9CB}']
      {protected}
      {public}
@@ -53,7 +71,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TMarcubesMateryCells = class( TGLMateryNorTexG, IMarcubesMateryCells )
+     TMarcubesMateryCubes = class( TGLMateryNorTexG, IMarcubesMateryCubes )
      private
      protected
      public
@@ -66,10 +84,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TMarcubes = class( TGLShaperZeroPoins )
      private
      protected
-       _MaterC :IMarcubesMateryCells;
-       _Grider :TGLGrider3D_Single;
-       _Size   :TGLUnifor<TSingle3D>;
-       _LineS  :Single;
+       _MaterC      :IMarcubesMateryCubes;
+       _Grider      :TGLGrider3D_Single;
+       _Size        :TGLUnifor<TSingle3D>;
+       _Threshold   :TGLUnifor<Single>;
+       _LineS       :Single;
+       _IsShowCubes :Boolean;
        ///// アクセス
        function GetSizeX :Single;
        procedure SetSizeX( const SizeX_:Single );
@@ -77,15 +97,19 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetSizeY( const SizeY_:Single );
        function GetSizeZ :Single;
        procedure SetSizeZ( const SizeZ_:Single );
+       function GetThreshold :Single;
+       procedure SetThreshold( const Threshold_:Single );
      public
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
-       property Grider :TGLGrider3D_Single read   _Grider               ;
-       property SizeX  :Single             read GetSizeX  write SetSizeX;
-       property SizeY  :Single             read GetSizeY  write SetSizeY;
-       property SizeZ  :Single             read GetSizeZ  write SetSizeZ;
-       property LineS  :Single             read   _LineS  write   _LineS;
+       property Grider      :TGLGrider3D_Single read   _Grider                          ;
+       property SizeX       :Single             read GetSizeX       write SetSizeX      ;
+       property SizeY       :Single             read GetSizeY       write SetSizeY      ;
+       property SizeZ       :Single             read GetSizeZ       write SetSizeZ      ;
+       property Threshold   :Single             read GetThreshold   write SetThreshold  ;
+       property LineS       :Single             read   _LineS       write   _LineS      ;
+       property IsShowCubes :Boolean            read   _IsShowCubes write   _IsShowCubes;
        ///// メソッド
        procedure BeginDraw; override;
        procedure EndDraw; override;
@@ -104,7 +128,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMarcubesMateryFaces
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMarcubesMateryFacesRGB
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -114,7 +138,7 @@ implementation //###############################################################
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TMarcubesMateryFaces.Create;
+constructor TMarcubesMateryFacesRGB.Create;
 begin
      inherited;
 
@@ -130,6 +154,54 @@ begin
           with Unifors do
           begin
                Add( 4{BinP}, 'TGriderS'{Name} );
+               Add( 5{BinP}, 'TThreshold'{Name} );
+          end;
+
+          with Imagers do
+          begin
+               Add( 0{BinP}, '_Grider'{Name} );
+          end;
+
+          ShaderV.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_Faces_V_glsl' );
+          ShaderG.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_Faces_G_glsl' );
+          ShaderF.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_FacesRGB_F_glsl' );
+     end;
+
+end;
+
+destructor TMarcubesMateryFacesRGB.Destroy;
+begin
+
+     inherited;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMarcubesMateryFacesMIR
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TMarcubesMateryFacesMIR.Create;
+begin
+     inherited;
+
+     with _Engine do
+     begin
+          with Verters do
+          begin
+               Del( 0{BinP} );
+               Del( 1{BinP} );
+               Del( 2{BinP} );
+          end;
+
+          with Unifors do
+          begin
+               Add( 4{BinP}, 'TGriderS'{Name} );
+               Add( 5{BinP}, 'TThreshold'{Name} );
           end;
 
           with Imagers do
@@ -138,15 +210,15 @@ begin
                Add( 1{BinP}, '_Imager'{Name} );
           end;
 
-          ShaderV.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_FacesV_glsl' );
-          ShaderG.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_FacesG_glsl' );
-          ShaderF.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_FacesF_glsl' );
+          ShaderV.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_Faces_V_glsl' );
+          ShaderG.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_Faces_G_glsl' );
+          ShaderF.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_FacesMIR_F_glsl' );
      end;
 
      _Imager := TGLBricer2D_TAlphaColorF.Create;
 end;
 
-destructor TMarcubesMateryFaces.Destroy;
+destructor TMarcubesMateryFacesMIR.Destroy;
 begin
      _Imager.DisposeOf;
 
@@ -155,21 +227,21 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TMarcubesMateryFaces.Use;
+procedure TMarcubesMateryFacesMIR.Use;
 begin
      inherited;
 
      _Imager.Use( 1 );
 end;
 
-procedure TMarcubesMateryFaces.Unuse;
+procedure TMarcubesMateryFacesMIR.Unuse;
 begin
      _Imager.Unuse( 1 );
 
      inherited;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMarcubesMateryCells
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TMarcubesMateryCubes
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -179,7 +251,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TMarcubesMateryCells.Create;
+constructor TMarcubesMateryCubes.Create;
 begin
      inherited;
 
@@ -195,6 +267,7 @@ begin
           with Unifors do
           begin
                Add( 4{BinP}, 'TGriderS'{Name} );
+               Add( 5{BinP}, 'TThreshold'{Name} );
           end;
 
           with Imagers do
@@ -202,13 +275,13 @@ begin
                Add( 0{BinP}, '_Grider'{Name} );
           end;
 
-          ShaderV.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_CellsV_glsl' );
-          ShaderG.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_CellsG_glsl' );
-          ShaderF.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_CellsF_glsl' );
+          ShaderV.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_Cubes_V_glsl' );
+          ShaderG.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_Cubes_G_glsl' );
+          ShaderF.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_Cubes_F_glsl' );
      end;
 end;
 
-destructor TMarcubesMateryCells.Destroy;
+destructor TMarcubesMateryCubes.Destroy;
 begin
 
      inherited;
@@ -251,17 +324,30 @@ begin
      _Size[ 0 ] := TSingle3D.Create( SizeX, SizeY, SizeZ_ );
 end;
 
+//------------------------------------------------------------------------------
+
+function TMarcubes.GetThreshold :Single;
+begin
+     Result := _Threshold[ 0 ];
+end;
+
+procedure TMarcubes.SetThreshold( const Threshold_:Single );
+begin
+     _Threshold[ 0 ] := Threshold_;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TMarcubes.Create;
 begin
      inherited;
 
-     _Grider := TGLGrider3D_Single.Create;
-     _Size   := TGLUnifor<TSingle3D>.Create( GL_STATIC_DRAW );  _Size.Count := 1;
+     _Grider    := TGLGrider3D_Single.Create;
+     _Size      := TGLUnifor<TSingle3D>.Create( GL_STATIC_DRAW );  _Size.Count := 1;
+     _Threshold := TGLUnifor<Single>.Create( GL_STATIC_DRAW );  _Threshold.Count := 1;
 
-     _Matery := TMarcubesMateryFaces.Create;
-     _MaterC := TMarcubesMateryCells.Create;
+     _Matery := TMarcubesMateryFacesRGB.Create;
+     _MaterC := TMarcubesMateryCubes.Create;
 
      with Grider.Texels do
      begin
@@ -277,13 +363,18 @@ begin
      SizeY := 2;
      SizeZ := 2;
 
+     Threshold := 0.5;
+
      _LineS := 1;
+
+     _IsShowCubes := False;
 end;
 
 destructor TMarcubes.Destroy;
 begin
-     _Grider.DisposeOf;
-     _Size  .DisposeOf;
+     _Grider   .DisposeOf;
+     _Size     .DisposeOf;
+     _Threshold.DisposeOf;
 
      inherited;
 end;
@@ -294,22 +385,27 @@ procedure TMarcubes.BeginDraw;
 begin
      inherited;
 
-     _Grider.Use( 0 );
-     _Size  .Use( 4 );
+     _Grider   .Use( 0 );
+     _Size     .Use( 4 );
+     _Threshold.Use( 5 );
 end;
 
 procedure TMarcubes.EndDraw;
 begin
-     _MaterC.Use;
+     if _IsShowCubes then
+     begin
+          _MaterC.Use;
 
-       glLineWidth( _LineS );
+            glLineWidth( _LineS );
 
-       DrawMain;
+            DrawMain;
 
-     _MaterC.Unuse;
+          _MaterC.Unuse;
+     end;
 
-     _Grider.Unuse( 0 );
-     _Size  .Unuse( 4 );
+     _Grider   .Unuse( 0 );
+     _Size     .Unuse( 4 );
+     _Threshold.Unuse( 5 );
 
      inherited;
 end;
