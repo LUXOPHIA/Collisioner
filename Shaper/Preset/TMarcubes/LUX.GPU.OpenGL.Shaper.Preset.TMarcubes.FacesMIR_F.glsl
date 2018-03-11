@@ -20,25 +20,10 @@ vec2 VecToSky( vec4 Vector_ )
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%【共通定数】
 
-layout( std140 ) uniform TViewerScal
-{
-  layout( row_major ) mat4 _ViewerScal;
-};
-
-layout( std140 ) uniform TCameraProj
-{
-  layout( row_major ) mat4 _CameraProj;
-};
-
-layout( std140 ) uniform TCameraPose
-{
-  layout( row_major ) mat4 _CameraPose;
-};
-
-layout( std140 ) uniform TShaperPose
-{
-  layout( row_major ) mat4 _ShaperPose;
-};
+layout( std140 ) uniform TViewerScal{ layout( row_major ) mat4 _ViewerScal; };
+layout( std140 ) uniform TCameraProj{ layout( row_major ) mat4 _CameraProj; };
+layout( std140 ) uniform TCameraPose{ layout( row_major ) mat4 _CameraPose; };
+layout( std140 ) uniform TShaperPose{ layout( row_major ) mat4 _ShaperPose; };
 
 //------------------------------------------------------------------------------
 

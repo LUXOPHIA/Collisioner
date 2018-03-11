@@ -2,30 +2,13 @@
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%【共通定数】
 
-layout( std140 ) uniform TViewerScal
-{
-  layout( row_major ) mat4 _ViewerScal;
-};
+layout( std140 ) uniform TViewerScal{ layout( row_major ) mat4 _ViewerScal; };
+layout( std140 ) uniform TCameraProj{ layout( row_major ) mat4 _CameraProj; };
+layout( std140 ) uniform TCameraPose{ layout( row_major ) mat4 _CameraPose; };
+layout( std140 ) uniform TShaperPose{ layout( row_major ) mat4 _ShaperPose; };
 
-layout( std140 ) uniform TCameraProj
-{
-  layout( row_major ) mat4 _CameraProj;
-};
-
-layout( std140 ) uniform TCameraPose
-{
-  layout( row_major ) mat4 _CameraPose;
-};
-
-layout( std140 ) uniform TShaperPose
-{
-  layout( row_major ) mat4 _ShaperPose;
-};
-
-layout( std140 ) uniform TGriderS
-{
-  vec3 _GriderS;
-};
+layout( std140 ) uniform TGriderS  { vec3  _GriderS;   };
+layout( std140 ) uniform TThreshold{ float _Threshold; };
 
 //------------------------------------------------------------------------------
 
@@ -370,14 +353,14 @@ const TTrias TRIASTABLE[ 256 ] = TTrias[ 256 ](
 
 float GetGrids( int X, int Y, int Z )
 {
-  return texelFetch( _Grider, ivec3( 1 ) + ivec3( X, Y, Z ), 0 ).x;
+  return texelFetch( _Grider, ivec3( 1 ) + ivec3( X, Y, Z ), 0 ).x - _Threshold;
 }
 
 //------------------------------------------------------------------------------
 
 float GetInterp( float X, float Y, float Z )
 {
-  return texture( _Grider, ( vec3( 1 ) + vec3( X, Y, Z ) ) / _ElemBricsN ).x;
+  return texture( _Grider, ( vec3( 1 ) + vec3( X, Y, Z ) ) / _ElemBricsN ).x - _Threshold;
 }
 
 //------------------------------------------------------------------------------
