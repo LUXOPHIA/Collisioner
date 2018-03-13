@@ -78,7 +78,7 @@ constructor TGLBricer3D_AlphaColorF.Create;
 begin
      inherited;
 
-     _TexelF := GL_RGBA;
+     _TexelF := GL_RGBA32F;
      _PixelF := GL_RGBA;
      _PixelT := GL_FLOAT;
 end;
@@ -101,7 +101,7 @@ constructor TGLGrider3D_AlphaColorF.Create;
 begin
      inherited;
 
-     _TexelF := GL_RGBA;
+     _TexelF := GL_RGBA32F;
      _PixelF := GL_RGBA;
      _PixelT := GL_FLOAT;
 end;
