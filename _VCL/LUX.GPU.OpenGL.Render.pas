@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses System.UITypes,
-     FMX.Graphics,
+     Vcl.Graphics,
      Winapi.Windows, Winapi.OpenGL, Winapi.OpenGLext,
      LUX, LUX.M4,
      LUX.GPU.OpenGL.Atom.Buffer.Unifor,
@@ -47,7 +47,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Color   :TAlphaColorF read GetColor  write SetColor ;
        ///// メソッド
        procedure Render;
-       function MakeScreenShot :FMX.Graphics.TBitmap;
+       procedure ExportToBMP( const BMP_:Vcl.Graphics.TBitmap );
+       function MakeScreenShot :Vcl.Graphics.TBitmap;
+       procedure SaveToFile( const FileName_:String );
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -153,64 +155,76 @@ end;
 
 procedure TGLRender.Render;
 begin
-       _FrameN.Bind;
+     _FrameN.Bind;
 
-         with _Color do glClearColor( R, G, B, A );
+       with _Color do glClearColor( R, G, B, A );
 
-         glClear( GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT );
+       glClear( GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT );
 
-         _Viewer.Use( 0{BinP} );
+       _Viewer.Use( 0{BinP} );
 
-           glViewport( 0, 0, _SizeX, _SizeY );
+         glViewport( 0, 0, _SizeX, _SizeY );
 
-           if Assigned( _Camera ) then _Camera.Render;
+         if Assigned( _Camera ) then _Camera.Render;
 
-         _Viewer.Unuse( 0{BinP} );
+       _Viewer.Unuse( 0{BinP} );
 
-         glFlush;
+       glFlush;
 
-       _FrameN.Unbind;
-       _FrameN.DrawToFramer( _Frame1 );
+     _FrameN.Unbind;
+     _FrameN.DrawToFramer( _Frame1 );
 end;
 
-function TGLRender.MakeScreenShot :FMX.Graphics.TBitmap;
+procedure TGLRender.ExportToBMP( const BMP_:Vcl.Graphics.TBitmap );
 var
    Cs :TArray<TAlphaColor>;
    C, B :PAlphaColor;
-   Bs :TBitmapData;
    S, Y :Integer;
 begin
-     Result := FMX.Graphics.TBitmap.Create;
-
-     with Result do
+     with BMP_ do
      begin
+          PixelFormat := TPixelFormat.pf32bit;
+
           SetSize( _SizeX, _SizeY );
 
-          SetLength( Cs, _SizeY * _SizeX );
+          SetLength( Cs, Height * Width );
 
           C := @Cs[ 0 ];
 
           _Frame1.Bind;
 
-            glReadBuffer( GL_COLOR_ATTACHMENT0 );
-            glReadPixels( 0, 0, _SizeX, _SizeY, GL_BGRA, GL_UNSIGNED_BYTE, C );
+            glReadBuffer( GL_FRONT );
+            glReadPixels( 0, 0, Width, Height, GL_BGRA, GL_UNSIGNED_BYTE, C );
 
           _Frame1.Unbind;
 
-          Map( TMapAccess.Write, Bs );
+          S := SizeOf( TAlphaColor ) * Width;
 
-          S := SizeOf( TAlphaColor ) * _SizeX;
-
-          for Y := _SizeY-1 downto 0 do
+          for Y := Height-1 downto 0 do
           begin
-               B := Bs.GetScanline( Y );
+               B := Scanline[ Y ];
 
                System.Move( C^, B^, S );
 
-               Inc( C, _SizeX );
+               Inc( C, Width );
           end;
+     end;
+end;
 
-          Unmap( Bs );
+function TGLRender.MakeScreenShot :Vcl.Graphics.TBitmap;
+begin
+     Result := Vcl.Graphics.TBitmap.Create;
+
+     ExportToBMP( Result );
+end;
+
+procedure TGLRender.SaveToFile( const FileName_:String );
+begin
+     with MakeScreenShot do
+     begin
+          SaveToFile( FileName_ );
+
+          DisposeOf;
      end;
 end;
 
