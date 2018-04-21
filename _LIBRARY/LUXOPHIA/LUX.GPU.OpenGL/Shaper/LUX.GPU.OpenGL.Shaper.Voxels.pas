@@ -326,7 +326,6 @@ begin
      _Size.Count := 3;
 
      _Color := TGLUniBuf<TAlphaColorF>.Create( GL_STATIC_DRAW );
-     _Color.Count := 1;
 
      SizeX := 0.05;
      SizeY := 0.05;
