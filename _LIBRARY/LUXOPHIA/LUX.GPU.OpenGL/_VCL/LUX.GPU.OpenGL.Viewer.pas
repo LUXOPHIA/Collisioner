@@ -8,7 +8,7 @@ uses
   LUX, LUX.D3, LUX.D4, LUX.M4,
   LUX.GPU.OpenGL,
   LUX.GPU.OpenGL.Window,
-  LUX.GPU.OpenGL.Atom.Buffer.Unifor,
+  LUX.GPU.OpenGL.Atom.Buffer.UniBuf,
   LUX.GPU.OpenGL.Scener,
   LUX.GPU.OpenGL.Camera;
 
@@ -21,7 +21,7 @@ type
     procedure WMEraseBkgnd( var Message_:TWmEraseBkgnd ); message WM_ERASEBKGND;
   protected
     _DC     :HDC;
-    _Viewer :TGLUnifor<TSingleM4>;
+    _Viewer :TGLUniBuf<TSingleM4>;
     _Camera :TGLCamera;
     ///// イベント
     _OnPaint :TProc;
@@ -141,8 +141,7 @@ begin
 
      CreateDC;
 
-     _Viewer := TGLUnifor<TSingleM4>.Create( GL_DYNAMIC_DRAW );
-     _Viewer.Count := 1;
+     _Viewer := TGLUniBuf<TSingleM4>.Create( GL_DYNAMIC_DRAW );
 end;
 
 destructor TGLViewer.Destroy;

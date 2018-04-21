@@ -5,7 +5,7 @@ interface //####################################################################
 uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX, LUX.D2, LUX.D3, LUX.M4,
      LUX.GPU.OpenGL,
-     LUX.GPU.OpenGL.Atom.Buffer.Unifor,
+     LUX.GPU.OpenGL.Atom.Buffer.UniBuf,
      LUX.GPU.OpenGL.Scener;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
@@ -21,7 +21,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        const _N :Single = 0.1;
        const _F :Single = 1000;
      protected
-       _Proj :TGLUnifor<TSingleM4>;
+       _Proj :TGLUniBuf<TSingleM4>;
        _Offs :TSingle2D;
        ///// アクセス
        function GetProj :TSingleM4; virtual;
@@ -129,8 +129,7 @@ constructor TGLCamera.Create;
 begin
      inherited;
 
-     _Proj := TGLUnifor<TSingleM4>.Create( GL_STATIC_DRAW );
-     _Proj.Count := 1;
+     _Proj := TGLUniBuf<TSingleM4>.Create( GL_STATIC_DRAW );
 
      _Offs := TSingle2D.Create( 0, 0 );
 end;

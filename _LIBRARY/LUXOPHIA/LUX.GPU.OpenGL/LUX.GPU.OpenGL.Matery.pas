@@ -6,7 +6,7 @@ uses System.SysUtils, System.UITypes,
      Winapi.OpenGL, Winapi.OpenGLext,
      LUX,
      LUX.GPU.OpenGL,
-     LUX.GPU.OpenGL.Atom.Buffer.Unifor,
+     LUX.GPU.OpenGL.Atom.Buffer.UniBuf,
      LUX.GPU.OpenGL.Atom.Shader,
      LUX.GPU.OpenGL.Atom.Engine;
 
@@ -232,12 +232,12 @@ begin
           Attach( _ShaderV{Shad} );
           Attach( _ShaderF{Shad} );
 
-          with Verters do
+          with VerBufs do
           begin
                Add( 0{BinP}, '_SenderPos'{Name}, 3{EleN}, GL_FLOAT{EleT} );
           end;
 
-          with Unifors do
+          with UniBufs do
           begin
                Add( 0{BinP}, 'TViewerScal'{Name} );
                Add( 1{BinP}, 'TCameraProj'{Name} );
@@ -324,7 +324,7 @@ begin
 
      with _Engine do
      begin
-          with Verters do
+          with VerBufs do
           begin
                Add( 1{BinP}, '_SenderNor'{Name}, 3{EleN}, GL_FLOAT{EleT} );
           end;
@@ -391,7 +391,7 @@ begin
 
      with _Engine do
      begin
-          with Verters do
+          with VerBufs do
           begin
                Add( 2{BinP}, '_SenderTex'{Name}, 2{EleN}, GL_FLOAT{EleT} );
           end;

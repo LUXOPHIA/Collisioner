@@ -1,11 +1,12 @@
-﻿unit LUX.GPU.OpenGL.Atom.Buffer.StoBuf;
+﻿unit LUX.GPU.OpenGL.Atom.Buffer.PixBuf;
 
 interface //#################################################################### ■
 
 uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX,
      LUX.GPU.OpenGL.Atom,
-     LUX.GPU.OpenGL.Atom.Buffer;
+     LUX.GPU.OpenGL.Atom.Buffer,
+     LUX.GPU.OpenGL.Atom.Imager;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -13,30 +14,39 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLStoBuf<_TItem_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPixBuf<_TItem_>
 
-     IGLStoBuf = interface( IGLBuffer )
-     ['{89D4B899-EE43-4FBD-AACB-29F40C86F2ED}']
+     IGLPixBuf = interface( IGLBuffer )
+     ['{60D83A80-BD20-414E-8E71-5B96473F13EC}']
+     {protected}
+     {public}
        ///// メソッド
-       procedure Use( const BinP_:GLuint ); overload;
-       procedure Use( const BinP_:GLuint; const Offs_:Integer; const Size_:Integer = 1 ); overload;
-       procedure Unuse( const BinP_:GLuint ); overload;
+       procedure BindRead;
+       procedure UnbindRead;
+       procedure BindWrite;
+       procedure UnbindWrite;
+       procedure CopyFrom( const Imager_:TGLImager );
+       procedure CopyTo( const Imager_:TGLImager );
      end;
 
      //-------------------------------------------------------------------------
 
-     TGLStoBuf<_TItem_:record> = class( TGLBuffer<_TItem_>, IGLStoBuf )
+     TGLPixBuf<_TItem_:record> = class( TGLBuffer<_TItem_>, IGLPixBuf )
      private
      protected
        ///// アクセス
        function GetKind :GLenum; override;
+       procedure SetCount( const Count_:Integer ); override;
        ///// メソッド
        function InitAlign :GLint; override;
      public
        ///// メソッド
-       procedure Use( const BinP_:GLuint ); reintroduce; overload;
-       procedure Use( const BinP_:GLuint; const Offs_:Integer; const Size_:Integer = 1 ); reintroduce; overload;
-       procedure Unuse( const BinP_:GLuint ); reintroduce; overload;
+       procedure BindRead;
+       procedure UnbindRead;
+       procedure BindWrite;
+       procedure UnbindWrite;
+       procedure CopyFrom( const Imager_:TGLImager );
+       procedure CopyTo( const Imager_:TGLImager );
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -51,7 +61,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLStoBuf<_TItem_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPixBuf<_TItem_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -59,14 +69,27 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLStoBuf<_TItem_>.GetKind :GLenum;
+function TGLPixBuf<_TItem_>.GetKind :GLenum;
 begin
-     Result := GL_SHADER_STORAGE_BUFFER;
+     Result := GL_ARRAY_BUFFER;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TGLPixBuf<_TItem_>.SetCount( const Count_:Integer );
+begin
+     inherited;
+
+     BindRead;
+
+       glBufferData( GL_PIXEL_UNPACK_BUFFER_ARB, SizeOf( _TItem_ ) * _Count, nil, _Usage );
+
+     UnbindRead;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function TGLStoBuf<_TItem_>.InitAlign :GLint;
+function TGLPixBuf<_TItem_>.InitAlign :GLint;
 begin
      Result := 1{Byte};
 end;
@@ -75,25 +98,46 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLStoBuf<_TItem_>.Use( const BinP_:GLuint );
+procedure TGLPixBuf<_TItem_>.BindRead;
 begin
-     inherited Use;
-
-     glBindBufferBase( GetKind, BinP_, _ID );
+     glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, _ID );
 end;
 
-procedure TGLStoBuf<_TItem_>.Use( const BinP_:GLuint; const Offs_:Integer; const Size_:Integer = 1 );
+procedure TGLPixBuf<_TItem_>.UnbindRead;
 begin
-     inherited Use;
-
-     glBindBufferRange( GetKind, BinP_, _ID, _Strid * Offs_, _Strid * Size_ );
+     glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, 0 );
 end;
 
-procedure TGLStoBuf<_TItem_>.Unuse( const BinP_:GLuint );
-begin
-     glBindBufferBase( GetKind, BinP_, 0 );
+//------------------------------------------------------------------------------
 
-     inherited Unuse;
+procedure TGLPixBuf<_TItem_>.BindWrite;
+begin
+     glBindBuffer( GL_PIXEL_PACK_BUFFER, _ID );
+end;
+
+procedure TGLPixBuf<_TItem_>.UnbindWrite;
+begin
+     glBindBuffer( GL_PIXEL_PACK_BUFFER, 0 );
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TGLPixBuf<_TItem_>.CopyFrom( const Imager_:TGLImager );
+begin
+     BindWrite;
+
+       Imager_.RecePixBuf;
+
+     UnbindWrite;
+end;
+
+procedure TGLPixBuf<_TItem_>.CopyTo( const Imager_:TGLImager );
+begin
+     BindRead;
+
+       Imager_.SendPixBuf;
+
+     UnbindRead;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】

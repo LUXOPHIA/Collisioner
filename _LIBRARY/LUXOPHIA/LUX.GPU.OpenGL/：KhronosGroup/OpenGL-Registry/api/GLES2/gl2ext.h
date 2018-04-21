@@ -1,5 +1,5 @@
-#ifndef __gl2ext_h_
-#define __gl2ext_h_ 1
+#ifndef __gles2_gl2ext_h_
+#define __gles2_gl2ext_h_ 1
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,7 +38,7 @@ extern "C" {
 #define GL_APIENTRYP GL_APIENTRY*
 #endif
 
-/* Generated on date 20171101 */
+/* Generated on date 20180316 */
 
 /* Generated C header for:
  * API: gles2
@@ -1065,6 +1065,16 @@ GL_APICALL void GL_APIENTRY glGetSyncivAPPLE (GLsync sync, GLenum pname, GLsizei
 #define GL_EXT_EGL_image_array 1
 #endif /* GL_EXT_EGL_image_array */
 
+#ifndef GL_EXT_EGL_image_storage
+#define GL_EXT_EGL_image_storage 1
+typedef void (GL_APIENTRYP PFNGLEGLIMAGETARGETTEXSTORAGEEXTPROC) (GLenum target, GLeglImageOES image, const GLint* attrib_list);
+typedef void (GL_APIENTRYP PFNGLEGLIMAGETARGETTEXTURESTORAGEEXTPROC) (GLuint texture, GLeglImageOES image, const GLint* attrib_list);
+#ifdef GL_GLEXT_PROTOTYPES
+GL_APICALL void GL_APIENTRY glEGLImageTargetTexStorageEXT (GLenum target, GLeglImageOES image, const GLint* attrib_list);
+GL_APICALL void GL_APIENTRY glEGLImageTargetTextureStorageEXT (GLuint texture, GLeglImageOES image, const GLint* attrib_list);
+#endif
+#endif /* GL_EXT_EGL_image_storage */
+
 #ifndef GL_EXT_YUV_target
 #define GL_EXT_YUV_target 1
 #define GL_SAMPLER_EXTERNAL_2D_Y2Y_EXT    0x8BE7
@@ -1849,6 +1859,14 @@ GL_APICALL void GL_APIENTRY glProgramUniformMatrix4x3fvEXT (GLuint program, GLin
 #define GL_FRAGMENT_SHADER_DISCARDS_SAMPLES_EXT 0x8A52
 #endif /* GL_EXT_shader_framebuffer_fetch */
 
+#ifndef GL_EXT_shader_framebuffer_fetch_non_coherent
+#define GL_EXT_shader_framebuffer_fetch_non_coherent 1
+typedef void (GL_APIENTRYP PFNGLFRAMEBUFFERFETCHBARRIEREXTPROC) (void);
+#ifdef GL_GLEXT_PROTOTYPES
+GL_APICALL void GL_APIENTRY glFramebufferFetchBarrierEXT (void);
+#endif
+#endif /* GL_EXT_shader_framebuffer_fetch_non_coherent */
+
 #ifndef GL_EXT_shader_group_vote
 #define GL_EXT_shader_group_vote 1
 #endif /* GL_EXT_shader_group_vote */
@@ -2093,11 +2111,18 @@ GL_APICALL void GL_APIENTRY glTexBufferRangeEXT (GLenum target, GLenum internalf
 
 #ifndef GL_EXT_texture_filter_minmax
 #define GL_EXT_texture_filter_minmax 1
+#define GL_TEXTURE_REDUCTION_MODE_EXT     0x9366
+#define GL_WEIGHTED_AVERAGE_EXT           0x9367
 #endif /* GL_EXT_texture_filter_minmax */
 
 #ifndef GL_EXT_texture_format_BGRA8888
 #define GL_EXT_texture_format_BGRA8888 1
 #endif /* GL_EXT_texture_format_BGRA8888 */
+
+#ifndef GL_EXT_texture_format_sRGB_override
+#define GL_EXT_texture_format_sRGB_override 1
+#define GL_TEXTURE_FORMAT_SRGB_OVERRIDE_EXT 0x8FBF
+#endif /* GL_EXT_texture_format_sRGB_override */
 
 #ifndef GL_EXT_texture_mirror_clamp_to_edge
 #define GL_EXT_texture_mirror_clamp_to_edge 1
@@ -2306,6 +2331,11 @@ GL_APICALL void GL_APIENTRY glFramebufferTexture2DMultisampleIMG (GLenum target,
 #define GL_CUBIC_MIPMAP_LINEAR_IMG        0x913B
 #endif /* GL_IMG_texture_filter_cubic */
 
+#ifndef GL_INTEL_blackhole_render
+#define GL_INTEL_blackhole_render 1
+#define GL_BLACKHOLE_RENDER_INTEL         0x83FC
+#endif /* GL_INTEL_blackhole_render */
+
 #ifndef GL_INTEL_conservative_rasterization
 #define GL_INTEL_conservative_rasterization 1
 #define GL_CONSERVATIVE_RASTERIZATION_INTEL 0x83FE
@@ -2348,7 +2378,7 @@ typedef void (GL_APIENTRYP PFNGLENDPERFQUERYINTELPROC) (GLuint queryHandle);
 typedef void (GL_APIENTRYP PFNGLGETFIRSTPERFQUERYIDINTELPROC) (GLuint *queryId);
 typedef void (GL_APIENTRYP PFNGLGETNEXTPERFQUERYIDINTELPROC) (GLuint queryId, GLuint *nextQueryId);
 typedef void (GL_APIENTRYP PFNGLGETPERFCOUNTERINFOINTELPROC) (GLuint queryId, GLuint counterId, GLuint counterNameLength, GLchar *counterName, GLuint counterDescLength, GLchar *counterDesc, GLuint *counterOffset, GLuint *counterDataSize, GLuint *counterTypeEnum, GLuint *counterDataTypeEnum, GLuint64 *rawCounterMaxValue);
-typedef void (GL_APIENTRYP PFNGLGETPERFQUERYDATAINTELPROC) (GLuint queryHandle, GLuint flags, GLsizei dataSize, GLvoid *data, GLuint *bytesWritten);
+typedef void (GL_APIENTRYP PFNGLGETPERFQUERYDATAINTELPROC) (GLuint queryHandle, GLuint flags, GLsizei dataSize, void *data, GLuint *bytesWritten);
 typedef void (GL_APIENTRYP PFNGLGETPERFQUERYIDBYNAMEINTELPROC) (GLchar *queryName, GLuint *queryId);
 typedef void (GL_APIENTRYP PFNGLGETPERFQUERYINFOINTELPROC) (GLuint queryId, GLuint queryNameLength, GLchar *queryName, GLuint *dataSize, GLuint *noCounters, GLuint *noInstances, GLuint *capsMask);
 #ifdef GL_GLEXT_PROTOTYPES
@@ -2359,11 +2389,16 @@ GL_APICALL void GL_APIENTRY glEndPerfQueryINTEL (GLuint queryHandle);
 GL_APICALL void GL_APIENTRY glGetFirstPerfQueryIdINTEL (GLuint *queryId);
 GL_APICALL void GL_APIENTRY glGetNextPerfQueryIdINTEL (GLuint queryId, GLuint *nextQueryId);
 GL_APICALL void GL_APIENTRY glGetPerfCounterInfoINTEL (GLuint queryId, GLuint counterId, GLuint counterNameLength, GLchar *counterName, GLuint counterDescLength, GLchar *counterDesc, GLuint *counterOffset, GLuint *counterDataSize, GLuint *counterTypeEnum, GLuint *counterDataTypeEnum, GLuint64 *rawCounterMaxValue);
-GL_APICALL void GL_APIENTRY glGetPerfQueryDataINTEL (GLuint queryHandle, GLuint flags, GLsizei dataSize, GLvoid *data, GLuint *bytesWritten);
+GL_APICALL void GL_APIENTRY glGetPerfQueryDataINTEL (GLuint queryHandle, GLuint flags, GLsizei dataSize, void *data, GLuint *bytesWritten);
 GL_APICALL void GL_APIENTRY glGetPerfQueryIdByNameINTEL (GLchar *queryName, GLuint *queryId);
 GL_APICALL void GL_APIENTRY glGetPerfQueryInfoINTEL (GLuint queryId, GLuint queryNameLength, GLchar *queryName, GLuint *dataSize, GLuint *noCounters, GLuint *noInstances, GLuint *capsMask);
 #endif
 #endif /* GL_INTEL_performance_query */
+
+#ifndef GL_MESA_program_binary_formats
+#define GL_MESA_program_binary_formats 1
+#define GL_PROGRAM_BINARY_FORMAT_MESA     0x875F
+#endif /* GL_MESA_program_binary_formats */
 
 #ifndef GL_MESA_shader_integer_functions
 #define GL_MESA_shader_integer_functions 1
@@ -2475,6 +2510,17 @@ GL_APICALL void GL_APIENTRY glBlendBarrierNV (void);
 #define GL_FACTOR_MAX_AMD                 0x901D
 #endif /* GL_NV_blend_minmax_factor */
 
+#ifndef GL_NV_clip_space_w_scaling
+#define GL_NV_clip_space_w_scaling 1
+#define GL_VIEWPORT_POSITION_W_SCALE_NV   0x937C
+#define GL_VIEWPORT_POSITION_W_SCALE_X_COEFF_NV 0x937D
+#define GL_VIEWPORT_POSITION_W_SCALE_Y_COEFF_NV 0x937E
+typedef void (GL_APIENTRYP PFNGLVIEWPORTPOSITIONWSCALENVPROC) (GLuint index, GLfloat xcoeff, GLfloat ycoeff);
+#ifdef GL_GLEXT_PROTOTYPES
+GL_APICALL void GL_APIENTRY glViewportPositionWScaleNV (GLuint index, GLfloat xcoeff, GLfloat ycoeff);
+#endif
+#endif /* GL_NV_clip_space_w_scaling */
+
 #ifndef GL_NV_conditional_render
 #define GL_NV_conditional_render 1
 #define GL_QUERY_WAIT_NV                  0x8E13
@@ -2500,6 +2546,11 @@ typedef void (GL_APIENTRYP PFNGLSUBPIXELPRECISIONBIASNVPROC) (GLuint xbits, GLui
 GL_APICALL void GL_APIENTRY glSubpixelPrecisionBiasNV (GLuint xbits, GLuint ybits);
 #endif
 #endif /* GL_NV_conservative_raster */
+
+#ifndef GL_NV_conservative_raster_pre_snap
+#define GL_NV_conservative_raster_pre_snap 1
+#define GL_CONSERVATIVE_RASTER_MODE_PRE_SNAP_NV 0x9550
+#endif /* GL_NV_conservative_raster_pre_snap */
 
 #ifndef GL_NV_conservative_raster_pre_snap_triangles
 #define GL_NV_conservative_raster_pre_snap_triangles 1
@@ -3289,6 +3340,10 @@ GL_APICALL void GL_APIENTRY glResolveDepthValuesNV (void);
 #define GL_NV_shadow_samplers_cube 1
 #define GL_SAMPLER_CUBE_SHADOW_NV         0x8DC5
 #endif /* GL_NV_shadow_samplers_cube */
+
+#ifndef GL_NV_stereo_view_rendering
+#define GL_NV_stereo_view_rendering 1
+#endif /* GL_NV_stereo_view_rendering */
 
 #ifndef GL_NV_texture_border_clamp
 #define GL_NV_texture_border_clamp 1

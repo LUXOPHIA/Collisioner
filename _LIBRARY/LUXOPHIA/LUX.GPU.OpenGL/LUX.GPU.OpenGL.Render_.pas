@@ -5,7 +5,7 @@ interface //####################################################################
 uses System.UITypes,
      Winapi.Windows, Winapi.OpenGL, Winapi.OpenGLext,
      LUX, LUX.M4,
-     LUX.GPU.OpenGL.Atom.Buffer.Unifor,
+     LUX.GPU.OpenGL.Atom.Buffer.UniBuf,
      LUX.GPU.OpenGL.Atom.Framer,
      LUX.GPU.OpenGL.Camera;
 
@@ -25,7 +25,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        _Camera :TGLCamera;
        _SizeX  :Integer;
        _SizeY  :Integer;
-       _Viewer :TGLUnifor<TSingleM4>;
+       _Viewer :TGLUniBuf<TSingleM4>;
        _Color  :TAlphaColorF;
        ///// アクセス
        function GetSizeX :Integer;
@@ -129,7 +129,7 @@ begin
      _Frame1 := TGLFramer1.Create;
      _FrameN := TGLFramerN.Create;
 
-     _Viewer := TGLUnifor<TSingleM4>.Create( GL_DYNAMIC_DRAW ); _Viewer.Count := 1;
+     _Viewer := TGLUniBuf<TSingleM4>.Create( GL_DYNAMIC_DRAW );
 
      SizeX := 1920;
      SizeY := 1080;

@@ -252,6 +252,8 @@
 <li value=121><a href="extensions/EXT/EXT_map_buffer_range.txt">GL_EXT_map_buffer_range</a>
 </li>
 <li value=122><a href="extensions/EXT/EXT_shader_framebuffer_fetch.txt">GL_EXT_shader_framebuffer_fetch</a>
+
+    <br> <a href="extensions/EXT/EXT_shader_framebuffer_fetch.txt">GL_EXT_shader_framebuffer_fetch_non_coherent</a>
 </li>
 <li value=123><a href="extensions/APPLE/APPLE_copy_texture_levels.txt">GL_APPLE_copy_texture_levels</a>
 </li>
@@ -608,5 +610,21 @@
 <li value=292><a href="extensions/MESA/MESA_tile_raster_order.txt">GL_MESA_tile_raster_order</a>
 </li>
 <li value=293><a href="extensions/QCOM/QCOM_texture_foveated.txt">GL_QCOM_texture_foveated</a>
+</li>
+<li value=294><a href="extensions/MESA/MESA_program_binary_formats.txt">GL_MESA_program_binary_formats</a>
+</li>
+<li value=295><a href="extensions/NV/NV_clip_space_w_scaling.txt">GL_NV_clip_space_w_scaling</a>
+</li>
+<li value=296><a href="extensions/NV/NV_stereo_view_rendering.txt">GL_NV_stereo_view_rendering</a>
+</li>
+<li value=297><a href="extensions/NV/NV_conservative_raster_pre_snap.txt">GL_NV_conservative_raster_pre_snap</a>
+</li>
+<li value=298><a href="extensions/EXT/EXT_EGL_image_external_wrap_modes.txt">GL_EXT_EGL_image_external_wrap_modes</a>
+</li>
+<li value=299><a href="extensions/EXT/EXT_texture_format_sRGB_override.txt">GL_EXT_texture_format_sRGB_override</a>
+</li>
+<li value=300><a href="extensions/INTEL/INTEL_blackhole_render.txt">GL_INTEL_blackhole_render</a>
+</li>
+<li value=301><a href="extensions/EXT/EXT_EGL_image_storage.txt">GL_EXT_EGL_image_storage</a>
 </li>
 </ol>

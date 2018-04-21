@@ -79,6 +79,12 @@ registry = {
         'supporters' : { 'MESA' },
         'url' : 'extensions/AMD/AMD_gpu_shader_half_float.txt',
     },
+    'GL_AMD_gpu_shader_half_float_fetch' : {
+        'number' : 519,
+        'flags' : { 'public' },
+        'supporters' : { 'AMD' },
+        'url' : 'extensions/AMD/AMD_gpu_shader_half_float_fetch.txt',
+    },
     'GL_AMD_gpu_shader_int16' : {
         'number' : 507,
         'flags' : { 'public' },
@@ -1762,6 +1768,17 @@ registry = {
         'flags' : { 'public' },
         'url' : 'extensions/EXT/EXT_EGL_image_array.txt',
     },
+    'GL_EXT_EGL_image_external_wrap_modes' : {
+        'esnumber' : 298,
+        'flags' : { 'public' },
+        'url' : 'extensions/EXT/EXT_EGL_image_external_wrap_modes.txt',
+    },
+    'GL_EXT_EGL_image_storage' : {
+        'number' : 522,
+        'esnumber' : 301,
+        'flags' : { 'public' },
+        'url' : 'extensions/EXT/EXT_EGL_image_storage.txt',
+    },
     'GL_EXT_memory_object' : {
         'number' : 503,
         'esnumber' : 280,
@@ -1846,7 +1863,7 @@ registry = {
         'supporters' : { 'NVIDIA' },
         'url' : 'extensions/EXT/EXT_geometry_shader4.txt',
     },
-    'GL_EXT_glx_stereo_tree' : {
+    'GLX_EXT_stereo_tree' : {
         'number' : 452,
         'flags' : { 'public' },
         'url' : 'extensions/EXT/GLX_EXT_stereo_tree.txt',
@@ -2135,9 +2152,11 @@ registry = {
         'url' : 'extensions/EXT/EXT_separate_specular_color.txt',
     },
     'GL_EXT_shader_framebuffer_fetch' : {
+        'number' : 520,
         'esnumber' : 122,
         'flags' : { 'public' },
         'url' : 'extensions/EXT/EXT_shader_framebuffer_fetch.txt',
+        'alias' : { 'GL_EXT_shader_framebuffer_fetch_non_coherent' },
     },
     'GL_EXT_shader_group_vote' : {
         'esnumber' : 254,
@@ -2401,6 +2420,11 @@ registry = {
         'esnumber' : 51,
         'flags' : { 'public' },
         'url' : 'extensions/EXT/EXT_texture_format_BGRA8888.txt',
+    },
+    'GL_EXT_texture_format_sRGB_override' : {
+        'esnumber' : 299,
+        'flags' : { 'public' },
+        'url' : 'extensions/EXT/EXT_texture_format_sRGB_override.txt',
     },
     'GLX_EXT_texture_from_pixmap' : {
         'number' : 344,
@@ -2780,6 +2804,13 @@ registry = {
         'supporters' : { 'INTEL' },
         'url' : 'extensions/INTEL/INTEL_map_texture.txt',
     },
+    'GL_INTEL_blackhole_render' : {
+        'number' : 521,
+        'esnumber' : 300,
+        'flags' : { 'public' },
+        'supporters' : { 'INTEL' },
+        'url' : 'extensions/INTEL/INTEL_blackhole_render.txt',
+    },
     'GL_INTEL_parallel_arrays' : {
         'number' : 136,
         'flags' : { 'public' },
@@ -2890,6 +2921,13 @@ registry = {
         'flags' : { 'public' },
         'supporters' : { 'MESA' },
         'url' : 'extensions/MESA/GLX_MESA_pixmap_colormap.txt',
+    },
+    'GL_MESA_program_binary_formats' : {
+        'number' : 516,
+        'esnumber' : 294,
+        'flags' : { 'public' },
+        'supporters' : { 'MESA' },
+        'url' : 'extensions/MESA/MESA_program_binary_formats.txt',
     },
     'GLX_MESA_query_renderer' : {
         'number' : 446,
@@ -3042,6 +3080,7 @@ registry = {
     },
     'GL_NV_clip_space_w_scaling' : {
         'number' : 486,
+        'esnumber' : 295,
         'flags' : { 'public' },
         'url' : 'extensions/NV/NV_clip_space_w_scaling.txt',
     },
@@ -3074,11 +3113,22 @@ registry = {
         'flags' : { 'public' },
         'url' : 'extensions/NV/NV_conservative_raster_dilate.txt',
     },
+    'GL_NV_conservative_raster_pre_snap' : {
+        'number' : 517,
+        'esnumber' : 297,
+        'flags' : { 'public' },
+        'url' : 'extensions/NV/NV_conservative_raster_pre_snap.txt',
+    },
     'GL_NV_conservative_raster_pre_snap_triangles' : {
         'number' : 487,
         'esnumber' : 262,
         'flags' : { 'public' },
         'url' : 'extensions/NV/NV_conservative_raster_pre_snap_triangles.txt',
+    },
+    'GL_NV_conservative_raster_underestimation' : {
+        'number' : 518,
+        'flags' : { 'public' },
+        'url' : 'extensions/NV/NV_conservative_raster_underestimation.txt',
     },
     'GLX_NV_copy_buffer' : {
         'number' : 457,
@@ -3582,6 +3632,7 @@ registry = {
     },
     'GL_NV_stereo_view_rendering' : {
         'number' : 489,
+        'esnumber' : 296,
         'flags' : { 'public' },
         'url' : 'extensions/NV/NV_stereo_view_rendering.txt',
     },

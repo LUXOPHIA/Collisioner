@@ -34,6 +34,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Texels :_TTexels_ read _Texels;
        ///// メソッド
        procedure SendData; override;
+       procedure ReceData; override;
+       procedure SendPixBuf; override;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBricer2D<_TTexel_>
@@ -103,6 +105,23 @@ begin
                                _PixelT,
                                _Texels.ElemsP0 );
      Unbind;
+end;
+
+procedure TGLImager2D<_TTexel_,_TTexels_>.ReceData;
+begin
+     Bind;
+       glGetTexImage( _Kind, 0, _PixelF, _PixelT, _Texels.ElemsP0 );
+     Unbind;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TGLImager2D<_TTexel_,_TTexels_>.SendPixBuf;
+begin
+     glTexImage2D( _Kind, 0, _TexelF, _Texels.ElemsX,
+                                      _Texels.ElemsY, 0,
+                             _PixelF,
+                             _PixelT, nil );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBricer2D<_TTexel_>

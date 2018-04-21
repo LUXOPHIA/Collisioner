@@ -53,7 +53,7 @@ constructor TGLBricer2D_TAlphaColorF.Create;
 begin
      inherited;
 
-     _TexelF := GL_RGBA;
+     _TexelF := GL_RGBA32F;
      _PixelF := GL_RGBA;
      _PixelT := GL_FLOAT;
 end;
