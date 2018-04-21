@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Atom.Buffer.Unifor;
+﻿unit LUX.GPU.OpenGL.Atom.Buffer.UniBuf;
 
 interface //#################################################################### ■
 
@@ -13,9 +13,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLUnifor<_TYPE_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLUniBuf<_TItem_>
 
-     IGLUnifor = interface( IGLBuffer )
+     IGLUniBuf = interface( IGLBuffer )
      ['{923ECB97-7686-4B53-A9FC-AB4365C7CC4B}']
        ///// メソッド
        procedure Use( const BinP_:GLuint ); overload;
@@ -25,7 +25,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLUnifor<_TYPE_:record> = class( TGLBuffer<_TYPE_>, IGLUnifor )
+     TGLUniBuf<_TItem_:record> = class( TGLBuffer<_TItem_>, IGLUniBuf )
      private
      protected
        ///// アクセス
@@ -51,7 +51,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLUnifor<_TYPE_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLUniBuf<_TItem_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -59,14 +59,14 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLUnifor<_TYPE_>.GetKind :GLenum;
+function TGLUniBuf<_TItem_>.GetKind :GLenum;
 begin
      Result := GL_UNIFORM_BUFFER;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function TGLUnifor<_TYPE_>.InitAlign :GLint;
+function TGLUniBuf<_TItem_>.InitAlign :GLint;
 begin
      //glGetIntegerv( GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, @Result );
 
@@ -77,21 +77,21 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLUnifor<_TYPE_>.Use( const BinP_:GLuint );
+procedure TGLUniBuf<_TItem_>.Use( const BinP_:GLuint );
 begin
      inherited Use;
 
      glBindBufferBase( GetKind, BinP_, _ID );
 end;
 
-procedure TGLUnifor<_TYPE_>.Use( const BinP_:GLuint; const Offs_:Integer; const Size_:Integer = 1 );
+procedure TGLUniBuf<_TItem_>.Use( const BinP_:GLuint; const Offs_:Integer; const Size_:Integer = 1 );
 begin
      inherited Use;
 
      glBindBufferRange( GetKind, BinP_, _ID, _Strid * Offs_, _Strid * Size_ );
 end;
 
-procedure TGLUnifor<_TYPE_>.Unuse( const BinP_:GLuint );
+procedure TGLUniBuf<_TItem_>.Unuse( const BinP_:GLuint );
 begin
      glBindBufferBase( GetKind, BinP_, 0 );
 

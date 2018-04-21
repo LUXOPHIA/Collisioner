@@ -7,7 +7,7 @@ uses System.Generics.Collections,
      LUX, LUX.D1, LUX.D2, LUX.D3, LUX.M4, LUX.Data.Tree,
      LUX.GPU.OpenGL,
      LUX.GPU.OpenGL.Atom.Buffer,
-     LUX.GPU.OpenGL.Atom.Buffer.Unifor,
+     LUX.GPU.OpenGL.Atom.Buffer.UniBuf,
      LUX.GPU.OpenGL.Inform;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
@@ -60,7 +60,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        _RelaPose :TSingleM4;
-       _AbsoPose :TGLUnifor<TSingleM4>;  upAbsoPose :Boolean;
+       _AbsoPose :TGLUniBuf<TSingleM4>;  upAbsoPose :Boolean;
        _Visible  :Boolean;
        _HitTest  :Boolean;
        _Inform   :TGLInform;
@@ -236,8 +236,7 @@ begin
 
      _Inform := TGLInform.Create;
 
-     _AbsoPose := TGLUnifor<TSingleM4>.Create( GL_DYNAMIC_DRAW );
-     _AbsoPose.Count := 1;
+     _AbsoPose := TGLUniBuf<TSingleM4>.Create( GL_DYNAMIC_DRAW );
 
      RelaPose := TSingleM4.Identity;
 

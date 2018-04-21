@@ -6,7 +6,7 @@ uses System.SysUtils, System.UITypes,
      Winapi.OpenGL, Winapi.OpenGLext,
      LUX,
      LUX.GPU.OpenGL,
-     LUX.GPU.OpenGL.Atom.Buffer.Unifor,
+     LUX.GPU.OpenGL.Atom.Buffer.UniBuf,
      LUX.GPU.OpenGL.Matery,
      LUX.GPU.OpenGL.Matery.Imager.Preset;
 
@@ -34,7 +34,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLMateryColor = class( TGLMatery, IGLMateryColor )
      private
      protected
-       _Color :TGLUnifor<TAlphaColorF>;
+       _Color :TGLUniBuf<TAlphaColorF>;
        ///// アクセス
        function GetColor :TAlphaColorF;
        procedure SetColor( const Color_:TAlphaColorF );
@@ -66,7 +66,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLMateryRGB = class( TGLMateryNor, IGLMateryRGB )
      private
      protected
-       _Ambient :TGLUnifor<TAlphaColorF>;
+       _Ambient :TGLUniBuf<TAlphaColorF>;
        ///// アクセス
        function GetAmbient :TAlphaColorF;
        procedure SetAmbient( const Ambient_:TAlphaColorF );
@@ -98,8 +98,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLMateryDiffuse = class( TGLMateryNor, IGLMateryDiffuse )
      private
      protected
-       _Ambient :TGLUnifor<TAlphaColorF>;
-       _Diffuse :TGLUnifor<TAlphaColorF>;
+       _Ambient :TGLUniBuf<TAlphaColorF>;
+       _Diffuse :TGLUniBuf<TAlphaColorF>;
        ///// アクセス
        function GetAmbient :TAlphaColorF;
        procedure SetAmbient( const Ambient_:TAlphaColorF );
@@ -140,9 +140,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLMateryPlastic = class( TGLMateryImag, IGLMateryPlastic )
      private
      protected
-       _Ambient :TGLUnifor<TAlphaColorF>;
-       _Diffuse :TGLUnifor<TAlphaColorF>;
-       _RefI    :TGLUnifor<Single>;
+       _Ambient :TGLUniBuf<TAlphaColorF>;
+       _Diffuse :TGLUniBuf<TAlphaColorF>;
+       _RefI    :TGLUniBuf<Single>;
        ///// アクセス
        function GetAmbient :TAlphaColorF;
        procedure SetAmbient( const Ambient_:TAlphaColorF );
@@ -180,7 +180,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLMateryMirror = class( TGLMateryImag, IGLMateryMirror )
      private
      protected
-       _Color :TGLUnifor<TAlphaColorF>;
+       _Color :TGLUniBuf<TAlphaColorF>;
        ///// アクセス
        function GetColor :TAlphaColorF;
        procedure SetColor( const Color_:TAlphaColorF );
@@ -212,7 +212,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLMateryGlass = class( TGLMateryImag, IGLMateryGlass )
      private
      protected
-       _RefI :TGLUnifor<Single>;
+       _RefI :TGLUniBuf<Single>;
        ///// アクセス
        function GetRefI :Single;
        procedure SetRefI( const RefI_:Single );
@@ -262,8 +262,7 @@ constructor TGLMateryColor.Create;
 begin
      inherited;
 
-     _Color := TGLUnifor<TAlphaColorF>.Create( GL_STATIC_DRAW );
-     _Color.Count := 1;
+     _Color := TGLUniBuf<TAlphaColorF>.Create( GL_STATIC_DRAW );
 
      with _ShaderF do
      begin
@@ -294,7 +293,7 @@ begin
 
      with _Engine do
      begin
-          with Unifors do
+          with UniBufs do
           begin
                Add( 4{BinP}, 'TMateryCol'{Name} );
           end;
@@ -350,8 +349,7 @@ constructor TGLMateryRGB.Create;
 begin
      inherited;
 
-     _Ambient := TGLUnifor<TAlphaColorF>.Create( GL_STATIC_DRAW );
-     _Ambient.Count := 1;
+     _Ambient := TGLUniBuf<TAlphaColorF>.Create( GL_STATIC_DRAW );
 
      with _ShaderF do
      begin
@@ -386,7 +384,7 @@ begin
 
      with _Engine do
      begin
-          with Unifors do
+          with UniBufs do
           begin
                Add( 4{BinP}, 'TAmbient'{Name} );
           end;
@@ -452,10 +450,8 @@ constructor TGLMateryDiffuse.Create;
 begin
      inherited;
 
-     _Ambient := TGLUnifor<TAlphaColorF>.Create( GL_STATIC_DRAW );
-     _Diffuse := TGLUnifor<TAlphaColorF>.Create( GL_STATIC_DRAW );
-     _Ambient.Count := 1;
-     _Diffuse.Count := 1;
+     _Ambient := TGLUniBuf<TAlphaColorF>.Create( GL_STATIC_DRAW );
+     _Diffuse := TGLUniBuf<TAlphaColorF>.Create( GL_STATIC_DRAW );
 
      with _ShaderF do
      begin
@@ -493,7 +489,7 @@ begin
 
      with _Engine do
      begin
-          with Unifors do
+          with UniBufs do
           begin
                Add( 4{BinP}, 'TAmbient'{Name} );
                Add( 5{BinP}, 'TDiffuse'{Name} );
@@ -578,12 +574,9 @@ constructor TGLMateryPlastic.Create;
 begin
      inherited;
 
-     _Ambient := TGLUnifor<TAlphaColorF>.Create( GL_STATIC_DRAW );
-     _Ambient.Count := 1;
-     _Diffuse := TGLUnifor<TAlphaColorF>.Create( GL_STATIC_DRAW );
-     _Diffuse.Count := 1;
-     _RefI    := TGLUnifor<Single>.Create( GL_STATIC_DRAW );
-     _RefI   .Count := 1;
+     _Ambient := TGLUniBuf<TAlphaColorF>.Create( GL_STATIC_DRAW );
+     _Diffuse := TGLUniBuf<TAlphaColorF>.Create( GL_STATIC_DRAW );
+     _RefI    := TGLUniBuf<Single>.Create( GL_STATIC_DRAW );
 
      with _ShaderF do
      begin
@@ -667,7 +660,7 @@ begin
 
      with _Engine do
      begin
-          with Unifors do
+          with UniBufs do
           begin
                Add( 4{BinP}, 'TAmbient'{Name} );
                Add( 5{BinP}, 'TDiffuse'{Name} );
@@ -733,8 +726,7 @@ constructor TGLMateryMirror.Create;
 begin
      inherited;
 
-     _Color := TGLUnifor<TAlphaColorF>.Create( GL_STATIC_DRAW );
-     _Color.Count := 1;
+     _Color := TGLUniBuf<TAlphaColorF>.Create( GL_STATIC_DRAW );
 
      with _ShaderF do
      begin
@@ -794,7 +786,7 @@ begin
 
      with _Engine do
      begin
-          with Unifors do
+          with UniBufs do
           begin
                Add( 4{BinP}, 'TColor'{Name} );
           end;
@@ -850,8 +842,7 @@ constructor TGLMateryGlass.Create;
 begin
      inherited;
 
-     _RefI := TGLUnifor<Single>.Create( GL_STATIC_DRAW );
-     _RefI.Count := 1;
+     _RefI := TGLUniBuf<Single>.Create( GL_STATIC_DRAW );
 
      with _ShaderF do
      begin
@@ -934,7 +925,7 @@ begin
 
      with _Engine do
      begin
-          with Unifors do
+          with UniBufs do
           begin
                Add( 4{BinP}, 'TRefI'{Name} );
           end;

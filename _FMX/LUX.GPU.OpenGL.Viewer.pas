@@ -9,7 +9,7 @@ uses
   LUX, LUX.D3, LUX.D4, LUX.M4,
   LUX.GPU.OpenGL,
   LUX.GPU.OpenGL.Window,
-  LUX.GPU.OpenGL.Atom.Buffer.Unifor,
+  LUX.GPU.OpenGL.Atom.Buffer.UniBuf,
   LUX.GPU.OpenGL.Scener,
   LUX.GPU.OpenGL.Camera;
 
@@ -29,7 +29,7 @@ type
   protected
     _RootForm :FMX.Forms.TCommonCustomForm;
     _Form     :TGLViewerForm;
-    _Viewer   :TGLUnifor<TSingleM4>;
+    _Viewer   :TGLUniBuf<TSingleM4>;
     _Camera   :TGLCamera;
     ///// イベント
     _OnPaint :TProc;
@@ -275,8 +275,7 @@ begin
           TMessageManager.DefaultManager.SubscribeToMessage( TBeforeDestroyFormHandle, OnDestroAnyWND );
      end;
 
-     _Viewer := TGLUnifor<TSingleM4>.Create( GL_DYNAMIC_DRAW );
-     _Viewer.Count := 1;
+     _Viewer := TGLUniBuf<TSingleM4>.Create( GL_DYNAMIC_DRAW );
 end;
 
 destructor TGLViewer.Destroy;

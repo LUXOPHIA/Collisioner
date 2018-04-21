@@ -835,7 +835,7 @@
 </li>
 <li value=451><a href="extensions/AMD/AMD_gpu_shader_int64.txt">GL_AMD_gpu_shader_int64</a>
 </li>
-<li value=452><a href="extensions/EXT/GLX_EXT_stereo_tree.txt">GL_EXT_glx_stereo_tree</a>
+<li value=452><a href="extensions/EXT/GLX_EXT_stereo_tree.txt">GLX_EXT_stereo_tree</a>
 </li>
 <li value=453><a href="extensions/AMD/AMD_gcn_shader.txt">GL_AMD_gcn_shader</a>
 </li>
@@ -966,5 +966,21 @@
 <li value=514><a href="extensions/MESA/GLX_MESA_swap_control.txt">GLX_MESA_swap_control</a>
 </li>
 <li value=515><a href="extensions/MESA/MESA_tile_raster_order.txt">GL_MESA_tile_raster_order</a>
+</li>
+<li value=516><a href="extensions/MESA/MESA_program_binary_formats.txt">GL_MESA_program_binary_formats</a>
+</li>
+<li value=517><a href="extensions/NV/NV_conservative_raster_pre_snap.txt">GL_NV_conservative_raster_pre_snap</a>
+</li>
+<li value=518><a href="extensions/NV/NV_conservative_raster_underestimation.txt">GL_NV_conservative_raster_underestimation</a>
+</li>
+<li value=519><a href="extensions/AMD/AMD_gpu_shader_half_float_fetch.txt">GL_AMD_gpu_shader_half_float_fetch</a>
+</li>
+<li value=520><a href="extensions/EXT/EXT_shader_framebuffer_fetch.txt">GL_EXT_shader_framebuffer_fetch</a>
+
+    <br> <a href="extensions/EXT/EXT_shader_framebuffer_fetch.txt">GL_EXT_shader_framebuffer_fetch_non_coherent</a>
+</li>
+<li value=521><a href="extensions/INTEL/INTEL_blackhole_render.txt">GL_INTEL_blackhole_render</a>
+</li>
+<li value=522><a href="extensions/EXT/EXT_EGL_image_storage.txt">GL_EXT_EGL_image_storage</a>
 </li>
 </ol>
