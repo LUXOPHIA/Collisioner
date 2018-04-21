@@ -6,7 +6,7 @@ uses System.SysUtils, System.UITypes,
      LUX, LUX.D1, LUX.D2, LUX.D3, LUX.M4,
      LUX.Geometry.D3,
      LUX.GPU.OpenGL,
-     LUX.GPU.OpenGL.Atom.Buffer.Unifor,
+     LUX.GPU.OpenGL.Atom.Buffer.UniBuf,
      LUX.GPU.OpenGL.Scener,
      LUX.GPU.OpenGL.Camera,
      LUX.GPU.OpenGL.Matery,
@@ -35,8 +35,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLShaperVoxels = class( TGLShaperPoin )
      private
      protected
-       _Size :TGLUnifor<Single>;
-       _Color :TGLUnifor<TAlphaColorF>;
+       _Size :TGLUniBuf<Single>;
+       _Color :TGLUniBuf<TAlphaColorF>;
        ///// アクセス
        function GetCount :Integer;
        function GetSizeX :Single;
@@ -241,7 +241,7 @@ begin
 
      with _Engine do
      begin
-          with Unifors do
+          with UniBufs do
           begin
                Add( 4, 'TSize' );
                Add( 5, 'TColor' );
@@ -322,11 +322,10 @@ begin
 
      _Matery := TGLMateryVoxels.Create;
 
-     _Size := TGLUnifor<Single>.Create( GL_STATIC_DRAW );
+     _Size := TGLUniBuf<Single>.Create( GL_STATIC_DRAW );
      _Size.Count := 3;
 
-     _Color := TGLUnifor<TAlphaColorF>.Create( GL_STATIC_DRAW );
-     _Color.Count := 1;
+     _Color := TGLUniBuf<TAlphaColorF>.Create( GL_STATIC_DRAW );
 
      SizeX := 0.05;
      SizeY := 0.05;

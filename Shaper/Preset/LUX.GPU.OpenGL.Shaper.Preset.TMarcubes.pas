@@ -5,7 +5,7 @@ interface //####################################################################
 uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX, LUX.D2, LUX.D3, LUX.M4,
      LUX.GPU.OpenGL,
-     LUX.GPU.OpenGL.Atom.Buffer.Unifor,
+     LUX.GPU.OpenGL.Atom.Buffer.UniBuf,
      LUX.GPU.OpenGL.Atom.Imager.D2.Preset,
      LUX.GPU.OpenGL.Atom.Imager.D3.Preset,
      LUX.GPU.OpenGL.Matery,
@@ -86,8 +86,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _MaterC      :IMarcubesMateryCubes;
        _Grider      :TGLGrider3D_Single;
-       _Size        :TGLUnifor<TSingle3D>;
-       _Threshold   :TGLUnifor<Single>;
+       _Size        :TGLUniBuf<TSingle3D>;
+       _Threshold   :TGLUniBuf<Single>;
        _LineS       :Single;
        _IsShowCubes :Boolean;
        ///// アクセス
@@ -144,14 +144,14 @@ begin
 
      with _Engine do
      begin
-          with Verters do
+          with VerBufs do
           begin
                Del( 0{BinP} );
                Del( 1{BinP} );
                Del( 2{BinP} );
           end;
 
-          with Unifors do
+          with UniBufs do
           begin
                Add( 4{BinP}, 'TGriderS'{Name} );
                Add( 5{BinP}, 'TThreshold'{Name} );
@@ -191,14 +191,14 @@ begin
 
      with _Engine do
      begin
-          with Verters do
+          with VerBufs do
           begin
                Del( 0{BinP} );
                Del( 1{BinP} );
                Del( 2{BinP} );
           end;
 
-          with Unifors do
+          with UniBufs do
           begin
                Add( 4{BinP}, 'TGriderS'{Name} );
                Add( 5{BinP}, 'TThreshold'{Name} );
@@ -257,14 +257,14 @@ begin
 
      with _Engine do
      begin
-          with Verters do
+          with VerBufs do
           begin
                Del( 0{BinP} );
                Del( 1{BinP} );
                Del( 2{BinP} );
           end;
 
-          with Unifors do
+          with UniBufs do
           begin
                Add( 4{BinP}, 'TGriderS'{Name} );
                Add( 5{BinP}, 'TThreshold'{Name} );
@@ -343,8 +343,8 @@ begin
      inherited;
 
      _Grider    := TGLGrider3D_Single.Create;
-     _Size      := TGLUnifor<TSingle3D>.Create( GL_STATIC_DRAW );  _Size.Count := 1;
-     _Threshold := TGLUnifor<Single>.Create( GL_STATIC_DRAW );  _Threshold.Count := 1;
+     _Size      := TGLUniBuf<TSingle3D>.Create( GL_STATIC_DRAW );
+     _Threshold := TGLUniBuf<Single>.Create( GL_STATIC_DRAW );
 
      _Matery := TMarcubesMateryFacesRGB.Create;
      _MaterC := TMarcubesMateryCubes.Create;
