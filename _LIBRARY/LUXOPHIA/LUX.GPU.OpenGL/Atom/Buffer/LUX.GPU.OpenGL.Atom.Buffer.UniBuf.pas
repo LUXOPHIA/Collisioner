@@ -20,7 +20,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        procedure Use( const BinP_:GLuint ); overload;
        procedure Use( const BinP_:GLuint; const Offs_:Integer; const Size_:Integer = 1 ); overload;
-       procedure Unuse( const BinP_:GLuint ); overload;
+       procedure Unuse( const BinP_:GLuint );
      end;
 
      //-------------------------------------------------------------------------
@@ -34,9 +34,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function InitAlign :GLint; override;
      public
        ///// メソッド
-       procedure Use( const BinP_:GLuint ); reintroduce; overload;
-       procedure Use( const BinP_:GLuint; const Offs_:Integer; const Size_:Integer = 1 ); reintroduce; overload;
-       procedure Unuse( const BinP_:GLuint ); reintroduce; overload;
+       procedure Use( const BinP_:GLuint ); overload;
+       procedure Use( const BinP_:GLuint; const Offs_:Integer; const Size_:Integer = 1 ); overload;
+       procedure Unuse( const BinP_:GLuint );
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -79,23 +79,17 @@ end;
 
 procedure TGLUniBuf<_TItem_>.Use( const BinP_:GLuint );
 begin
-     inherited Use;
-
      glBindBufferBase( GetKind, BinP_, _ID );
 end;
 
 procedure TGLUniBuf<_TItem_>.Use( const BinP_:GLuint; const Offs_:Integer; const Size_:Integer = 1 );
 begin
-     inherited Use;
-
      glBindBufferRange( GetKind, BinP_, _ID, _Strid * Offs_, _Strid * Size_ );
 end;
 
 procedure TGLUniBuf<_TItem_>.Unuse( const BinP_:GLuint );
 begin
      glBindBufferBase( GetKind, BinP_, 0 );
-
-     inherited Unuse;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】

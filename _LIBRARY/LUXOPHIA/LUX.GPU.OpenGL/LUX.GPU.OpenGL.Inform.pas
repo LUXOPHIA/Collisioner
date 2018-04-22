@@ -73,14 +73,19 @@ begin
      begin
           if ( Min.X < Max.X ) and ( Min.Y < Max.Y ) and ( Min.Z < Max.Z ) then
           begin
-               _PosBuf[ 0 ] := TSingle3D.Create( Min.X, Min.Y, Min.Z );
-               _PosBuf[ 1 ] := TSingle3D.Create( Max.X, Min.Y, Min.Z );
-               _PosBuf[ 2 ] := TSingle3D.Create( Min.X, Max.Y, Min.Z );
-               _PosBuf[ 3 ] := TSingle3D.Create( Max.X, Max.Y, Min.Z );
-               _PosBuf[ 4 ] := TSingle3D.Create( Min.X, Min.Y, Max.Z );
-               _PosBuf[ 5 ] := TSingle3D.Create( Max.X, Min.Y, Max.Z );
-               _PosBuf[ 6 ] := TSingle3D.Create( Min.X, Max.Y, Max.Z );
-               _PosBuf[ 7 ] := TSingle3D.Create( Max.X, Max.Y, Max.Z );
+               with _PosBuf.Map( GL_WRITE_ONLY ) do
+               begin
+                    Items[ 0 ] := TSingle3D.Create( Min.X, Min.Y, Min.Z );
+                    Items[ 1 ] := TSingle3D.Create( Max.X, Min.Y, Min.Z );
+                    Items[ 2 ] := TSingle3D.Create( Min.X, Max.Y, Min.Z );
+                    Items[ 3 ] := TSingle3D.Create( Max.X, Max.Y, Min.Z );
+                    Items[ 4 ] := TSingle3D.Create( Min.X, Min.Y, Max.Z );
+                    Items[ 5 ] := TSingle3D.Create( Max.X, Min.Y, Max.Z );
+                    Items[ 6 ] := TSingle3D.Create( Min.X, Max.Y, Max.Z );
+                    Items[ 7 ] := TSingle3D.Create( Max.X, Max.Y, Max.Z );
+
+                    DisposeOf;
+               end;
           end;
      end;
 end;
@@ -136,21 +141,26 @@ begin
      _PosBuf.Count :=  8;
      _EleBuf.Count := 12;
 
-     _EleBuf[ 00 ] := TCardinal2D.Create( 0, 1 );
-     _EleBuf[ 01 ] := TCardinal2D.Create( 0, 2 );
-     _EleBuf[ 02 ] := TCardinal2D.Create( 0, 4 );
+     with _EleBuf.Map( GL_WRITE_ONLY ) do
+     begin
+          Items[ 00 ] := TCardinal2D.Create( 0, 1 );
+          Items[ 01 ] := TCardinal2D.Create( 0, 2 );
+          Items[ 02 ] := TCardinal2D.Create( 0, 4 );
 
-     _EleBuf[ 03 ] := TCardinal2D.Create( 1, 3 );
-     _EleBuf[ 04 ] := TCardinal2D.Create( 2, 6 );
-     _EleBuf[ 05 ] := TCardinal2D.Create( 4, 5 );
+          Items[ 03 ] := TCardinal2D.Create( 1, 3 );
+          Items[ 04 ] := TCardinal2D.Create( 2, 6 );
+          Items[ 05 ] := TCardinal2D.Create( 4, 5 );
 
-     _EleBuf[ 06 ] := TCardinal2D.Create( 7, 6 );
-     _EleBuf[ 07 ] := TCardinal2D.Create( 7, 5 );
-     _EleBuf[ 08 ] := TCardinal2D.Create( 7, 3 );
+          Items[ 06 ] := TCardinal2D.Create( 7, 6 );
+          Items[ 07 ] := TCardinal2D.Create( 7, 5 );
+          Items[ 08 ] := TCardinal2D.Create( 7, 3 );
 
-     _EleBuf[ 09 ] := TCardinal2D.Create( 6, 4 );
-     _EleBuf[ 10 ] := TCardinal2D.Create( 5, 1 );
-     _EleBuf[ 11 ] := TCardinal2D.Create( 3, 2 );
+          Items[ 09 ] := TCardinal2D.Create( 6, 4 );
+          Items[ 10 ] := TCardinal2D.Create( 5, 1 );
+          Items[ 11 ] := TCardinal2D.Create( 3, 2 );
+
+          DisposeOf;
+     end;
 
      _Visible := True;
 
