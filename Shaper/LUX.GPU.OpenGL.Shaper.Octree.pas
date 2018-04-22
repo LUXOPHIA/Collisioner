@@ -110,6 +110,8 @@ var
    S :Single;
    G :TSingle3D;
    Vs :TDictionary<TCardinal3D,Byte>;
+   Ps :TGLBufferData<TSingle3D>;
+   Es :TGLBufferData<TCardinal3D>;
    I, X0, X1, Y0, Y1, Z0, Z1, X, Y, Z :Integer;
    T :TSingleTria3D;
    V :TCardinal3D;
@@ -133,13 +135,16 @@ begin
 
      Vs := TDictionary<TCardinal3D,Byte>.Create;
 
+     Ps := PosBuf.Map;
+     Es := EleBuf.Map;
+
      for I := 0 to EleBuf.Count-1 do
      begin
-          with EleBuf[ I ] do
+          with Es[ I ] do
           begin
-               T.Poin1 := PosBuf[ _1 ] - G;
-               T.Poin2 := PosBuf[ _2 ] - G;
-               T.Poin3 := PosBuf[ _3 ] - G;
+               T.Poin1 := Ps[ _1 ] - G;
+               T.Poin2 := Ps[ _2 ] - G;
+               T.Poin3 := Ps[ _3 ] - G;
           end;
 
           with T.AABB do
@@ -175,6 +180,9 @@ begin
                end;
           end;
      end;
+
+     Ps.DisposeOf;
+     Es.DisposeOf;
 
      with _Tree do
      begin
