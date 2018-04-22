@@ -143,11 +143,11 @@ end;
 
 procedure TGLEleBufFace<_TItem_>.Draw;
 begin
-     inherited Use;
+     Bind;
 
        glDrawElements( GL_TRIANGLES, GetElemN * _Count, GetElemT, nil );
 
-     inherited Unuse;
+     Unbind;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLEleBufLine<_TItem_>
@@ -179,11 +179,11 @@ end;
 
 procedure TGLEleBufLine<_TItem_>.Draw;
 begin
-     inherited Use;
+     Bind;
 
        glDrawElements( GL_LINES, GetElemN * _Count, GetElemT, nil );
 
-     inherited Unuse;
+     Unbind;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】

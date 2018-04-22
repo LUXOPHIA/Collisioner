@@ -214,14 +214,19 @@ begin
      SY := _SizeY / 2;
      SZ := _SizeZ / 2;
 
-     _PosBuf[ 0 ] := TSingle3D.Create( -SX, -SY, -SZ );
-     _PosBuf[ 1 ] := TSingle3D.Create( +SX, -SY, -SZ );
-     _PosBuf[ 2 ] := TSingle3D.Create( -SX, +SY, -SZ );
-     _PosBuf[ 3 ] := TSingle3D.Create( +SX, +SY, -SZ );
-     _PosBuf[ 4 ] := TSingle3D.Create( -SX, -SY, +SZ );
-     _PosBuf[ 5 ] := TSingle3D.Create( +SX, -SY, +SZ );
-     _PosBuf[ 6 ] := TSingle3D.Create( -SX, +SY, +SZ );
-     _PosBuf[ 7 ] := TSingle3D.Create( +SX, +SY, +SZ );
+     with _PosBuf.Map( GL_WRITE_ONLY ) do
+     begin
+          Items[ 0 ] := TSingle3D.Create( -SX, -SY, -SZ );
+          Items[ 1 ] := TSingle3D.Create( +SX, -SY, -SZ );
+          Items[ 2 ] := TSingle3D.Create( -SX, +SY, -SZ );
+          Items[ 3 ] := TSingle3D.Create( +SX, +SY, -SZ );
+          Items[ 4 ] := TSingle3D.Create( -SX, -SY, +SZ );
+          Items[ 5 ] := TSingle3D.Create( +SX, -SY, +SZ );
+          Items[ 6 ] := TSingle3D.Create( -SX, +SY, +SZ );
+          Items[ 7 ] := TSingle3D.Create( +SX, +SY, +SZ );
+
+          DisposeOf;
+     end;
 
      CalcBouBox;
 end;
@@ -284,30 +289,40 @@ begin
 
      _Matery := TGLMateryColor.Create;
 
-     _NorBuf[ 0 ] := TSingle3D.Create( -1, -1, -1 ).Unitor;
-     _NorBuf[ 1 ] := TSingle3D.Create( +1, -1, -1 ).Unitor;
-     _NorBuf[ 2 ] := TSingle3D.Create( -1, +1, -1 ).Unitor;
-     _NorBuf[ 3 ] := TSingle3D.Create( +1, +1, -1 ).Unitor;
-     _NorBuf[ 4 ] := TSingle3D.Create( -1, -1, +1 ).Unitor;
-     _NorBuf[ 5 ] := TSingle3D.Create( +1, -1, +1 ).Unitor;
-     _NorBuf[ 6 ] := TSingle3D.Create( -1, +1, +1 ).Unitor;
-     _NorBuf[ 7 ] := TSingle3D.Create( +1, +1, +1 ).Unitor;
+     with _NorBuf.Map( GL_WRITE_ONLY ) do
+     begin
+          Items[ 0 ] := TSingle3D.Create( -1, -1, -1 ).Unitor;
+          Items[ 1 ] := TSingle3D.Create( +1, -1, -1 ).Unitor;
+          Items[ 2 ] := TSingle3D.Create( -1, +1, -1 ).Unitor;
+          Items[ 3 ] := TSingle3D.Create( +1, +1, -1 ).Unitor;
+          Items[ 4 ] := TSingle3D.Create( -1, -1, +1 ).Unitor;
+          Items[ 5 ] := TSingle3D.Create( +1, -1, +1 ).Unitor;
+          Items[ 6 ] := TSingle3D.Create( -1, +1, +1 ).Unitor;
+          Items[ 7 ] := TSingle3D.Create( +1, +1, +1 ).Unitor;
 
-     _EleBuf[ 00 ] := TCardinal2D.Create( 0, 1 );
-     _EleBuf[ 01 ] := TCardinal2D.Create( 0, 2 );
-     _EleBuf[ 02 ] := TCardinal2D.Create( 0, 4 );
+          DisposeOf;
+     end;
 
-     _EleBuf[ 03 ] := TCardinal2D.Create( 1, 3 );
-     _EleBuf[ 04 ] := TCardinal2D.Create( 2, 6 );
-     _EleBuf[ 05 ] := TCardinal2D.Create( 4, 5 );
+     with _EleBuf.Map( GL_WRITE_ONLY ) do
+     begin
+          Items[ 00 ] := TCardinal2D.Create( 0, 1 );
+          Items[ 01 ] := TCardinal2D.Create( 0, 2 );
+          Items[ 02 ] := TCardinal2D.Create( 0, 4 );
 
-     _EleBuf[ 06 ] := TCardinal2D.Create( 7, 6 );
-     _EleBuf[ 07 ] := TCardinal2D.Create( 7, 5 );
-     _EleBuf[ 08 ] := TCardinal2D.Create( 7, 3 );
+          Items[ 03 ] := TCardinal2D.Create( 1, 3 );
+          Items[ 04 ] := TCardinal2D.Create( 2, 6 );
+          Items[ 05 ] := TCardinal2D.Create( 4, 5 );
 
-     _EleBuf[ 09 ] := TCardinal2D.Create( 6, 4 );
-     _EleBuf[ 10 ] := TCardinal2D.Create( 5, 1 );
-     _EleBuf[ 11 ] := TCardinal2D.Create( 3, 2 );
+          Items[ 06 ] := TCardinal2D.Create( 7, 6 );
+          Items[ 07 ] := TCardinal2D.Create( 7, 5 );
+          Items[ 08 ] := TCardinal2D.Create( 7, 3 );
+
+          Items[ 09 ] := TCardinal2D.Create( 6, 4 );
+          Items[ 10 ] := TCardinal2D.Create( 5, 1 );
+          Items[ 11 ] := TCardinal2D.Create( 3, 2 );
+
+          DisposeOf;
+     end;
 
      _SizeX := 1;
      _SizeY := 1;
@@ -330,10 +345,13 @@ end;
 
 procedure TGLDotCube.MakeModel;
 var
+   Ps :TGLBufferData<TSingle3D>;
    X, Y, Z, I :Integer;
    P :TSingle3D;
 begin
      PosBuf.Count := ( _DivNZ + 1 ) * ( _DivNY + 1 ) * ( _DivNX + 1 );
+
+     Ps := PosBuf.Map( GL_WRITE_ONLY );
 
      I := 0;
      for Z := 0 to _DivNZ do
@@ -348,10 +366,12 @@ begin
                begin
                     P.X := _SizeX / _DivNX * X - _SizeX / 2;
 
-                    PosBuf[ I ] := P;  Inc( I );
+                    Ps[ I ] := P;  Inc( I );
                end;
           end;
      end;
+
+     Ps.DisposeOf;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected

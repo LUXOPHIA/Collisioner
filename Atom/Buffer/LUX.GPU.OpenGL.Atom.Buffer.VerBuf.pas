@@ -46,8 +46,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property ElemS :GLint  read GetElemS;
        property ElemN :GLint  read GetElemN;
        ///// メソッド
-       procedure Use( const BinP_:GLuint ); reintroduce; overload;
-       procedure Unuse( const BinP_:GLuint ); reintroduce; overload;
+       procedure Use( const BinP_:GLuint );
+       procedure Unuse( const BinP_:GLuint );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVerBufI<_TItem_>
@@ -108,16 +108,12 @@ end;
 
 procedure TGLVerBuf<_TItem_>.Use( const BinP_:GLuint );
 begin
-     inherited Use;
-
      glBindVertexBuffer( BinP_, _ID, 0, GetElemS * GetElemN );
 end;
 
 procedure TGLVerBuf<_TItem_>.Unuse( const BinP_:GLuint );
 begin
      glBindVertexBuffer( BinP_, 0, 0, 0 );
-
-     inherited Unuse;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLVerBufI<_TItem_>
