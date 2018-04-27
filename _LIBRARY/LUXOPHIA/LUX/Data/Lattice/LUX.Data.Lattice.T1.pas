@@ -62,7 +62,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetElems( const X_:Integer ) :_TItem_;
        procedure SetElems( const X_:Integer; const Elem_:_TItem_ );
        function GetElemsP( const X_:Integer ) :_PItem_;
-       function GetItemsX :Integer;
+       function GetItemsX :Integer; virtual;
        procedure SetItemsX( const ItemsX_:Integer ); virtual;
        function GetMargsX :Integer;
        procedure SetMargsX( const MargsX_:Integer );
