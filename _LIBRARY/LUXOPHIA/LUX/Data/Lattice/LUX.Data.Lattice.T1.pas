@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses System.SysUtils,
-     LUX;
+     LUX, LUX.Data.Lattice;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -24,78 +24,70 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TArray1D<_TItem_>
 
-     IArray1D = interface
+     IArray1D = interface( ICoreArray )
      ['{7BF64031-75DC-4CD8-9220-78D0F556C4CB}']
+     {protected}
        ///// アクセス
-       function GetItemByte :Integer;
-       function GetElemsP0 :Pointer;
        function GetElemsX :Integer;
-       function GetElemsN :Integer;
-       function GetElemsByte :Integer;
        function GetItemsX :Integer;
        procedure SetItemsX( const ItemsX_:Integer );
        function GetMargsX :Integer;
        procedure SetMargsX( const MargsX_:Integer );
+       function GetItem0P :Pointer;
+     {public}
        ///// プロパティ
-       property ItemByte  :Integer read GetItemByte                 ;
-       property ElemsP0   :Pointer read GetElemsP0                  ;
-       property ElemsX    :Integer read GetElemsX                   ;
-       property ElemsN    :Integer read GetElemsN                   ;
-       property ElemsByte :Integer read GetElemsByte                ;
-       property ItemsX    :Integer read GetItemsX    write SetItemsX;
-       property MargsX    :Integer read GetMargsX    write SetMargsX;
+       property ItemByte :Integer read GetElemByte                ;
+       property ElemsX   :Integer read GetElemsX                  ;
+       property ItemsX   :Integer read GetItemsX   write SetItemsX;
+       property MargsX   :Integer read GetMargsX   write SetMargsX;
+       property Item0P   :Pointer read GetItem0P                  ;
      end;
 
      //-------------------------------------------------------------------------
 
-     TArray1D<_TItem_> = class( TInterfacedBase, IArray1D )
+     TArray1D<_TItem_> = class( TCoreArray<_TItem_>, IArray1D )
      public type
-       _PItem_ = ^_TItem_;
+       _PItem_ = TCoreArray<_TItem_>._PElem_;
      private
        ///// メソッド
-       procedure MakeArray;
-       function XtoI( const X_:Integer ) :Integer; inline;
+       function ElemsI( const X_:Integer ) :Integer; inline;
+       function ItemsI( const X_:Integer ) :Integer; inline;
      protected
-       _Elems  :TArray<_TItem_>;
        _ElemsX :Integer;
        _ItemsX :Integer;
        _MargsX :Integer;
        ///// アクセス
-       function GetItemByte :Integer;
-       function GetElemsP0 :Pointer;
+       function GetElemsN :Integer; override;
        function GetElemsX :Integer;
-       function GetElemsN :Integer;
-       function GetElemsByte :Integer;
-       function GetItems( const X_:Integer ) :_TItem_; virtual;
-       procedure SetItems( const X_:Integer; const Item_:_TItem_ ); virtual;
-       function GetItemP( const X_:Integer ) :_PItem_;
+       function GetElems( const X_:Integer ) :_TItem_;
+       procedure SetElems( const X_:Integer; const Elem_:_TItem_ );
+       function GetElemsP( const X_:Integer ) :_PItem_;
        function GetItemsX :Integer;
        procedure SetItemsX( const ItemsX_:Integer );
        function GetMargsX :Integer;
        procedure SetMargsX( const MargsX_:Integer );
-     public
-       ///// イベント
-       _OnChange :TProc;
+       function GetItems( const X_:Integer ) :_TItem_;
+       procedure SetItems( const X_:Integer; const Item_:_TItem_ );
+       function GetItemsP( const X_:Integer ) :_PItem_;
+       function GetItem0P :Pointer;
+       ///// メソッド
+       procedure MakeArray; override;
      public
        constructor Create; overload;
        constructor Create( const ItemsX_:Integer ); overload;
        constructor Create( const ItemsX_,MargsX_:Integer ); overload; virtual;
-       procedure AfterConstruction; override;
        destructor Destroy; override;
        ///// プロパティ
-       property ItemByte                  :Integer read GetItemByte                 ;
-       property ElemsP0                   :Pointer read GetElemsP0                  ;
-       property ElemsX                    :Integer read GetElemsX                   ;
-       property ElemsN                    :Integer read GetElemsN                   ;
-       property ElemsByte                 :Integer read GetElemsByte                ;
-       property Items[ const X_:Integer ] :_TItem_ read GetItems     write SetItems ; default;
-       property ItemP[ const X_:Integer ] :_PItem_ read GetItemP                    ;
-       property ItemsN                    :Integer read GetItemsX    write SetItemsX;
-       property ItemsX                    :Integer read GetItemsX    write SetItemsX;
-       property MargsN                    :Integer read GetMargsX    write SetMargsX;
-       property MargsX                    :Integer read GetMargsX    write SetMargsX;
+       property ItemByte                   :Integer read GetElemByte                ;
+       property ElemsX                     :Integer read GetElemsX                  ;
+       property Elems[ const X_:Integer ]  :_TItem_ read GetElems    write SetElems ;
+       property ElemsP[ const X_:Integer ] :_PItem_ read GetElemsP                  ;
+       property ItemsX                     :Integer read GetItemsX   write SetItemsX;
+       property MargsX                     :Integer read GetMargsX   write SetMargsX;
+       property Items[ const X_:Integer ]  :_TItem_ read GetItems    write SetItems ; default;
+       property ItemsP[ const X_:Integer ] :_PItem_ read GetItemsP                  ;
+       property Item0P                     :Pointer read GetItem0P                  ;
        ///// メソッド
-       class procedure Swap( var Array0_,Array1_:TArray1D<_TItem_> ); static;
        procedure MakeEdgeExten; virtual;
        procedure MakeEdgePerio; virtual; abstract;
        procedure MakeEdgeMirro; virtual; abstract;
@@ -233,16 +225,12 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TArray1D<_TItem_>.MakeArray;
+function TArray1D<_TItem_>.ElemsI( const X_:Integer ) :Integer;
 begin
-     _ElemsX := _MargsX + _ItemsX + _MargsX;
-
-     SetLength( _Elems, ElemsN );
-
-     _OnChange;
+     Result := X_;
 end;
 
-function TArray1D<_TItem_>.XtoI( const X_:Integer ) :Integer;
+function TArray1D<_TItem_>.ItemsI( const X_:Integer ) :Integer;
 begin
      Result := _MargsX + X_;
 end;
@@ -251,16 +239,9 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TArray1D<_TItem_>.GetItemByte :Integer;
+function TArray1D<_TItem_>.GetElemsN :Integer;
 begin
-     Result := SizeOf( _TItem_ );
-end;
-
-//------------------------------------------------------------------------------
-
-function TArray1D<_TItem_>.GetElemsP0 :Pointer;
-begin
-     Result := @_Elems[ 0 ];
+     Result := _ElemsX;
 end;
 
 //------------------------------------------------------------------------------
@@ -270,31 +251,21 @@ begin
      Result := _ElemsX;
 end;
 
-function TArray1D<_TItem_>.GetElemsN :Integer;
-begin
-     Result := _ElemsX;
-end;
-
-function TArray1D<_TItem_>.GetElemsByte :Integer;
-begin
-     Result := ItemByte * ElemsN;
-end;
-
 //------------------------------------------------------------------------------
 
-function TArray1D<_TItem_>.GetItems( const X_:Integer ) :_TItem_;
+function TArray1D<_TItem_>.GetElems( const X_:Integer ) :_TItem_;
 begin
-     Result := _Elems[ XtoI( X_ ) ];
+     Result := _Elems[ ElemsI( X_ ) ];
 end;
 
-procedure TArray1D<_TItem_>.SetItems( const X_:Integer; const Item_:_TItem_ );
+procedure TArray1D<_TItem_>.SetElems( const X_:Integer; const Elem_:_TItem_ );
 begin
-     _Elems[ XtoI( X_ ) ] := Item_;
+     _Elems[ ElemsI( X_ ) ] := Elem_;
 end;
 
-function TArray1D<_TItem_>.GetItemP( const X_:Integer ) :_PItem_;
+function TArray1D<_TItem_>.GetElemsP( const X_:Integer ) :_PItem_;
 begin
-     Result := @_Elems[ XtoI( X_ ) ];
+     Result := @_Elems[ ElemsI( X_ ) ];
 end;
 
 //------------------------------------------------------------------------------
@@ -319,6 +290,37 @@ begin
      _MargsX := MargsX_;  MakeArray;
 end;
 
+//------------------------------------------------------------------------------
+
+function TArray1D<_TItem_>.GetItems( const X_:Integer ) :_TItem_;
+begin
+     Result := _Elems[ ItemsI( X_ ) ];
+end;
+
+procedure TArray1D<_TItem_>.SetItems( const X_:Integer; const Item_:_TItem_ );
+begin
+     _Elems[ ItemsI( X_ ) ] := Item_;
+end;
+
+function TArray1D<_TItem_>.GetItemsP( const X_:Integer ) :_PItem_;
+begin
+     Result := @_Elems[ ItemsI( X_ ) ];
+end;
+
+function TArray1D<_TItem_>.GetItem0P :Pointer;
+begin
+     Result := GetItemsP( 0 );
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TArray1D<_TItem_>.MakeArray;
+begin
+     _ElemsX := _MargsX + _ItemsX + _MargsX;
+
+     inherited;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TArray1D<_TItem_>.Create;
@@ -341,11 +343,6 @@ begin
      _MargsX := MargsX_;
 end;
 
-procedure TArray1D<_TItem_>.AfterConstruction;
-begin
-     MakeArray;
-end;
-
 destructor TArray1D<_TItem_>.Destroy;
 begin
 
@@ -353,15 +350,6 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
-
-class procedure TArray1D<_TItem_>.Swap( var Array0_,Array1_:TArray1D<_TItem_> );
-var
-   A :TArray1D<_TItem_>;
-begin
-     A := Array0_;  Array0_ := Array1_;  Array1_ := A;
-end;
-
-//------------------------------------------------------------------------------
 
 procedure TArray1D<_TItem_>.MakeEdgeExten;
 var
