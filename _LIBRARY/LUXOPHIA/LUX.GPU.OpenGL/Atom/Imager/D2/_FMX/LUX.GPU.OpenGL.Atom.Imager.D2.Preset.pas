@@ -94,6 +94,8 @@ var
    B :TBitmapData;
    X, Y :Integer;
 begin
+     ReceData;
+
      BMP_.SetSize( _Texels.BricsX, _Texels.BricsY );
 
      BMP_.Map( TMapAccess.Write, B );
