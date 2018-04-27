@@ -103,14 +103,14 @@ begin
                                         _Texels.ElemsY, 0,
                                _PixelF,
                                _PixelT,
-                               _Texels.ElemsP0 );
+                               _Texels.Elem0P );
      Unbind;
 end;
 
 procedure TGLImager2D<_TTexel_,_TTexels_>.ReceData;
 begin
      Bind;
-       glGetTexImage( _Kind, 0, _PixelF, _PixelT, _Texels.ElemsP0 );
+       glGetTexImage( _Kind, 0, _PixelF, _PixelT, _Texels.Elem0P );
      Unbind;
 end;
 

@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses System.Classes,
-     FMX.Types,
+     FMX.Types, FMX.Forms,
      Winapi.Windows,
      LUX, LUX.FMX.Forms, LUX.GPU.OpenGL;
 
@@ -15,7 +15,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     TGLViewerForm = class( TCommonCustomForm )
+     TGLViewerForm = class( TLuxCommonCustomForm )
      private
      protected
        _WND :HWND;
@@ -45,7 +45,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TOepnGL_FMX = class( TOpenGL )
      private
-       _Form :LUX.FMX.Forms.TCommonCustomForm;
+       _Form :TCommonCustomForm;
      protected
        procedure CreateWindow; override;
        procedure DestroyWindow; override;
@@ -60,7 +60,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 implementation //############################################################### ■
 
-uses FMX.Controls, FMX.Forms, FMX.Platform.Win,
+uses FMX.Controls, FMX.Platform.Win,
      Winapi.OpenGLext;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
@@ -175,7 +175,7 @@ end;
 
 procedure TOepnGL_FMX.CreateWindow;
 begin
-     _Form := LUX.FMX.Forms.TCommonCustomForm.CreateNew( nil );
+     _Form := TCommonCustomForm.CreateNew( nil );
 
      _WND := WindowHandleToPlatform( _Form.Handle ).Wnd;
 end;
