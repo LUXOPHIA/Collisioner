@@ -71,7 +71,8 @@ uses
   LUX.GPU.OpenGL.Atom.Buffer.PixBuf in '_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\Atom\Buffer\LUX.GPU.OpenGL.Atom.Buffer.PixBuf.pas',
   LUX.GPU.OpenGL.Atom.Buffer.PixBuf.D2 in '_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\Atom\Buffer\PixBuf\LUX.GPU.OpenGL.Atom.Buffer.PixBuf.D2.pas',
   LUX.GPU.OpenGL.Atom.Buffer.PixBuf.D3 in '_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\Atom\Buffer\PixBuf\LUX.GPU.OpenGL.Atom.Buffer.PixBuf.D3.pas',
-  LUX.GPU.OpenGL.Atom.Buffer.PixBuf.D1 in '_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\Atom\Buffer\PixBuf\LUX.GPU.OpenGL.Atom.Buffer.PixBuf.D1.pas';
+  LUX.GPU.OpenGL.Atom.Buffer.PixBuf.D1 in '_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\Atom\Buffer\PixBuf\LUX.GPU.OpenGL.Atom.Buffer.PixBuf.D1.pas',
+  LUX.Data.Lattice in '_LIBRARY\LUXOPHIA\LUX\Data\LUX.Data.Lattice.pas';
 
 {$R *.res}
 
