@@ -2,7 +2,7 @@
 
 interface //#################################################################### ■
 
-uses LUX;
+uses LUX, LUX.Data.Lattice, LUX.Data.Lattice.T1;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -12,95 +12,67 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TArray2D<_TItem_>
 
-     IArray2D = interface
+     IArray2D = interface( IArray1D )
      ['{E4ECF85C-317F-4179-BDAE-C4495D2B2CC7}']
      {protected}
        ///// アクセス
-       function GetItemByte :Integer;
-       function GetElemsP0 :Pointer;
-       function GetElemsX :Integer;
        function GetElemsY :Integer;
-       function GetElemsN :Integer;
-       function GetElemsByte :Integer;
-       function GetItemsX :Integer;
-       procedure SetItemsX( const ItemsX_:Integer );
        function GetItemsY :Integer;
        procedure SetItemsY( const ItemsY_:Integer );
-       function GetMargsX :Integer;
-       procedure SetMargsX( const MargsX_:Integer );
        function GetMargsY :Integer;
        procedure SetMargsY( const MargsY_:Integer );
      {public}
        ///// プロパティ
-       property ItemByte  :Integer read GetItemByte                 ;
-       property ElemsP0   :Pointer read GetElemsP0                  ;
-       property ElemsX    :Integer read GetElemsX                   ;
-       property ElemsY    :Integer read GetElemsY                   ;
-       property ElemsN    :Integer read GetElemsN                   ;
-       property ElemsByte :Integer read GetElemsByte                ;
-       property ItemsX    :Integer read GetItemsX    write SetItemsX;
-       property ItemsY    :Integer read GetItemsY    write SetItemsY;
-       property MargsX    :Integer read GetMargsX    write SetMargsX;
-       property MargsY    :Integer read GetMargsY    write SetMargsY;
+       property ElemsY :Integer read GetElemsY                ;
+       property ItemsY :Integer read GetItemsY write SetItemsY;
+       property MargsY :Integer read GetMargsY write SetMargsY;
      end;
 
      //-------------------------------------------------------------------------
 
-     TArray2D<_TItem_> = class( TInterfacedBase, IArray2D )
+     TArray2D<_TItem_> = class( TArray1D<_TItem_>, IArray2D )
      public type
-       _PItem_ = ^_TItem_;
+       _PItem_ = TCoreArray<_TItem_>._PElem_;
      private
        ///// メソッド
-       procedure MakeArray;
-       function XYtoI( const X_,Y_:Integer ) :Integer; inline;
+       function ElemsI( const X_,Y_:Integer ) :Integer; inline;
+       function ItemsI( const X_,Y_:Integer ) :Integer; inline;
      protected
-       _Elems  :TArray<_TItem_>;
-       _ElemsX :Integer;
        _ElemsY :Integer;
-       _ItemsX :Integer;
        _ItemsY :Integer;
-       _MargsX :Integer;
        _MargsY :Integer;
        ///// アクセス
-       function GetItemByte :Integer;
-       function GetElemsP0 :Pointer;
-       function GetElemsX :Integer;
+       function GetElemsN :Integer; override;
        function GetElemsY :Integer;
-       function GetElemsN :Integer;
-       function GetElemsByte :Integer;
-       function GetItems( const X_,Y_:Integer ) :_TItem_;
-       procedure SetItems( const X_,Y_:Integer; const Item_:_TItem_ );
-       function GetItemP( const X_,Y_:Integer ) :_PItem_;
-       function GetItemsX :Integer;
-       procedure SetItemsX( const ItemsX_:Integer );
+       function GetElems( const X_,Y_:Integer ) :_TItem_;
+       procedure SetElems( const X_,Y_:Integer; const Elem_:_TItem_ );
+       function GetElemsP( const X_,Y_:Integer ) :_PItem_;
        function GetItemsY :Integer;
        procedure SetItemsY( const ItemsY_:Integer );
-       function GetMargsX :Integer;
-       procedure SetMargsX( const MargsX_:Integer );
        function GetMargsY :Integer;
        procedure SetMargsY( const MargsY_:Integer );
+       function GetItems( const X_,Y_:Integer ) :_TItem_;
+       procedure SetItems( const X_,Y_:Integer; const Item_:_TItem_ );
+       function GetItemsP( const X_,Y_:Integer ) :_PItem_;
+       function GetItem0P :Pointer;
+       ///// メソッド
+       procedure MakeArray; override;
      public
        constructor Create; overload;
-       constructor Create( const ItemsX_,ItemsY_:Integer ); overload;
+       constructor Create( const ItemsX_,ItemsY_:Integer ); reintroduce; overload;
        constructor Create( const ItemsX_,ItemsY_,Margs_:Integer ); overload;
        constructor Create( const ItemsX_,ItemsY_,MargsX_,MargsY_:Integer ); overload; virtual;
-       procedure AfterConstruction; override;
        destructor Destroy; override;
        ///// プロパティ
-       property ItemByte                     :Integer read GetItemByte                 ;
-       property ElemsP0                      :Pointer read GetElemsP0                  ;
-       property ElemsX                       :Integer read GetElemsX                   ;
-       property ElemsY                       :Integer read GetElemsY                   ;
-       property ElemsN                       :Integer read GetElemsN                   ;
-       property ElemsByte                    :Integer read GetElemsByte                ;
-       property Items[ const X_,Y_:Integer ] :_TItem_ read GetItems     write SetItems ; default;
-       property ItemP[ const X_,Y_:Integer ] :_PItem_ read GetItemP                    ;
-       property ItemsX                       :Integer read GetItemsX    write SetItemsX;
-       property ItemsY                       :Integer read GetItemsY    write SetItemsY;
-       property MargsX                       :Integer read GetMargsX    write SetMargsX;
-       property MargsY                       :Integer read GetMargsY    write SetMargsY;
+       property ElemsY                        :Integer read GetElemsY                ;
+       property Elems[ const X_,Y_:Integer ]  :_TItem_ read GetElems  write SetElems ;
+       property ElemsP[ const X_,Y_:Integer ] :_PItem_ read GetElemsP                ;
+       property ItemsY                        :Integer read GetItemsY write SetItemsY;
+       property MargsY                        :Integer read GetMargsY write SetMargsY;
+       property Items[ const X_,Y_:Integer ]  :_TItem_ read GetItems  write SetItems ; default;
+       property ItemsP[ const X_,Y_:Integer ] :_PItem_ read GetItemsP                ;
+       property Item0P                        :Pointer read GetItem0P                ;
        ///// メソッド
-       class procedure Swap( var Array0_,Array1_:TArray2D<_TItem_> ); static;
        procedure MakeEdgeLoop;
      end;
 
@@ -194,85 +166,50 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TArray2D<_TItem_>.MakeArray;
+function TArray2D<_TItem_>.ElemsI( const X_,Y_:Integer ) :Integer;
 begin
-     _ElemsX := _MargsX + _ItemsX + _MargsX;
-     _ElemsY := _MargsY + _ItemsY + _MargsY;
-
-     SetLength( _Elems, ElemsN );
+     Result := Y_ * _ElemsX + X_;
 end;
 
-function TArray2D<_TItem_>.XYtoI( const X_,Y_:Integer ) :Integer;
+function TArray2D<_TItem_>.ItemsI( const X_,Y_:Integer ) :Integer;
 begin
-     Result := _ElemsX * ( _MargsY + Y_ ) + ( _MargsX + X_ );
+     Result := ( _MargsY + Y_ ) * _ElemsX + ( _MargsX + X_ );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TArray2D<_TItem_>.GetItemByte :Integer;
+function TArray2D<_TItem_>.GetElemsN :Integer;
 begin
-     Result := SizeOf( _TItem_ );
+     Result := _ElemsY * _ElemsX;
 end;
 
 //------------------------------------------------------------------------------
-
-function TArray2D<_TItem_>.GetElemsP0 :Pointer;
-begin
-     Result := @_Elems[ 0 ];
-end;
-
-//------------------------------------------------------------------------------
-
-function TArray2D<_TItem_>.GetElemsX :Integer;
-begin
-     Result := _ElemsX;
-end;
 
 function TArray2D<_TItem_>.GetElemsY :Integer;
 begin
      Result := _ElemsY;
 end;
 
-function TArray2D<_TItem_>.GetElemsN :Integer;
+//------------------------------------------------------------------------------
+
+function TArray2D<_TItem_>.GetElems( const X_,Y_:Integer ) :_TItem_;
 begin
-     Result := _ElemsY * _ElemsX;
+     Result := _Elems[ ElemsI( X_, Y_ ) ];
 end;
 
-function TArray2D<_TItem_>.GetElemsByte :Integer;
+procedure TArray2D<_TItem_>.SetElems( const X_,Y_:Integer; const Elem_:_TItem_ );
 begin
-     Result := ItemByte * ElemsN;
+     _Elems[ ElemsI( X_, Y_ ) ] := Elem_;
+end;
+
+function TArray2D<_TItem_>.GetElemsP( const X_,Y_:Integer ) :_PItem_;
+begin
+     Result := @_Elems[ ElemsI( X_, Y_ ) ];
 end;
 
 //------------------------------------------------------------------------------
-
-function TArray2D<_TItem_>.GetItems( const X_,Y_:Integer ) :_TItem_;
-begin
-     Result := _Elems[ XYtoI( X_, Y_ ) ];
-end;
-
-procedure TArray2D<_TItem_>.SetItems( const X_,Y_:Integer; const Item_:_TItem_ );
-begin
-     _Elems[ XYtoI( X_, Y_ ) ] := Item_;
-end;
-
-function TArray2D<_TItem_>.GetItemP( const X_,Y_:Integer ) :_PItem_;
-begin
-     Result := @_Elems[ XYtoI( X_, Y_ ) ];
-end;
-
-//------------------------------------------------------------------------------
-
-function TArray2D<_TItem_>.GetItemsX :Integer;
-begin
-     Result := _ItemsX;
-end;
-
-procedure TArray2D<_TItem_>.SetItemsX( const ItemsX_:Integer );
-begin
-     _ItemsX := ItemsX_;  MakeArray;
-end;
 
 function TArray2D<_TItem_>.GetItemsY :Integer;
 begin
@@ -284,15 +221,7 @@ begin
      _ItemsY := ItemsY_;  MakeArray;
 end;
 
-function TArray2D<_TItem_>.GetMargsX :Integer;
-begin
-     Result := _MargsX;
-end;
-
-procedure TArray2D<_TItem_>.SetMargsX( const MargsX_:Integer );
-begin
-     _MargsX := MargsX_;  MakeArray;
-end;
+//------------------------------------------------------------------------------
 
 function TArray2D<_TItem_>.GetMargsY :Integer;
 begin
@@ -302,6 +231,37 @@ end;
 procedure TArray2D<_TItem_>.SetMargsY( const MargsY_:Integer );
 begin
      _MargsY := MargsY_;  MakeArray;
+end;
+
+//------------------------------------------------------------------------------
+
+function TArray2D<_TItem_>.GetItems( const X_,Y_:Integer ) :_TItem_;
+begin
+     Result := _Elems[ ItemsI( X_, Y_ ) ];
+end;
+
+procedure TArray2D<_TItem_>.SetItems( const X_,Y_:Integer; const Item_:_TItem_ );
+begin
+     _Elems[ ItemsI( X_, Y_ ) ] := Item_;
+end;
+
+function TArray2D<_TItem_>.GetItemsP( const X_,Y_:Integer ) :_PItem_;
+begin
+     Result := @_Elems[ ItemsI( X_, Y_ ) ];
+end;
+
+function TArray2D<_TItem_>.GetItem0P :Pointer;
+begin
+     Result := GetItemsP( 0, 0 );
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TArray2D<_TItem_>.MakeArray;
+begin
+     _ElemsY := _MargsY + _ItemsY + _MargsY;
+
+     inherited;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -323,17 +283,10 @@ end;
 
 constructor TArray2D<_TItem_>.Create( const ItemsX_,ItemsY_,MargsX_,MargsY_:Integer );
 begin
-     inherited Create;
+     inherited Create( ItemsX_, MargsX_ );
 
-     _ItemsX := ItemsX_;
      _ItemsY := ItemsY_;
-     _MargsX := MargsX_;
      _MargsY := MargsY_;
-end;
-
-procedure TArray2D<_TItem_>.AfterConstruction;
-begin
-     MakeArray;
 end;
 
 destructor TArray2D<_TItem_>.Destroy;
@@ -343,13 +296,6 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
-
-class procedure TArray2D<_TItem_>.Swap( var Array0_,Array1_:TArray2D<_TItem_> );
-var
-   A :TArray2D<_TItem_>;
-begin
-     A := Array0_;  Array0_ := Array1_;  Array1_ := A;
-end;
 
 procedure TArray2D<_TItem_>.MakeEdgeLoop;
 var

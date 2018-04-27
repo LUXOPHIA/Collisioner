@@ -1,10 +1,10 @@
-﻿unit LUX.FMX.Forms;
+﻿unit LUX.FMX.Controls;
 
 interface //#################################################################### ■
 
-uses System.Types, System.UITypes, System.Classes,
-     FMX.Types, FMX.Forms,
-     LUX;
+uses System.Types,
+     FMX.Controls, FMX.Forms,
+     LUX, LUX.FMX.Forms;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -12,28 +12,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HCommonCustomForm
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HControl
 
-     HCommonCustomForm = class helper for TCommonCustomForm
+     HControl = class helper for TControl
      private
      protected
      public
        ///// メソッド
        function MousePos :TPointF;
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TLuxCommonCustomForm
-
-     TLuxCommonCustomForm = class( FMX.Forms.TCommonCustomForm )
-     private
-     protected
-       ///// イベント
-       _OnMouseClick :TMouseEvent;
-     public
-       ///// イベント
-       property OnMouseClick :TMouseEvent read _OnMouseClick write _OnMouseClick;
-       ///// メソッド
-       procedure MouseUp( Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single; DoClick_:Boolean = True ); override;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -48,7 +34,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HCommonCustomForm
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HControl
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -58,24 +44,9 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function HCommonCustomForm.MousePos :TPointF;
+function HControl.MousePos :TPointF;
 begin
-     Result := ScreenToClient( Screen.MousePos );
-end;
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TLuxCommonCustomForm
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-procedure TLuxCommonCustomForm.MouseUp( Button_:TMouseButton; Shift_:TShiftState; X_,Y_:Single; DoClick_:Boolean = True );
-begin
-     if Assigned( _OnMouseClick ) and DoClick_ then _OnMouseClick( Self, Button_, Shift_, X_, Y_ );
-
-     inherited;
+     Result := AbsoluteToLocal( ( Root.GetObject as TCommonCustomForm ).MousePos );
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
