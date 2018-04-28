@@ -45,9 +45,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const Name_:String );
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPortI
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPortT
 
-     TGLPortI = record
+     TGLPortT = record
      private
      public
        Name :String;
@@ -137,14 +137,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Add( const BinP_:GLuint; const Name_:String );
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPorterI
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPorterT
 
-     TGLPorterI = class( TGLPorter<TGLPortI> )
+     TGLPorterT = class( TGLPorter<TGLPortT> )
      private
      protected
        ///// メソッド
-       procedure AddPort( const BinP_:GLuint; const Port_:TGLPortI ); override;
-       procedure DelPort( const BinP_:GLuint; const Port_:TGLPortI ); override;
+       procedure AddPort( const BinP_:GLuint; const Port_:TGLPortT ); override;
+       procedure DelPort( const BinP_:GLuint; const Port_:TGLPortT ); override;
      public
        ///// メソッド
        procedure Add( const BinP_:GLuint; const Name_:String );
@@ -207,13 +207,13 @@ begin
      Name := Name_;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPortI
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPortT
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLPortI.Create( const Name_:String );
+constructor TGLPortT.Create( const Name_:String );
 begin
      Name := Name_;
 end;
@@ -474,7 +474,7 @@ begin
      inherited Add( BinP_, P );
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPorterI
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPorterT
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -482,7 +482,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLPorterI.AddPort( const BinP_:GLuint; const Port_:TGLPortI );
+procedure TGLPorterT.AddPort( const BinP_:GLuint; const Port_:TGLPortT );
 var
    L :GLuint;
 begin
@@ -494,7 +494,7 @@ begin
      end;
 end;
 
-procedure TGLPorterI.DelPort( const BinP_:GLuint; const Port_:TGLPortI );
+procedure TGLPorterT.DelPort( const BinP_:GLuint; const Port_:TGLPortT );
 begin
 
 end;
@@ -503,9 +503,9 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLPorterI.Add( const BinP_:GLuint; const Name_:String );
+procedure TGLPorterT.Add( const BinP_:GLuint; const Name_:String );
 var
-   P :TGLPortI;
+   P :TGLPortT;
 begin
      with P do
      begin
