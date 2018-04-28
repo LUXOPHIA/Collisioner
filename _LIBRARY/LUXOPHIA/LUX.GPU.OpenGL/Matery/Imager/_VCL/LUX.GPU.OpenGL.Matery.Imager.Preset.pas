@@ -21,10 +21,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      ['{00978DAD-C3D0-4B55-BD80-935C01F19066}']
      {protected}
        ///// アクセス
-       function GetImager :TGLBricer2D_TAlphaColorF;
+       function GetImager :TGLCelTex2D_TAlphaColorF;
      {public}
        ///// プロパティ
-       property Imager :TGLBricer2D_TAlphaColorF read GetImager;
+       property Imager :TGLCelTex2D_TAlphaColorF read GetImager;
        ///// メソッド
        procedure Use;
        procedure Unuse;
@@ -35,14 +35,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLMateryImag = class( TGLMateryNorTex, IGLMateryImag )
      private
      protected
-       _Imager :TGLBricer2D_TAlphaColorF;
+       _Imager :TGLCelTex2D_TAlphaColorF;
        ///// アクセス
-       function GetImager :TGLBricer2D_TAlphaColorF;
+       function GetImager :TGLCelTex2D_TAlphaColorF;
      public
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property Imager :TGLBricer2D_TAlphaColorF read GetImager;
+       property Imager :TGLCelTex2D_TAlphaColorF read GetImager;
        ///// メソッド
        procedure Use; override;
        procedure Unuse; override;
@@ -53,14 +53,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLMateryImagG = class( TGLMateryNorTexG, IGLMateryImag )
      private
      protected
-       _Imager :TGLBricer2D_TAlphaColorF;
+       _Imager :TGLCelTex2D_TAlphaColorF;
        ///// アクセス
-       function GetImager :TGLBricer2D_TAlphaColorF;
+       function GetImager :TGLCelTex2D_TAlphaColorF;
      public
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property Imager :TGLBricer2D_TAlphaColorF read GetImager;
+       property Imager :TGLCelTex2D_TAlphaColorF read GetImager;
        ///// メソッド
        procedure Use; override;
        procedure Unuse; override;
@@ -99,7 +99,7 @@ implementation //###############################################################
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
-function TGLMateryImag.GetImager :TGLBricer2D_TAlphaColorF;
+function TGLMateryImag.GetImager :TGLCelTex2D_TAlphaColorF;
 begin
      Result := _Imager;
 end;
@@ -110,7 +110,7 @@ constructor TGLMateryImag.Create;
 begin
      inherited;
 
-     _Imager := TGLBricer2D_TAlphaColorF.Create;
+     _Imager := TGLCelTex2D_TAlphaColorF.Create;
 end;
 
 destructor TGLMateryImag.Destroy;
@@ -142,7 +142,7 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
-function TGLMateryImagG.GetImager :TGLBricer2D_TAlphaColorF;
+function TGLMateryImagG.GetImager :TGLCelTex2D_TAlphaColorF;
 begin
      Result := _Imager;
 end;
@@ -153,7 +153,7 @@ constructor TGLMateryImagG.Create;
 begin
      inherited;
 
-     _Imager := TGLBricer2D_TAlphaColorF.Create;
+     _Imager := TGLCelTex2D_TAlphaColorF.Create;
 end;
 
 destructor TGLMateryImagG.Destroy;
