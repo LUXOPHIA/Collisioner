@@ -157,7 +157,7 @@ begin
                Add( 5{BinP}, 'TThreshold'{Name} );
           end;
 
-          with Texturs do
+          with Textures do
           begin
                Add( 0{BinP}, '_Grider'{Name} );
           end;
@@ -204,7 +204,7 @@ begin
                Add( 5{BinP}, 'TThreshold'{Name} );
           end;
 
-          with Texturs do
+          with Textures do
           begin
                Add( 0{BinP}, '_Grider'{Name} );
                Add( 1{BinP}, '_Imager'{Name} );
@@ -270,7 +270,7 @@ begin
                Add( 5{BinP}, 'TThreshold'{Name} );
           end;
 
-          with Texturs do
+          with Textures do
           begin
                Add( 0{BinP}, '_Grider'{Name} );
           end;
