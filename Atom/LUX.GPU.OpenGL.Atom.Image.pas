@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Atom.Textur;
+﻿unit LUX.GPU.OpenGL.Atom.Image;
 
 interface //#################################################################### ■
 
@@ -13,9 +13,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTextur
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLImage
 
-     IGLTextur = interface( IGLAtomer )
+     IGLImage = interface( IGLAtomer )
      ['{E2F97606-18B0-4E45-88D2-ABE16446AD6F}']
        ///// アクセス
        function GetKind :GLenum;
@@ -46,7 +46,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLTextur<_TTexel_:record;_TTexels_:constructor,TCoreArray<_TTexel_>> = class( TGLAtomer, IGLTextur )
+     TGLImage<_TTexel_:record;_TTexels_:constructor,TCoreArray<_TTexel_>> = class( TGLAtomer, IGLImage )
      private
      protected
        _Texels :_TTexels_;
@@ -97,7 +97,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTextur
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLImage
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -105,49 +105,49 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLTextur<_TTexel_,_TTexels_>.GetKind :GLenum;
+function TGLImage<_TTexel_,_TTexels_>.GetKind :GLenum;
 begin
      Result := _Kind;
 end;
 
-procedure TGLTextur<_TTexel_,_TTexels_>.SetKind( const Kind_:GLenum );
+procedure TGLImage<_TTexel_,_TTexels_>.SetKind( const Kind_:GLenum );
 begin
      _Kind := Kind_;
 end;
 
-function TGLTextur<_TTexel_,_TTexels_>.GetTexelF :GLenum;
+function TGLImage<_TTexel_,_TTexels_>.GetTexelF :GLenum;
 begin
      Result := _TexelF;
 end;
 
-procedure TGLTextur<_TTexel_,_TTexels_>.SetTexelF( const TexelF_:GLenum );
+procedure TGLImage<_TTexel_,_TTexels_>.SetTexelF( const TexelF_:GLenum );
 begin
      _TexelF := TexelF_;
 end;
 
-function TGLTextur<_TTexel_,_TTexels_>.GetPixelF :GLenum;
+function TGLImage<_TTexel_,_TTexels_>.GetPixelF :GLenum;
 begin
      Result := _PixelF;
 end;
 
-procedure TGLTextur<_TTexel_,_TTexels_>.SetPixelF( const PixelF_:GLenum );
+procedure TGLImage<_TTexel_,_TTexels_>.SetPixelF( const PixelF_:GLenum );
 begin
      _PixelF := PixelF_;
 end;
 
-function TGLTextur<_TTexel_,_TTexels_>.GetPixelT :GLenum;
+function TGLImage<_TTexel_,_TTexels_>.GetPixelT :GLenum;
 begin
      Result := _PixelT;
 end;
 
-procedure TGLTextur<_TTexel_,_TTexels_>.SetPixelT( const PixelT_:GLenum );
+procedure TGLImage<_TTexel_,_TTexels_>.SetPixelT( const PixelT_:GLenum );
 begin
      _PixelT := PixelT_;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLTextur<_TTexel_,_TTexels_>.Create( const Kind_:GLenum );
+constructor TGLImage<_TTexel_,_TTexels_>.Create( const Kind_:GLenum );
 begin
      inherited Create;
 
@@ -162,7 +162,7 @@ begin
      Unbind;
 end;
 
-destructor TGLTextur<_TTexel_,_TTexels_>.Destroy;
+destructor TGLImage<_TTexel_,_TTexels_>.Destroy;
 begin
      _Texels.DisposeOf;
 
@@ -173,19 +173,19 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLTextur<_TTexel_,_TTexels_>.Bind;
+procedure TGLImage<_TTexel_,_TTexels_>.Bind;
 begin
      glBindTexture( _Kind, _ID );
 end;
 
-procedure TGLTextur<_TTexel_,_TTexels_>.Unbind;
+procedure TGLImage<_TTexel_,_TTexels_>.Unbind;
 begin
      glBindTexture( _Kind, 0 );
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLTextur<_TTexel_,_TTexels_>.Use( const BindI_:GLuint );
+procedure TGLImage<_TTexel_,_TTexels_>.Use( const BindI_:GLuint );
 begin
      glActiveTexture( GL_TEXTURE0 + BindI_ );
 
@@ -194,7 +194,7 @@ begin
      glActiveTexture( GL_TEXTURE0 );
 end;
 
-procedure TGLTextur<_TTexel_,_TTexels_>.Unuse( const BindI_:GLuint );
+procedure TGLImage<_TTexel_,_TTexels_>.Unuse( const BindI_:GLuint );
 begin
      glActiveTexture( GL_TEXTURE0 + BindI_ );
 
@@ -205,19 +205,19 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLTextur<_TTexel_,_TTexels_>.UseComput( const BindI_:GLuint );
+procedure TGLImage<_TTexel_,_TTexels_>.UseComput( const BindI_:GLuint );
 begin
      glBindImageTexture( BindI_, ID, 0, GL_FALSE, 0, GL_READ_WRITE, _TexelF );
 end;
 
-procedure TGLTextur<_TTexel_,_TTexels_>.UnuseComput( const BindI_:GLuint );
+procedure TGLImage<_TTexel_,_TTexels_>.UnuseComput( const BindI_:GLuint );
 begin
      glBindImageTexture( BindI_, 0, 0, GL_FALSE, 0, GL_READ_WRITE, _TexelF );
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLTextur<_TTexel_,_TTexels_>.ReceData;
+procedure TGLImage<_TTexel_,_TTexels_>.ReceData;
 begin
      Bind;
        glGetTexImage( _Kind, 0, _PixelF, _PixelT, _Texels.Elem0P );
@@ -226,7 +226,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLTextur<_TTexel_,_TTexels_>.RecePixBuf;
+procedure TGLImage<_TTexel_,_TTexels_>.RecePixBuf;
 begin
      glGetTexImage( _Kind, 0, _PixelF, _PixelT, nil );
 end;

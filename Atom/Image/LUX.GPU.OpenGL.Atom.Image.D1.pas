@@ -1,9 +1,9 @@
-﻿unit LUX.GPU.OpenGL.Atom.Textur.D2;
+﻿unit LUX.GPU.OpenGL.Atom.Image.D1;
 
 interface //#################################################################### ■
 
 uses Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.Data.Lattice.T2, LUX.GPU.OpenGL.Atom.Textur;
+     LUX, LUX.Data.Lattice.T1, LUX.GPU.OpenGL.Atom.Image;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -11,17 +11,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTextur2D<_TTexel_,_TTexels_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLImage1D<_TTexel_,_TTexels_>
 
-     IGLTextur2D = interface( IGLTextur )
-     ['{69B48023-273B-46B0-A8E4-AD79BABB51FD}']
+     IGLImage1D = interface( IGLImage )
+     ['{93701122-C0C0-4697-9E0E-C0D59EAB9706}']
      {protected}
      {public}
      end;
 
      //-------------------------------------------------------------------------
 
-     TGLTextur2D<_TTexel_:record;_TTexels_:constructor,TArray2D<_TTexel_>> = class( TGLTextur<_TTexel_,_TTexels_>, IGLTextur2D )
+     TGLImage1D<_TTexel_:record;_TTexels_:constructor,TArray1D<_TTexel_>> = class( TGLImage<_TTexel_,_TTexels_>, IGLImage1D )
      private
      protected
      public
@@ -46,7 +46,7 @@ uses System.Math;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTextur2D<_TTexel_,_TTexels_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLImage1D<_TTexel_,_TTexels_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -54,13 +54,13 @@ uses System.Math;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLTextur2D<_TTexel_,_TTexels_>.Create;
+constructor TGLImage1D<_TTexel_,_TTexels_>.Create;
 begin
-     inherited Create( GL_TEXTURE_2D );
+     inherited Create( GL_TEXTURE_1D );
 
 end;
 
-destructor TGLTextur2D<_TTexel_,_TTexels_>.Destroy;
+destructor TGLImage1D<_TTexel_,_TTexels_>.Destroy;
 begin
 
      inherited;
@@ -68,11 +68,10 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLTextur2D<_TTexel_,_TTexels_>.SendData;
+procedure TGLImage1D<_TTexel_,_TTexels_>.SendData;
 begin
      Bind;
-       glTexImage2D( _Kind, 0, _TexelF, _Texels.ElemsX,
-                                        _Texels.ElemsY, 0,
+       glTexImage1D( _Kind, 0, _TexelF, _Texels.ElemsX, 0,
                                _PixelF,
                                _PixelT,
                                _Texels.Elem0P );
@@ -81,10 +80,9 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLTextur2D<_TTexel_,_TTexels_>.SendPixBuf;
+procedure TGLImage1D<_TTexel_,_TTexels_>.SendPixBuf;
 begin
-     glTexImage2D( _Kind, 0, _TexelF, _Texels.ElemsX,
-                                      _Texels.ElemsY, 0,
+     glTexImage1D( _Kind, 0, _TexelF, _Texels.ElemsX, 0,
                              _PixelF,
                              _PixelT, nil );
 end;
