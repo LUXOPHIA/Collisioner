@@ -12,9 +12,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBricer2D_TAlphaColorF
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex2D_TAlphaColorF
 
-     TGLBricer2D_TAlphaColorF = class( TGLBricer2D<TAlphaColorF> )
+     TGLCelTex2D_TAlphaColorF = class( TGLCelTex2D<TAlphaColorF> )
      private
      protected
      public
@@ -41,7 +41,7 @@ uses Winapi.OpenGL, Winapi.OpenGLext;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLBricer2D_TAlphaColorF
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex2D_TAlphaColorF
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -49,7 +49,7 @@ uses Winapi.OpenGL, Winapi.OpenGLext;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLBricer2D_TAlphaColorF.Create;
+constructor TGLCelTex2D_TAlphaColorF.Create;
 begin
      inherited;
 
@@ -58,7 +58,7 @@ begin
      _PixelT := GL_FLOAT;
 end;
 
-destructor TGLBricer2D_TAlphaColorF.Destroy;
+destructor TGLCelTex2D_TAlphaColorF.Destroy;
 begin
 
      inherited;
@@ -66,19 +66,19 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLBricer2D_TAlphaColorF.ImportFrom( const BMP_:TBitmap );
+procedure TGLCelTex2D_TAlphaColorF.ImportFrom( const BMP_:TBitmap );
 var
    B :TBitmapData;
    X, Y :Integer;
 begin
-     _Texels.BricsX := BMP_.Width ;
-     _Texels.BricsY := BMP_.Height;
+     _Texels.CellsX := BMP_.Width ;
+     _Texels.CellsY := BMP_.Height;
 
      BMP_.Map( TMapAccess.Read, B );
 
-     for Y := 0 to _Texels.BricsY-1 do
+     for Y := 0 to _Texels.CellsY-1 do
      begin
-          for X := 0 to _Texels.BricsX-1 do
+          for X := 0 to _Texels.CellsX-1 do
           begin
                Texels[ X, Y ] := TAlphaColorF.Create( B.GetPixel( X, Y ) );
           end;
@@ -89,20 +89,20 @@ begin
      SendData;
 end;
 
-procedure TGLBricer2D_TAlphaColorF.ExportTo( const BMP_:TBitmap );
+procedure TGLCelTex2D_TAlphaColorF.ExportTo( const BMP_:TBitmap );
 var
    B :TBitmapData;
    X, Y :Integer;
 begin
      ReceData;
 
-     BMP_.SetSize( _Texels.BricsX, _Texels.BricsY );
+     BMP_.SetSize( _Texels.CellsX, _Texels.CellsY );
 
      BMP_.Map( TMapAccess.Write, B );
 
-     for Y := 0 to _Texels.BricsY-1 do
+     for Y := 0 to _Texels.CellsY-1 do
      begin
-          for X := 0 to _Texels.BricsX-1 do
+          for X := 0 to _Texels.CellsX-1 do
           begin
                B.SetPixel( X, Y, Texels[ X, Y ].ToAlphaColor );
           end;
@@ -113,7 +113,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLBricer2D_TAlphaColorF.LoadFromFile( const FileName_:String );
+procedure TGLCelTex2D_TAlphaColorF.LoadFromFile( const FileName_:String );
 var
    B :TBitmap;
 begin
@@ -126,7 +126,7 @@ begin
      B.DisposeOf;
 end;
 
-procedure TGLBricer2D_TAlphaColorF.SaveToFile( const FileName_:String );
+procedure TGLCelTex2D_TAlphaColorF.SaveToFile( const FileName_:String );
 var
    B :TBitmap;
 begin
