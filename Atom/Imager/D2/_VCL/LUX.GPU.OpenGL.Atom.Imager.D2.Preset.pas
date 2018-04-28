@@ -71,12 +71,12 @@ var
    X, Y :Integer;
    C :TAlphaColorF;
 begin
-     Texels.BricsX := BMP_.Width ;
-     Texels.BricsY := BMP_.Height;
+     Texels.CellsX := BMP_.Width ;
+     Texels.CellsY := BMP_.Height;
 
-     for Y := 0 to Texels.BricsY-1 do
+     for Y := 0 to Texels.CellsY-1 do
      begin
-          for X := 0 to Texels.BricsX-1 do
+          for X := 0 to Texels.CellsX-1 do
           begin
                with TColorRec( BMP_.Canvas.Pixels[ X, Y ] ) do
                begin
@@ -97,11 +97,11 @@ procedure TGLBricer2D_TAlphaColorF.ExportTo( const BMP_:TBitmap );
 var
    X, Y :Integer;
 begin
-     BMP_.SetSize( Texels.BricsX, Texels.BricsY );
+     BMP_.SetSize( Texels.CellsX, Texels.CellsY );
 
-     for Y := 0 to Texels.BricsY-1 do
+     for Y := 0 to Texels.CellsY-1 do
      begin
-          for X := 0 to Texels.BricsX-1 do
+          for X := 0 to Texels.CellsX-1 do
           begin
                BMP_.Canvas.Pixels[ X, Y ] := Texels[ X, Y ].ToAlphaColor;
           end;
