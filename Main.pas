@@ -166,8 +166,6 @@ begin
 
           InitCamera;
 
-          GLViewer1.Repaint;
-
           _MouseP := P;
      end;
 end;
