@@ -6,7 +6,7 @@ uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX,
      LUX.Data.Lattice,
      LUX.GPU.OpenGL.Atom,
-     LUX.GPU.OpenGL.Atom.Textur;
+     LUX.GPU.OpenGL.Atom.Image;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -80,7 +80,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLImager
 
-     IGLImager = interface( IGLTextur )
+     IGLImager = interface( IGLImage )
      ['{22F971D6-65FD-4F42-80ED-743253890A8C}']
        ///// アクセス
        function GetSampler :TGLSampler;
@@ -90,7 +90,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLImager<_TTexel_:record;_TTexels_:constructor,TCoreArray<_TTexel_>> = class( TGLTextur<_TTexel_,_TTexels_>, IGLImager )
+     TGLImager<_TTexel_:record;_TTexels_:constructor,TCoreArray<_TTexel_>> = class( TGLImage<_TTexel_,_TTexels_>, IGLImager )
      private
      protected
        _Sampler :TGLSampler;
