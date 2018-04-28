@@ -8,7 +8,7 @@ uses System.SysUtils, System.UITypes,
      LUX.GPU.OpenGL,
      LUX.GPU.OpenGL.Atom.Buffer.UniBuf,
      LUX.GPU.OpenGL.Matery,
-     LUX.GPU.OpenGL.Matery.Imager.Preset;
+     LUX.GPU.OpenGL.Matery.Texture.Preset;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
