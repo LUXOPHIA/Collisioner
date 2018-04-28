@@ -6,7 +6,7 @@ uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX,
      LUX.GPU.OpenGL.Atom,
      LUX.GPU.OpenGL.Atom.Buffer,
-     LUX.GPU.OpenGL.Atom.Imager,
+     LUX.GPU.OpenGL.Atom.Texture,
      LUX.GPU.OpenGL.Atom.Buffer.PixBuf,
      LUX.GPU.OpenGL.Atom.Buffer.PixBuf.D2;
 

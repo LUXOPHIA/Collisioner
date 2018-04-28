@@ -1,10 +1,10 @@
-﻿unit LUX.GPU.OpenGL.Atom.Imager.D1.Preset;
+﻿unit LUX.GPU.OpenGL.Atom.Texture.D1.Preset;
 
 interface //#################################################################### ■
 
 uses System.UITypes,
-     FMX.Graphics,
-     LUX, LUX.GPU.OpenGL.Atom.Imager.D1;
+     Vcl.Graphics,
+     LUX, LUX.GPU.OpenGL.Atom.Texture.D1;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -53,7 +53,7 @@ constructor TGLCelTex1D_TAlphaColorF.Create;
 begin
      inherited;
 
-     _TexelF := GL_RGBA32F;
+     _TexelF := GL_RGBA;
      _PixelF := GL_RGBA;
      _PixelT := GL_FLOAT;
 end;
@@ -68,38 +68,37 @@ end;
 
 procedure TGLCelTex1D_TAlphaColorF.ImportFrom( const BMP_:TBitmap );
 var
-   B :TBitmapData;
    X :Integer;
+   C :TAlphaColorF;
 begin
-     _Texels.CellsX := BMP_.Width;
+     Texels.CellsX := BMP_.Width;
 
-     BMP_.Map( TMapAccess.Read, B );
-
-     for X := 0 to _Texels.CellsX-1 do
+     for X := 0 to Texels.CellsX-1 do
      begin
-          Texels[ X ] := TAlphaColorF.Create( B.GetPixel( X, 0 ) );
-     end;
+          with TColorRec( BMP_.Canvas.Pixels[ X, 0 ] ) do
+          begin
+               C.R := R / 255;
+               C.G := G / 255;
+               C.B := B / 255;
+               C.A := 1      ;
+          end;
 
-     BMP_.Unmap( B );
+          Texels[ X ] := C;
+     end;
 
      SendData;
 end;
 
 procedure TGLCelTex1D_TAlphaColorF.ExportTo( const BMP_:TBitmap );
 var
-   B :TBitmapData;
    X :Integer;
 begin
-     BMP_.SetSize( _Texels.CellsX, 1 );
+     BMP_.SetSize( Texels.CellsX, 1 );
 
-     BMP_.Map( TMapAccess.Write, B );
-
-     for X := 0 to _Texels.CellsX-1 do
+     for X := 0 to Texels.CellsX-1 do
      begin
-          B.SetPixel( X, 0, Texels[ X ].ToAlphaColor );
+          BMP_.Canvas.Pixels[ X, 0 ] := Texels[ X ].ToAlphaColor;
      end;
-
-     BMP_.Unmap( B );
 end;
 
 //------------------------------------------------------------------------------
