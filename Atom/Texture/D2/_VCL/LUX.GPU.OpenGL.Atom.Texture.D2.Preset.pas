@@ -1,10 +1,10 @@
-﻿unit LUX.GPU.OpenGL.Atom.Imager.D2.Preset;
+﻿unit LUX.GPU.OpenGL.Atom.Texture.D2.Preset;
 
 interface //#################################################################### ■
 
 uses System.UITypes,
-     FMX.Graphics,
-     LUX, LUX.GPU.OpenGL.Atom.Imager.D2;
+     Vcl.Graphics,
+     LUX, LUX.GPU.OpenGL.Atom.Texture.D2;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -53,7 +53,7 @@ constructor TGLCelTex2D_TAlphaColorF.Create;
 begin
      inherited;
 
-     _TexelF := GL_RGBA32F;
+     _TexelF := GL_RGBA;
      _PixelF := GL_RGBA;
      _PixelT := GL_FLOAT;
 end;
@@ -68,47 +68,44 @@ end;
 
 procedure TGLCelTex2D_TAlphaColorF.ImportFrom( const BMP_:TBitmap );
 var
-   B :TBitmapData;
    X, Y :Integer;
+   C :TAlphaColorF;
 begin
-     _Texels.CellsX := BMP_.Width ;
-     _Texels.CellsY := BMP_.Height;
+     Texels.CellsX := BMP_.Width ;
+     Texels.CellsY := BMP_.Height;
 
-     BMP_.Map( TMapAccess.Read, B );
-
-     for Y := 0 to _Texels.CellsY-1 do
+     for Y := 0 to Texels.CellsY-1 do
      begin
-          for X := 0 to _Texels.CellsX-1 do
+          for X := 0 to Texels.CellsX-1 do
           begin
-               Texels[ X, Y ] := TAlphaColorF.Create( B.GetPixel( X, Y ) );
+               with TColorRec( BMP_.Canvas.Pixels[ X, Y ] ) do
+               begin
+                    C.R := R / 255;
+                    C.G := G / 255;
+                    C.B := B / 255;
+                    C.A := 1      ;
+               end;
+
+               Texels[ X, Y ] := C;
           end;
      end;
-
-     BMP_.Unmap( B );
 
      SendData;
 end;
 
 procedure TGLCelTex2D_TAlphaColorF.ExportTo( const BMP_:TBitmap );
 var
-   B :TBitmapData;
    X, Y :Integer;
 begin
-     ReceData;
+     BMP_.SetSize( Texels.CellsX, Texels.CellsY );
 
-     BMP_.SetSize( _Texels.CellsX, _Texels.CellsY );
-
-     BMP_.Map( TMapAccess.Write, B );
-
-     for Y := 0 to _Texels.CellsY-1 do
+     for Y := 0 to Texels.CellsY-1 do
      begin
-          for X := 0 to _Texels.CellsX-1 do
+          for X := 0 to Texels.CellsX-1 do
           begin
-               B.SetPixel( X, Y, Texels[ X, Y ].ToAlphaColor );
+               BMP_.Canvas.Pixels[ X, Y ] := Texels[ X, Y ].ToAlphaColor;
           end;
      end;
-
-     BMP_.Unmap( B );
 end;
 
 //------------------------------------------------------------------------------

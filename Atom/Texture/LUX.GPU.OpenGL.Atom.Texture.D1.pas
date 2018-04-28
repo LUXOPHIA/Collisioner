@@ -1,10 +1,12 @@
-﻿unit LUX.GPU.OpenGL.Atom.Imager.D3.Preset;
+﻿unit LUX.GPU.OpenGL.Atom.Texture.D1;
 
 interface //#################################################################### ■
 
-uses System.UITypes,
-     Vcl.Graphics,
-     LUX, LUX.GPU.OpenGL.Atom.Imager.D3;
+uses Winapi.OpenGL, Winapi.OpenGLext,
+     LUX,
+     LUX.Data.Lattice.T1,
+     LUX.GPU.OpenGL.Atom.Image.D1,
+     LUX.GPU.OpenGL.Atom.Texture;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -12,9 +14,37 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex3D_TAlphaColorF
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexture1D<_TTexel_,_TTexels_>
 
-     TGLCelTex3D_TAlphaColorF = class( TGLCelTex3D<TAlphaColorF> )
+     IGLTexture1D = interface( IGLTexture )
+     ['{9802F2EE-57A9-4E2E-AE7F-CCC6A32DC3FE}']
+     {protected}
+     {public}
+       ///// メソッド
+       procedure SendData;
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLTexture1D<_TTexel_:record;_TTexels_:constructor,TArray1D<_TTexel_>> = class( TGLImage1D<_TTexel_,_TTexels_>, IGLTexture1D )
+     private
+     protected
+       _Sampler :TGLSampler;
+       ///// アクセス
+       function GetSampler :TGLSampler;
+     public
+       constructor Create;
+       destructor Destroy; override;
+       ///// プロパティ
+       property Sampler :TGLSampler read GetSampler;
+       ///// メソッド
+       procedure Use( const BindI_:GLuint ); override;
+       procedure Unuse( const BindI_:GLuint ); override;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex1D<_TTexel_>
+
+     TGLCelTex1D<_TTexel_:record> = class( TGLTexture1D<_TTexel_,TCellArray1D<_TTexel_>> )
      private
      protected
      public
@@ -22,29 +52,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        destructor Destroy; override;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiTex3D_TAlphaColorF
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiTex1D<_TTexel_>
 
-     TGLPoiTex3D_TAlphaColorF = class( TGLPoiTex3D<TAlphaColorF> )
-     private
-     protected
-     public
-       constructor Create;
-       destructor Destroy; override;
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex3D_Single
-
-     TGLCelTex3D_Single = class( TGLCelTex3D<Single> )
-     private
-     protected
-     public
-       constructor Create;
-       destructor Destroy; override;
-     end;
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiTex3D_Single
-
-     TGLPoiTex3D_Single = class( TGLPoiTex3D<Single> )
+     TGLPoiTex1D<_TTexel_:record> = class( TGLTexture1D<_TTexel_,TPoinArray1D<_TTexel_>> )
      private
      protected
      public
@@ -60,13 +70,58 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 implementation //############################################################### ■
 
-uses Winapi.OpenGL, Winapi.OpenGLext;
+uses System.Math;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex3D_TAlphaColorF
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexture1D<_TTexel_,_TTexels_>
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLTexture1D<_TTexel_,_TTexels_>.GetSampler :TGLSampler;
+begin
+     Result := _Sampler;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLTexture1D<_TTexel_,_TTexels_>.Create;
+begin
+     inherited;
+
+     _Sampler := TGLSampler.Create;
+end;
+
+destructor TGLTexture1D<_TTexel_,_TTexels_>.Destroy;
+begin
+     _Sampler.DisposeOf;
+
+     inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLTexture1D<_TTexel_,_TTexels_>.Use( const BindI_:GLuint );
+begin
+     inherited;
+
+     _Sampler.Use( BindI_ );
+end;
+
+procedure TGLTexture1D<_TTexel_,_TTexels_>.Unuse( const BindI_:GLuint );
+begin
+     _Sampler.Unuse( BindI_ );
+
+     inherited;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex1D<_TTexel_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -74,22 +129,23 @@ uses Winapi.OpenGL, Winapi.OpenGLext;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLCelTex3D_TAlphaColorF.Create;
+constructor TGLCelTex1D<_TTexel_>.Create;
 begin
      inherited;
 
-     _TexelF := GL_RGBA;
-     _PixelF := GL_RGBA;
-     _PixelT := GL_FLOAT;
+     with _Sampler do
+     begin
+          WrapU := GL_MIRRORED_REPEAT;
+     end;
 end;
 
-destructor TGLCelTex3D_TAlphaColorF.Destroy;
+destructor TGLCelTex1D<_TTexel_>.Destroy;
 begin
 
      inherited;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiTex3D_TAlphaColorF
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiTex1D<_TTexel_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -97,62 +153,17 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLPoiTex3D_TAlphaColorF.Create;
+constructor TGLPoiTex1D<_TTexel_>.Create;
 begin
      inherited;
 
-     _TexelF := GL_RGBA;
-     _PixelF := GL_RGBA;
-     _PixelT := GL_FLOAT;
+     with _Sampler do
+     begin
+          WrapU := GL_CLAMP_TO_EDGE;
+     end;
 end;
 
-destructor TGLPoiTex3D_TAlphaColorF.Destroy;
-begin
-
-     inherited;
-end;
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex3D_Single
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TGLCelTex3D_Single.Create;
-begin
-     inherited;
-
-     _TexelF := GL_R32F;
-     _PixelF := GL_RED;
-     _PixelT := GL_FLOAT;
-end;
-
-destructor TGLCelTex3D_Single.Destroy;
-begin
-
-     inherited;
-end;
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiTex3D_Single
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TGLPoiTex3D_Single.Create;
-begin
-     inherited;
-
-     _TexelF := GL_R32F;
-     _PixelF := GL_RED;
-     _PixelT := GL_FLOAT;
-end;
-
-destructor TGLPoiTex3D_Single.Destroy;
+destructor TGLPoiTex1D<_TTexel_>.Destroy;
 begin
 
      inherited;
