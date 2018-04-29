@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Shaper.Preset.VCL;
+﻿unit LUX.GPU.OpenGL.Shaper.Preset.TGLText;
 
 interface //#################################################################### ■
 
@@ -12,7 +12,7 @@ uses System.UITypes, System.Classes,
      LUX.GPU.OpenGL.Atom.Buffer.EleBuf,
      LUX.GPU.OpenGL.Scener,
      LUX.GPU.OpenGL.Matery,
-     LUX.GPU.OpenGL.Matery.Imager.Preset,
+     LUX.GPU.OpenGL.Matery.Texture.Preset,
      LUX.GPU.OpenGL.Matery.Preset,
      LUX.GPU.OpenGL.Shaper;
 
@@ -22,9 +22,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperText
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLText
 
-     TGLShaperText = class( TGLShaperFace )
+     TGLText = class( TGLShaperFace )
      private
        ///// メソッド
        procedure MakeModel;
@@ -61,13 +61,13 @@ uses System.Types, System.Math, System.SysUtils;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperBB
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLText
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLShaperText.MakeModel;
+procedure TGLText.MakeModel;
 var
    SX, SY :Single;
 begin
@@ -86,12 +86,12 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLShaperText.GetText :String;
+function TGLText.GetText :String;
 begin
      Result := _Text;
 end;
 
-procedure TGLShaperText.SetText( const Text_:String );
+procedure TGLText.SetText( const Text_:String );
 var
    S :TSize;
 begin
@@ -120,19 +120,19 @@ begin
      MakeModel;
 end;
 
-function TGLShaperText.GetFont :TFont;
+function TGLText.GetFont :TFont;
 begin
      Result := _Font;
 end;
 
-procedure TGLShaperText.SetFont( Sender:TObject );
+procedure TGLText.SetFont( Sender:TObject );
 begin
      _BMP.Canvas.Font.Assign( _Font );
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLShaperText.Create;
+constructor TGLText.Create;
 begin
      inherited;
 
@@ -167,7 +167,7 @@ begin
      Font.Size := 100;
 end;
 
-destructor TGLShaperText.Destroy;
+destructor TGLText.Destroy;
 begin
      _BMP.Free;
 
