@@ -620,7 +620,7 @@ begin
                  Add( 'layout( std140 ) uniform TCameraPose{ layout( row_major ) mat4 _CameraPose; };' );
                  Add( 'layout( std140 ) uniform TShaperPose{ layout( row_major ) mat4 _ShaperPose; };' );
 
-                 Add( 'uniform sampler2D _Imager;' );
+                 Add( 'uniform sampler2D _Textur;' );
 
                  Add( 'layout( std140 ) uniform TAmbient{ vec4  _Ambient; };' );
                  Add( 'layout( std140 ) uniform TDiffuse{ vec4  _Diffuse; };' );
@@ -644,7 +644,7 @@ begin
                  Add( '  vec4 R = reflect( V, N );' );
 
                  Add( '  vec4 Cd = _Diffuse * N.y;' );
-                 Add( '  vec4 Cr = texture( _Imager, VecToSky( R ) );' );
+                 Add( '  vec4 Cr = texture( _Textur, VecToSky( R ) );' );
 
                  Add( 'float F = clamp( Fresnel( -V, N, _RefI ), 0, 1 );' );
 
@@ -755,7 +755,7 @@ begin
                  Add( 'layout( std140 ) uniform TCameraPose{ layout( row_major ) mat4 _CameraPose; };' );
                  Add( 'layout( std140 ) uniform TShaperPose{ layout( row_major ) mat4 _ShaperPose; };' );
 
-                 Add( 'uniform sampler2D _Imager;' );
+                 Add( 'uniform sampler2D _Textur;' );
 
                  Add( 'layout( std140 ) uniform TColor{ vec4 _Color; };' );
 
@@ -775,7 +775,7 @@ begin
                  Add( '  vec4 V = normalize( _Sender.Pos - C );' );
                  Add( '  vec4 N = normalize( _Sender.Nor );' );
                  Add( '  vec4 R = reflect( V, N );' );
-                 Add( '  _ResultCol = _Color * texture( _Imager, VecToSky( R ) );' );
+                 Add( '  _ResultCol = _Color * texture( _Textur, VecToSky( R ) );' );
                  Add( '}' );
 
                EndUpdate;
@@ -886,7 +886,7 @@ begin
                  Add( 'layout( std140 ) uniform TCameraPose{ layout( row_major ) mat4 _CameraPose; };' );
                  Add( 'layout( std140 ) uniform TShaperPose{ layout( row_major ) mat4 _ShaperPose; };' );
 
-                 Add( 'uniform sampler2D _Imager;' );
+                 Add( 'uniform sampler2D _Textur;' );
 
                  Add( 'layout( std140 ) uniform TRefI{ float _RefI; };' );
 
@@ -908,8 +908,8 @@ begin
                  Add( '  vec4 Re = reflect( V, N );' );
                  Add( '  vec4 Ra = refract( V, N, 1.0/_RefI );' );
 
-                 Add( '  vec4 Ce = texture( _Imager, VecToSky( Re ) );' );
-                 Add( '  vec4 Ca = texture( _Imager, VecToSky( Ra ) );' );
+                 Add( '  vec4 Ce = texture( _Textur, VecToSky( Re ) );' );
+                 Add( '  vec4 Ca = texture( _Textur, VecToSky( Ra ) );' );
 
                  Add( 'float F = clamp( Fresnel( -V, N, _RefI ), 0, 1 );' );
 

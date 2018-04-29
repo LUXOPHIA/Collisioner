@@ -5,9 +5,9 @@ interface //####################################################################
 uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX, LUX.D2, LUX.D3, LUX.M4,
      LUX.GPU.OpenGL,
-     LUX.GPU.OpenGL.Atom.Buffer.Unifor,
-     LUX.GPU.OpenGL.Atom.Imager.D2.Preset,
-     LUX.GPU.OpenGL.Atom.Imager.D3.Preset,
+     LUX.GPU.OpenGL.Atom.Buffer.UniBuf,
+     LUX.GPU.OpenGL.Atom.Texture.D2.Preset,
+     LUX.GPU.OpenGL.Atom.Texture.D3.Preset,
      LUX.GPU.OpenGL.Matery,
      LUX.GPU.OpenGL.Shaper;
 
@@ -32,12 +32,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TColorMarcubesMateryFaces = class( TGLMateryNorTexG, IMarcubesMateryFaces )
      private
      protected
-       _Imager :TGLBricer2D_TAlphaColorF;
+       _Textur :TGLCelTex2D_TAlphaColorF;
      public
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property Imager :TGLBricer2D_TAlphaColorF read _Imager;
+       property Textur :TGLCelTex2D_TAlphaColorF read _Textur;
        ///// メソッド
        procedure Use; override;
        procedure Unuse; override;
@@ -48,9 +48,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TColorMarcubes = class( TGLShaperZeroPoins )
      private
      protected
-       _Grider      :TGLGrider3D_AlphaColorF;
-       _Size        :TGLUnifor<TSingle3D>;
-       _Threshold   :TGLUnifor<Single>;
+       _Grider      :TGLPoiTex3D_AlphaColorF;
+       _Size        :TGLUniBuf<TSingle3D>;
+       _Threshold   :TGLUniBuf<Single>;
        ///// アクセス
        function GetSizeX :Single;
        procedure SetSizeX( const SizeX_:Single );
@@ -64,7 +64,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
-       property Grider    :TGLGrider3D_AlphaColorF read   _Grider                          ;
+       property Grider    :TGLPoiTex3D_AlphaColorF read   _Grider                          ;
        property SizeX     :Single                  read GetSizeX       write SetSizeX      ;
        property SizeY     :Single                  read GetSizeY       write SetSizeY      ;
        property SizeZ     :Single                  read GetSizeZ       write SetSizeZ      ;
@@ -103,20 +103,20 @@ begin
 
      with _Engine do
      begin
-          with Verters do
+          with VerBufs do
           begin
                Del( 0{BinP} );
                Del( 1{BinP} );
                Del( 2{BinP} );
           end;
 
-          with Unifors do
+          with UniBufs do
           begin
                Add( 4{BinP}, 'TGriderS'{Name} );
                Add( 5{BinP}, 'TThreshold'{Name} );
           end;
 
-          with Imagers do
+          with Texturs do
           begin
                Add( 0{BinP}, '_Grider'{Name} );
           end;
@@ -126,12 +126,12 @@ begin
           ShaderF.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TColorMarcubes_Faces_F_glsl' );
      end;
 
-     _Imager := TGLBricer2D_TAlphaColorF.Create;
+     _Textur := TGLCelTex2D_TAlphaColorF.Create;
 end;
 
 destructor TColorMarcubesMateryFaces.Destroy;
 begin
-     _Imager.DisposeOf;
+     _Textur.DisposeOf;
 
      inherited;
 end;
@@ -142,12 +142,12 @@ procedure TColorMarcubesMateryFaces.Use;
 begin
      inherited;
 
-     _Imager.Use( 1 );
+     _Textur.Use( 1 );
 end;
 
 procedure TColorMarcubesMateryFaces.Unuse;
 begin
-     _Imager.Unuse( 1 );
+     _Textur.Unuse( 1 );
 
      inherited;
 end;
@@ -207,9 +207,9 @@ constructor TColorMarcubes.Create;
 begin
      inherited;
 
-     _Grider    := TGLGrider3D_AlphaColorF.Create;
-     _Size      := TGLUnifor<TSingle3D>.Create( GL_STATIC_DRAW );  _Size.Count := 1;
-     _Threshold := TGLUnifor<Single>.Create( GL_STATIC_DRAW );  _Threshold.Count := 1;
+     _Grider    := TGLPoiTex3D_AlphaColorF.Create;
+     _Size      := TGLUniBuf<TSingle3D>.Create( GL_STATIC_DRAW );  _Size.Count := 1;
+     _Threshold := TGLUniBuf<Single>.Create( GL_STATIC_DRAW );  _Threshold.Count := 1;
 
      _Matery := TColorMarcubesMateryFaces.Create;
 
@@ -218,9 +218,9 @@ begin
           MargsX := 1;
           MargsY := 1;
           MargsZ := 1;
-          BricsX := 100;
-          BricsY := 100;
-          BricsZ := 100;
+          CellsX := 100;
+          CellsY := 100;
+          CellsZ := 100;
      end;
 
      SizeX := 2;
@@ -261,12 +261,9 @@ end;
 
 procedure TColorMarcubes.MakeModel;
 begin
-     with _Grider do
-     begin
-          SendData;
+     _Grider.SendData;
 
-          with Texels do PoinsN := BricsX * BricsY * BricsZ;
-     end;
+     PoinsN := _Grider.Texels.CellsN;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
