@@ -6,8 +6,8 @@ uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX, LUX.D2, LUX.D3, LUX.M4,
      LUX.GPU.OpenGL,
      LUX.GPU.OpenGL.Atom.Buffer.UniBuf,
-     LUX.GPU.OpenGL.Atom.Texture.D2.Preset,
-     LUX.GPU.OpenGL.Atom.Texture.D3.Preset,
+     LUX.GPU.OpenGL.Atom.Textur.D2.Preset,
+     LUX.GPU.OpenGL.Atom.Textur.D3.Preset,
      LUX.GPU.OpenGL.Matery,
      LUX.GPU.OpenGL.Shaper;
 
