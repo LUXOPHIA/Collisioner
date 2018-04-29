@@ -70,7 +70,7 @@ begin
        -3  -2  -1  ・  ・  ・  ・  ・  ・  ・  +7  +8  +9
                    G0  G1              G0  G1             }
 
-     H := BricsN;
+     H := CellsX;
 
      G0 := Items[ 0 ];
      G1 := Items[ 1 ];
@@ -86,7 +86,7 @@ begin
                Val := G0.Val + X * Gd.Val;
           end;
 
-          Grids[ 0-X ] := G;
+          Poins[ 0-X ] := G;
      end;
 
      G0 := Items[ H-1 ];
@@ -103,7 +103,7 @@ begin
                Val := G1.Val + X * Gd.Pos;
           end;
 
-          Grids[ H+X ] := G;
+          Poins[ H+X ] := G;
      end;
 end;
 
