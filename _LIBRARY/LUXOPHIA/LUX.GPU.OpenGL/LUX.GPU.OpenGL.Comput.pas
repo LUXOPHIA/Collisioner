@@ -11,7 +11,7 @@ uses System.SysUtils, System.UITypes,
      LUX.GPU.OpenGL.Atom.Buffer.VerBuf,
      LUX.GPU.OpenGL.Atom.Buffer.StoBuf,
      LUX.GPU.OpenGL.Atom.Image,
-     LUX.GPU.OpenGL.Atom.Texture,
+     LUX.GPU.OpenGL.Atom.Textur,
      LUX.GPU.OpenGL.Atom.Shader,
      LUX.GPU.OpenGL.Atom.Engine;
 

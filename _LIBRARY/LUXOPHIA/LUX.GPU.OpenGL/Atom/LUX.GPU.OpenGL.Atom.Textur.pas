@@ -1,4 +1,4 @@
-﻿unit LUX.GPU.OpenGL.Atom.Texture;
+﻿unit LUX.GPU.OpenGL.Atom.Textur;
 
 interface //#################################################################### ■
 
@@ -78,9 +78,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Unuse( const BindI_:GLuint );
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexture
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTextur
 
-     IGLTexture = interface( IGLImage )
+     IGLTextur = interface( IGLImage )
      ['{22F971D6-65FD-4F42-80ED-743253890A8C}']
        ///// アクセス
        function GetSampler :TGLSampler;
@@ -90,7 +90,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLTexture<_TTexel_:record;_TTexels_:constructor,TCoreArray<_TTexel_>> = class( TGLImage<_TTexel_,_TTexels_>, IGLTexture )
+     TGLTextur<_TTexel_:record;_TTexels_:constructor,TCoreArray<_TTexel_>> = class( TGLImage<_TTexel_,_TTexels_>, IGLTextur )
      private
      protected
        _Sampler :TGLSampler;
@@ -231,7 +231,7 @@ begin
      glBindSampler( BindI_, 0 );
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTexture
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTextur
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -239,21 +239,21 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLTexture<_TTexel_,_TTexels_>.GetSampler :TGLSampler;
+function TGLTextur<_TTexel_,_TTexels_>.GetSampler :TGLSampler;
 begin
      Result := _Sampler;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLTexture<_TTexel_,_TTexels_>.Create( const Kind_:GLenum );
+constructor TGLTextur<_TTexel_,_TTexels_>.Create( const Kind_:GLenum );
 begin
      inherited;
 
      _Sampler := TGLSampler.Create;
 end;
 
-destructor TGLTexture<_TTexel_,_TTexels_>.Destroy;
+destructor TGLTextur<_TTexel_,_TTexels_>.Destroy;
 begin
      _Sampler.DisposeOf;
 
@@ -262,14 +262,14 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLTexture<_TTexel_,_TTexels_>.Use( const BindI_:GLuint );
+procedure TGLTextur<_TTexel_,_TTexels_>.Use( const BindI_:GLuint );
 begin
      inherited;
 
      _Sampler.Use( BindI_ );
 end;
 
-procedure TGLTexture<_TTexel_,_TTexels_>.Unuse( const BindI_:GLuint );
+procedure TGLTextur<_TTexel_,_TTexels_>.Unuse( const BindI_:GLuint );
 begin
      _Sampler.Unuse( BindI_ );
 
