@@ -307,7 +307,7 @@ begin
      begin
           with _Images[ K ] do
           begin
-               _Engine.Textures.Add( Index{BinP}, K{Name} );
+               _Engine.Texturs.Add( Index{BinP}, K{Name} );
           end;
      end;
 

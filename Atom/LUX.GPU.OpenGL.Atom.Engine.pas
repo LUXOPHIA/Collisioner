@@ -22,14 +22,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// アクセス
        function GetVerBufs :TGLPorterV;
        function GetUniBufs :TGLPorterU;
-       function GetTextures :TGLPorterT;
+       function GetTexturs :TGLPorterT;
        function GetStoBufs :TGLPorterS;
      {public}
        ///// プロパティ
-       property VerBufs  :TGLPorterV read GetVerBufs ;
-       property UniBufs  :TGLPorterU read GetUniBufs ;
-       property Textures :TGLPorterT read GetTextures;
-       property StoBufs  :TGLPorterS read GetStoBufs ;
+       property VerBufs :TGLPorterV read GetVerBufs;
+       property UniBufs :TGLPorterU read GetUniBufs;
+       property Texturs :TGLPorterT read GetTexturs;
+       property StoBufs :TGLPorterS read GetStoBufs;
      end;
 
      //-------------------------------------------------------------------------
@@ -44,7 +44,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// アクセス
        function GetVerBufs :TGLPorterV;
        function GetUniBufs :TGLPorterU;
-       function GetTextures :TGLPorterT;
+       function GetTexturs :TGLPorterT;
        function GetStoBufs :TGLPorterS;
        ///// イベント
        procedure DoOnLinked; override;
@@ -52,10 +52,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property VerBufs  :TGLPorterV read GetVerBufs ;
-       property UniBufs  :TGLPorterU read GetUniBufs ;
-       property Textures :TGLPorterT read GetTextures;
-       property StoBufs  :TGLPorterS read GetStoBufs ;
+       property VerBufs :TGLPorterV read GetVerBufs;
+       property UniBufs :TGLPorterU read GetUniBufs;
+       property Texturs :TGLPorterT read GetTexturs;
+       property StoBufs :TGLPorterS read GetStoBufs;
        ///// メソッド
        procedure Attach( const Shader_:IGLShader ); override;
        procedure Detach( const Shader_:IGLShader ); override;
@@ -93,7 +93,7 @@ begin
      Result := _UniBufs;
 end;
 
-function TGLEngine.GetTextures :TGLPorterT;
+function TGLEngine.GetTexturs :TGLPorterT;
 begin
      Result := _Texturs;
 end;

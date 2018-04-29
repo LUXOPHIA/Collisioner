@@ -21,10 +21,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      ['{426B4B0E-FDA1-44B2-9B2A-0B7371E2E7D0}']
      {protected}
        ///// アクセス
-       function GetImager :TGLCelTex2D_TAlphaColorF;
+       function GetTextur :TGLCelTex2D_TAlphaColorF;
      {public}
        ///// プロパティ
-       property Imager :TGLCelTex2D_TAlphaColorF read GetImager;
+       property Textur :TGLCelTex2D_TAlphaColorF read GetTextur;
      end;
 
      //-------------------------------------------------------------------------
@@ -32,14 +32,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLMateryImag = class( TGLMateryNorTex, IGLMateryImag )
      private
      protected
-       _Imager :TGLCelTex2D_TAlphaColorF;
+       _Textur :TGLCelTex2D_TAlphaColorF;
        ///// アクセス
-       function GetImager :TGLCelTex2D_TAlphaColorF;
+       function GetTextur :TGLCelTex2D_TAlphaColorF;
      public
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property Imager :TGLCelTex2D_TAlphaColorF read GetImager;
+       property Textur :TGLCelTex2D_TAlphaColorF read GetTextur;
        ///// メソッド
        procedure Use; override;
        procedure Unuse; override;
@@ -51,10 +51,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      ['{A3108C6C-0E37-467C-94DF-F99E30B528FA}']
      {protected}
        ///// アクセス
-       function GetImager :TGLCelTex2D_TAlphaColorF;
+       function GetTextur :TGLCelTex2D_TAlphaColorF;
      {public}
        ///// プロパティ
-       property Imager :TGLCelTex2D_TAlphaColorF read GetImager;
+       property Textur :TGLCelTex2D_TAlphaColorF read GetTextur;
      end;
 
      //-------------------------------------------------------------------------
@@ -62,14 +62,14 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLMateryImagG = class( TGLMateryNorTexG, IGLMateryImagG )
      private
      protected
-       _Imager :TGLCelTex2D_TAlphaColorF;
+       _Textur :TGLCelTex2D_TAlphaColorF;
        ///// アクセス
-       function GetImager :TGLCelTex2D_TAlphaColorF;
+       function GetTextur :TGLCelTex2D_TAlphaColorF;
      public
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property Imager :TGLCelTex2D_TAlphaColorF read GetImager;
+       property Textur :TGLCelTex2D_TAlphaColorF read GetTextur;
        ///// メソッド
        procedure Use; override;
        procedure Unuse; override;
@@ -95,9 +95,9 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLMateryImag.GetImager :TGLCelTex2D_TAlphaColorF;
+function TGLMateryImag.GetTextur :TGLCelTex2D_TAlphaColorF;
 begin
-     Result := _Imager;
+     Result := _Textur;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -108,18 +108,18 @@ begin
 
      with _Engine do
      begin
-          with Textures do
+          with Texturs do
           begin
-               Add( 0{BinP}, '_Imager'{Name} );
+               Add( 0{BinP}, '_Textur'{Name} );
           end;
      end;
 
-     _Imager := TGLCelTex2D_TAlphaColorF.Create;
+     _Textur := TGLCelTex2D_TAlphaColorF.Create;
 end;
 
 destructor TGLMateryImag.Destroy;
 begin
-     _Imager.DisposeOf;
+     _Textur.DisposeOf;
 
      inherited;
 end;
@@ -130,12 +130,12 @@ procedure TGLMateryImag.Use;
 begin
      inherited;
 
-     _Imager.Use( 0 );
+     _Textur.Use( 0 );
 end;
 
 procedure TGLMateryImag.Unuse;
 begin
-     _Imager.Unuse( 0 );
+     _Textur.Unuse( 0 );
 
      inherited;
 end;
@@ -148,9 +148,9 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLMateryImagG.GetImager :TGLCelTex2D_TAlphaColorF;
+function TGLMateryImagG.GetTextur :TGLCelTex2D_TAlphaColorF;
 begin
-     Result := _Imager;
+     Result := _Textur;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -161,18 +161,18 @@ begin
 
      with _Engine do
      begin
-          with Textures do
+          with Texturs do
           begin
-               Add( 0{BinP}, '_Imager'{Name} );
+               Add( 0{BinP}, '_Textur'{Name} );
           end;
      end;
 
-     _Imager := TGLCelTex2D_TAlphaColorF.Create;
+     _Textur := TGLCelTex2D_TAlphaColorF.Create;
 end;
 
 destructor TGLMateryImagG.Destroy;
 begin
-     _Imager.DisposeOf;
+     _Textur.DisposeOf;
 
      inherited;
 end;
@@ -183,12 +183,12 @@ procedure TGLMateryImagG.Use;
 begin
      inherited;
 
-     _Imager.Use( 0 );
+     _Textur.Use( 0 );
 end;
 
 procedure TGLMateryImagG.Unuse;
 begin
-     _Imager.Unuse( 0 );
+     _Textur.Unuse( 0 );
 
      inherited;
 end;

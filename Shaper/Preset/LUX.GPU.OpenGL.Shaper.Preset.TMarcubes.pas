@@ -50,12 +50,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TMarcubesMateryFacesMIR = class( TGLMateryNorTexG, IMarcubesMateryFacesMIR )
      private
      protected
-       _Imager :TGLCelTex2D_TAlphaColorF;
+       _Textur :TGLCelTex2D_TAlphaColorF;
      public
        constructor Create;
        destructor Destroy; override;
        ///// プロパティ
-       property Imager :TGLCelTex2D_TAlphaColorF read _Imager;
+       property Textur :TGLCelTex2D_TAlphaColorF read _Textur;
        ///// メソッド
        procedure Use; override;
        procedure Unuse; override;
@@ -157,7 +157,7 @@ begin
                Add( 5{BinP}, 'TThreshold'{Name} );
           end;
 
-          with Textures do
+          with Texturs do
           begin
                Add( 0{BinP}, '_Grider'{Name} );
           end;
@@ -204,10 +204,10 @@ begin
                Add( 5{BinP}, 'TThreshold'{Name} );
           end;
 
-          with Textures do
+          with Texturs do
           begin
                Add( 0{BinP}, '_Grider'{Name} );
-               Add( 1{BinP}, '_Imager'{Name} );
+               Add( 1{BinP}, '_Textur'{Name} );
           end;
 
           ShaderV.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_Faces_V_glsl' );
@@ -215,12 +215,12 @@ begin
           ShaderF.LoadFromResource( 'LUX_GPU_OpenGL_Shaper_Preset_TMarcubes_FacesMIR_F_glsl' );
      end;
 
-     _Imager := TGLCelTex2D_TAlphaColorF.Create;
+     _Textur := TGLCelTex2D_TAlphaColorF.Create;
 end;
 
 destructor TMarcubesMateryFacesMIR.Destroy;
 begin
-     _Imager.DisposeOf;
+     _Textur.DisposeOf;
 
      inherited;
 end;
@@ -231,12 +231,12 @@ procedure TMarcubesMateryFacesMIR.Use;
 begin
      inherited;
 
-     _Imager.Use( 1 );
+     _Textur.Use( 1 );
 end;
 
 procedure TMarcubesMateryFacesMIR.Unuse;
 begin
-     _Imager.Unuse( 1 );
+     _Textur.Unuse( 1 );
 
      inherited;
 end;
@@ -270,7 +270,7 @@ begin
                Add( 5{BinP}, 'TThreshold'{Name} );
           end;
 
-          with Textures do
+          with Texturs do
           begin
                Add( 0{BinP}, '_Grider'{Name} );
           end;
