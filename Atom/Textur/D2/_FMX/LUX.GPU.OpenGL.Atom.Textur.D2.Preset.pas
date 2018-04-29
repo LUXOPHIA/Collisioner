@@ -1,10 +1,10 @@
-﻿unit LUX.GPU.OpenGL.Atom.Texture.D1.Preset;
+﻿unit LUX.GPU.OpenGL.Atom.Textur.D2.Preset;
 
 interface //#################################################################### ■
 
 uses System.UITypes,
      FMX.Graphics,
-     LUX, LUX.GPU.OpenGL.Atom.Texture.D1;
+     LUX, LUX.GPU.OpenGL.Atom.Textur.D2;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -12,9 +12,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex1D_TAlphaColorF
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex2D_TAlphaColorF
 
-     TGLCelTex1D_TAlphaColorF = class( TGLCelTex1D<TAlphaColorF> )
+     TGLCelTex2D_TAlphaColorF = class( TGLCelTex2D<TAlphaColorF> )
      private
      protected
      public
@@ -41,7 +41,7 @@ uses Winapi.OpenGL, Winapi.OpenGLext;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex1D_TAlphaColorF
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex2D_TAlphaColorF
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -49,7 +49,7 @@ uses Winapi.OpenGL, Winapi.OpenGLext;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLCelTex1D_TAlphaColorF.Create;
+constructor TGLCelTex2D_TAlphaColorF.Create;
 begin
      inherited;
 
@@ -58,7 +58,7 @@ begin
      _PixelT := GL_FLOAT;
 end;
 
-destructor TGLCelTex1D_TAlphaColorF.Destroy;
+destructor TGLCelTex2D_TAlphaColorF.Destroy;
 begin
 
      inherited;
@@ -66,18 +66,22 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLCelTex1D_TAlphaColorF.ImportFrom( const BMP_:TBitmap );
+procedure TGLCelTex2D_TAlphaColorF.ImportFrom( const BMP_:TBitmap );
 var
    B :TBitmapData;
-   X :Integer;
+   X, Y :Integer;
 begin
-     _Texels.CellsX := BMP_.Width;
+     _Texels.CellsX := BMP_.Width ;
+     _Texels.CellsY := BMP_.Height;
 
      BMP_.Map( TMapAccess.Read, B );
 
-     for X := 0 to _Texels.CellsX-1 do
+     for Y := 0 to _Texels.CellsY-1 do
      begin
-          Texels[ X ] := TAlphaColorF.Create( B.GetPixel( X, 0 ) );
+          for X := 0 to _Texels.CellsX-1 do
+          begin
+               Texels[ X, Y ] := TAlphaColorF.Create( B.GetPixel( X, Y ) );
+          end;
      end;
 
      BMP_.Unmap( B );
@@ -85,18 +89,23 @@ begin
      SendData;
 end;
 
-procedure TGLCelTex1D_TAlphaColorF.ExportTo( const BMP_:TBitmap );
+procedure TGLCelTex2D_TAlphaColorF.ExportTo( const BMP_:TBitmap );
 var
    B :TBitmapData;
-   X :Integer;
+   X, Y :Integer;
 begin
-     BMP_.SetSize( _Texels.CellsX, 1 );
+     ReceData;
+
+     BMP_.SetSize( _Texels.CellsX, _Texels.CellsY );
 
      BMP_.Map( TMapAccess.Write, B );
 
-     for X := 0 to _Texels.CellsX-1 do
+     for Y := 0 to _Texels.CellsY-1 do
      begin
-          B.SetPixel( X, 0, Texels[ X ].ToAlphaColor );
+          for X := 0 to _Texels.CellsX-1 do
+          begin
+               B.SetPixel( X, Y, Texels[ X, Y ].ToAlphaColor );
+          end;
      end;
 
      BMP_.Unmap( B );
@@ -104,7 +113,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLCelTex1D_TAlphaColorF.LoadFromFile( const FileName_:String );
+procedure TGLCelTex2D_TAlphaColorF.LoadFromFile( const FileName_:String );
 var
    B :TBitmap;
 begin
@@ -117,7 +126,7 @@ begin
      B.DisposeOf;
 end;
 
-procedure TGLCelTex1D_TAlphaColorF.SaveToFile( const FileName_:String );
+procedure TGLCelTex2D_TAlphaColorF.SaveToFile( const FileName_:String );
 var
    B :TBitmap;
 begin

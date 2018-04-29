@@ -12,7 +12,7 @@ uses System.UITypes, System.Classes,
      LUX.GPU.OpenGL.Atom.Buffer.EleBuf,
      LUX.GPU.OpenGL.Scener,
      LUX.GPU.OpenGL.Matery,
-     LUX.GPU.OpenGL.Matery.Texture.Preset,
+     LUX.GPU.OpenGL.Matery.Textur.Preset,
      LUX.GPU.OpenGL.Matery.Preset,
      LUX.GPU.OpenGL.Shaper;
 

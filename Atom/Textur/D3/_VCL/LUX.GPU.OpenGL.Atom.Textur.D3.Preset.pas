@@ -1,10 +1,10 @@
-﻿unit LUX.GPU.OpenGL.Atom.Texture.D3.Preset;
+﻿unit LUX.GPU.OpenGL.Atom.Textur.D3.Preset;
 
 interface //#################################################################### ■
 
 uses System.UITypes,
-     FMX.Graphics,
-     LUX, LUX.GPU.OpenGL.Atom.Texture.D3;
+     Vcl.Graphics,
+     LUX, LUX.GPU.OpenGL.Atom.Textur.D3;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -12,9 +12,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex3D_AlphaColorF
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex3D_TAlphaColorF
 
-     TGLCelTex3D_AlphaColorF = class( TGLCelTex3D<TAlphaColorF> )
+     TGLCelTex3D_TAlphaColorF = class( TGLCelTex3D<TAlphaColorF> )
      private
      protected
      public
@@ -22,9 +22,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        destructor Destroy; override;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiTex3D_AlphaColorF
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiTex3D_TAlphaColorF
 
-     TGLPoiTex3D_AlphaColorF = class( TGLPoiTex3D<TAlphaColorF> )
+     TGLPoiTex3D_TAlphaColorF = class( TGLPoiTex3D<TAlphaColorF> )
      private
      protected
      public
@@ -66,7 +66,7 @@ uses Winapi.OpenGL, Winapi.OpenGLext;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex3D_AlphaColorF
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex3D_TAlphaColorF
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -74,22 +74,22 @@ uses Winapi.OpenGL, Winapi.OpenGLext;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLCelTex3D_AlphaColorF.Create;
+constructor TGLCelTex3D_TAlphaColorF.Create;
 begin
      inherited;
 
-     _TexelF := GL_RGBA32F;
+     _TexelF := GL_RGBA;
      _PixelF := GL_RGBA;
      _PixelT := GL_FLOAT;
 end;
 
-destructor TGLCelTex3D_AlphaColorF.Destroy;
+destructor TGLCelTex3D_TAlphaColorF.Destroy;
 begin
 
      inherited;
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiTex3D_AlphaColorF
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiTex3D_TAlphaColorF
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -97,16 +97,16 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLPoiTex3D_AlphaColorF.Create;
+constructor TGLPoiTex3D_TAlphaColorF.Create;
 begin
      inherited;
 
-     _TexelF := GL_RGBA32F;
+     _TexelF := GL_RGBA;
      _PixelF := GL_RGBA;
      _PixelT := GL_FLOAT;
 end;
 
-destructor TGLPoiTex3D_AlphaColorF.Destroy;
+destructor TGLPoiTex3D_TAlphaColorF.Destroy;
 begin
 
      inherited;
