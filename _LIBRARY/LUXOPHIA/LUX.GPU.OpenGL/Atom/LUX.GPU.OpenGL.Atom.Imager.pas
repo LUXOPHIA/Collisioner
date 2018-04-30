@@ -46,10 +46,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLImager<_TTexel_:record;_TTexels_:constructor,TCoreArray<_TTexel_>> = class( TGLAtomer, IGLImager )
+     TGLImager<_TItem_:record;_TGrider_:constructor,TCoreArray<_TItem_>> = class( TGLAtomer, IGLImager )
      private
      protected
-       _Texels :_TTexels_;
+       _Grider :_TGrider_;
        _Kind   :GLenum;
        _TexelF :GLenum;
        _PixelF :GLenum;
@@ -67,7 +67,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const Kind_:GLenum );
        destructor Destroy; override;
        ///// プロパティ
-       property Texels :_TTexels_ read   _Texels                ;
+       property Grider :_TGrider_ read   _Grider                ;
        property Kind   :GLenum    read GetKind   write SetKind  ;
        property TexelF :GLenum    read GetTexelF write SetTexelF;
        property PixelF :GLenum    read GetPixelF write SetPixelF;
@@ -105,55 +105,55 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLImager<_TTexel_,_TTexels_>.GetKind :GLenum;
+function TGLImager<_TItem_,_TGrider_>.GetKind :GLenum;
 begin
      Result := _Kind;
 end;
 
-procedure TGLImager<_TTexel_,_TTexels_>.SetKind( const Kind_:GLenum );
+procedure TGLImager<_TItem_,_TGrider_>.SetKind( const Kind_:GLenum );
 begin
      _Kind := Kind_;
 end;
 
-function TGLImager<_TTexel_,_TTexels_>.GetTexelF :GLenum;
+function TGLImager<_TItem_,_TGrider_>.GetTexelF :GLenum;
 begin
      Result := _TexelF;
 end;
 
-procedure TGLImager<_TTexel_,_TTexels_>.SetTexelF( const TexelF_:GLenum );
+procedure TGLImager<_TItem_,_TGrider_>.SetTexelF( const TexelF_:GLenum );
 begin
      _TexelF := TexelF_;
 end;
 
-function TGLImager<_TTexel_,_TTexels_>.GetPixelF :GLenum;
+function TGLImager<_TItem_,_TGrider_>.GetPixelF :GLenum;
 begin
      Result := _PixelF;
 end;
 
-procedure TGLImager<_TTexel_,_TTexels_>.SetPixelF( const PixelF_:GLenum );
+procedure TGLImager<_TItem_,_TGrider_>.SetPixelF( const PixelF_:GLenum );
 begin
      _PixelF := PixelF_;
 end;
 
-function TGLImager<_TTexel_,_TTexels_>.GetPixelT :GLenum;
+function TGLImager<_TItem_,_TGrider_>.GetPixelT :GLenum;
 begin
      Result := _PixelT;
 end;
 
-procedure TGLImager<_TTexel_,_TTexels_>.SetPixelT( const PixelT_:GLenum );
+procedure TGLImager<_TItem_,_TGrider_>.SetPixelT( const PixelT_:GLenum );
 begin
      _PixelT := PixelT_;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLImager<_TTexel_,_TTexels_>.Create( const Kind_:GLenum );
+constructor TGLImager<_TItem_,_TGrider_>.Create( const Kind_:GLenum );
 begin
      inherited Create;
 
      glGenTextures( 1, @_ID );
 
-     _Texels := _TTexels_.Create;
+     _Grider := _TGrider_.Create;
 
      _Kind := Kind_;
 
@@ -162,9 +162,9 @@ begin
      Unbind;
 end;
 
-destructor TGLImager<_TTexel_,_TTexels_>.Destroy;
+destructor TGLImager<_TItem_,_TGrider_>.Destroy;
 begin
-     _Texels.DisposeOf;
+     _Grider.DisposeOf;
 
      glDeleteTextures( 1, @_ID );
 
@@ -173,19 +173,19 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLImager<_TTexel_,_TTexels_>.Bind;
+procedure TGLImager<_TItem_,_TGrider_>.Bind;
 begin
      glBindTexture( _Kind, _ID );
 end;
 
-procedure TGLImager<_TTexel_,_TTexels_>.Unbind;
+procedure TGLImager<_TItem_,_TGrider_>.Unbind;
 begin
      glBindTexture( _Kind, 0 );
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLImager<_TTexel_,_TTexels_>.Use( const BindI_:GLuint );
+procedure TGLImager<_TItem_,_TGrider_>.Use( const BindI_:GLuint );
 begin
      glActiveTexture( GL_TEXTURE0 + BindI_ );
 
@@ -194,7 +194,7 @@ begin
      glActiveTexture( GL_TEXTURE0 );
 end;
 
-procedure TGLImager<_TTexel_,_TTexels_>.Unuse( const BindI_:GLuint );
+procedure TGLImager<_TItem_,_TGrider_>.Unuse( const BindI_:GLuint );
 begin
      glActiveTexture( GL_TEXTURE0 + BindI_ );
 
@@ -205,28 +205,28 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLImager<_TTexel_,_TTexels_>.UseComput( const BindI_:GLuint );
+procedure TGLImager<_TItem_,_TGrider_>.UseComput( const BindI_:GLuint );
 begin
      glBindImageTexture( BindI_, ID, 0, GL_FALSE, 0, GL_READ_WRITE, _TexelF );
 end;
 
-procedure TGLImager<_TTexel_,_TTexels_>.UnuseComput( const BindI_:GLuint );
+procedure TGLImager<_TItem_,_TGrider_>.UnuseComput( const BindI_:GLuint );
 begin
      glBindImageTexture( BindI_, 0, 0, GL_FALSE, 0, GL_READ_WRITE, _TexelF );
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLImager<_TTexel_,_TTexels_>.ReceData;
+procedure TGLImager<_TItem_,_TGrider_>.ReceData;
 begin
      Bind;
-       glGetTexImage( _Kind, 0, _PixelF, _PixelT, _Texels.Elem0P );
+       glGetTexImage( _Kind, 0, _PixelF, _PixelT, _Grider.Elem0P );
      Unbind;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLImager<_TTexel_,_TTexels_>.RecePixBuf;
+procedure TGLImager<_TItem_,_TGrider_>.RecePixBuf;
 begin
      glGetTexImage( _Kind, 0, _PixelF, _PixelT, nil );
 end;
