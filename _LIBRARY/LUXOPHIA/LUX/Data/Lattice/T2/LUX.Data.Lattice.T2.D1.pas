@@ -20,7 +20,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
      public
        constructor Create; overload;
-       constructor Create( const BricX_,BricY_:Integer ); overload;
+       constructor Create( const CellsX_,CellsY_:Integer ); overload;
        destructor Destroy; override;
        ///// メソッド
        procedure Patch( const T_:TSingle2D; out M_:TSingleM4 ); overload;
@@ -57,9 +57,9 @@ begin
      Create( 2, 2 );
 end;
 
-constructor TSingleGridMap2T.Create( const BricX_,BricY_:Integer );
+constructor TSingleGridMap2T.Create( const CellsX_,CellsY_:Integer );
 begin
-     Create( BricX_, BricY_, 2, 2 );
+     Create( CellsX_, CellsY_, 2, 2 );
 end;
 
 destructor TSingleGridMap2T.Destroy;
