@@ -10,7 +10,7 @@ uses System.SysUtils, System.UITypes,
      LUX.GPU.OpenGL.Atom.Buffer,
      LUX.GPU.OpenGL.Atom.Buffer.VerBuf,
      LUX.GPU.OpenGL.Atom.Buffer.StoBuf,
-     LUX.GPU.OpenGL.Atom.Image,
+     LUX.GPU.OpenGL.Atom.Imager,
      LUX.GPU.OpenGL.Atom.Textur,
      LUX.GPU.OpenGL.Atom.Shader,
      LUX.GPU.OpenGL.Atom.Engine;
@@ -29,7 +29,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// アクセス
        function GetEngine  :TGLEngine;
        function GetShaderC :TGLShaderC;
-       function GetImages :TIndexDictionary<String,IGLImage>;
+       function GetImages :TIndexDictionary<String,IGLImager>;
        function GetBuffers :TIndexDictionary<String,IGLBuffer>;
        function GetItemsX :GLuint;
        procedure SetItemsX( const ItemsX_:GLuint );
@@ -53,7 +53,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property Engine  :TGLEngine                          read GetEngine  ;
        property ShaderC :TGLShaderC                         read GetShaderC ;
-       property Images  :TIndexDictionary<String,IGLImage>  read GetImages  ;
+       property Images  :TIndexDictionary<String,IGLImager>  read GetImages  ;
        property Buffers :TIndexDictionary<String,IGLBuffer> read GetBuffers ;
        property ItemsX  :GLuint                             read GetItemsX  write SetItemsX;
        property ItemsY  :GLuint                             read GetItemsY  write SetItemsY;
@@ -75,7 +75,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _Engine  :TGLEngine;
        _ShaderC :TGLShaderC;
-       _Images  :TIndexDictionary<String,IGLImage>;
+       _Images  :TIndexDictionary<String,IGLImager>;
        _Buffers :TIndexDictionary<String,IGLBuffer>;
        _ItemsX  :GLuint;
        _ItemsY  :GLuint;
@@ -86,7 +86,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// アクセス
        function GetEngine  :TGLEngine;
        function GetShaderC :TGLShaderC;
-       function GetImages :TIndexDictionary<String,IGLImage>;
+       function GetImages :TIndexDictionary<String,IGLImager>;
        function GetBuffers :TIndexDictionary<String,IGLBuffer>;
        function GetItemsX :GLuint;
        procedure SetItemsX( const ItemsX_:GLuint );
@@ -112,7 +112,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property Engine  :TGLEngine                          read GetEngine  ;
        property ShaderC :TGLShaderC                         read GetShaderC ;
-       property Images  :TIndexDictionary<String,IGLImage>  read GetImages  ;
+       property Images  :TIndexDictionary<String,IGLImager>  read GetImages  ;
        property Buffers :TIndexDictionary<String,IGLBuffer> read GetBuffers ;
        property ItemsX  :GLuint                             read GetItemsX  write SetItemsX;
        property ItemsY  :GLuint                             read GetItemsY  write SetItemsY;
@@ -161,7 +161,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TGLComput.GetImages :TIndexDictionary<String,IGLImage>;
+function TGLComput.GetImages :TIndexDictionary<String,IGLImager>;
 begin
      Result := _Images;
 end;
@@ -276,7 +276,7 @@ begin
      _Engine  := TGLEngine .Create;
      _ShaderC := TGLShaderC.Create;
 
-     _Images := TIndexDictionary<String,IGLImage>.Create;
+     _Images := TIndexDictionary<String,IGLImager>.Create;
      _Buffers := TIndexDictionary<String,IGLBuffer>.Create;
 
      _Engine.Attach( _ShaderC{Shad} );
