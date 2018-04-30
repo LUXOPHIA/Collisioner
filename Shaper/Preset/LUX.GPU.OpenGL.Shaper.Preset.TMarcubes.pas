@@ -85,7 +85,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        _MaterC      :IMarcubesMateryCubes;
-       _Grider      :TGLPoiTex3D_Single;
+       _Textur      :TGLPoiTex3D_Single;
        _Size        :TGLUniBuf<TSingle3D>;
        _Threshold   :TGLUniBuf<Single>;
        _LineS       :Single;
@@ -103,7 +103,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
-       property Grider      :TGLPoiTex3D_Single read   _Grider                          ;
+       property Textur      :TGLPoiTex3D_Single read   _Textur                          ;
        property SizeX       :Single             read GetSizeX       write SetSizeX      ;
        property SizeY       :Single             read GetSizeY       write SetSizeY      ;
        property SizeZ       :Single             read GetSizeZ       write SetSizeZ      ;
@@ -342,14 +342,14 @@ constructor TMarcubes.Create;
 begin
      inherited;
 
-     _Grider    := TGLPoiTex3D_Single.Create;
+     _Textur    := TGLPoiTex3D_Single.Create;
      _Size      := TGLUniBuf<TSingle3D>.Create( GL_STATIC_DRAW );
      _Threshold := TGLUniBuf<Single>.Create( GL_STATIC_DRAW );
 
      _Matery := TMarcubesMateryFacesRGB.Create;
      _MaterC := TMarcubesMateryCubes.Create;
 
-     with Grider.Texels do
+     with Textur.Imager.Grider do
      begin
           MargsX := 1;
           MargsY := 1;
@@ -372,7 +372,7 @@ end;
 
 destructor TMarcubes.Destroy;
 begin
-     _Grider   .DisposeOf;
+     _Textur   .DisposeOf;
      _Size     .DisposeOf;
      _Threshold.DisposeOf;
 
@@ -385,7 +385,7 @@ procedure TMarcubes.BeginDraw;
 begin
      inherited;
 
-     _Grider   .Use( 0 );
+     _Textur   .Use( 0 );
      _Size     .Use( 4 );
      _Threshold.Use( 5 );
 end;
@@ -403,7 +403,7 @@ begin
           _MaterC.Unuse;
      end;
 
-     _Grider   .Unuse( 0 );
+     _Textur   .Unuse( 0 );
      _Size     .Unuse( 4 );
      _Threshold.Unuse( 5 );
 
@@ -412,9 +412,9 @@ end;
 
 procedure TMarcubes.MakeModel;
 begin
-     _Grider.SendData;
+     _Textur.Imager.SendData;
 
-     PoinsN := _Grider.Texels.CellsN;
+     PoinsN := _Textur.Imager.Grider.CellsN;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
