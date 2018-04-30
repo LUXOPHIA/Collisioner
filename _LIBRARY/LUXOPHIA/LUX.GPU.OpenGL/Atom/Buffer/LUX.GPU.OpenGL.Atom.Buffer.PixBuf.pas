@@ -6,7 +6,7 @@ uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX,
      LUX.GPU.OpenGL.Atom,
      LUX.GPU.OpenGL.Atom.Buffer,
-     LUX.GPU.OpenGL.Atom.Image;
+     LUX.GPU.OpenGL.Atom.Imager;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -25,8 +25,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure UnbindRead;
        procedure BindWrite;
        procedure UnbindWrite;
-       procedure CopyFrom( const Image_:IGLImage );
-       procedure CopyTo( const Image_:IGLImage );
+       procedure CopyFrom( const Image_:IGLImager );
+       procedure CopyTo( const Image_:IGLImager );
      end;
 
      //-------------------------------------------------------------------------
@@ -45,8 +45,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure UnbindRead;
        procedure BindWrite;
        procedure UnbindWrite;
-       procedure CopyFrom( const Image_:IGLImage );
-       procedure CopyTo( const Image_:IGLImage );
+       procedure CopyFrom( const Image_:IGLImager );
+       procedure CopyTo( const Image_:IGLImager );
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -122,7 +122,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLPixBuf<_TItem_>.CopyFrom( const Image_:IGLImage );
+procedure TGLPixBuf<_TItem_>.CopyFrom( const Image_:IGLImager );
 begin
      BindWrite;
 
@@ -131,7 +131,7 @@ begin
      UnbindWrite;
 end;
 
-procedure TGLPixBuf<_TItem_>.CopyTo( const Image_:IGLImage );
+procedure TGLPixBuf<_TItem_>.CopyTo( const Image_:IGLImager );
 begin
      BindRead;
 
