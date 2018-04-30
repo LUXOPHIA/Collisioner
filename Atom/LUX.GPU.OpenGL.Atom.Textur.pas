@@ -80,7 +80,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLTextur
 
-     IGLTextur = interface( IGLImager )
+     IGLTextur = interface
      ['{22F971D6-65FD-4F42-80ED-743253890A8C}']
        ///// アクセス
        function GetSamplr :TGLSamplr;
@@ -90,20 +90,26 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLTextur<_TTexel_:record;_TTexels_:constructor,TCoreArray<_TTexel_>> = class( TGLImager<_TTexel_,_TTexels_>, IGLTextur )
+     TGLTextur<_TItem_  :record;
+               _TGrider_:constructor,TCoreArray<_TItem_>;
+               _TImager_:constructor,TGLImager<_TItem_,_TGrider_>> = class( TInterfacedBase, IGLTextur )
      private
      protected
        _Samplr :TGLSamplr;
+       _Imager :_TImager_;
        ///// アクセス
        function GetSamplr :TGLSamplr;
+       function GetImager :_TImager_;
      public
-       constructor Create( const Kind_:GLenum );
+       constructor Create; overload;
+       constructor Create( const Imager_:_TImager_ ); overload;
        destructor Destroy; override;
        ///// プロパティ
        property Samplr :TGLSamplr read GetSamplr;
+       property Imager :_TImager_ read GetImager;
        ///// メソッド
-       procedure Use( const BindI_:GLuint ); override;
-       procedure Unuse( const BindI_:GLuint ); override;
+       procedure Use( const BindI_:GLuint );
+       procedure Unuse( const BindI_:GLuint );
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -118,7 +124,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLSampler
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLSamplr
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -239,39 +245,56 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLTextur<_TTexel_,_TTexels_>.GetSamplr :TGLSamplr;
+function TGLTextur<_TItem_,_TGrider_,_TImager_>.GetSamplr :TGLSamplr;
 begin
      Result := _Samplr;
 end;
 
+function TGLTextur<_TItem_,_TGrider_,_TImager_>.GetImager :_TImager_;
+begin
+     Result := _Imager;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLTextur<_TTexel_,_TTexels_>.Create( const Kind_:GLenum );
+constructor TGLTextur<_TItem_,_TGrider_,_TImager_>.Create;
 begin
      inherited;
 
      _Samplr := TGLSamplr.Create;
+     _Imager := _TImager_.Create;
 end;
 
-destructor TGLTextur<_TTexel_,_TTexels_>.Destroy;
+constructor TGLTextur<_TItem_,_TGrider_,_TImager_>.Create( const Imager_:_TImager_ );
+begin
+     inherited Create;
+
+     _Samplr := TGLSamplr.Create;
+     _Imager := Imager_;
+end;
+
+destructor TGLTextur<_TItem_,_TGrider_,_TImager_>.Destroy;
 begin
      _Samplr.DisposeOf;
+     _Imager.DisposeOf;
 
      inherited;
 end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLTextur<_TTexel_,_TTexels_>.Use( const BindI_:GLuint );
+procedure TGLTextur<_TItem_,_TGrider_,_TImager_>.Use( const BindI_:GLuint );
 begin
      inherited;
 
      _Samplr.Use( BindI_ );
+     _Imager.Use( BindI_ );
 end;
 
-procedure TGLTextur<_TTexel_,_TTexels_>.Unuse( const BindI_:GLuint );
+procedure TGLTextur<_TItem_,_TGrider_,_TImager_>.Unuse( const BindI_:GLuint );
 begin
      _Samplr.Unuse( BindI_ );
+     _Imager.Unuse( BindI_ );
 
      inherited;
 end;

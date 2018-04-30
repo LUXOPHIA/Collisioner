@@ -1,12 +1,11 @@
-﻿unit LUX.GPU.OpenGL.Atom.Textur.D3;
+﻿unit LUX.GPU.OpenGL.Atom.Textur.D1.Preset;
 
 interface //#################################################################### ■
 
-uses Winapi.OpenGL, Winapi.OpenGLext,
+uses System.UITypes,
      LUX,
-     LUX.Data.Lattice.T3,
-     LUX.GPU.OpenGL.Atom.Imager.D3,
-     LUX.GPU.OpenGL.Atom.Textur;
+     LUX.GPU.OpenGL.Atom.Textur.D1,
+     LUX.GPU.OpenGL.Atom.Imager.D1.Preset;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -14,24 +13,20 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiTex3D<_TItem_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiTex1D_TAlphaColorF
 
-     TGLPoiTex3D<_TItem_:record;_TImager_:TGLPoiIma3D<_TItem_>,constructor> = class( TGLTextur<_TItem_,TPoinArray3D<_TItem_>,_TImager_> )
+     TGLPoiTex1D_TAlphaColorF = class( TGLPoiTex1D<TAlphaColorF,TGLPoiIma1D_TAlphaColorF> )
      private
      protected
      public
-       constructor Create;
-       destructor Destroy; override;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex3D<_TItem_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex1D_TAlphaColorF
 
-     TGLCelTex3D<_TItem_:record;_TImager_:TGLCelIma3D<_TItem_>,constructor> = class( TGLTextur<_TItem_,TCellArray3D<_TItem_>,_TImager_> )
+     TGLCelTex1D_TAlphaColorF = class( TGLCelTex1D<TAlphaColorF,TGLCelIma1D_TAlphaColorF> )
      private
      protected
      public
-       constructor Create;
-       destructor Destroy; override;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -46,7 +41,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiTex3D<_TItem_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiTex1D_TAlphaColorF
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -54,49 +49,13 @@ implementation //###############################################################
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLPoiTex3D<_TItem_,_TImager_>.Create;
-begin
-     inherited;
-
-     with _Samplr do
-     begin
-          WrapU := GL_CLAMP_TO_EDGE;
-          WrapV := GL_CLAMP_TO_EDGE;
-          WrapW := GL_CLAMP_TO_EDGE;
-     end;
-end;
-
-destructor TGLPoiTex3D<_TItem_,_TImager_>.Destroy;
-begin
-
-     inherited;
-end;
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex3D<_TItem_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex1D_TAlphaColorF
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
-
-constructor TGLCelTex3D<_TItem_,_TImager_>.Create;
-begin
-     inherited;
-
-     with _Samplr do
-     begin
-          WrapU := GL_MIRRORED_REPEAT;
-          WrapV := GL_MIRRORED_REPEAT;
-          WrapW := GL_MIRRORED_REPEAT;
-     end;
-end;
-
-destructor TGLCelTex3D<_TItem_,_TImager_>.Destroy;
-begin
-
-     inherited;
-end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 

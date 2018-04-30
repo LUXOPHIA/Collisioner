@@ -11,7 +11,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLImager2D<_TTexel_,_TTexels_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLImager2D<_TItem_,_TGrider_>
 
      IGLImager2D = interface( IGLImager )
      ['{69B48023-273B-46B0-A8E4-AD79BABB51FD}']
@@ -21,7 +21,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLImager2D<_TTexel_:record;_TTexels_:constructor,TArray2D<_TTexel_>> = class( TGLImager<_TTexel_,_TTexels_>, IGLImager2D )
+     TGLImager2D<_TItem_:record;_TGrider_:constructor,TArray2D<_TItem_>> = class( TGLImager<_TItem_,_TGrider_>, IGLImager2D )
      private
      protected
      public
@@ -30,6 +30,38 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// メソッド
        procedure SendData; override;
        procedure SendPixBuf; override;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiIma2D<_TItem_,_TGrider_>
+
+     IGLPoiIma2D = interface( IGLImager2D )
+     ['{655EF4B2-51B3-4B2F-A9A6-25DBDC399981}']
+     {protected}
+     {public}
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLPoiIma2D<_TItem_:record> = class( TGLImager2D<_TItem_,TPoinArray2D<_TItem_>>, IGLPoiIma2D )
+     private
+     protected
+     public
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelIma2D<_TItem_,_TGrider_>
+
+     IGLCelIma2D = interface( IGLImager2D )
+     ['{1088510C-E25B-47B9-8756-924DBB06BD03}']
+     {protected}
+     {public}
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLCelIma2D<_TItem_:record> = class( TGLImager2D<_TItem_,TCellArray2D<_TItem_>>, IGLCelIma2D )
+     private
+     protected
+     public
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -46,7 +78,7 @@ uses System.Math;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLImager2D<_TTexel_,_TTexels_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLImager2D<_TItem_,_TGrider_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -54,13 +86,13 @@ uses System.Math;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLImager2D<_TTexel_,_TTexels_>.Create;
+constructor TGLImager2D<_TItem_,_TGrider_>.Create;
 begin
      inherited Create( GL_TEXTURE_2D );
 
 end;
 
-destructor TGLImager2D<_TTexel_,_TTexels_>.Destroy;
+destructor TGLImager2D<_TItem_,_TGrider_>.Destroy;
 begin
 
      inherited;
@@ -68,26 +100,42 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLImager2D<_TTexel_,_TTexels_>.SendData;
+procedure TGLImager2D<_TItem_,_TGrider_>.SendData;
 begin
      Bind;
-       glTexImage2D( _Kind, 0, _TexelF, _Texels.ElemsX,
-                                        _Texels.ElemsY, 0,
+       glTexImage2D( _Kind, 0, _TexelF, _Grider.ElemsX,
+                                        _Grider.ElemsY, 0,
                                _PixelF,
                                _PixelT,
-                               _Texels.Elem0P );
+                               _Grider.Elem0P );
      Unbind;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLImager2D<_TTexel_,_TTexels_>.SendPixBuf;
+procedure TGLImager2D<_TItem_,_TGrider_>.SendPixBuf;
 begin
-     glTexImage2D( _Kind, 0, _TexelF, _Texels.ElemsX,
-                                      _Texels.ElemsY, 0,
+     glTexImage2D( _Kind, 0, _TexelF, _Grider.ElemsX,
+                                      _Grider.ElemsY, 0,
                              _PixelF,
                              _PixelT, nil );
 end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiIma2D<_TItem_,_TGrider_>
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelIma2D<_TItem_,_TGrider_>
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
