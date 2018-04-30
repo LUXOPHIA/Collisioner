@@ -48,9 +48,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TColorMarcubes = class( TGLShaperZeroPoins )
      private
      protected
-       _Grider      :TGLPoiTex3D_AlphaColorF;
-       _Size        :TGLUniBuf<TSingle3D>;
-       _Threshold   :TGLUniBuf<Single>;
+       _Textur    :TGLPoiTex3D_TAlphaColorF;
+       _Size      :TGLUniBuf<TSingle3D>;
+       _Threshold :TGLUniBuf<Single>;
        ///// アクセス
        function GetSizeX :Single;
        procedure SetSizeX( const SizeX_:Single );
@@ -64,11 +64,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create; override;
        destructor Destroy; override;
        ///// プロパティ
-       property Grider    :TGLPoiTex3D_AlphaColorF read   _Grider                          ;
-       property SizeX     :Single                  read GetSizeX       write SetSizeX      ;
-       property SizeY     :Single                  read GetSizeY       write SetSizeY      ;
-       property SizeZ     :Single                  read GetSizeZ       write SetSizeZ      ;
-       property Threshold :Single                  read GetThreshold   write SetThreshold  ;
+       property Textur    :TGLPoiTex3D_TAlphaColorF read   _Textur                          ;
+       property SizeX     :Single                   read GetSizeX       write SetSizeX      ;
+       property SizeY     :Single                   read GetSizeY       write SetSizeY      ;
+       property SizeZ     :Single                   read GetSizeZ       write SetSizeZ      ;
+       property Threshold :Single                   read GetThreshold   write SetThreshold  ;
        ///// メソッド
        procedure BeginDraw; override;
        procedure EndDraw; override;
@@ -207,13 +207,13 @@ constructor TColorMarcubes.Create;
 begin
      inherited;
 
-     _Grider    := TGLPoiTex3D_AlphaColorF.Create;
+     _Textur    := TGLPoiTex3D_TAlphaColorF.Create;
      _Size      := TGLUniBuf<TSingle3D>.Create( GL_STATIC_DRAW );  _Size.Count := 1;
      _Threshold := TGLUniBuf<Single>.Create( GL_STATIC_DRAW );  _Threshold.Count := 1;
 
      _Matery := TColorMarcubesMateryFaces.Create;
 
-     with Grider.Texels do
+     with Textur.Imager.Grider do
      begin
           MargsX := 1;
           MargsY := 1;
@@ -232,7 +232,7 @@ end;
 
 destructor TColorMarcubes.Destroy;
 begin
-     _Grider   .DisposeOf;
+     _Textur   .DisposeOf;
      _Size     .DisposeOf;
      _Threshold.DisposeOf;
 
@@ -245,14 +245,14 @@ procedure TColorMarcubes.BeginDraw;
 begin
      inherited;
 
-     _Grider   .Use( 0 );
+     _Textur   .Use( 0 );
      _Size     .Use( 4 );
      _Threshold.Use( 5 );
 end;
 
 procedure TColorMarcubes.EndDraw;
 begin
-     _Grider   .Unuse( 0 );
+     _Textur   .Unuse( 0 );
      _Size     .Unuse( 4 );
      _Threshold.Unuse( 5 );
 
@@ -261,9 +261,9 @@ end;
 
 procedure TColorMarcubes.MakeModel;
 begin
-     _Grider.SendData;
+     _Textur.Imager.SendData;
 
-     PoinsN := _Grider.Texels.CellsN;
+     PoinsN := _Textur.Imager.Grider.CellsN;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
