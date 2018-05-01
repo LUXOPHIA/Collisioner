@@ -102,7 +102,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Unbind;
        function Map( const Access_:GLenum = GL_READ_WRITE ) :TGLBufferData<_TItem_>;
        procedure Unmap;
-       procedure Import( const Array_:array of _TItem_ );
+       procedure CopyFrom( const Array_:array of _TItem_ );
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -301,7 +301,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLBuffer<_TItem_>.Import( const Array_:array of _TItem_ );
+procedure TGLBuffer<_TItem_>.CopyFrom( const Array_:array of _TItem_ );
 begin
      _Count := Length( Array_ );
 

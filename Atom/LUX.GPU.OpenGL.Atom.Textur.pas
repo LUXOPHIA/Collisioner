@@ -86,6 +86,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetSamplr :TGLSamplr;
        ///// プロパティ
        property Samplr :TGLSamplr read GetSamplr;
+       ///// メソッド
+       procedure Use( const BindI_:GLuint );
+       procedure Unuse( const BindI_:GLuint );
      end;
 
      //-------------------------------------------------------------------------

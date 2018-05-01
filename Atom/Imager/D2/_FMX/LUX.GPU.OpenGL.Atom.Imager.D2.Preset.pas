@@ -21,8 +21,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create;
        destructor Destroy; override;
        ///// メソッド
-       procedure ImportFrom( const BMP_:TBitmap );
-       procedure ExportTo( const BMP_:TBitmap );
+       procedure CopyForm( const BMP_:TBitmap );
+       procedure CopyTo( const BMP_:TBitmap );
        procedure LoadFromFile( const FileName_:String );
        procedure SaveToFile( const FileName_:String );
      end;
@@ -36,8 +36,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create;
        destructor Destroy; override;
        ///// メソッド
-       procedure ImportFrom( const BMP_:TBitmap );
-       procedure ExportTo( const BMP_:TBitmap );
+       procedure CopyFrom( const BMP_:TBitmap );
+       procedure CopyTo( const BMP_:TBitmap );
        procedure LoadFromFile( const FileName_:String );
        procedure SaveToFile( const FileName_:String );
      end;
@@ -81,7 +81,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLPoiIma2D_TAlphaColorF.ImportFrom( const BMP_:TBitmap );
+procedure TGLPoiIma2D_TAlphaColorF.CopyForm( const BMP_:TBitmap );
 var
    B :TBitmapData;
    X, Y :Integer;
@@ -104,7 +104,7 @@ begin
      SendData;
 end;
 
-procedure TGLPoiIma2D_TAlphaColorF.ExportTo( const BMP_:TBitmap );
+procedure TGLPoiIma2D_TAlphaColorF.CopyTo( const BMP_:TBitmap );
 var
    B :TBitmapData;
    X, Y :Integer;
@@ -136,7 +136,7 @@ begin
 
      B.LoadFromFile( FileName_ );
 
-     ImportFrom( B );
+     CopyForm( B );
 
      B.DisposeOf;
 end;
@@ -147,7 +147,7 @@ var
 begin
      B := TBitmap.Create;
 
-     ExportTo( B );
+     CopyTo( B );
 
      B.SaveToFile( FileName_ );
 
@@ -179,7 +179,7 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLCelIma2D_TAlphaColorF.ImportFrom( const BMP_:TBitmap );
+procedure TGLCelIma2D_TAlphaColorF.CopyFrom( const BMP_:TBitmap );
 var
    B :TBitmapData;
    X, Y :Integer;
@@ -202,7 +202,7 @@ begin
      SendData;
 end;
 
-procedure TGLCelIma2D_TAlphaColorF.ExportTo( const BMP_:TBitmap );
+procedure TGLCelIma2D_TAlphaColorF.CopyTo( const BMP_:TBitmap );
 var
    B :TBitmapData;
    X, Y :Integer;
@@ -234,7 +234,7 @@ begin
 
      B.LoadFromFile( FileName_ );
 
-     ImportFrom( B );
+     CopyFrom( B );
 
      B.DisposeOf;
 end;
@@ -245,7 +245,7 @@ var
 begin
      B := TBitmap.Create;
 
-     ExportTo( B );
+     CopyTo( B );
 
      B.SaveToFile( FileName_ );
 

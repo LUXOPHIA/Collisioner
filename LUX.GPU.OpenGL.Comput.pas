@@ -29,8 +29,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// アクセス
        function GetEngine  :TGLEngine;
        function GetShaderC :TGLShaderC;
-       function GetImagers :TIndexDictionary<String,IGLImager>;
        function GetBuffers :TIndexDictionary<String,IGLBuffer>;
+       function GetImagers :TIndexDictionary<String,IGLImager>;
        function GetItemsX :GLuint;
        procedure SetItemsX( const ItemsX_:GLuint );
        function GetItemsY :GLuint;
@@ -53,8 +53,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property Engine  :TGLEngine                          read GetEngine  ;
        property ShaderC :TGLShaderC                         read GetShaderC ;
-       property Imagers :TIndexDictionary<String,IGLImager> read GetImagers ;
        property Buffers :TIndexDictionary<String,IGLBuffer> read GetBuffers ;
+       property Imagers :TIndexDictionary<String,IGLImager> read GetImagers ;
        property ItemsX  :GLuint                             read GetItemsX  write SetItemsX;
        property ItemsY  :GLuint                             read GetItemsY  write SetItemsY;
        property ItemsZ  :GLuint                             read GetItemsZ  write SetItemsZ;
@@ -75,8 +75,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        _Engine  :TGLEngine;
        _ShaderC :TGLShaderC;
-       _Imagers :TIndexDictionary<String,IGLImager>;
        _Buffers :TIndexDictionary<String,IGLBuffer>;
+       _Imagers :TIndexDictionary<String,IGLImager>;
+       _Texturs :TIndexDictionary<String,IGLTextur>;
        _ItemsX  :GLuint;
        _ItemsY  :GLuint;
        _ItemsZ  :GLuint;
@@ -86,8 +87,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// アクセス
        function GetEngine  :TGLEngine;
        function GetShaderC :TGLShaderC;
-       function GetImagers :TIndexDictionary<String,IGLImager>;
        function GetBuffers :TIndexDictionary<String,IGLBuffer>;
+       function GetImagers :TIndexDictionary<String,IGLImager>;
+       function GetTexturs :TIndexDictionary<String,IGLTextur>;
        function GetItemsX :GLuint;
        procedure SetItemsX( const ItemsX_:GLuint );
        function GetItemsY :GLuint;
@@ -112,8 +114,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property Engine  :TGLEngine                          read GetEngine  ;
        property ShaderC :TGLShaderC                         read GetShaderC ;
-       property Imagers :TIndexDictionary<String,IGLImager> read GetImagers  ;
        property Buffers :TIndexDictionary<String,IGLBuffer> read GetBuffers ;
+       property Imagers :TIndexDictionary<String,IGLImager> read GetImagers ;
+       property Texturs :TIndexDictionary<String,IGLTextur> read GetTexturs ;
        property ItemsX  :GLuint                             read GetItemsX  write SetItemsX;
        property ItemsY  :GLuint                             read GetItemsY  write SetItemsY;
        property ItemsZ  :GLuint                             read GetItemsZ  write SetItemsZ;
@@ -125,6 +128,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property WorksZ  :GLuint                             read GetWorksZ  write SetWorksZ;
        ///// メソッド
        procedure Run;
+       procedure RunARB;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -161,14 +165,19 @@ end;
 
 //------------------------------------------------------------------------------
 
+function TGLComput.GetBuffers :TIndexDictionary<String,IGLBuffer>;
+begin
+     Result := _Buffers;
+end;
+
 function TGLComput.GetImagers :TIndexDictionary<String,IGLImager>;
 begin
      Result := _Imagers;
 end;
 
-function TGLComput.GetBuffers :TIndexDictionary<String,IGLBuffer>;
+function TGLComput.GetTexturs :TIndexDictionary<String,IGLTextur>;
 begin
-     Result := _Buffers;
+     Result := _Texturs;
 end;
 
 //------------------------------------------------------------------------------
@@ -276,8 +285,9 @@ begin
      _Engine  := TGLEngine .Create;
      _ShaderC := TGLShaderC.Create;
 
-     _Imagers := TIndexDictionary<String,IGLImager>.Create;
      _Buffers := TIndexDictionary<String,IGLBuffer>.Create;
+     _Imagers := TIndexDictionary<String,IGLImager>.Create;
+     _Texturs := TIndexDictionary<String,IGLTextur>.Create;
 
      _Engine.Attach( _ShaderC{Shad} );
 
@@ -288,8 +298,9 @@ end;
 
 destructor TGLComput.Destroy;
 begin
-     _Imagers.DisposeOf;
      _Buffers.DisposeOf;
+     _Imagers.DisposeOf;
+     _Texturs.DisposeOf;
 
      _Engine .DisposeOf;
      _ShaderC.DisposeOf;
@@ -303,14 +314,6 @@ procedure TGLComput.Run;
 var
    K :String;
 begin
-     for K in _Imagers.Keys do
-     begin
-          with _Imagers[ K ] do
-          begin
-               _Engine.Texturs.Add( Index{BinP}, K{Name} );
-          end;
-     end;
-
      for K in _Buffers.Keys do
      begin
           with _Buffers[ K ] do
@@ -319,18 +322,91 @@ begin
           end;
      end;
 
+     for K in _Imagers.Keys do
+     begin
+          with _Imagers[ K ] do
+          begin
+               _Engine.Texturs.Add( Index{BinP}, K{Name} );
+          end;
+     end;
+
+     for K in _Texturs.Keys do
+     begin
+          with _Texturs[ K ] do
+          begin
+               _Engine.Texturs.Add( _Imagers.Count + Index{BinP}, K{Name} );
+          end;
+     end;
+
      _Engine.Link;
 
      _Engine.Use;
+
+     for K in _Buffers.Keys do
+     begin
+          with _Buffers[ K ] do glBindBufferBase( GL_SHADER_STORAGE_BUFFER, Index, Value.ID );
+     end;
 
      for K in _Imagers.Keys do
      begin
           with _Imagers[ K ] do Value.UseComput( Index );
      end;
 
+     for K in _Texturs.Keys do
+     begin
+          with _Texturs[ K ] do Value.Use( _Imagers.Count + Index );
+     end;
+
+     glDispatchCompute( _GrupsX, _GrupsY, _GrupsZ );
+
+     _Engine.Unuse;
+end;
+
+procedure TGLComput.RunARB;
+var
+   K :String;
+begin
+     for K in _Buffers.Keys do
+     begin
+          with _Buffers[ K ] do
+          begin
+               _Engine.StoBufs.Add( Index{BinP}, K{Name} );
+          end;
+     end;
+
+     for K in _Imagers.Keys do
+     begin
+          with _Imagers[ K ] do
+          begin
+               _Engine.Texturs.Add( Index{BinP}, K{Name} );
+          end;
+     end;
+
+     for K in _Texturs.Keys do
+     begin
+          with _Texturs[ K ] do
+          begin
+               _Engine.Texturs.Add( _Imagers.Count + Index{BinP}, K{Name} );
+          end;
+     end;
+
+     _Engine.Link;
+
+     _Engine.Use;
+
      for K in _Buffers.Keys do
      begin
           with _Buffers[ K ] do glBindBufferBase( GL_SHADER_STORAGE_BUFFER, Index, Value.ID );
+     end;
+
+     for K in _Imagers.Keys do
+     begin
+          with _Imagers[ K ] do Value.UseComput( Index );
+     end;
+
+     for K in _Texturs.Keys do
+     begin
+          with _Texturs[ K ] do Value.Use( _Imagers.Count + Index );
      end;
 
      glDispatchComputeGroupSizeARB( _GrupsX, _GrupsY, _GrupsZ,
