@@ -1057,7 +1057,7 @@ begin
 
      Vs.DisposeOf;
 
-     _EleBuf.Import( Es );
+     _EleBuf.CopyFrom( Es );
 
      CalcBouBox;
 end;
@@ -1373,7 +1373,7 @@ begin
 
      Vs.DisposeOf;
 
-     _EleBuf.Import( Es );
+     _EleBuf.CopyFrom( Es );
 
      CalcBouBox;
 end;

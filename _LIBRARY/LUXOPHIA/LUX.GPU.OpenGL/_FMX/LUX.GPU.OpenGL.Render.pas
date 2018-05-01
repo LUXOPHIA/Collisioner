@@ -20,7 +20,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
      public
        ///// メソッド
-       procedure ExportToBMP( const BMP_:FMX.Graphics.TBitmap );
+       procedure CopyTo( const BMP_:FMX.Graphics.TBitmap );
        function MakeScreenShot :FMX.Graphics.TBitmap;
        procedure SaveToFile( const FileName_:String );
      end;
@@ -47,7 +47,7 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLRender.ExportToBMP( const BMP_:FMX.Graphics.TBitmap );
+procedure TGLRender.CopyTo( const BMP_:FMX.Graphics.TBitmap );
 var
    Cs :TArray<TAlphaColor>;
    C, B :PAlphaColor;
@@ -90,7 +90,7 @@ function TGLRender.MakeScreenShot :FMX.Graphics.TBitmap;
 begin
      Result := FMX.Graphics.TBitmap.Create;
 
-     ExportToBMP( Result );
+     CopyTo( Result );
 end;
 
 procedure TGLRender.SaveToFile( const FileName_:String );
