@@ -239,7 +239,7 @@ begin
           V.SizeY := S;
           V.SizeZ := S;
 
-          V.PosBuf.Import( Ps[ L ] );
+          V.PosBuf.CopyFrom( Ps[ L ] );
 
           V.Pose := TSingleM4.Translate( _Cent.X - _Size/2, _Cent.Y - _Size/2, _Cent.Z - _Size/2 );
      end;

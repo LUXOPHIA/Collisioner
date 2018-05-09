@@ -4,7 +4,9 @@ interface //####################################################################
 
 uses System.UITypes,
      FMX.Graphics,
-     LUX, LUX.GPU.OpenGL.Atom.Imager.D2;
+     LUX,
+     LUX.GPU.OpenGL.Atom.Buffer.PixBuf.D2,
+     LUX.GPU.OpenGL.Atom.Imager.D2;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -21,8 +23,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create;
        destructor Destroy; override;
        ///// メソッド
-       procedure CopyForm( const BMP_:TBitmap );
-       procedure CopyTo( const BMP_:TBitmap );
+       procedure CopyFrom( const BMP_:TBitmap ); overload;
+       procedure CopyTo( const BMP_:TBitmap ); overload;
        procedure LoadFromFile( const FileName_:String );
        procedure SaveToFile( const FileName_:String );
      end;
@@ -36,8 +38,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create;
        destructor Destroy; override;
        ///// メソッド
-       procedure CopyFrom( const BMP_:TBitmap );
-       procedure CopyTo( const BMP_:TBitmap );
+       procedure CopyFrom( const BMP_:TBitmap ); overload;
+       procedure CopyTo( const BMP_:TBitmap ); overload;
        procedure LoadFromFile( const FileName_:String );
        procedure SaveToFile( const FileName_:String );
      end;
@@ -81,47 +83,53 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLPoiIma2D_TAlphaColorF.CopyForm( const BMP_:TBitmap );
+procedure TGLPoiIma2D_TAlphaColorF.CopyFrom( const BMP_:TBitmap );
 var
    B :TBitmapData;
+   D :TGLPoiPixIter2D<TAlphaColorF>;
    X, Y :Integer;
 begin
-     _Grider.PoinsX := BMP_.Width ;
-     _Grider.PoinsY := BMP_.Height;
+     _Grid.PoinsX := BMP_.Width ;
+     _Grid.PoinsY := BMP_.Height;
 
      BMP_.Map( TMapAccess.Read, B );
 
-     for Y := 0 to _Grider.PoinsY-1 do
+     D := _Grid.Map( GL_WRITE_ONLY );
+
+     for Y := 0 to _Grid.PoinsY-1 do
      begin
-          for X := 0 to _Grider.PoinsX-1 do
+          for X := 0 to _Grid.PoinsX-1 do
           begin
-               _Grider[ X, Y ] := TAlphaColorF.Create( B.GetPixel( X, Y ) );
+               D[ X, Y ] := TAlphaColorF.Create( B.GetPixel( X, Y ) );
           end;
      end;
 
-     BMP_.Unmap( B );
+     D.DisposeOf;
 
-     SendData;
+     BMP_.Unmap( B );
 end;
 
 procedure TGLPoiIma2D_TAlphaColorF.CopyTo( const BMP_:TBitmap );
 var
    B :TBitmapData;
+   D :TGLPoiPixIter2D<TAlphaColorF>;
    X, Y :Integer;
 begin
-     ReceData;
-
-     BMP_.SetSize( _Grider.PoinsX, _Grider.PoinsY );
+     BMP_.SetSize( _Grid.PoinsX, _Grid.PoinsY );
 
      BMP_.Map( TMapAccess.Write, B );
 
-     for Y := 0 to _Grider.PoinsY-1 do
+     D := _Grid.Map( GL_READ_ONLY );
+
+     for Y := 0 to _Grid.PoinsY-1 do
      begin
-          for X := 0 to _Grider.PoinsX-1 do
+          for X := 0 to _Grid.PoinsX-1 do
           begin
-               B.SetPixel( X, Y, _Grider[ X, Y ].ToAlphaColor );
+               B.SetPixel( X, Y, D[ X, Y ].ToAlphaColor );
           end;
      end;
+
+     D.DisposeOf;
 
      BMP_.Unmap( B );
 end;
@@ -136,7 +144,7 @@ begin
 
      B.LoadFromFile( FileName_ );
 
-     CopyForm( B );
+     CopyFrom( B );
 
      B.DisposeOf;
 end;
@@ -182,44 +190,50 @@ end;
 procedure TGLCelIma2D_TAlphaColorF.CopyFrom( const BMP_:TBitmap );
 var
    B :TBitmapData;
+   D :TGLCelPixIter2D<TAlphaColorF>;
    X, Y :Integer;
 begin
-     _Grider.CellsX := BMP_.Width ;
-     _Grider.CellsY := BMP_.Height;
+     _Grid.CellsX := BMP_.Width ;
+     _Grid.CellsY := BMP_.Height;
 
      BMP_.Map( TMapAccess.Read, B );
 
-     for Y := 0 to _Grider.CellsY-1 do
+     D := _Grid.Map( GL_WRITE_ONLY );
+
+     for Y := 0 to _Grid.CellsY-1 do
      begin
-          for X := 0 to _Grider.CellsX-1 do
+          for X := 0 to _Grid.CellsX-1 do
           begin
-               _Grider[ X, Y ] := TAlphaColorF.Create( B.GetPixel( X, Y ) );
+               D[ X, Y ] := TAlphaColorF.Create( B.GetPixel( X, Y ) );
           end;
      end;
 
-     BMP_.Unmap( B );
+     D.DisposeOf;
 
-     SendData;
+     BMP_.Unmap( B );
 end;
 
 procedure TGLCelIma2D_TAlphaColorF.CopyTo( const BMP_:TBitmap );
 var
    B :TBitmapData;
+   D :TGLCelPixIter2D<TAlphaColorF>;
    X, Y :Integer;
 begin
-     ReceData;
-
-     BMP_.SetSize( _Grider.CellsX, _Grider.CellsY );
+     BMP_.SetSize( _Grid.CellsX, _Grid.CellsY );
 
      BMP_.Map( TMapAccess.Write, B );
 
-     for Y := 0 to _Grider.CellsY-1 do
+     D := _Grid.Map( GL_READ_ONLY );
+
+     for Y := 0 to _Grid.CellsY-1 do
      begin
-          for X := 0 to _Grider.CellsX-1 do
+          for X := 0 to _Grid.CellsX-1 do
           begin
-               B.SetPixel( X, Y, _Grider[ X, Y ].ToAlphaColor );
+               B.SetPixel( X, Y, D[ X, Y ].ToAlphaColor );
           end;
      end;
+
+     D.DisposeOf;
 
      BMP_.Unmap( B );
 end;

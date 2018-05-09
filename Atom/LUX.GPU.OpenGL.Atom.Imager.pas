@@ -5,7 +5,9 @@ interface //####################################################################
 uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX,
      LUX.Data.Lattice,
-     LUX.GPU.OpenGL.Atom;
+     LUX.GPU.OpenGL.Atom,
+     LUX.GPU.OpenGL.Atom.Buffer,
+     LUX.GPU.OpenGL.Atom.Buffer.PixBuf;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -13,7 +15,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLImager
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLImager<_TItem_,_TIter_,_TGrid_>
 
      IGLImager = interface( IGLAtomer )
      ['{E2F97606-18B0-4E45-88D2-ABE16446AD6F}']
@@ -38,18 +40,20 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Unuse( const BindI_:GLuint );
        procedure UseComput( const BindI_:GLuint );
        procedure UnuseComput( const BindI_:GLuint );
-       procedure SendData;
-       procedure ReceData;
        procedure SendPixBuf;
        procedure RecePixBuf;
+       procedure CopyFrom( const PixBuf_:IGLPixBuf ); overload;
+       procedure CopyTo( const PixBuf_:IGLPixBuf ); overload;
      end;
 
      //-------------------------------------------------------------------------
 
-     TGLImager<_TItem_:record;_TGrider_:constructor,TCoreArray<_TItem_>> = class( TGLAtomer, IGLImager )
+     TGLImager<_TItem_:record;
+               _TIter_:TGLPixBufIter<_TItem_>,constructor;
+               _TGrid_:TGLPixBuf<_TItem_,_TIter_>,constructor> = class( TGLAtomer, IGLImager )
      private
      protected
-       _Grider :_TGrider_;
+       _Grid   :_TGrid_;
        _Kind   :GLenum;
        _TexelF :GLenum;
        _PixelF :GLenum;
@@ -67,11 +71,11 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const Kind_:GLenum );
        destructor Destroy; override;
        ///// プロパティ
-       property Grider :_TGrider_ read   _Grider                ;
-       property Kind   :GLenum    read GetKind   write SetKind  ;
-       property TexelF :GLenum    read GetTexelF write SetTexelF;
-       property PixelF :GLenum    read GetPixelF write SetPixelF;
-       property PixelT :GLenum    read GetPixelT write SetPixelT;
+       property Grid   :_TGrid_ read   _Grid                  ;
+       property Kind   :GLenum  read GetKind   write SetKind  ;
+       property TexelF :GLenum  read GetTexelF write SetTexelF;
+       property PixelF :GLenum  read GetPixelF write SetPixelF;
+       property PixelT :GLenum  read GetPixelT write SetPixelT;
        ///// メソッド
        procedure Bind;
        procedure Unbind;
@@ -79,10 +83,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure Unuse( const BindI_:GLuint ); virtual;
        procedure UseComput( const BindI_:GLuint );
        procedure UnuseComput( const BindI_:GLuint );
-       procedure SendData; virtual; abstract;
-       procedure ReceData;
        procedure SendPixBuf; virtual; abstract;
        procedure RecePixBuf;
+       procedure CopyFrom( const PixBuf_:IGLPixBuf ); overload;
+       procedure CopyTo( const PixBuf_:IGLPixBuf ); overload;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -97,7 +101,7 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLImager
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLImager<_TItem_,_TIter_,_TGrid_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -105,66 +109,78 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TGLImager<_TItem_,_TGrider_>.GetKind :GLenum;
+function TGLImager<_TItem_,_TIter_,_TGrid_>.GetKind :GLenum;
 begin
      Result := _Kind;
 end;
 
-procedure TGLImager<_TItem_,_TGrider_>.SetKind( const Kind_:GLenum );
+procedure TGLImager<_TItem_,_TIter_,_TGrid_>.SetKind( const Kind_:GLenum );
 begin
      _Kind := Kind_;
 end;
 
-function TGLImager<_TItem_,_TGrider_>.GetTexelF :GLenum;
+function TGLImager<_TItem_,_TIter_,_TGrid_>.GetTexelF :GLenum;
 begin
      Result := _TexelF;
 end;
 
-procedure TGLImager<_TItem_,_TGrider_>.SetTexelF( const TexelF_:GLenum );
+procedure TGLImager<_TItem_,_TIter_,_TGrid_>.SetTexelF( const TexelF_:GLenum );
 begin
      _TexelF := TexelF_;
 end;
 
-function TGLImager<_TItem_,_TGrider_>.GetPixelF :GLenum;
+function TGLImager<_TItem_,_TIter_,_TGrid_>.GetPixelF :GLenum;
 begin
      Result := _PixelF;
 end;
 
-procedure TGLImager<_TItem_,_TGrider_>.SetPixelF( const PixelF_:GLenum );
+procedure TGLImager<_TItem_,_TIter_,_TGrid_>.SetPixelF( const PixelF_:GLenum );
 begin
      _PixelF := PixelF_;
 end;
 
-function TGLImager<_TItem_,_TGrider_>.GetPixelT :GLenum;
+function TGLImager<_TItem_,_TIter_,_TGrid_>.GetPixelT :GLenum;
 begin
      Result := _PixelT;
 end;
 
-procedure TGLImager<_TItem_,_TGrider_>.SetPixelT( const PixelT_:GLenum );
+procedure TGLImager<_TItem_,_TIter_,_TGrid_>.SetPixelT( const PixelT_:GLenum );
 begin
      _PixelT := PixelT_;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-constructor TGLImager<_TItem_,_TGrider_>.Create( const Kind_:GLenum );
+constructor TGLImager<_TItem_,_TIter_,_TGrid_>.Create( const Kind_:GLenum );
 begin
      inherited Create;
 
      glGenTextures( 1, @_ID );
-
-     _Grider := _TGrider_.Create;
 
      _Kind := Kind_;
 
      Bind;
        glTexParameteri( _Kind, GL_TEXTURE_MAX_LEVEL, 0 );
      Unbind;
+
+     _Grid := _TGrid_.Create;
+
+     _Grid.Usage := GL_DYNAMIC_DRAW;
+
+     _Grid.OnMap := procedure( const Buffer_:IGLBuffer )
+     begin
+          CopyTo( Buffer_ as IGLPixBuf );
+     end;
+
+     _Grid.OnUnmap := procedure( const Buffer_:IGLBuffer )
+     begin
+          CopyFrom( Buffer_ as IGLPixBuf );
+     end;
 end;
 
-destructor TGLImager<_TItem_,_TGrider_>.Destroy;
+destructor TGLImager<_TItem_,_TIter_,_TGrid_>.Destroy;
 begin
-     _Grider.DisposeOf;
+     _Grid.DisposeOf;
 
      glDeleteTextures( 1, @_ID );
 
@@ -173,19 +189,19 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLImager<_TItem_,_TGrider_>.Bind;
+procedure TGLImager<_TItem_,_TIter_,_TGrid_>.Bind;
 begin
      glBindTexture( _Kind, _ID );
 end;
 
-procedure TGLImager<_TItem_,_TGrider_>.Unbind;
+procedure TGLImager<_TItem_,_TIter_,_TGrid_>.Unbind;
 begin
      glBindTexture( _Kind, 0 );
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLImager<_TItem_,_TGrider_>.Use( const BindI_:GLuint );
+procedure TGLImager<_TItem_,_TIter_,_TGrid_>.Use( const BindI_:GLuint );
 begin
      glActiveTexture( GL_TEXTURE0 + BindI_ );
 
@@ -194,7 +210,7 @@ begin
      glActiveTexture( GL_TEXTURE0 );
 end;
 
-procedure TGLImager<_TItem_,_TGrider_>.Unuse( const BindI_:GLuint );
+procedure TGLImager<_TItem_,_TIter_,_TGrid_>.Unuse( const BindI_:GLuint );
 begin
      glActiveTexture( GL_TEXTURE0 + BindI_ );
 
@@ -205,30 +221,43 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLImager<_TItem_,_TGrider_>.UseComput( const BindI_:GLuint );
+procedure TGLImager<_TItem_,_TIter_,_TGrid_>.UseComput( const BindI_:GLuint );
 begin
      glBindImageTexture( BindI_, ID, 0, GL_FALSE, 0, GL_READ_WRITE, _TexelF );
 end;
 
-procedure TGLImager<_TItem_,_TGrider_>.UnuseComput( const BindI_:GLuint );
+procedure TGLImager<_TItem_,_TIter_,_TGrid_>.UnuseComput( const BindI_:GLuint );
 begin
      glBindImageTexture( BindI_, 0, 0, GL_FALSE, 0, GL_READ_WRITE, _TexelF );
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLImager<_TItem_,_TGrider_>.ReceData;
+procedure TGLImager<_TItem_,_TIter_,_TGrid_>.RecePixBuf;
 begin
      Bind;
-       glGetTexImage( _Kind, 0, _PixelF, _PixelT, _Grider.Elem0P );
+       glGetTexImage( _Kind, 0, _PixelF, _PixelT, nil );
      Unbind;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TGLImager<_TItem_,_TGrider_>.RecePixBuf;
+procedure TGLImager<_TItem_,_TIter_,_TGrid_>.CopyFrom( const PixBuf_:IGLPixBuf );
 begin
-     glGetTexImage( _Kind, 0, _PixelF, _PixelT, nil );
+     PixBuf_.BindRead;
+
+     SendPixBuf;
+
+     PixBuf_.UnbindRead;
+end;
+
+procedure TGLImager<_TItem_,_TIter_,_TGrid_>.CopyTo( const PixBuf_:IGLPixBuf );
+begin
+     PixBuf_.BindWrite;
+
+     RecePixBuf;
+
+     PixBuf_.UnbindWrite;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
