@@ -4,6 +4,7 @@ interface //####################################################################
 
 uses System.UITypes,
      Vcl.Graphics,
+     LUX.GPU.OpenGL.Atom.Buffer.PixBuf.D1,
      LUX, LUX.GPU.OpenGL.Atom.Imager.D1;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
@@ -21,8 +22,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create;
        destructor Destroy; override;
        ///// メソッド
-       procedure ImportFrom( const BMP_:TBitmap );
-       procedure ExportTo( const BMP_:TBitmap );
+       procedure CopyFrom( const BMP_:TBitmap );
+       procedure CopyTo( const BMP_:TBitmap );
        procedure LoadFromFile( const FileName_:String );
        procedure SaveToFile( const FileName_:String );
      end;
@@ -36,8 +37,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create;
        destructor Destroy; override;
        ///// メソッド
-       procedure ImportFrom( const BMP_:TBitmap );
-       procedure ExportTo( const BMP_:TBitmap );
+       procedure CopyFrom( const BMP_:TBitmap );
+       procedure CopyTo( const BMP_:TBitmap );
        procedure LoadFromFile( const FileName_:String );
        procedure SaveToFile( const FileName_:String );
      end;
@@ -81,14 +82,17 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLPoiIma1D_TAlphaColorF.ImportFrom( const BMP_:TBitmap );
+procedure TGLPoiIma1D_TAlphaColorF.CopyFrom( const BMP_:TBitmap );
 var
    X :Integer;
+   D :TGLPoiPixIter1D<TAlphaColorF>;
    C :TAlphaColorF;
 begin
-     _Grider.PoinsX := BMP_.Width;
+     _Grid.PoinsX := BMP_.Width;
 
-     for X := 0 to _Grider.PoinsX-1 do
+     D := _Grid.Map( GL_WRITE_ONLY );
+
+     for X := 0 to _Grid.PoinsX-1 do
      begin
           with TColorRec( BMP_.Canvas.Pixels[ X, 0 ] ) do
           begin
@@ -98,22 +102,27 @@ begin
                C.A := 1      ;
           end;
 
-          _Grider[ X ] := C;
+          D[ X ] := C;
      end;
 
-     SendData;
+     D.DisposeOf;
 end;
 
-procedure TGLPoiIma1D_TAlphaColorF.ExportTo( const BMP_:TBitmap );
+procedure TGLPoiIma1D_TAlphaColorF.CopyTo( const BMP_:TBitmap );
 var
    X :Integer;
+   D :TGLPoiPixIter1D<TAlphaColorF>;
 begin
-     BMP_.SetSize( _Grider.PoinsX, 1 );
+     BMP_.SetSize( _Grid.PoinsX, 1 );
 
-     for X := 0 to _Grider.PoinsX-1 do
+     D := _Grid.Map( GL_READ_ONLY );
+
+     for X := 0 to _Grid.PoinsX-1 do
      begin
-          BMP_.Canvas.Pixels[ X, 0 ] := _Grider[ X ].ToAlphaColor;
+          BMP_.Canvas.Pixels[ X, 0 ] := D[ X ].ToAlphaColor;
      end;
+
+     D.DisposeOf;
 end;
 
 //------------------------------------------------------------------------------
@@ -126,7 +135,7 @@ begin
 
      B.LoadFromFile( FileName_ );
 
-     ImportFrom( B );
+     CopyFrom( B );
 
      B.DisposeOf;
 end;
@@ -137,7 +146,7 @@ var
 begin
      B := TBitmap.Create;
 
-     ExportTo( B );
+     CopyTo( B );
 
      B.SaveToFile( FileName_ );
 
@@ -169,14 +178,17 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLCelIma1D_TAlphaColorF.ImportFrom( const BMP_:TBitmap );
+procedure TGLCelIma1D_TAlphaColorF.CopyFrom( const BMP_:TBitmap );
 var
    X :Integer;
    C :TAlphaColorF;
+   D :TGLCelPixIter1D<TAlphaColorF>;
 begin
-     _Grider.CellsX := BMP_.Width;
+     _Grid.CellsX := BMP_.Width;
 
-     for X := 0 to _Grider.CellsX-1 do
+     D := _Grid.Map( GL_WRITE_ONLY );
+
+     for X := 0 to _Grid.CellsX-1 do
      begin
           with TColorRec( BMP_.Canvas.Pixels[ X, 0 ] ) do
           begin
@@ -186,22 +198,27 @@ begin
                C.A := 1      ;
           end;
 
-          _Grider[ X ] := C;
+          D[ X ] := C;
      end;
 
-     SendData;
+     D.DisposeOf;
 end;
 
-procedure TGLCelIma1D_TAlphaColorF.ExportTo( const BMP_:TBitmap );
+procedure TGLCelIma1D_TAlphaColorF.CopyTo( const BMP_:TBitmap );
 var
    X :Integer;
+   D :TGLCelPixIter1D<TAlphaColorF>;
 begin
-     BMP_.SetSize( _Grider.CellsX, 1 );
+     BMP_.SetSize( _Grid.CellsX, 1 );
 
-     for X := 0 to _Grider.CellsX-1 do
+     D := _Grid.Map( GL_READ_ONLY );
+
+     for X := 0 to _Grid.CellsX-1 do
      begin
-          BMP_.Canvas.Pixels[ X, 0 ] := _Grider[ X ].ToAlphaColor;
+          BMP_.Canvas.Pixels[ X, 0 ] := D[ X ].ToAlphaColor;
      end;
+
+     D.DisposeOf;
 end;
 
 //------------------------------------------------------------------------------
@@ -214,7 +231,7 @@ begin
 
      B.LoadFromFile( FileName_ );
 
-     ImportFrom( B );
+     CopyFrom( B );
 
      B.DisposeOf;
 end;
@@ -225,7 +242,7 @@ var
 begin
      B := TBitmap.Create;
 
-     ExportTo( B );
+     CopyTo( B );
 
      B.SaveToFile( FileName_ );
 

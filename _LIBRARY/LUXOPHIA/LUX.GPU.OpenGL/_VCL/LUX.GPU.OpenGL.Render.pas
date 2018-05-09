@@ -20,7 +20,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
      public
        ///// メソッド
-       procedure ExportToBMP( const BMP_:Vcl.Graphics.TBitmap );
+       procedure CopyTo( const BMP_:Vcl.Graphics.TBitmap );
        function MakeScreenShot :Vcl.Graphics.TBitmap;
        procedure SaveToFile( const FileName_:String );
      end;
@@ -47,7 +47,7 @@ implementation //###############################################################
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TGLRender.ExportToBMP( const BMP_:Vcl.Graphics.TBitmap );
+procedure TGLRender.CopyTo( const BMP_:Vcl.Graphics.TBitmap );
 var
    Cs :TArray<TAlphaColor>;
    C, B :PAlphaColor;
@@ -87,7 +87,7 @@ function TGLRender.MakeScreenShot :Vcl.Graphics.TBitmap;
 begin
      Result := Vcl.Graphics.TBitmap.Create;
 
-     ExportToBMP( Result );
+     CopyTo( Result );
 end;
 
 procedure TGLRender.SaveToFile( const FileName_:String );
