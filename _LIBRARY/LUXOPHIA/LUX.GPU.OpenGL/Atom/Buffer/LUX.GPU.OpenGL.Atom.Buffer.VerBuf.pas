@@ -32,7 +32,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLVerBuf<_TItem_:record> = class( TGLBuffer<_TItem_>, IGLVerBuf )
+     TGLVerBuf<_TItem_:record> = class( TGLBuffer<_TItem_,TGLBufferData<_TItem_>>, IGLVerBuf )
      private
      protected
        ///// アクセス

@@ -27,7 +27,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLEleBuf<_TItem_:record> = class( TGLBuffer<_TItem_>, IGLEleBuf )
+     TGLEleBuf<_TItem_:record> = class( TGLBuffer<_TItem_,TGLBufferData<_TItem_>>, IGLEleBuf )
      private
      protected
        ///// アクセス

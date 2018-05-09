@@ -25,7 +25,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLUniBuf<_TItem_:record> = class( TGLBuffer<_TItem_>, IGLUniBuf )
+     TGLUniBuf<_TItem_:record> = class( TGLBuffer<_TItem_,TGLBufferData<_TItem_>>, IGLUniBuf )
      private
      protected
        ///// アクセス

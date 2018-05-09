@@ -25,7 +25,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //-------------------------------------------------------------------------
 
-     TGLStoBuf<_TItem_:record> = class( TGLBuffer<_TItem_>, IGLStoBuf )
+     TGLStoBuf<_TItem_:record> = class( TGLBuffer<_TItem_,TGLBufferData<_TItem_>>, IGLStoBuf )
      private
      protected
        ///// アクセス

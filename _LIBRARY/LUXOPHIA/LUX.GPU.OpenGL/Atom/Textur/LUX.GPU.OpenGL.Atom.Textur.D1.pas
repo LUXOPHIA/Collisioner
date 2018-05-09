@@ -5,6 +5,7 @@ interface //####################################################################
 uses Winapi.OpenGL, Winapi.OpenGLext,
      LUX,
      LUX.Data.Lattice.T1,
+     LUX.GPU.OpenGL.Atom.Buffer.PixBuf.D1,
      LUX.GPU.OpenGL.Atom.Imager.D1,
      LUX.GPU.OpenGL.Atom.Textur;
 
@@ -16,7 +17,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiTex1D<_TItem_>
 
-     TGLPoiTex1D<_TItem_:record;_TImager_:TGLPoiIma1D<_TItem_>,constructor> = class( TGLTextur<_TItem_,TPoinArray1D<_TItem_>,_TImager_> )
+     TGLPoiTex1D<_TItem_:record;_TImager_:TGLPoiIma1D<_TItem_>,constructor> = class( TGLTextur<_TItem_,TGLPoiPixIter1D<_TItem_>,TGLPoiPix1D<_TItem_>,_TImager_> )
      private
      protected
      public
@@ -26,7 +27,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelTex1D<_TItem_>
 
-     TGLCelTex1D<_TItem_:record;_TImager_:TGLCelIma1D<_TItem_>,constructor> = class( TGLTextur<_TItem_,TCellArray1D<_TItem_>,_TImager_> )
+     TGLCelTex1D<_TItem_:record;_TImager_:TGLCelIma1D<_TItem_>,constructor> = class( TGLTextur<_TItem_,TGLCelPixIter1D<_TItem_>,TGLCelPix1D<_TItem_>,_TImager_> )
      private
      protected
      public
