@@ -115,7 +115,7 @@ begin
           end;
      end;
 
-     TGLMateryBB( Matery ).Textur.Imager.ImportFrom( _BMP );
+     TGLMateryBB( Matery ).Textur.Imager.CopyFrom( _BMP );
 
      MakeModel;
 end;
