@@ -27,11 +27,19 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        ///// アクセス
        function GetParen :IGLPixBuf1D;
+       function GetElemsX :Integer;
+       function GetItemsX :Integer;
+       function GetMargsX :Integer;
        function GetPoinsX :Integer;
        function GetCellsX :Integer;
+       ///// メソッド
+       function ItemsI( const X_:Integer ) :Integer;
      public
        ///// プロパティ
        property Paren  :IGLPixBuf1D read GetParen ;
+       property ElemsX :Integer     read GetElemsX;
+       property ItemsX :Integer     read GetItemsX;
+       property MargsX :Integer     read GetMargsX;
        property PoinsX :Integer     read GetPoinsX;
        property CellsX :Integer     read GetCellsX;
      end;
@@ -42,15 +50,20 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      ['{441F1A9D-EC3A-43DE-94D6-467ACF6AA0A8}']
      {protected}
        ///// アクセス
+       function GetElemsX :Integer;
        function GetItemsX :Integer;
        procedure SetItemsX( const ItemsX_:Integer );
+       function GetMargsX :Integer;
+       procedure SetMargsX( const MargsX_:Integer );
        function GetPoinsX :Integer;
        procedure SetPoinsX( const PoinsX_:Integer );
        function GetCellsX :Integer;
        procedure SetCellsX( const CellsX_:Integer );
      {public}
        ///// プロパティ
+       property ElemsX :Integer read GetElemsX                ;
        property ItemsX :Integer read GetItemsX write SetItemsX;
+       property MargsX :Integer read GetMargsX write SetMargsX;
        property PoinsX :Integer read GetPoinsX write SetPoinsX;
        property CellsX :Integer read GetCellsX write SetCellsX;
      end;
@@ -62,18 +75,26 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      private
      protected
        _ItemsX :Integer;
+       _MargsX :Integer;
        ///// アクセス
+       function GetElemsN :Integer; override;
+       function GetPoinsN :Integer; override;
+       function GetCellsN :Integer; override;
+       function GetElemsX :Integer;
        function GetItemsX :Integer;
        procedure SetItemsX( const ItemsX_:Integer );
+       function GetMargsX :Integer;
+       procedure SetMargsX( const MargsX_:Integer );
        function GetPoinsX :Integer; virtual; abstract;
        procedure SetPoinsX( const PoinsX_:Integer ); virtual; abstract;
        function GetCellsX :Integer; virtual; abstract;
        procedure SetCellsX( const CellsX_:Integer ); virtual; abstract;
-       ///// メソッド
-       procedure MakeCount; virtual;
      public
+       constructor Create( const Usage_:GLenum ); override;
        ///// プロパティ
+       property ElemsX :Integer read GetElemsX                ;
        property ItemsX :Integer read GetItemsX write SetItemsX;
+       property MargsX :Integer read GetMargsX write SetMargsX;
        property PoinsX :Integer read GetPoinsX write SetPoinsX;
        property CellsX :Integer read GetCellsX write SetCellsX;
      end;
@@ -88,8 +109,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetPoins( const X_:Integer ) :_TItem_;
        procedure SetPoins( const X_:Integer; const Item_:_TItem_ );
        function GetPoinsP( const X_:Integer ) :_PItem_;
-       ///// メソッド
-       function ItemsI( const X_:Integer ) :Integer;
      public
        ///// プロパティ
        property Poins [ const X_:Integer ] :_TItem_ read GetPoins  write SetPoins; default;
@@ -127,8 +146,6 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        function GetCells( const X_:Integer ) :_TItem_;
        procedure SetCells( const X_:Integer; const Item_:_TItem_ );
        function GetCellsP( const X_:Integer ) :_PItem_;
-       ///// メソッド
-       function ItemsI( const X_:Integer ) :Integer;
      public
        ///// プロパティ
        property Cells [ const X_:Integer ] :_TItem_ read GetCells  write SetCells; default;
@@ -181,6 +198,21 @@ begin
      Result := _Paren as IGLPixBuf1D;
 end;
 
+function TGLPixBufIter1D<_TItem_>.GetElemsX :Integer;
+begin
+     Result := Paren.ElemsX;
+end;
+
+function TGLPixBufIter1D<_TItem_>.GetItemsX :Integer;
+begin
+     Result := Paren.ItemsX;
+end;
+
+function TGLPixBufIter1D<_TItem_>.GetMargsX :Integer;
+begin
+     Result := Paren.MargsX;
+end;
+
 function TGLPixBufIter1D<_TItem_>.GetPoinsX :Integer;
 begin
      Result := Paren.PoinsX;
@@ -189,6 +221,13 @@ end;
 function TGLPixBufIter1D<_TItem_>.GetCellsX :Integer;
 begin
      Result := Paren.CellsX;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TGLPixBufIter1D<_TItem_>.ItemsI( const X_:Integer ) :Integer;
+begin
+     Result := MargsX + X_;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
@@ -201,6 +240,28 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
+function TGLPixBuf1D<_TItem_,_TIter_>.GetElemsN :Integer;
+begin
+     Result := ElemsX;
+end;
+
+function TGLPixBuf1D<_TItem_,_TIter_>.GetPoinsN :Integer;
+begin
+     Result := PoinsX;
+end;
+
+function TGLPixBuf1D<_TItem_,_TIter_>.GetCellsN :Integer;
+begin
+     Result := CellsX;
+end;
+
+function TGLPixBuf1D<_TItem_,_TIter_>.GetElemsX :Integer;
+begin
+     Result := _MargsX + _ItemsX + _MargsX;
+end;
+
+//------------------------------------------------------------------------------
+
 function TGLPixBuf1D<_TItem_,_TIter_>.GetItemsX :Integer;
 begin
      Result := _ItemsX;
@@ -208,17 +269,30 @@ end;
 
 procedure TGLPixBuf1D<_TItem_,_TIter_>.SetItemsX( const ItemsX_:Integer );
 begin
-     _ItemsX := ItemsX_;  MakeCount;
+     _ItemsX := ItemsX_;  MakeBuffer;
 end;
 
-/////////////////////////////////////////////////////////////////////// メソッド
+//------------------------------------------------------------------------------
 
-procedure TGLPixBuf1D<_TItem_,_TIter_>.MakeCount;
+function TGLPixBuf1D<_TItem_,_TIter_>.GetMargsX :Integer;
 begin
-     Count := _ItemsX;
+     Result := _MargsX;
+end;
+
+procedure TGLPixBuf1D<_TItem_,_TIter_>.SetMargsX( const MargsX_:Integer );
+begin
+     _MargsX := MargsX_;  MakeBuffer;
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLPixBuf1D<_TItem_,_TIter_>.Create( const Usage_:GLenum );
+begin
+     inherited;
+
+     _ItemsX := 1;
+     _MargsX := 0;
+end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiPixIter1D<_TItem_>
 
@@ -239,13 +313,6 @@ end;
 function TGLPoiPixIter1D<_TItem_>.GetPoinsP( const X_:Integer ) :_PItem_;
 begin
      Result := inherited ItemsP[ ItemsI( X_ ) ];
-end;
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-function TGLPoiPixIter1D<_TItem_>.ItemsI( const X_:Integer ) :Integer;
-begin
-     Result := X_;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiPix1D<_TItem_>
@@ -299,13 +366,6 @@ end;
 function TGLCelPixIter1D<_TItem_>.GetCellsP( const X_:Integer ) :_PItem_;
 begin
      Result := inherited ItemsP[ ItemsI( X_ ) ];
-end;
-
-/////////////////////////////////////////////////////////////////////// メソッド
-
-function TGLCelPixIter1D<_TItem_>.ItemsI( const X_:Integer ) :Integer;
-begin
-     Result := X_;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelPix1D<_TItem_>
