@@ -27,6 +27,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      IGLPixBuf = interface( IGLBuffer )
      ['{60D83A80-BD20-414E-8E71-5B96473F13EC}']
      {protected}
+       ///// アクセス
+       function GetPoinsN :Integer;
+       function GetCellsN :Integer;
      {public}
        ///// メソッド
        procedure BindRead;
@@ -43,10 +46,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        ///// アクセス
        function GetKind :GLenum; override;
+       function GetElemsN :Integer; virtual; abstract;
+       function GetPoinsN :Integer; virtual; abstract;
+       function GetCellsN :Integer; virtual; abstract;
        ///// メソッド
        function InitAlign :GLint; override;
        procedure MakeBuffer; override;
      public
+       ///// プロパティ
+       property ElemsN :Integer read GetElemsN;
+       property PoinsN :Integer read GetPoinsN;
+       property CellsN :Integer read GetCellsN;
        ///// メソッド
        procedure BindRead;
        procedure UnbindRead;
@@ -98,6 +108,8 @@ end;
 
 procedure TGLPixBuf<_TItem_,_TIter_>.MakeBuffer;
 begin
+     _Count := ElemsN;
+
      BindRead;
 
        glBufferData( GL_PIXEL_UNPACK_BUFFER, SizeOf( _TItem_ ) * _Count, nil, _Usage );

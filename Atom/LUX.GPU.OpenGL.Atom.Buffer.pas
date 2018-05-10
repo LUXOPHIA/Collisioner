@@ -96,7 +96,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure MakeBuffer; virtual;
      public
        constructor Create; overload;
-       constructor Create( const Usage_:GLenum ); overload;
+       constructor Create( const Usage_:GLenum ); overload; virtual;
+       procedure AfterConstruction; override;
        destructor Destroy; override;
        ///// プロパティ
        property Kind                      :GLenum  read GetKind                ;
@@ -290,7 +291,14 @@ begin
      glGenBuffers( 1, @_ID );
 
      _Usage := Usage_;
-      Count := 1;
+     _Count := 1;
+end;
+
+procedure TGLBuffer<_TItem_,_TIter_>.AfterConstruction;
+begin
+     inherited;
+
+     MakeBuffer;
 end;
 
 destructor TGLBuffer<_TItem_,_TIter_>.Destroy;
