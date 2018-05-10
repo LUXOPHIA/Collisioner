@@ -153,7 +153,7 @@ begin
 
           with UniBufs do
           begin
-               Add( 4{BinP}, 'TGriderS'{Name} );
+               Add( 4{BinP}, 'TGridSize'{Name} );
                Add( 5{BinP}, 'TThreshold'{Name} );
           end;
 
@@ -200,7 +200,7 @@ begin
 
           with UniBufs do
           begin
-               Add( 4{BinP}, 'TGriderS'{Name} );
+               Add( 4{BinP}, 'TGridSize'{Name} );
                Add( 5{BinP}, 'TThreshold'{Name} );
           end;
 
@@ -266,7 +266,7 @@ begin
 
           with UniBufs do
           begin
-               Add( 4{BinP}, 'TGriderS'{Name} );
+               Add( 4{BinP}, 'TGridSize'{Name} );
                Add( 5{BinP}, 'TThreshold'{Name} );
           end;
 
@@ -349,7 +349,7 @@ begin
      _Matery := TMarcubesMateryFacesRGB.Create;
      _MaterC := TMarcubesMateryCubes.Create;
 
-     with Textur.Imager.Grider do
+     with Textur.Imager.Grid do
      begin
           MargsX := 1;
           MargsY := 1;
@@ -412,9 +412,7 @@ end;
 
 procedure TMarcubes.MakeModel;
 begin
-     _Textur.Imager.SendData;
-
-     PoinsN := _Textur.Imager.Grider.CellsN;
+     PoinsN := _Textur.Imager.Grid.CellsN;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
