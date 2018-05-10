@@ -2,11 +2,11 @@
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%【共通定数】
 
-uniform sampler3D _Grids;
+uniform sampler3D _Grid;
 
-const ivec3 _ElemGridsN = textureSize( _Grids, 0 );
-const ivec3 _ElemBricsN = _ElemGridsN - ivec3( 1 );
-const ivec3 _BricsN     = _ElemBricsN - ivec3( 2 );
+const ivec3 _ElemPoinsN = textureSize( _Grid, 0 );
+const ivec3 _ElemCellsN = _ElemPoinsN - ivec3( 1 );
+const ivec3 _CellsN     = _ElemCellsN - ivec3( 2 );
 
 //############################################################################## ■
 
@@ -20,8 +20,8 @@ _Result;
 
 void main()
 {
-  const int SZ = _BricsN.y * _BricsN.x;
-  const int SY =             _BricsN.x;
+  const int SZ = _CellsN.y * _CellsN.x;
+  const int SY =             _CellsN.x;
   const int I  = gl_VertexID;
 
   ivec3 B;
