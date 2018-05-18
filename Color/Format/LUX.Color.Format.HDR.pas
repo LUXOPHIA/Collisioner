@@ -2,9 +2,8 @@
 
 interface //#################################################################### ■
 
-uses System.Classes, System.SysUtils, System.Generics.Collections,
-     FMX.Graphics,
-     LUX, LUX.Data.Lattice.T2, LUX.Color, LUX.Color.Grid.D2.Preset;
+uses System.SysUtils, System.Generics.Collections,
+     LUX, LUX.Color, LUX.Color.Grid.D2.Preset;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
