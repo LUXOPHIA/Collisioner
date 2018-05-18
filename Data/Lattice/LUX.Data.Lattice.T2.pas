@@ -113,6 +113,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property CellsY                       :Integer read GetItemsY write SetItemsY;
        property PoinsX                       :Integer read GetPoinsX write SetPoinsX;
        property PoinsY                       :Integer read GetPoinsY write SetPoinsY;
+       ///// メソッド
+       procedure MakeEdgePerio; override;
+       procedure MakeEdgeMirro; override;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TPoinArray2D<_TItem_>
@@ -150,6 +153,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property PoinsY                       :Integer read GetItemsY write SetItemsY;
        property CellsX                       :Integer read GetCellsX write SetCellsX;
        property CellsY                       :Integer read GetCellsY write SetCellsY;
+       ///// メソッド
+       procedure MakeEdgePerio; override;
+       procedure MakeEdgeMirro; override;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -364,6 +370,60 @@ end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TCellArray2D<_TItem_>.MakeEdgePerio;
+var
+   MX, MY, NX, NY, HX, HY, X, Y :Integer;
+begin
+     //                                     H   N
+     //                                     |   |
+     //    -3  -2  -1  00  +1  +2  +3  +4  +5  +6  +7  +8
+     //  ┠─╂─╂─┣━╋━╋━╋━╋━╋━┫─╂─╂─┨
+     //    +3  +4  +5  ・  ・  ・  ・  ・  ・  00  +1  +2
+
+     MX := _MargsX;  NX := _ItemsX;  HX := _ItemsX-1;
+     MY := _MargsY;  NY := _ItemsY;  HY := _ItemsY-1;
+
+     for Y := 00 to HY do
+     begin
+          for X := 00-MX to 00-01 do Items[ X, Y ] := Items[ X + NX, Y ];
+          for X := HX+01 to HX+MX do Items[ X, Y ] := Items[ X - NX, Y ];
+     end;
+
+     for X := 00-MX to HX+MX do
+     begin
+          for Y := 00-MY to 00-01 do Items[ X, Y ] := Items[ X, Y + NY ];
+          for Y := HY+01 to HY+MY do Items[ X, Y ] := Items[ X, Y - NY ];
+     end;
+end;
+
+procedure TCellArray2D<_TItem_>.MakeEdgeMirro;
+var
+   MX, MY, NX, NY, HX, HY, X, Y :Integer;
+begin
+     //                                     H   N
+     //                                     |   |
+     //    -3  -2  -1  00  +1  +2  +3  +4  +5  +6  +7  +8
+     //  ┠─╂─╂─┣━╋━╋━╋━╋━╋━┫─╂─╂─┨
+     //    +2  +1  00  ・  ・  ・  ・  ・  ・  +5  +4  +3   }
+
+     MX := _MargsX;  NX := _ItemsX;  HX := _ItemsX-1;
+     MY := _MargsY;  NY := _ItemsY;  HY := _ItemsY-1;
+
+     for Y := 00 to HY do
+     begin
+          for X := 00-MX to 00-01 do Items[ X, Y ] := Items[ 00 - X - 01, Y ];
+          for X := HX+01 to HX+MX do Items[ X, Y ] := Items[ HX - X + NX, Y ];
+     end;
+
+     for X := 00-MX to HX+MX do
+     begin
+          for Y := 00-MY to 00-01 do Items[ X, Y ] := Items[ X, 00 - Y - 01 ];
+          for Y := HY+01 to HY+MY do Items[ X, Y ] := Items[ X, HY - Y + NY ];
+     end;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TPoinArray2D<_TItem_>
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -405,6 +465,60 @@ destructor TPoinArray2D<_TItem_>.Destroy;
 begin
 
      inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TPoinArray2D<_TItem_>.MakeEdgePerio;
+var
+   MX, MY, HX, HY, X, Y :Integer;
+begin
+     //                                       H
+     //                                       |
+     //  -3  -2  -1  00  +1  +2  +3  +4  +5  +6  +7  +8  +9
+     //  ┠─╂─╂─┣━╋━╋━╋━╋━╋━┫─╂─╂─┨
+     //  +3  +4  +5  ・  ・  ・  ・  ・  ・  00  +1  +2  +3
+
+     MX := _MargsX;  HX := _ItemsX-1;
+     MY := _MargsX;  HY := _ItemsX-1;
+
+     for Y := 00 to HY do
+     begin
+          for X := 00-MX to 00-01 do Items[ X, Y ] := Items[ X + HX, Y ];
+          for X := HX+00 to HX+MX do Items[ X, Y ] := Items[ X - HX, Y ];
+     end;
+
+     for X := 00-MX to HX+MX do
+     begin
+          for Y := 00-MY to 00-01 do Items[ X, Y ] := Items[ X, Y + HY ];
+          for Y := HY+00 to HY+MY do Items[ X, Y ] := Items[ X, Y - HY ];
+     end;
+end;
+
+procedure TPoinArray2D<_TItem_>.MakeEdgeMirro;
+var
+   MX, MY, HX, HY, X, Y :Integer;
+begin
+     //                                       H
+     //                                       |
+     //  -3  -2  -1  00  +1  +2  +3  +4  +5  +6  +7  +8  +9
+     //  ┠─╂─╂─┣━╋━╋━╋━╋━╋━┫─╂─╂─┨
+     //  +3  +2  +1  ・  ・  ・  ・  ・  ・  ・  +5  +4  +3
+
+     MX := _MargsX;  HX := _ItemsX-1;
+     MY := _MargsX;  HY := _ItemsX-1;
+
+     for Y := 00 to HY do
+     begin
+          for X := 00-MX to 00-01 do Items[ X, Y ] := Items[ -X       , Y ];
+          for X := HX+01 to HX+MX do Items[ X, Y ] := Items[ -X + 2*HX, Y ];
+     end;
+
+     for X := 00-MX to HX+MX do
+     begin
+          for Y := 00-MY to 00-01 do Items[ X, Y ] := Items[ X, -Y        ];
+          for Y := HY+01 to HY+MY do Items[ X, Y ] := Items[ X, -Y + 2*HY ];
+     end;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】

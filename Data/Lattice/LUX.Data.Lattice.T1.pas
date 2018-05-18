@@ -410,15 +410,13 @@ procedure TCellArray1D<_TItem_>.MakeEdgePerio;
 var
    M, N, H, X :Integer;
 begin
-     {                                    H   N
-                                          |   |
-         -3  -2  -1  00  +1  +2  +3  +4  +5  +6  +7  +8
-       ┠─╂─╂─┣━╋━╋━╋━╋━╋━┫─╂─╂─┨
-         +3  +4  +5  ・  ・  ・  ・  ・  ・  00  +1  +2   }
+     //                                     H   N
+     //                                     |   |
+     //    -3  -2  -1  00  +1  +2  +3  +4  +5  +6  +7  +8
+     //  ┠─╂─╂─┣━╋━╋━╋━╋━╋━┫─╂─╂─┨
+     //    +3  +4  +5  ・  ・  ・  ・  ・  ・  00  +1  +2   }
 
-     M := _MargsX  ;
-     N := _ItemsX  ;
-     H := _ItemsX-1;
+     M := _MargsX;  N := _ItemsX;  H := _ItemsX-1;
 
      for X := 0-M to 0-1 do Items[ X ] := Items[ X + N ];
      for X := H+1 to H+M do Items[ X ] := Items[ X - N ];
@@ -428,15 +426,13 @@ procedure TCellArray1D<_TItem_>.MakeEdgeMirro;
 var
    M, N, H, X :Integer;
 begin
-     {                                    H   N
-                                          |   |
-         -3  -2  -1  00  +1  +2  +3  +4  +5  +6  +7  +8
-       ┠─╂─╂─┣━╋━╋━╋━╋━╋━┫─╂─╂─┨
-         +2  +1  00  ・  ・  ・  ・  ・  ・  +5  +4  +3   }
+     //                                     H   N
+     //                                     |   |
+     //    -3  -2  -1  00  +1  +2  +3  +4  +5  +6  +7  +8
+     //  ┠─╂─╂─┣━╋━╋━╋━╋━╋━┫─╂─╂─┨
+     //    +2  +1  00  ・  ・  ・  ・  ・  ・  +5  +4  +3
 
-     M := _MargsX  ;
-     N := _ItemsX  ;
-     H := _ItemsX-1;
+     M := _MargsX;  N := _ItemsX;  H := _ItemsX-1;
 
      for X := 0-M to 0-1 do Items[ X ] := Items[ 0 - X - 1 ];
      for X := H+1 to H+M do Items[ X ] := Items[ H - X + N ];
@@ -481,14 +477,13 @@ procedure TPoinArray1D<_TItem_>.MakeEdgePerio;
 var
    M, H, X :Integer;
 begin
-     {                                      H
-                                            |
-       -3  -2  -1  00  +1  +2  +3  +4  +5  +6  +7  +8  +9
-       ┠─╂─╂─┣━╋━╋━╋━╋━╋━┫─╂─╂─┨
-       +3  +4  +5  ・  ・  ・  ・  ・  ・  00  +1  +2  +3 }
+     //                                       H
+     //                                       |
+     //  -3  -2  -1  00  +1  +2  +3  +4  +5  +6  +7  +8  +9
+     //  ┠─╂─╂─┣━╋━╋━╋━╋━╋━┫─╂─╂─┨
+     //  +3  +4  +5  ・  ・  ・  ・  ・  ・  00  +1  +2  +3
 
-     M := _MargsX  ;
-     H := _ItemsX-1;
+     M := _MargsX;  H := _ItemsX-1;
 
      for X := 0-M to 0-1 do Items[ X ] := Items[ X + H ];
      for X := H+0 to H+M do Items[ X ] := Items[ X - H ];
@@ -498,14 +493,13 @@ procedure TPoinArray1D<_TItem_>.MakeEdgeMirro;
 var
    M, H, X :Integer;
 begin
-     {                                      H
-                                            |
-       -3  -2  -1  00  +1  +2  +3  +4  +5  +6  +7  +8  +9
-       ┠─╂─╂─┣━╋━╋━╋━╋━╋━┫─╂─╂─┨
-       +3  +2  +1  ・  ・  ・  ・  ・  ・  ・  +5  +4  +3 }
+     //                                       H
+     //                                       |
+     //  -3  -2  -1  00  +1  +2  +3  +4  +5  +6  +7  +8  +9
+     //  ┠─╂─╂─┣━╋━╋━╋━╋━╋━┫─╂─╂─┨
+     //  +3  +2  +1  ・  ・  ・  ・  ・  ・  ・  +5  +4  +3
 
-     M := _MargsX  ;
-     H := _ItemsX-1;
+     M := _MargsX;  H := _ItemsX-1;
 
      for X := 0-M to 0-1 do Items[ X ] := Items[ -X       ];
      for X := H+1 to H+M do Items[ X ] := Items[ -X + 2*H ];

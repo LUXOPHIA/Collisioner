@@ -165,6 +165,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property PoinsX                          :Integer read GetPoinsX write SetPoinsX;
        property PoinsY                          :Integer read GetPoinsY write SetPoinsY;
        property PoinsZ                          :Integer read GetPoinsZ write SetPoinsZ;
+       ///// メソッド
+       procedure MakeEdgePerio; override;
+       procedure MakeEdgeMirro; override;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TPoinArray3D<_TItem_>
@@ -222,6 +225,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure ForEdgesX( const Proc_:TConstProc<TCellIterPoinArray3D<_TItem_>> );
        procedure ForEdgesY( const Proc_:TConstProc<TCellIterPoinArray3D<_TItem_>> );
        procedure ForEdgesZ( const Proc_:TConstProc<TCellIterPoinArray3D<_TItem_>> );
+       ///// メソッド
+       procedure MakeEdgePerio; override;
+       procedure MakeEdgeMirro; override;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCellIterPoinArray3D<_TItem_>
@@ -570,6 +576,82 @@ begin
      CellsY := PoinZ_ - 1;
 end;
 
+//------------------------------------------------------------------------------
+
+procedure TCellArray3D<_TItem_>.MakeEdgePerio;
+var
+   MX, MY, MZ, NX, NY, NZ, HX, HY, HZ, X, Y, Z :Integer;
+begin
+     //                                     H   N
+     //                                     |   |
+     //    -3  -2  -1  00  +1  +2  +3  +4  +5  +6  +7  +8
+     //  ┠─╂─╂─┣━╋━╋━╋━╋━╋━┫─╂─╂─┨
+     //    +3  +4  +5  ・  ・  ・  ・  ・  ・  00  +1  +2
+
+     MX := _MargsX;  NX := _ItemsX;  HX := _ItemsX-1;
+     MY := _MargsY;  NY := _ItemsY;  HY := _ItemsY-1;
+     MZ := _MargsZ;  NZ := _ItemsZ;  HZ := _ItemsZ-1;
+
+     for Z := 00 to HZ do
+     begin
+          for Y := 00 to HY do
+          begin
+               for X := 00-MX to 00-01 do Items[ X, Y, Z ] := Items[ X + NX, Y, Z ];
+               for X := HX+01 to HX+MX do Items[ X, Y, Z ] := Items[ X - NX, Y, Z ];
+          end;
+
+          for X := 00-MX to HX+MX do
+          begin
+               for Y := 00-MY to 00-01 do Items[ X, Y, Z ] := Items[ X, Y + NY, Z ];
+               for Y := HY+01 to HY+MY do Items[ X, Y, Z ] := Items[ X, Y - NY, Z ];
+          end;
+     end;
+
+     for Y := 00-MY to HY+MY do
+     for X := 00-MX to HX+MX do
+     begin
+          for Z := 00-MZ to 00-01 do Items[ X, Y, Z ] := Items[ X, Y, Z + NZ ];
+          for Z := HZ+01 to HZ+MZ do Items[ X, Y, Z ] := Items[ X, Y, Z - NZ ];
+     end;
+end;
+
+procedure TCellArray3D<_TItem_>.MakeEdgeMirro;
+var
+   MX, MY, MZ, NX, NY, NZ, HX, HY, HZ, X, Y, Z :Integer;
+begin
+     //                                     H   N
+     //                                     |   |
+     //    -3  -2  -1  00  +1  +2  +3  +4  +5  +6  +7  +8
+     //  ┠─╂─╂─┣━╋━╋━╋━╋━╋━┫─╂─╂─┨
+     //    +2  +1  00  ・  ・  ・  ・  ・  ・  +5  +4  +3   }
+
+     MX := _MargsX;  NX := _ItemsX;  HX := _ItemsX-1;
+     MY := _MargsY;  NY := _ItemsY;  HY := _ItemsY-1;
+     MZ := _MargsZ;  NZ := _ItemsZ;  HZ := _ItemsZ-1;
+
+     for Z := 00 to HZ do
+     begin
+          for Y := 00 to HY do
+          begin
+               for X := 00-MX to 00-01 do Items[ X, Y, Z ] := Items[ 00 - X - 01, Y, Z ];
+               for X := HX+01 to HX+MX do Items[ X, Y, Z ] := Items[ HX - X + NX, Y, Z ];
+          end;
+
+          for X := 00-MX to HX+MX do
+          begin
+               for Y := 00-MY to 00-01 do Items[ X, Y, Z ] := Items[ X, 00 - Y - 01, Z ];
+               for Y := HY+01 to HY+MY do Items[ X, Y, Z ] := Items[ X, HY - Y + NY, Z ];
+          end;
+     end;
+
+     for Y := 00-MY to HY+MY do
+     for X := 00-MX to HX+MX do
+     begin
+          for Z := 00-MZ to 00-01 do Items[ X, Y, Z ] := Items[ X, Y, 00 - Z - 01 ];
+          for Z := HZ+01 to HZ+MZ do Items[ X, Y, Z ] := Items[ X, Y, HZ - Z + NZ ];
+     end;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TPoinArray3D<_TItem_>
@@ -731,6 +813,82 @@ begin
      E.ForEdgesZ( procedure begin Proc_( E ); end );
 
      E.DisposeOf;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TPoinArray3D<_TItem_>.MakeEdgePerio;
+var
+   MX, MY, MZ, HX, HY, HZ, X, Y, Z :Integer;
+begin
+     //                                       H
+     //                                       |
+     //  -3  -2  -1  00  +1  +2  +3  +4  +5  +6  +7  +8  +9
+     //  ┠─╂─╂─┣━╋━╋━╋━╋━╋━┫─╂─╂─┨
+     //  +3  +4  +5  ・  ・  ・  ・  ・  ・  00  +1  +2  +3
+
+     MX := _MargsX;  HX := _ItemsX-1;
+     MY := _MargsX;  HY := _ItemsX-1;
+     MZ := _MargsZ;  HZ := _ItemsZ-1;
+
+     for Z := 00 to HZ do
+     begin
+          for Y := 00 to HY do
+          begin
+               for X := 00-MX to 00-01 do Items[ X, Y, Z ] := Items[ X + HX, Y, Z ];
+               for X := HX+00 to HX+MX do Items[ X, Y, Z ] := Items[ X - HX, Y, Z ];
+          end;
+
+          for X := 00-MX to HX+MX do
+          begin
+               for Y := 00-MY to 00-01 do Items[ X, Y, Z ] := Items[ X, Y + HY, Z ];
+               for Y := HY+00 to HY+MY do Items[ X, Y, Z ] := Items[ X, Y - HY, Z ];
+          end;
+     end;
+
+     for Y := 00-MY to HY+MY do
+     for X := 00-MX to HX+MX do
+     begin
+          for Z := 00-MZ to 00-01 do Items[ X, Y, Z ] := Items[ X, Y, Z + HZ ];
+          for Z := HZ+00 to HZ+MZ do Items[ X, Y, Z ] := Items[ X, Y, Z - HZ ];
+     end;
+end;
+
+procedure TPoinArray3D<_TItem_>.MakeEdgeMirro;
+var
+   MX, MY, MZ, HX, HY, HZ, X, Y, Z :Integer;
+begin
+     //                                       H
+     //                                       |
+     //  -3  -2  -1  00  +1  +2  +3  +4  +5  +6  +7  +8  +9
+     //  ┠─╂─╂─┣━╋━╋━╋━╋━╋━┫─╂─╂─┨
+     //  +3  +2  +1  ・  ・  ・  ・  ・  ・  ・  +5  +4  +3
+
+     MX := _MargsX;  HX := _ItemsX-1;
+     MY := _MargsX;  HY := _ItemsX-1;
+     MZ := _MargsZ;  HZ := _ItemsZ-1;
+
+     for Z := 00 to HZ do
+     begin
+          for Y := 00 to HY do
+          begin
+               for X := 00-MX to 00-01 do Items[ X, Y, Z ] := Items[ -X       , Y, Z ];
+               for X := HX+01 to HX+MX do Items[ X, Y, Z ] := Items[ -X + 2*HX, Y, Z ];
+          end;
+
+          for X := 00-MX to HX+MX do
+          begin
+               for Y := 00-MY to 00-01 do Items[ X, Y, Z ] := Items[ X, -Y       , Z ];
+               for Y := HY+01 to HY+MY do Items[ X, Y, Z ] := Items[ X, -Y + 2*HY, Z ];
+          end;
+     end;
+
+     for Y := 00-MY to HY+MY do
+     for X := 00-MX to HX+MX do
+     begin
+          for Z := 00-MZ to 00-01 do Items[ X, Y, Z ] := Items[ X, Y, -Z        ];
+          for Z := HZ+01 to HZ+MZ do Items[ X, Y, Z ] := Items[ X, Y, -Z + 2*HZ ];
+     end;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCellIterPoinArray3D<_TItem_>
