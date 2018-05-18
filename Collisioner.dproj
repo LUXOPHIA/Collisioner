@@ -398,6 +398,13 @@
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\Atom\Textur\D1\LUX.GPU.OpenGL.Atom.Textur.D1.Preset.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\Atom\Textur\D2\LUX.GPU.OpenGL.Atom.Textur.D2.Preset.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX.GPU.OpenGL\Atom\Textur\D3\LUX.GPU.OpenGL.Atom.Textur.D3.Preset.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Color\Grid\_FMX\LUX.Color.Grid.D1.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Color\Grid\D2\_FMX\LUX.Color.Grid.D2.Preset.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Color\Grid\D1\_FMX\LUX.Color.Grid.D1.Preset.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Color\Format\LUX.Color.Format.HDR.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Color\LUX.Color.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Color\Grid\_FMX\LUX.Color.Grid.D3.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Color\Grid\_FMX\LUX.Color.Grid.D2.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
