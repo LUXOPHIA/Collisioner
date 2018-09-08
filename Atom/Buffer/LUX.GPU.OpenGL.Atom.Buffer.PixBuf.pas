@@ -2,7 +2,8 @@
 
 interface //#################################################################### ■
 
-uses Winapi.OpenGL, Winapi.OpenGLext,
+uses System.Classes,
+     Winapi.OpenGL, Winapi.OpenGLext,
      LUX,
      LUX.GPU.OpenGL.Atom,
      LUX.GPU.OpenGL.Atom.Buffer;
@@ -62,6 +63,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure UnbindRead;
        procedure BindWrite;
        procedure UnbindWrite;
+       procedure Read( const Stream_:TStream );
+       procedure Write( const Stream_:TStream );
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -143,6 +146,30 @@ end;
 procedure TGLPixBuf<_TItem_,_TIter_>.UnbindWrite;
 begin
      glBindBuffer( GL_PIXEL_PACK_BUFFER, 0 );
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TGLPixBuf<_TItem_,_TIter_>.Read( const Stream_:TStream );
+var
+   D :TGLPixBufIter<_TItem_>;
+begin
+     D := Map( GL_READ_ONLY );
+
+     Stream_.Read( D.Start^, SizeOf( _TItem_ ) * ElemsN );
+
+     D.DisposeOf;
+end;
+
+procedure TGLPixBuf<_TItem_,_TIter_>.Write( const Stream_:TStream );
+var
+   D :TGLPixBufIter<_TItem_>;
+begin
+     D := Map( GL_READ_ONLY );
+
+     Stream_.Write( D.Start^, SizeOf( _TItem_ ) * ElemsN );
+
+     D.DisposeOf;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】

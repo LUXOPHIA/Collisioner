@@ -114,6 +114,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure BeginDraw; override;
        procedure EndDraw; override;
        procedure MakeModel;
+       procedure LoadFromFilePOX( const FileName_:String );
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -123,6 +124,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
 implementation //############################################################### ■
+
+uses System.Classes, System.SysUtils;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -410,9 +413,37 @@ begin
      inherited;
 end;
 
+//------------------------------------------------------------------------------
+
 procedure TMarcubes.MakeModel;
 begin
      PoinsN := _Textur.Imager.Grid.CellsN;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TMarcubes.LoadFromFilePOX( const FileName_:String );
+var
+   F :TFileStream;
+   B :TSingleArea3D;
+begin
+     F := TFileStream.Create( FileName_, fmOpenRead );
+     try
+        F.Read( B, SizeOf( B ) );
+
+        SizeX := B.SizeX / 40;
+        SizeY := B.SizeY / 40;
+        SizeZ := B.SizeZ / 40;
+
+        Textur.Imager.Grid.Read( F );
+
+        Threshold := 0;
+
+        MakeModel;
+
+     finally
+            F.DisposeOf;
+     end;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】

@@ -236,7 +236,9 @@ end;
 procedure TGLImager<_TItem_,_TIter_,_TGrid_>.RecePixBuf;
 begin
      Bind;
+
        glGetTexImage( _Kind, 0, _PixelF, _PixelT, nil );
+
      Unbind;
 end;
 
