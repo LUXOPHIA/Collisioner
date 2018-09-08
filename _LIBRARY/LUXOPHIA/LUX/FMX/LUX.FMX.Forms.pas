@@ -3,8 +3,9 @@
 interface //#################################################################### ■
 
 uses System.Types, System.UITypes, System.Classes,
-     FMX.Types, FMX.Forms,
-     LUX;
+     FMX.Types, FMX.Forms, FMX.Graphics,
+     LUX,
+     LUX.FMX;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
@@ -20,6 +21,16 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        ///// メソッド
        function MousePos :TPointF;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HCustomForm
+
+     HCustomForm = class helper for TCustomForm
+     private
+     protected
+     public
+       ///// メソッド
+       function MakeScreenShot :TBitmap;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TLuxCommonCustomForm
@@ -61,6 +72,31 @@ implementation //###############################################################
 function HCommonCustomForm.MousePos :TPointF;
 begin
      Result := ScreenToClient( Screen.MousePos );
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HCustomForm
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function HCustomForm.MakeScreenshot :TBitmap;
+begin
+     Result := TBitmap.Create;
+
+     with Result do
+     begin
+          BitmapScale := GetDisplayScale;
+
+          SetSize( Round( BitmapScale * ClientWidth  ),
+                   Round( BitmapScale * ClientHeight ) );
+
+          PaintTo( Canvas );
+     end;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TLuxCommonCustomForm

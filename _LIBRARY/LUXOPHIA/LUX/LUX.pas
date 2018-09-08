@@ -6,6 +6,20 @@ uses System.Types, System.SysUtils, System.Classes, System.Math.Vectors, System.
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
+     Int08u = Byte    ;  Int8u = Int08u;
+     Int08s = Shortint;  Int8s = Int08s;
+     Int16u = Word    ;
+     Int16s = Smallint;
+     Int32u = Cardinal;
+     Int32s = Integer ;
+     Int64u = UInt64  ;
+     Int64s = Int64   ;
+
+     Flo32s = Single  ;
+     Flo64s = Double  ;
+
+     //-------------------------------------------------------------------------
+
      PPByte    = ^PByte;
      PPLongint = ^PLongint;
 
@@ -286,19 +300,31 @@ const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
   function LnXPlus1( const X_:Extended) :Extended; inline; overload;
 {$ENDIF}
 
-function Pow2( const X_:Integer ) :Integer; inline; overload;
+function Pow2( const X_:Int32u ) :Int32u; inline; overload;
+function Pow2( const X_:Int32s ) :Int32s; inline; overload;
+function Pow2( const X_:Int64u ) :Int64u; inline; overload;
+function Pow2( const X_:Int64s ) :Int64s; inline; overload;
 function Pow2( const X_:Single ) :Single; inline; overload;
 function Pow2( const X_:Double ) :Double; inline; overload;
 
-function Pow3( const X_:Integer ) :Integer; inline; overload;
+function Pow3( const X_:Int32u ) :Int32u; inline; overload;
+function Pow3( const X_:Int32s ) :Int32s; inline; overload;
+function Pow3( const X_:Int64u ) :Int64u; inline; overload;
+function Pow3( const X_:Int64s ) :Int64s; inline; overload;
 function Pow3( const X_:Single ) :Single; inline; overload;
 function Pow3( const X_:Double ) :Double; inline; overload;
 
-function Pow4( const X_:Integer ) :Integer; inline; overload;
+function Pow4( const X_:Int32u ) :Int32u; inline; overload;
+function Pow4( const X_:Int32s ) :Int32s; inline; overload;
+function Pow4( const X_:Int64u ) :Int64u; inline; overload;
+function Pow4( const X_:Int64s ) :Int64s; inline; overload;
 function Pow4( const X_:Single ) :Single; inline; overload;
 function Pow4( const X_:Double ) :Double; inline; overload;
 
-function Pow5( const X_:Integer ) :Integer; inline; overload;
+function Pow5( const X_:Int32u ) :Int32u; inline; overload;
+function Pow5( const X_:Int32s ) :Int32s; inline; overload;
+function Pow5( const X_:Int64u ) :Int64u; inline; overload;
+function Pow5( const X_:Int64s ) :Int64s; inline; overload;
 function Pow5( const X_:Single ) :Single; inline; overload;
 function Pow5( const X_:Double ) :Double; inline; overload;
 
@@ -380,6 +406,9 @@ function BinPow( const N_:Integer ) :Integer; overload;
 function BinPow( const N_:Cardinal ) :Cardinal; overload;
 function BinPow( const N_:Int64 ) :Int64; overload;
 function BinPow( const N_:UInt64 ) :UInt64; overload;
+
+function UIntToStr( const Value_:Uint32; const N_:Integer; const C_:Char = '0' ) :String; overload;
+function UIntToStr( const Value_:UInt64; const N_:Integer; const C_:Char = '0' ) :String; overload;
 
 function IntToStr( const Value_:Integer; const N_:Integer; const C_:Char = '0' ) :String; overload;
 function IntToStr( const Value_:Int64; const N_:Integer; const C_:Char = '0' ) :String; overload;
@@ -1160,7 +1189,22 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Pow2( const X_:Integer ) :Integer;
+function Pow2( const X_:Int32u ) :Int32u;
+begin
+     Result := Sqr( X_ );
+end;
+
+function Pow2( const X_:Int32s ) :Int32s;
+begin
+     Result := Sqr( X_ );
+end;
+
+function Pow2( const X_:Int64u ) :Int64u;
+begin
+     Result := Sqr( X_ );
+end;
+
+function Pow2( const X_:Int64s ) :Int64s;
 begin
      Result := Sqr( X_ );
 end;
@@ -1177,7 +1221,22 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Pow3( const X_:Integer ) :Integer;
+function Pow3( const X_:Int32u ) :Int32u;
+begin
+     Result := X_ * Pow2( X_ );
+end;
+
+function Pow3( const X_:Int32s ) :Int32s;
+begin
+     Result := X_ * Pow2( X_ );
+end;
+
+function Pow3( const X_:Int64u ) :Int64u;
+begin
+     Result := X_ * Pow2( X_ );
+end;
+
+function Pow3( const X_:Int64s ) :Int64s;
 begin
      Result := X_ * Pow2( X_ );
 end;
@@ -1194,7 +1253,22 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Pow4( const X_:Integer ) :Integer;
+function Pow4( const X_:Int32u ) :Int32u;
+begin
+     Result := Pow2( Pow2( X_ ) );
+end;
+
+function Pow4( const X_:Int32s ) :Int32s;
+begin
+     Result := Pow2( Pow2( X_ ) );
+end;
+
+function Pow4( const X_:Int64u ) :Int64u;
+begin
+     Result := Pow2( Pow2( X_ ) );
+end;
+
+function Pow4( const X_:Int64s ) :Int64s;
 begin
      Result := Pow2( Pow2( X_ ) );
 end;
@@ -1211,7 +1285,22 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Pow5( const X_:Integer ) :Integer;
+function Pow5( const X_:Int32u ) :Int32u;
+begin
+     Result := Pow4( X_ ) * X_;
+end;
+
+function Pow5( const X_:Int32s ) :Int32s;
+begin
+     Result := Pow4( X_ ) * X_;
+end;
+
+function Pow5( const X_:Int64u ) :Int64u;
+begin
+     Result := Pow4( X_ ) * X_;
+end;
+
+function Pow5( const X_:Int64s ) :Int64s;
 begin
      Result := Pow4( X_ ) * X_;
 end;
@@ -1823,6 +1912,22 @@ end;
 function BinPow( const N_:UInt64 ) :UInt64;
 begin
      Result := 1 shl N_;
+end;
+
+//------------------------------------------------------------------------------
+
+function UIntToStr( const Value_:Uint32; const N_:Integer; const C_:Char = '0' ) :String;
+begin
+     Result := UIntToStr( Value_ );
+
+     Result := Result.Insert( 0, StringOfChar( C_, N_ - Length( Result ) ) );
+end;
+
+function UIntToStr( const Value_:UInt64; const N_:Integer; const C_:Char = '0' ) :String;
+begin
+     Result := UIntToStr( Value_ );
+
+     Result := Result.Insert( 0, StringOfChar( C_, N_ - Length( Result ) ) );
 end;
 
 //------------------------------------------------------------------------------

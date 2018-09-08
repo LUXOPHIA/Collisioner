@@ -36,10 +36,13 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Divide( const A_:TByteRGB; const B_:Byte ): TByteRGB;
        ///// 型変換
        class operator Implicit( const L_:Byte ) :TByteRGB;
+       class operator Implicit( const C_:TAlphaColor ) :TByteRGB;
        class operator Implicit( const C_:TByteRGB ) :TAlphaColor;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TByteRGBA
+
+     PByteRGBA = ^TByteRGBA;
 
      TByteRGBA = packed record
      private
@@ -74,6 +77,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Divide( const A_:TByteRGBA; const B_:Byte ): TByteRGBA;
        ///// 型変換
        class operator Implicit( const L_:Byte ) :TByteRGBA;
+       class operator Implicit( const C_:TByteRGB ) :TByteRGBA;
+       class operator Explicit( const C_:TByteRGBA ) :TByteRGB;
+       class operator Implicit( const C_:TAlphaColor ) :TByteRGBA;
        class operator Implicit( const C_:TByteRGBA ) :TAlphaColor;
      end;
 
@@ -99,6 +105,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Divide( const A_:TSingleRGB; const B_:Single ): TSingleRGB;
        ///// 型変換
        class operator Implicit( const L_:Single ) :TSingleRGB;
+       class operator Implicit( const C_:TByteRGB ) :TSingleRGB;
        class operator Implicit( const C_:TSingleRGB ) :TByteRGB;
        ///// メソッド
        function Gamma( const C_:Single = 2.2 ) :TSingleRGB;
@@ -136,11 +143,15 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        class operator Divide( const A_:TSingleRGBA; const B_:Single ): TSingleRGBA;
        ///// 型変換
        class operator Implicit( const L_:Single ) :TSingleRGBA;
+       class operator Implicit( const C_:TByteRGBA ) :TSingleRGBA;
        class operator Explicit( const C_:TSingleRGBA ) :TByteRGBA;
        class operator Implicit( const C_:TSingleRGB ) :TSingleRGBA;
        class operator Explicit( const C_:TSingleRGBA ) :TSingleRGB;
        class operator Implicit( const C_:TSingleRGBA ) :TAlphaColorF;
        class operator Implicit( const C_:TAlphaColorF ) :TSingleRGBA;
+       ///// メソッド
+       function Gamma( const C_:Single = 2.2 ) :TSingleRGBA;
+       function ToneMap( const W_:Single = 1 ) :TSingleRGBA;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TByteRGBE
@@ -279,9 +290,14 @@ begin
      end;
 end;
 
+class operator TByteRGB.Implicit( const C_:TAlphaColor ) :TByteRGB;
+begin
+     Result := TByteRGBA( C_ ).C;
+end;
+
 class operator TByteRGB.Implicit( const C_:TByteRGB ) :TAlphaColor;
 begin
-     Result := PAlphaColor( @C_ )^;
+     Result := TByteRGBA( C_ );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TByteRGBA
@@ -407,6 +423,25 @@ begin
      end;
 end;
 
+class operator TByteRGBA.Implicit( const C_:TByteRGB ) :TByteRGBA;
+begin
+     with Result do
+     begin
+          C := C_;
+          A := 255;
+     end;
+end;
+
+class operator TByteRGBA.Explicit( const C_:TByteRGBA ) :TByteRGB;
+begin
+     Result := C_.C;
+end;
+
+class operator TByteRGBA.Implicit( const C_:TAlphaColor ) :TByteRGBA;
+begin
+     Result := PByteRGBA( @C_ )^;
+end;
+
 class operator TByteRGBA.Implicit( const C_:TByteRGBA ) :TAlphaColor;
 begin
      Result := PAlphaColor( @C_ )^;
@@ -513,6 +548,16 @@ begin
           R := L_;
           G := L_;
           B := L_;
+     end;
+end;
+
+class operator TSingleRGB.Implicit( const C_:TByteRGB ) :TSingleRGB;
+begin
+     with Result do
+     begin
+          R := C_.R / 255;
+          G := C_.G / 255;
+          B := C_.B / 255;
      end;
 end;
 
@@ -682,6 +727,16 @@ end;
 
 //------------------------------------------------------------------------------
 
+class operator TSingleRGBA.Implicit( const C_:TByteRGBA ) :TSingleRGBA;
+begin
+     with Result do
+     begin
+          C := C_.C;
+
+          A := C_.A / 255;
+     end;
+end;
+
 class operator TSingleRGBA.Explicit( const C_:TSingleRGBA ) :TByteRGBA;
 begin
      with Result do
@@ -727,6 +782,22 @@ begin
           B := C_.B;
           A := C_.A;
      end;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+function TSingleRGBA.Gamma( const C_:Single = 2.2 ) :TSingleRGBA;
+begin
+     Result.C := C.Gamma( C_ );
+     Result.A := A;
+end;
+
+//------------------------------------------------------------------------------
+
+function TSingleRGBA.ToneMap( const W_:Single = 1 ) :TSingleRGBA;
+begin
+     Result.C := C.ToneMap( W_ );
+     Result.A := A;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TByteRGBE
