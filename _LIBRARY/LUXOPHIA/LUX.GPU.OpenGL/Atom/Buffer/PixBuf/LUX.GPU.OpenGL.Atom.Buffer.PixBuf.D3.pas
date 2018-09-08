@@ -2,8 +2,9 @@
 
 interface //#################################################################### ■
 
-uses Winapi.OpenGL, Winapi.OpenGLext,
-     LUX,
+uses System.Classes,
+     Winapi.OpenGL, Winapi.OpenGLext,
+     LUX, LUX.D3,
      LUX.GPU.OpenGL.Atom,
      LUX.GPU.OpenGL.Atom.Buffer,
      LUX.GPU.OpenGL.Atom.Textur,
@@ -98,6 +99,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property MargsZ :Integer read GetMargsZ write SetMargsZ;
        property PoinsZ :Integer read GetPoinsZ write SetPoinsZ;
        property CellsZ :Integer read GetCellsZ write SetCellsZ;
+       ///// メソッド
+       procedure Read( const Stream_:TStream );
+       procedure Write( const Stream_:TStream );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiPixIter3D<_TItem_>
@@ -309,6 +313,56 @@ begin
 
      _ItemsZ := 1;
      _MargsZ := 0;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLPixBuf3D<_TItem_,_TIter_>.Read( const Stream_:TStream );
+var
+   C, M :TCardinal3D;
+begin
+     with Stream_ do
+     begin
+          Read( C, SizeOf( TCardinal3D ) );
+          Read( M, SizeOf( TCardinal3D ) );
+     end;
+
+     CellsX := C.X;
+     CellsY := C.Y;
+     CellsZ := C.Z;
+
+     MargsX := M.X;
+     MargsY := M.Y;
+     MargsZ := M.Z;
+
+     inherited;
+end;
+
+procedure TGLPixBuf3D<_TItem_,_TIter_>.Write( const Stream_:TStream );
+var
+   C, M :TCardinal3D;
+begin
+     with C do
+     begin
+          X := CellsX;
+          Y := CellsY;
+          Z := CellsZ;
+     end;
+
+     with M do
+     begin
+          X := MargsX;
+          Y := MargsY;
+          Z := MargsZ;
+     end;
+
+     with Stream_ do
+     begin
+          Write( C, SizeOf( TCardinal3D ) );
+          Write( M, SizeOf( TCardinal3D ) );
+     end;
+
+     inherited;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLPoiPixIter3D<_TItem_>

@@ -2,7 +2,7 @@
 
 interface //#################################################################### ■
 
-uses System.SysUtils, System.UITypes,
+uses System.Generics.Collections,
      Winapi.OpenGL, Winapi.OpenGLext,
      LUX,
      LUX.Data.Dictionary,
@@ -73,7 +73,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLComput = class( TInterfacedObject, IGLComput )
      private
      protected
-       _Engine  :TGLEngine;
+       _Engine  :TGLEngine;                           upEngine:Boolean;
        _ShaderC :TGLShaderC;
        _Buffers :TIndexDictionary<String,IGLBuffer>;
        _Imagers :TIndexDictionary<String,IGLImager>;
@@ -108,6 +108,10 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure SetWorksY( const WorksY_:GLuint );
        function GetWorksZ :GLuint;
        procedure SetWorksZ( const WorksZ_:GLuint );
+       procedure SetBuffers( const Sender_:TDictItem<String,IGLBuffer> );
+       procedure SetImagers( const Sender_:TDictItem<String,IGLImager> );
+       procedure SetTexturs( const Sender_:TDictItem<String,IGLTextur> );
+       procedure InitEngine;
      public
        constructor Create;
        destructor Destroy; override;
@@ -276,24 +280,105 @@ begin
      _GrupsZ := WorksZ_ div _ItemsZ;
 end;
 
+//------------------------------------------------------------------------------
+
+procedure TGLComput.SetBuffers( const Sender_:TDictItem<String,IGLBuffer> );
+begin
+     upEngine := True;
+end;
+
+procedure TGLComput.SetImagers( const Sender_:TDictItem<String,IGLImager> );
+begin
+     upEngine := True;
+end;
+
+procedure TGLComput.SetTexturs( const Sender_:TDictItem<String,IGLTextur> );
+begin
+     upEngine := True;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TGLComput.InitEngine;
+var
+   K :String;
+begin
+     if upEngine then
+     begin
+          with _Engine do
+          begin
+               for K in _Buffers.Keys do
+               begin
+                    with _Buffers[ K ] do
+                    begin
+                         StoBufs.Add( Order{BinP}, K{Name} );
+                    end;
+               end;
+
+               for K in _Imagers.Keys do
+               begin
+                    with _Imagers[ K ] do
+                    begin
+                         Texturs.Add( Order{BinP}, K{Name} );
+                    end;
+               end;
+
+               for K in _Texturs.Keys do
+               begin
+                    with _Texturs[ K ] do
+                    begin
+                         Texturs.Add( _Imagers.Count + Order{BinP}, K{Name} );
+                    end;
+               end;
+
+               Link;
+
+               Use;
+
+               for K in _Buffers.Keys do
+               begin
+                    with _Buffers[ K ] do glBindBufferBase( GL_SHADER_STORAGE_BUFFER, Order, Value.ID );
+               end;
+
+               for K in _Imagers.Keys do
+               begin
+                    with _Imagers[ K ] do Value.UseComput( Order );
+               end;
+
+               for K in _Texturs.Keys do
+               begin
+                    with _Texturs[ K ] do Value.Use( _Imagers.Count + Order );
+               end;
+
+               Unuse;
+          end;
+
+          upEngine := False;
+     end;
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 constructor TGLComput.Create;
 begin
      inherited;
 
-     _Engine  := TGLEngine .Create;
+     _Engine  := TGLEngine .Create;  upEngine := True;
      _ShaderC := TGLShaderC.Create;
 
      _Buffers := TIndexDictionary<String,IGLBuffer>.Create;
      _Imagers := TIndexDictionary<String,IGLImager>.Create;
      _Texturs := TIndexDictionary<String,IGLTextur>.Create;
 
+     _Buffers.OnChange := SetBuffers;
+     _Imagers.OnChange := SetImagers;
+     _Texturs.OnChange := SetTexturs;
+
      _Engine.Attach( _ShaderC{Shad} );
 
-     _GrupsX := 16;  _ItemsX := 16;
-     _GrupsY := 16;  _ItemsY := 16;
-     _GrupsZ := 16;  _ItemsZ := 16;
+     _GrupsX := 10;  _ItemsX := 10;
+     _GrupsY := 10;  _ItemsY := 10;
+     _GrupsZ := 10;  _ItemsZ := 10;
 end;
 
 destructor TGLComput.Destroy;
@@ -311,108 +396,28 @@ end;
 /////////////////////////////////////////////////////////////////////// メソッド
 
 procedure TGLComput.Run;
-var
-   K :String;
 begin
-     for K in _Buffers.Keys do
+     InitEngine;
+
+     with _Engine do
      begin
-          with _Buffers[ K ] do
-          begin
-               _Engine.StoBufs.Add( Index{BinP}, K{Name} );
-          end;
+          Use;
+            glDispatchCompute( _GrupsX, _GrupsY, _GrupsZ );
+          Unuse;
      end;
-
-     for K in _Imagers.Keys do
-     begin
-          with _Imagers[ K ] do
-          begin
-               _Engine.Texturs.Add( Index{BinP}, K{Name} );
-          end;
-     end;
-
-     for K in _Texturs.Keys do
-     begin
-          with _Texturs[ K ] do
-          begin
-               _Engine.Texturs.Add( _Imagers.Count + Index{BinP}, K{Name} );
-          end;
-     end;
-
-     _Engine.Link;
-
-     _Engine.Use;
-
-     for K in _Buffers.Keys do
-     begin
-          with _Buffers[ K ] do glBindBufferBase( GL_SHADER_STORAGE_BUFFER, Index, Value.ID );
-     end;
-
-     for K in _Imagers.Keys do
-     begin
-          with _Imagers[ K ] do Value.UseComput( Index );
-     end;
-
-     for K in _Texturs.Keys do
-     begin
-          with _Texturs[ K ] do Value.Use( _Imagers.Count + Index );
-     end;
-
-     glDispatchCompute( _GrupsX, _GrupsY, _GrupsZ );
-
-     _Engine.Unuse;
 end;
 
 procedure TGLComput.RunARB;
-var
-   K :String;
 begin
-     for K in _Buffers.Keys do
+     InitEngine;
+
+     with _Engine do
      begin
-          with _Buffers[ K ] do
-          begin
-               _Engine.StoBufs.Add( Index{BinP}, K{Name} );
-          end;
+          Use;
+            glDispatchComputeGroupSizeARB( _GrupsX, _GrupsY, _GrupsZ,
+                                           _ItemsX, _ItemsY, _ItemsZ );
+          Unuse;
      end;
-
-     for K in _Imagers.Keys do
-     begin
-          with _Imagers[ K ] do
-          begin
-               _Engine.Texturs.Add( Index{BinP}, K{Name} );
-          end;
-     end;
-
-     for K in _Texturs.Keys do
-     begin
-          with _Texturs[ K ] do
-          begin
-               _Engine.Texturs.Add( _Imagers.Count + Index{BinP}, K{Name} );
-          end;
-     end;
-
-     _Engine.Link;
-
-     _Engine.Use;
-
-     for K in _Buffers.Keys do
-     begin
-          with _Buffers[ K ] do glBindBufferBase( GL_SHADER_STORAGE_BUFFER, Index, Value.ID );
-     end;
-
-     for K in _Imagers.Keys do
-     begin
-          with _Imagers[ K ] do Value.UseComput( Index );
-     end;
-
-     for K in _Texturs.Keys do
-     begin
-          with _Texturs[ K ] do Value.Use( _Imagers.Count + Index );
-     end;
-
-     glDispatchComputeGroupSizeARB( _GrupsX, _GrupsY, _GrupsZ,
-                                    _ItemsX, _ItemsY, _ItemsZ );
-
-     _Engine.Unuse;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
