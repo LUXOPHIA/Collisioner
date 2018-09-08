@@ -29,6 +29,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
           _2 :Byte;                  );
      end;
 
+     TInt08u2D = TByte2D;  TInt8u2D = TInt08u2D;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShortint2D
 
      TShortint2D = record
@@ -43,6 +45,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
       2:( _1 :Shortint;
           _2 :Shortint;                  );
      end;
+
+     TInt08s2D = TShortint2D;  TInt8s2D = TInt08s2D;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TWord2D
 
@@ -59,6 +63,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
           _2 :Word;                  );
      end;
 
+     TInt16u2D = TWord2D;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSmallint2D
 
      TSmallint2D = record
@@ -74,6 +80,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
           _2 :Smallint;                  );
      end;
 
+     TInt16s2D = TSmallint2D;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCardinal2D
 
      TCardinal2D = record
@@ -88,6 +96,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
       2:( _1 :Cardinal;
           _2 :Cardinal;                  );
      end;
+
+     TInt32u2D = TCardinal2D;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TInteger2D
 
@@ -107,6 +117,48 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
           _2 :Integer;                   );
       3:(  U :Integer;
            V :Integer;                   );
+     end;
+
+     TInt32s2D = TInteger2D;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TInt64u2D
+
+     TInt64u2D = record
+     private
+       ///// アクセス
+       function GetV( const I_:Byte ) :Int64u; inline;
+       procedure SetV( const I_:Byte; const V_:Int64u ); inline;
+     public
+       constructor Create( const V_:Int64u ); overload;
+       constructor Create( const X_,Y_:Int64u ); overload;
+       ///// プロパティ
+       property _s[ const I_:Byte ] :Int64u read GetV write SetV; default;
+     case Byte of
+      0:( _  :array [ 1..2 ] of Int64u; );
+      1:(  X :Int64u;
+           Y :Int64u;                   );
+      2:( _1 :Int64u;
+          _2 :Int64u;                   );
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TInt64s2D
+
+     TInt64s2D = record
+     private
+       ///// アクセス
+       function GetV( const I_:Byte ) :Int64s; inline;
+       procedure SetV( const I_:Byte; const V_:Int64s ); inline;
+     public
+       constructor Create( const V_:Int64s ); overload;
+       constructor Create( const X_,Y_:Int64s ); overload;
+       ///// プロパティ
+       property _s[ const I_:Byte ] :Int64s read GetV write SetV; default;
+     case Byte of
+      0:( _  :array [ 1..2 ] of Int64s; );
+      1:(  X :Int64s;
+           Y :Int64s;                   );
+      2:( _1 :Int64s;
+          _2 :Int64s;                  );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingle2D
@@ -165,6 +217,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
       3:(  U :Single;
            V :Single;                   );
      end;
+
+     TFlo32s2D = TSingle2D;
 
      TSinglePos2D = TSingle2D;
      TSingleVec2D = TSingle2D;
@@ -228,6 +282,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
            V :Double;                   );
      end;
 
+     TFlo64s2D = TDouble2D;
+
      TDoublePos2D = TDouble2D;
      TDoubleVec2D = TDouble2D;
 
@@ -280,6 +336,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
            V :TdSingle;                   );
      end;
 
+     TdFlo32s2D = TdSingle2D;
+
      TdSinglePos2D = TdSingle2D;
      TdSingleVec2D = TdSingle2D;
 
@@ -331,6 +389,8 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
       3:(  U :TdDouble;
            V :TdDouble;                   );
      end;
+
+     TdFlo64s2D = TdDouble2D;
 
      TdDoublePos2D = TdDouble2D;
      TdDoubleVec2D = TdDouble2D;
@@ -801,6 +861,66 @@ begin
 end;
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TInt64u2D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TInt64u2D.GetV( const I_:Byte ) :Int64u;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TInt64u2D.SetV( const I_:Byte; const V_:Int64u );
+begin
+     _[ I_ ] := V_;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TInt64u2D.Create( const V_:Int64u );
+begin
+     X := V_;
+     Y := V_;
+end;
+
+constructor TInt64u2D.Create( const X_,Y_:Int64u );
+begin
+     X := X_;
+     Y := Y_;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TInt64s2D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TInt64s2D.GetV( const I_:Byte ) :Int64s;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TInt64s2D.SetV( const I_:Byte; const V_:Int64s );
+begin
+     _[ I_ ] := V_;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TInt64s2D.Create( const V_:Int64s );
+begin
+     X := V_;
+     Y := V_;
+end;
+
+constructor TInt64s2D.Create( const X_,Y_:Int64s );
+begin
+     X := X_;
+     Y := Y_;
+end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TSingle2D
 

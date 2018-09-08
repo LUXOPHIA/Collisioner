@@ -19,6 +19,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        ///// メソッド
        procedure DrawTo( const BMP_:TBitmap; const Func_:TConstFunc<Integer,Integer,TAlphaColor> ); overload;
+       procedure DrawFrom( const BMP_:TBitmap; const Func_:TConstFunc<TAlphaColor,_TItem_> ); overload;
      public
      end;
 
@@ -29,6 +30,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      protected
        ///// メソッド
        procedure DrawTo( const BMP_:TBitmap; const Func_:TConstFunc<Integer,Integer,TAlphaColor> ); overload;
+       procedure DrawFrom( const BMP_:TBitmap; const Func_:TConstFunc<TAlphaColor,_TItem_> ); overload;
      public
      end;
 
@@ -78,6 +80,31 @@ begin
      BMP_.Unmap( B );
 end;
 
+procedure TPoinColorGrid2D<_TItem_>.DrawFrom( const BMP_:TBitmap; const Func_:TConstFunc<TAlphaColor,_TItem_> );
+var
+   B :TBitmapData;
+begin
+     PoinsX := BMP_.Width ;
+     PoinsY := BMP_.Height;
+
+     BMP_.Map( TMapAccess.Read, B );
+
+     TParallel.For( 0, PoinsY-1, procedure( Y:Integer )
+     var
+        P :PAlphaColor;
+        X :Integer;
+     begin
+          P := B.GetScanline( Y );
+
+          for X := 0 to PoinsX-1 do
+          begin
+               Poins[ X, Y ] := Func_( P^ );  Inc( P );
+          end;
+     end );
+
+     BMP_.Unmap( B );
+end;
+
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TCellColorGrid2D
@@ -106,6 +133,32 @@ begin
           for X := 0 to CellsX-1 do
           begin
                P^ := Func_( X, Y );  Inc( P );
+          end;
+     end );
+
+     BMP_.Unmap( B );
+end;
+
+
+procedure TCellColorGrid2D<_TItem_>.DrawFrom( const BMP_:TBitmap; const Func_:TConstFunc<TAlphaColor,_TItem_> );
+var
+   B :TBitmapData;
+begin
+     CellsX := BMP_.Width ;
+     CellsY := BMP_.Height;
+
+     BMP_.Map( TMapAccess.Read, B );
+
+     TParallel.For( 0, CellsY-1, procedure( Y:Integer )
+     var
+        P :PAlphaColor;
+        X :Integer;
+     begin
+          P := B.GetScanline( Y );
+
+          for X := 0 to CellsX-1 do
+          begin
+               Cells[ X, Y ] := Func_( P^ );  Inc( P );
           end;
      end );
 

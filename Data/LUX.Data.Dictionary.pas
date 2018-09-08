@@ -2,36 +2,59 @@
 
 interface //#################################################################### ■
 
-uses System.Generics.Collections,
+uses System.SysUtils, System.Generics.Collections,
      LUX;
 
 type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【型】
 
+     TDictItem<_TKey_,_TValue_>        = class;
+
+     TIndexDictionary<_TKey_,_TValue_> = class;
+
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
-
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TIndexPort<_TValue_>
-
-     TIndexPort<_TValue_> = record
-     private
-     public
-       Index :Integer;
-       Value :_TValue_;
-     end;
 
      //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TIndexDictionary<_TKey_,_TVal_>
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDictItem<_TKey_,_TValue_>
 
-     TIndexDictionary<_TKey_,_TVal_> = class( TDictionary<_TKey_,TIndexPort<_TVal_>> )
+     TDictItem<_TKey_,_TValue_> = class
      private
      protected
+       _Paren :TIndexDictionary<_TKey_,_TValue_>;
+       _Key   :_TKey_;
+       _Order :Integer;
+       _Value :_TValue_;
+       ///// アクセス
+       function GetParen :TIndexDictionary<_TKey_,_TValue_>;
+       function GetKey :_TKey_;
+       function GetOrder :Integer;
+       function GetValue :_TValue_;
+       procedure SetValue( const Value_:_TValue_ );
+     public
+       constructor Create( const Paren_:TIndexDictionary<_TKey_,_TValue_> );
+       destructor Destroy; override;
+       ///// プロパティ
+       property Paren :TIndexDictionary<_TKey_,_TValue_> read GetParen;
+       property Key   :_TKey_                            read GetKey  ;
+       property Order :Integer                           read GetOrder;
+       property Value :_TValue_                          read GetValue write SetValue;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TIndexDictionary<_TKey_,_TValue_>
+
+     TIndexDictionary<_TKey_,_TValue_> = class( TObjectDictionary<_TKey_,TDictItem<_TKey_,_TValue_>> )
+     private
+     protected
+       ///// イベント
+       _OnChange :TConstProc<TDictItem<_TKey_,_TValue_>>;
      public
        constructor Create( Capacity_:Integer = 0 );
        destructor Destroy; override;
-       ///// プロパティ
        ///// メソッド
-       procedure Add( const Key_:_TKey_; const Val_:_TVal_ );
+       procedure Add( const Key_:_TKey_; const Value_:_TValue_ );
        procedure Del( const Key_:_TKey_ );
+       ///// イベント
+       property OnChange :TConstProc<TDictItem<_TKey_,_TValue_>> read _OnChange write _OnChange;
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -46,45 +69,106 @@ implementation //###############################################################
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【クラス】
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TIndexDictionary<_TKey_,_TVal_>
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TDictItem<_TKey_,_TValue_>
 
-constructor TIndexDictionary<_TKey_,_TVal_>.Create( Capacity_:Integer = 0 );
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+function TDictItem<_TKey_,_TValue_>.GetParen :TIndexDictionary<_TKey_,_TValue_>;
 begin
-     inherited;
-
+     Result := Paren;
 end;
 
-destructor TIndexDictionary<_TKey_,_TVal_>.Destroy;
+function TDictItem<_TKey_,_TValue_>.GetKey :_TKey_;
 begin
-
-     inherited;
+     Result := _Key;
 end;
 
-procedure TIndexDictionary<_TKey_,_TVal_>.Add( const Key_:_TKey_; const Val_:_TVal_ );
-var
-   V :TIndexPort<_TVal_>;
+function TDictItem<_TKey_,_TValue_>.GetOrder :Integer;
 begin
-     if ContainsKey( Key_ ) then
+     Result := _Order;
+end;
+
+function TDictItem<_TKey_,_TValue_>.GetValue :_TValue_;
+begin
+     Result := _Value;
+end;
+
+procedure TDictItem<_TKey_,_TValue_>.SetValue( const Value_:_TValue_ );
+begin
+     _Value := Value_;
+
+     with _Paren do
      begin
-          V := Self[ Key_ ];
+          if Assigned( _OnChange ) then _OnChange( Self );
+     end;
+end;
 
-          V.Value := Val_;
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
-          inherited AddOrSetValue( Key_, V );
-     end
+constructor TDictItem<_TKey_,_TValue_>.Create( const Paren_:TIndexDictionary<_TKey_,_TValue_> );
+begin
+     inherited Create;
+
+     _Paren := Paren_;
+
+     with _Paren do
+     begin
+          if Assigned( _OnChange ) then _OnChange( Self );
+     end;
+end;
+
+destructor TDictItem<_TKey_,_TValue_>.Destroy;
+begin
+     with _Paren do
+     begin
+          if Assigned( _OnChange ) then _OnChange( Self );
+     end;
+
+     inherited;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TIndexDictionary<_TKey_,_TValue_>
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+constructor TIndexDictionary<_TKey_,_TValue_>.Create( Capacity_:Integer = 0 );
+begin
+     inherited Create( [ doOwnsValues ], Capacity_ );
+
+end;
+
+destructor TIndexDictionary<_TKey_,_TValue_>.Destroy;
+begin
+
+     inherited;
+end;
+
+procedure TIndexDictionary<_TKey_,_TValue_>.Add( const Key_:_TKey_; const Value_:_TValue_ );
+var
+   V :TDictItem<_TKey_,_TValue_>;
+begin
+     if ContainsKey( Key_ ) then Items[ Key_ ].Value := Value_
      else
      begin
-          V.Index := Count;
-          V.Value := Val_;
+          V := TDictItem<_TKey_,_TValue_>.Create( Self );
+
+          V._Order := Count;
+          V._Value := Value_;
 
           inherited Add( Key_, V );
      end;
 end;
 
-procedure TIndexDictionary<_TKey_,_TVal_>.Del( const Key_:_TKey_ );
+procedure TIndexDictionary<_TKey_,_TValue_>.Del( const Key_:_TKey_ );
 begin
-
+     Remove( Key_ );
 end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
 
