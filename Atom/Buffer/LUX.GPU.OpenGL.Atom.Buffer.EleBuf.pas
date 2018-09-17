@@ -3,7 +3,7 @@
 interface //#################################################################### ■
 
 uses Winapi.OpenGL, Winapi.OpenGLext,
-     LUX, LUX.D2, LUX.D3,
+     LUX, LUX.D2, LUX.D3, LUX.D4,
      LUX.GPU.OpenGL.Atom,
      LUX.GPU.OpenGL.Atom.Buffer;
 
@@ -86,6 +86,29 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TGLEleBufLine8  = TGLEleBufLine<TByte2D>;
      TGLEleBufLine16 = TGLEleBufLine<TWord2D>;
      TGLEleBufLine32 = TGLEleBufLine<TCardinal2D>;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLEleBufQuadLines<_TItem_>
+
+     IGLEleBufQuadLines = interface( IGLBuffer )
+     ['{92396EBF-1FE4-40DD-909B-01A303806B02}']
+     end;
+
+     //-------------------------------------------------------------------------
+
+     TGLEleBufQuadLines<_TItem_:record> = class( TGLEleBuf<_TItem_>, IGLEleBufLine )
+     private
+     protected
+       ///// アクセス
+       function GetElemN :GLint; override;
+       function GetElemT :GLenum; override;
+     public
+       ///// メソッド
+       procedure Draw; override;
+     end;
+
+     TGLEleBufQuadLines8  = TGLEleBufQuadLines<TByte4D>;
+     TGLEleBufQuadLines16 = TGLEleBufQuadLines<TWord4D>;
+     TGLEleBufQuadLines32 = TGLEleBufQuadLines<TCardinal4D>;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
 
@@ -182,6 +205,42 @@ begin
      Bind;
 
        glDrawElements( GL_LINES, GetElemN * _Count, GetElemT, nil );
+
+     Unbind;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLEleBufQuadLines<_TItem_>
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TGLEleBufQuadLines<_TItem_>.GetElemN :GLint;
+begin
+     Result := 4;
+end;
+
+function TGLEleBufQuadLines<_TItem_>.GetElemT :GLenum;
+begin
+     case  SizeOf( _TItem_ ) of
+       4: Result := GL_UNSIGNED_BYTE;
+       8: Result := GL_UNSIGNED_SHORT;
+      16: Result := GL_UNSIGNED_INT;
+     else Assert( False, 'Unkown Type!' );
+     end;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLEleBufQuadLines<_TItem_>.Draw;
+begin
+     Bind;
+
+       glDrawElements( GL_LINES_ADJACENCY, GetElemN * _Count, GetElemT, nil );
 
      Unbind;
 end;

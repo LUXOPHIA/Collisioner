@@ -27,10 +27,11 @@ type
     procedure OnCreateAnyWND( const Sender_:TObject; const Message_:TMessage );
     procedure OnDestroAnyWND( const Sender_:TObject; const Message_:TMessage );
   protected
-    _RootForm :FMX.Forms.TCommonCustomForm;
-    _Form     :TGLViewerForm;
-    _Viewer   :TGLUniBuf<TSingleM4>;
-    _Camera   :TGLCamera;
+    _RootForm  :FMX.Forms.TCommonCustomForm;
+    _Form      :TGLViewerForm;
+    _Viewer    :TGLUniBuf<TSingleM4>;
+    _Camera    :TGLCamera;
+    _BackColor :TAlphaColorF;
     ///// イベント
     _OnPaint :TProc;
     ///// アクセス
@@ -52,8 +53,9 @@ type
     constructor Create( AOwner_:TComponent ); override;
     destructor Destroy; override;
     ///// プロパティ
-    property PxSize :System.Types.TSize read GetPxSize              ;
-    property Camera :TGLCamera          read   _Camera write _Camera;
+    property PxSize    :System.Types.TSize read GetPxSize                    ;
+    property Camera    :TGLCamera          read   _Camera    write _Camera   ;
+    property BackColor :TAlphaColorF       read   _BackColor write _BackColor;
     ///// イベント
     property OnPaint :TProc read _OnPaint write _OnPaint;
     ///// メソッド
@@ -276,6 +278,8 @@ begin
      end;
 
      _Viewer := TGLUniBuf<TSingleM4>.Create( GL_DYNAMIC_DRAW );
+
+     _BackColor := TAlphaColorF.Create( 0, 0, 0, 1 );
 end;
 
 destructor TGLViewer.Destroy;
@@ -304,7 +308,7 @@ procedure TGLViewer.BeginRender;
 begin
      _Form.BeginGL;
 
-       glClearColor( 0, 0, 0, 0 );
+       with _BackColor do glClearColor( R, G, B, A );
 
        glClear( GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT );
 

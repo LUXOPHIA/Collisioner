@@ -26,6 +26,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure CopyTo( const BMP_:TBitmap );
        procedure LoadFromFile( const FileName_:String );
        procedure SaveToFile( const FileName_:String );
+       procedure LoadFromFileHDR( const FileName_:String );
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelIma2D_TAlphaColorF
@@ -41,6 +42,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure CopyTo( const BMP_:TBitmap );
        procedure LoadFromFile( const FileName_:String );
        procedure SaveToFile( const FileName_:String );
+       procedure LoadFromFileHDR( const FileName_:String );
      end;
 
 //const //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【定数】
@@ -51,7 +53,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 implementation //############################################################### ■
 
-uses Winapi.OpenGL, Winapi.OpenGLext;
+uses System.Threading,
+     Winapi.OpenGL, Winapi.OpenGLext,
+     LUX.Color, LUX.Color.Format.HDR;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【レコード】
 
@@ -160,6 +164,36 @@ begin
      B.DisposeOf;
 end;
 
+//------------------------------------------------------------------------------
+
+procedure TGLPoiIma2D_TAlphaColorF.LoadFromFileHDR( const FileName_:String );
+var
+   F :TFileHDR;
+   D :TGLPoiPixIter2D<TAlphaColorF>;
+   X, Y :Integer;
+begin
+     F := TFileHDR.Create;
+
+     F.LoadFromFile( FileName_ );
+
+     _Grid.PoinsX := F.Grid.CellsX;
+     _Grid.PoinsY := F.Grid.CellsY;
+
+     D := _Grid.Map( GL_WRITE_ONLY );
+
+     for Y := 0 to _Grid.PoinsY-1 do
+     begin
+          for X := 0 to _Grid.PoinsX-1 do
+          begin
+               D[ X, Y ] := TSingleRGBA( TSingleRGB( F.Grid[ X, Y ] ) );
+          end;
+     end;
+
+     D.DisposeOf;
+
+     F.DisposeOf;
+end;
+
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLCelIma2D_TAlphaColorF
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
@@ -261,6 +295,36 @@ begin
      B.SaveToFile( FileName_ );
 
      B.DisposeOf;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TGLCelIma2D_TAlphaColorF.LoadFromFileHDR( const FileName_:String );
+var
+   F :TFileHDR;
+   D :TGLCelPixIter2D<TAlphaColorF>;
+   X, Y :Integer;
+begin
+     F := TFileHDR.Create;
+
+     F.LoadFromFile( FileName_ );
+
+     _Grid.CellsX := F.Grid.CellsX;
+     _Grid.CellsY := F.Grid.CellsY;
+
+     D := _Grid.Map( GL_WRITE_ONLY );
+
+     for Y := 0 to _Grid.CellsY-1 do
+     begin
+          for X := 0 to _Grid.CellsX-1 do
+          begin
+               D[ X, Y ] := TSingleRGBA( TSingleRGB( F.Grid[ X, Y ] ) );
+          end;
+     end;
+
+     D.DisposeOf;
+
+     F.DisposeOf;
 end;
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$【ルーチン】
