@@ -405,6 +405,8 @@
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Color\LUX.Color.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Color\Grid\_FMX\LUX.Color.Grid.D3.pas"/>
         <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\Color\Grid\_FMX\LUX.Color.Grid.D2.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\FMX\LUX.FMX.pas"/>
+        <DCCReference Include="_LIBRARY\LUXOPHIA\LUX\FMX\LUX.FMX.Controls.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
