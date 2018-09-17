@@ -35,6 +35,32 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
      TInt08u4D = TByte4D;  TInt8u4D = TInt08u4D;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TWord4D
+
+     TWord4D = record
+     private
+       ///// アクセス
+       function GetV( const I_:Integer ) :Word; inline;
+       procedure SetV( const I_:Integer; const V_:Word ); inline;
+     public
+       constructor Create( const V_:Word ); overload;
+       constructor Create( const X_,Y_,Z_,W_:Word ); overload;
+       ///// プロパティ
+       property _s[ const I_:Integer ] :Word read GetV write SetV; default;
+     case Word of
+      0:( _ :array [ 1..4 ] of Word; );
+      1:(  X :Word;
+           Y :Word;
+           Z :Word;
+           W :Word;                  );
+      2:( _1 :Word;
+          _2 :Word;
+          _3 :Word;
+          _4 :Word;                  );
+     end;
+
+     TInt16u4D = TWord4D;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TInteger4D
 
      TInteger4D = record
@@ -458,6 +484,40 @@ begin
 end;
 
 constructor TByte4D.Create( const X_,Y_,Z_,W_:Byte );
+begin
+     X := X_;
+     Y := Y_;
+     Z := Z_;
+     W := W_;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TWord4D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TWord4D.GetV( const I_:Integer ) :Word;
+begin
+     Result := _[ I_ ];
+end;
+
+procedure TWord4D.SetV( const I_:Integer; const V_:Word );
+begin
+     _[ I_ ] := V_;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TWord4D.Create( const V_:Word );
+begin
+     X := V_;
+     Y := V_;
+     Z := V_;
+     W := V_;
+end;
+
+constructor TWord4D.Create( const X_,Y_,Z_,W_:Word );
 begin
      X := X_;
      Y := Y_;
