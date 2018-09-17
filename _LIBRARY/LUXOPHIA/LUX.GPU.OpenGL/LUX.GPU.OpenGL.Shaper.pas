@@ -146,6 +146,25 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        procedure LoadFromFileOBJ( const FileName_:String );
      end;
 
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperQuadLine
+
+     TGLShaperQuadLine = class( TGLShaperPoin )
+     private
+     protected
+       _EleBuf :TGLEleBufQuadLines32;
+       _LineW  :Single;
+     public
+       constructor Create; override;
+       destructor Destroy; override;
+       ///// プロパティ
+       property EleBuf :TGLEleBufQuadLines32 read _EleBuf             ;
+       property LineW  :Single               read _LineW  write _LineW;
+       ///// メソッド
+       procedure BeginDraw; override;
+       procedure DrawMain; override;
+       procedure EndDraw; override;
+     end;
+
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperFace
 
      TGLShaperFace = class( TGLShaperPoin )
@@ -1060,6 +1079,50 @@ begin
      _EleBuf.CopyFrom( Es );
 
      CalcBouBox;
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperLine
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+constructor TGLShaperQuadLine.Create;
+begin
+     inherited;
+
+     _EleBuf := TGLEleBufQuadLines32.Create( GL_STATIC_DRAW );
+
+     _LineW := 1;
+end;
+
+destructor TGLShaperQuadLine.Destroy;
+begin
+     _EleBuf.DisposeOf;
+
+     inherited;
+end;
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TGLShaperQuadLine.BeginDraw;
+begin
+     inherited;
+
+     glLineWidth( _LineW );
+end;
+
+procedure TGLShaperQuadLine.DrawMain;
+begin
+     _EleBuf.Draw;
+end;
+
+procedure TGLShaperQuadLine.EndDraw;
+begin
+
+     inherited;
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TGLShaperFace
